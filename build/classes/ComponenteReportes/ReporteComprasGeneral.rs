@@ -1,0 +1,1 @@
+ComponenteReportes.ComponenteReportes.ReporteComprasGeneral
