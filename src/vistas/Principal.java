@@ -2,16 +2,27 @@ package vistas;
 
 import ComponenteDatos.ConfiguracionDAO;
 import beans.ConfiguracionBean;
+import beans.SucursalBean;
 import beans.UsuarioBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSEmpresa;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.swing.JOptionPane;
+import util.Util;
 
 public class Principal extends javax.swing.JFrame {
     public static ConfiguracionBean configuracionBean;
+    static Map<String,String> sucursalesHM = new HashMap();
+    static Map<String,String> categoriasHM = new HashMap();
+    
+    static Map<String,String> proveedoresHM = new HashMap();
+    static Map<String,String> clientesHM = new HashMap();
+    
     
     //WS
     Properties constantes = new ConstantesProperties().getProperties();
@@ -20,6 +31,12 @@ public class Principal extends javax.swing.JFrame {
 
     public Principal() {
         initComponents();
+        //carga sucursales
+        Util util = new Util();
+        ArrayList<SucursalBean> sucursales = new ArrayList();
+        sucursales = util.getMapSucursales();
+        util.llenaMapSucursales(sucursales);
+        sucursalesHM = util.getSucursalesHM();
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre());
     }
     

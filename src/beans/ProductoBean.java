@@ -3,42 +3,28 @@ package beans;
 import java.util.Date;
 
 public class ProductoBean {
-	private String codigo;
-        private String descripcion;
-        private int cantidad;
-        private CategoriaBean categoria;        
-        private int nCatCodigo;
-        private String formula;
-        private String ubicacion;
-        private String observaciones;
-        private String factura;
-        private int minimo;
-        private double precioCosto;
-        private double precioPublico;
-        private int codProveedor;
+    private int idArticulo;
+    private String codigo;
+    private String descripcion;
+    private double precioCosto;
+    private double precioUnitario;
+    private double porcentajeImpuesto;
+    private double existencia;
+    private double existenciaMinima;
+    private String ubicacion;
+    private String observaciones;
+    private Date fechaIngreso;
+    private int idProveedor;
+    private int idCategoria;
+    private String fotoProducto;
+    private int idSucursal;
 
-    public double getPrecioCosto() {
-        return precioCosto;
+    public int getIdArticulo() {
+        return idArticulo;
     }
 
-    public void setPrecioCosto(double precioCosto) {
-        this.precioCosto = precioCosto;
-    }
-
-    public double getPrecioPublico() {
-        return precioPublico;
-    }
-
-    public void setPrecioPublico(double precioPublico) {
-        this.precioPublico = precioPublico;
-    }
-
-    public int getCodProveedor() {
-        return codProveedor;
-    }
-
-    public void setCodProveedor(int codProveedor) {
-        this.codProveedor = codProveedor;
+    public void setIdArticulo(int idArticulo) {
+        this.idArticulo = idArticulo;
     }
 
     public String getCodigo() {
@@ -57,36 +43,44 @@ public class ProductoBean {
         this.descripcion = descripcion;
     }
 
-    public int getCantidad() {
-        return cantidad;
+    public double getPrecioCosto() {
+        return precioCosto;
     }
 
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
+    public void setPrecioCosto(double precioCosto) {
+        this.precioCosto = precioCosto;
     }
 
-    public CategoriaBean getCategoria() {
-        return categoria;
+    public double getPrecioUnitario() {
+        return precioUnitario;
     }
 
-    public void setCategoria(CategoriaBean categoria) {
-        this.categoria = categoria;
+    public void setPrecioUnitario(double precioUnitario) {
+        this.precioUnitario = precioUnitario;
     }
 
-    public int getnCatCodigo() {
-        return nCatCodigo;
+    public double getPorcentajeImpuesto() {
+        return porcentajeImpuesto;
     }
 
-    public void setnCatCodigo(int nCatCodigo) {
-        this.nCatCodigo = nCatCodigo;
+    public void setPorcentajeImpuesto(double porcentajeImpuesto) {
+        this.porcentajeImpuesto = porcentajeImpuesto;
     }
 
-    public String getFormula() {
-        return formula;
+    public double getExistencia() {
+        return existencia;
     }
 
-    public void setFormula(String formula) {
-        this.formula = formula;
+    public void setExistencia(double existencia) {
+        this.existencia = existencia;
+    }
+
+    public double getExistenciaMinima() {
+        return existenciaMinima;
+    }
+
+    public void setExistenciaMinima(double existenciaMinima) {
+        this.existenciaMinima = existenciaMinima;
     }
 
     public String getUbicacion() {
@@ -105,20 +99,44 @@ public class ProductoBean {
         this.observaciones = observaciones;
     }
 
-    public String getFactura() {
-        return factura;
+    public Date getFechaIngreso() {
+        return fechaIngreso;
     }
 
-    public void setFactura(String factura) {
-        this.factura = factura;
+    public void setFechaIngreso(Date fechaIngreso) {
+        this.fechaIngreso = fechaIngreso;
     }
 
-    public int getMinimo() {
-        return minimo;
+    public int getIdProveedor() {
+        return idProveedor;
     }
 
-    public void setMinimo(int minimo) {
-        this.minimo = minimo;
+    public void setIdProveedor(int idProveedor) {
+        this.idProveedor = idProveedor;
+    }
+
+    public int getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(int idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
+    public String getFotoProducto() {
+        return fotoProducto;
+    }
+
+    public void setFotoProducto(String fotoProducto) {
+        this.fotoProducto = fotoProducto;
+    }
+
+    public int getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(int idSucursal) {
+        this.idSucursal = idSucursal;
     }
         
 }

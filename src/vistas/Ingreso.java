@@ -17,14 +17,15 @@ import java.util.Map;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import util.Util;
 //import static vistas.Ingresoa.usuario;
 
 public class Ingreso extends javax.swing.JFrame {
     Properties constantes = new ConstantesProperties().getProperties();
     //WS
     WSUsuarios hiloUsuarios;
-    WSSucursalesList hiloSucursalesList;
-    static Map<String,String> sucursalesHM = new HashMap();
+//    WSSucursalesList hiloSucursalesList;
+//    static Map<String,String> sucursalesHM = new HashMap();
     //Fin WS
     
     public static UsuarioBean usuario;
@@ -41,16 +42,6 @@ public class Ingreso extends javax.swing.JFrame {
         if (!(f.exists())) { 
             JOptionPane.showMessageDialog(null, "Copia Ilegal");
             System.exit(1);
-        }
-        
-        //Llena sucursales
-        ArrayList<SucursalBean> sucursales = new ArrayList();
-        hiloSucursalesList = new WSSucursalesList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETSUCURSALES");
-        sucursales = hiloSucursalesList.ejecutaWebService(rutaWS,"1");
-        //carga hashmap de sucurales
-        for (SucursalBean s : sucursales) {
-            sucursalesHM.put(""+s.getIdSucursal(), s.getDescripcionSucursal());
         }
     }
 

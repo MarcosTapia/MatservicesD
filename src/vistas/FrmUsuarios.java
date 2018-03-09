@@ -25,20 +25,22 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import static vistas.Ingreso.sucursalesHM;
 import static vistas.Ingreso.usuario;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import util.Util;
 
 
 public class FrmUsuarios extends javax.swing.JFrame {
     //WSUsuarios
+    Util util = new Util();
     Properties constantes = new ConstantesProperties().getProperties();
     WSEmpresa hiloEmpresa;
     //WSUsuarios
@@ -73,42 +75,11 @@ public class FrmUsuarios extends javax.swing.JFrame {
         activarBotones(true);
         //carga sucursales
         cboSucursal.addItem("");
-        Iterator it = Ingreso.sucursalesHM.keySet().iterator();
+        Iterator it = Principal.sucursalesHM.keySet().iterator();
         while(it.hasNext()){
           Object key = it.next();
-//          System.out.println("Clave: " + key + " -> Valor: " + sucursalesHM.get(key));
-          cboSucursal.addItem(Ingreso.sucursalesHM.get(key));
+          cboSucursal.addItem(Principal.sucursalesHM.get(key));
         }        
-    }
-    
-    private int buscaIdSuc(String descripcionSuc) {
-        Iterator it = Ingreso.sucursalesHM.keySet().iterator();
-        int idSuc = 0;
-        while(it.hasNext()){
-          Object key = it.next();
-          if (descripcionSuc.equalsIgnoreCase(Ingreso.sucursalesHM.get(key))) {
-              idSuc = Integer.parseInt(key.toString());
-              break;
-          }
-//          System.out.println("Clave: " + key + " -> Valor: " + sucursalesHM.get(key));
-        }        
-        return idSuc;
-    }
-    
-    public String buscaDescFromIdSuc(String idSuc) {
-        Iterator it = Ingreso.sucursalesHM.keySet().iterator();
-        String descripSuc = "";
-        while(it.hasNext()){
-          Object key = it.next();
-          //JOptionPane.showMessageDialog(null, key.toString());
-          String t = key.toString();
-          if (t.equalsIgnoreCase(idSuc)) {
-              descripSuc = Ingreso.sucursalesHM.get(key).toString();
-              break;
-          }
-//          System.out.println("Clave: " + key + " -> Valor: " + sucursalesHM.get(key));
-        }        
-        return descripSuc;
     }
     
     public static String getMD5(String input) {
@@ -862,7 +833,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 p.setClase(permisos);
                 p.setPermisos(permisos);
                 p.setNombre(txtNombre.getText());
-                p.setIdSucursal(buscaIdSuc(cboSucursal.getSelectedItem().toString()));
+                p.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM, cboSucursal.getSelectedItem().toString()));
                 hiloUsuarios = new WSUsuarios();
                 String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAUSUARIO");
                 UsuarioBean usuarioInsertado = hiloUsuarios.ejecutaWebService(rutaWS,"3",p.getUsuario()
@@ -946,7 +917,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 //Fin Reune permisos de usuario para guardarlos
                 p.setClase(permisos);
                 p.setPermisos(permisos);
-                p.setIdSucursal(buscaIdSuc(cboSucursal.getSelectedItem().toString()));
+                p.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM, cboSucursal.getSelectedItem().toString()));
                 hiloUsuarios = new WSUsuarios();
                 String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICAUSUARIO");
                 UsuarioBean usuarioModificar = hiloUsuarios.ejecutaWebService(rutaWS,"4"
@@ -1049,7 +1020,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
             chkCategorias.setSelected(true);
         }
         //fin verifica permisos de usuario
-        cboSucursal.setSelectedItem(buscaDescFromIdSuc("" + p.getIdSucursal()));
+        cboSucursal.setSelectedItem(util.buscaDescFromIdSuc(Principal.sucursalesHM, "" + p.getIdSucursal()));
     }//GEN-LAST:event_tblUsuariosMouseClicked
 
     private void txtUserKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUserKeyTyped
