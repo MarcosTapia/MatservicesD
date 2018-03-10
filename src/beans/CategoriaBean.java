@@ -1,32 +1,24 @@
 package beans;
 
 public class CategoriaBean {
+    private int idCategoria;
+    private String descripcionCategoria;
 
-    private int nCatCodigo;
-    private String cCatDescripcion;
-    private int utilidad;
-
-    public int getUtilidad() {
-        return utilidad;
+    public int getIdCategoria() {
+        return idCategoria;
     }
 
-    public void setUtilidad(int utilidad) {
-        this.utilidad = utilidad;
+    public void setIdCategoria(int idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
+    public String getDescripcionCategoria() {
+        return descripcionCategoria;
+    }
+
+    public void setDescripcionCategoria(String descripcionCategoria) {
+        this.descripcionCategoria = descripcionCategoria;
     }
     
-    public String getcCatDescripcion() {
-        return cCatDescripcion;
-    }
-
-    public void setcCatDescripcion(String cCatDescripcion) {
-        this.cCatDescripcion = cCatDescripcion;
-    }
-
-    public int getnCatCodigo() {
-        return nCatCodigo;
-    }
-
-    public void setnCatCodigo(int nCatCodigo) {
-        this.nCatCodigo = nCatCodigo;
-    }
+    
 }

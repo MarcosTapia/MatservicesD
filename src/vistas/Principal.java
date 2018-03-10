@@ -1,6 +1,7 @@
 package vistas;
 
 import ComponenteDatos.ConfiguracionDAO;
+import beans.CategoriaBean;
 import beans.ConfiguracionBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
@@ -33,10 +34,21 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
         //carga sucursales
         Util util = new Util();
+        
+        //Carga sucursales
         ArrayList<SucursalBean> sucursales = new ArrayList();
         sucursales = util.getMapSucursales();
         util.llenaMapSucursales(sucursales);
         sucursalesHM = util.getSucursalesHM();
+        
+        //Carga sucursales
+        ArrayList<CategoriaBean> categorias = new ArrayList();
+        categorias = util.getMapCategorias();
+        util.llenaMapCategorias(categorias);
+        categoriasHM = util.getCategoriasHM();
+        
+        
+        
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre());
     }
     

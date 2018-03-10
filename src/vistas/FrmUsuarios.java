@@ -12,29 +12,15 @@ import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
 import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import static vistas.Ingreso.usuario;
 
 import java.security.MessageDigest;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import util.Util;
 
 
@@ -742,14 +728,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
     private void btnNuevoPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoPerActionPerformed
         limpiarCajaTexto();
-//        try {
-//            String a = Encriptar("12345");
-//            JOptionPane.showMessageDialog(null, "Encriptado -->" + a);
-//            String b = Desencriptar(a);
-//            JOptionPane.showMessageDialog(null, "Desencriptar -->" + b);
-//        } catch (Exception ex) {
-//            Logger.getLogger(FrmUsuarios.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         activarCajaTexto(true);
 //        obtenerUltimoId();
         accion = "Guardar";

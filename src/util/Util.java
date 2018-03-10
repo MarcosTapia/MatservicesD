@@ -1,7 +1,9 @@
 package util;
 
+import beans.CategoriaBean;
 import beans.SucursalBean;
 import constantes.ConstantesProperties;
+import consumewebservices.WSCategoriasList;
 import consumewebservices.WSSucursalesList;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,7 +20,9 @@ import vistas.Principal;
 public class Util {
     Properties constantes = new ConstantesProperties().getProperties();
     WSSucursalesList hiloSucursalesList;
+    WSCategoriasList hiloCategoriasList;
     private Map<String,String> sucursalesHM = new HashMap();
+    private Map<String,String> categoriasHM = new HashMap();
 
     /**
      * Metodo para convertir fecha a string "dd/MM/yyyy"
@@ -50,6 +54,7 @@ public class Util {
         return ret;
     }
 
+    //********* SUCURSALES
     /**
      * Metodo para cargar sucursales
      * @return Hash sucursales
@@ -96,7 +101,55 @@ public class Util {
         }        
         return descripSuc;
     }
+    //********* FIN SUCURSALES
 
+    //********* CATEGORIAS
+    /**
+     * Metodo para cargar categorias
+     * @return Hash sucursales
+     */
+    public ArrayList<CategoriaBean> getMapCategorias() {
+        ArrayList<CategoriaBean> categorias = new ArrayList();
+        hiloCategoriasList = new WSCategoriasList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCATEGORIAS");
+        categorias = hiloCategoriasList.ejecutaWebService(rutaWS,"1");
+        return categorias;
+    }
+    
+    public void llenaMapCategorias(ArrayList<CategoriaBean> categorias) {
+        //carga hashmap de sucurales
+        for (CategoriaBean s : categorias) {
+            this.categoriasHM.put(""+s.getIdCategoria(), s.getDescripcionCategoria());
+        }
+    }
+    
+    public int buscaIdCat(Map<String,String> categoriasHM, String descripcionCat) {
+        Iterator it = categoriasHM.keySet().iterator();
+        int idCat = 0;
+        while(it.hasNext()){
+          Object key = it.next();
+          if (descripcionCat.equalsIgnoreCase(categoriasHM.get(key))) {
+              idCat = Integer.parseInt(key.toString());
+              break;
+          }
+        }        
+        return idCat;
+    }
+    
+    public String buscaDescFromIdCat(Map<String,String> categoriasHM, String idCat) {
+        Iterator it = categoriasHM.keySet().iterator();
+        String descripCat = "";
+        while(it.hasNext()){
+          Object key = it.next();
+          String t = key.toString();
+          if (t.equalsIgnoreCase(idCat)) {
+              descripCat = categoriasHM.get(key).toString();
+              break;
+          }
+        }        
+        return descripCat;
+    }
+    //********* FIN CATEGORIAS
     
     public Map<String, String> getSucursalesHM() {
         return sucursalesHM;
@@ -105,4 +158,14 @@ public class Util {
     public void setSucursalesHM(Map<String, String> sucursalesHM) {
         this.sucursalesHM = sucursalesHM;
     }
+
+    public Map<String, String> getCategoriasHM() {
+        return categoriasHM;
+    }
+
+    public void setCategoriasHM(Map<String, String> categoriasHM) {
+        this.categoriasHM = categoriasHM;
+    }
+    
+    
 }

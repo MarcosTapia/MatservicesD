@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -93,6 +94,14 @@ public class FrmProducto extends javax.swing.JFrame {
                 + constantes.getProperty("GETINVENTARIOS");
         resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
         recargarTableProductos(resultWS);
+        
+        //carga categorias
+        Iterator it = Principal.categoriasHM.keySet().iterator();
+        while(it.hasNext()){
+          Object key = it.next();
+          cboCategoriaPro.addItem(Principal.categoriasHM.get(key));
+        }        
+        
         
 //        //Carga HashMap de Provedores
 //        try {
@@ -851,26 +860,21 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_cboParametroProActionPerformed
 
     private void buscaDetalleProducto() {
-        try {
-            ProductoBean producto = BDProducto.buscarProducto(
-                    String.valueOf(jtProducto.getModel().getValueAt(
+        ArrayList<ProductoBean> resultWS = null;
+        hiloInventariosList = new WSInventariosList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETINVENTARIOBUSQUEDACODIGO") 
+                + String.valueOf(
+                        String.valueOf(jtProducto.getModel().getValueAt(
                             jtProducto.getSelectedRow(),0)));
-            codProdAnterior = producto.getCodigo();
-            txtCodigoPro.setText(producto.getCodigo());
-            txtDescripcionPro.setText(producto.getDescripcion());
-            txtCantidadPro.setText(""+producto.getCantidad());
-            existOriginal.setText("Existencia Original: " + txtCantidadPro.getText());
-            cantGlobal = Integer.parseInt(txtCantidadPro.getText());
-            cboCategoriaPro.setSelectedItem((String)producto.getCategoria().getcCatDescripcion());
-            cboProveedor.setSelectedItem((String)NombreProveedor.get(producto.getCodProveedor()));
-            txtMinimoPro.setText(""+producto.getMinimo());
-            txtPrecioCosto.setText(""+producto.getPrecioCosto());
-            txtPrecioPublico.setText(""+producto.getPrecioPublico());
-        } catch (SQLException ex) {
-            cantGlobal = 0;
-            JOptionPane.showMessageDialog(null,"Error Al Seleccionar "
-                    + "Elemento:" + ex.getMessage());
-        }
+        resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"2");
+        ProductoBean p = resultWS.get(0);
+
+        txtCodigoPro.setText(p.getCodigo());
+        txtDescripcionPro.setText(p.getDescripcion());
+        txtCantidadPro.setText("" + p.getExistencia());
+        txtMinimoPro.setText("" + p.getExistenciaMinima());
+        cboCategoriaPro.setSelectedItem(util.buscaDescFromIdCat(Principal.categoriasHM, "" + p.getIdCategoria()));
+        //falta
     }
     
     private void jtProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtProductoMouseClicked

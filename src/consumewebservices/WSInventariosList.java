@@ -36,7 +36,7 @@ public class WSInventariosList {
             ArrayList<ProductoBean> productos = new ArrayList();
             switch (params[1]) { 
                 case "1" : productos = mostrarProductosWS(); break;
-//                case "2" : usuarios = buscaUsuariosIdWS(cadena); break;
+                case "2" : productos = buscaProductosPorCodigoWS(cadena); break;
 //                case "3" : usuarios = buscaUsuariosNombreWS(cadena); break;
             }
             return productos;
@@ -105,8 +105,8 @@ public class WSInventariosList {
     }
         
         
-    public ArrayList<UsuarioBean> buscaUsuariosIdWS(String rutaWS) {
-        ArrayList<UsuarioBean> usuarios = new ArrayList();
+    public ArrayList<ProductoBean> buscaProductosPorCodigoWS(String rutaWS) {
+        ArrayList<ProductoBean> productos = new ArrayList();
         try {
             url = new URL(cadena);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
@@ -130,20 +130,30 @@ public class WSInventariosList {
                 //Accedemos al vector de resultados
                 int resultJSON = respuestaJSON.getInt("estado");
                 if (resultJSON == 1) {
-                    JSONArray usuariosJSON = respuestaJSON.getJSONArray("usuario");   // estado es el nombre del campo en el JSON
-                    for(int i=0;i<usuariosJSON.length();i++){
-                        UsuarioBean usu = new UsuarioBean();
-                        usu.setIdUsuario(usuariosJSON.getJSONObject(i).getInt("idUsuario"));
-                        usu.setUsuario(usuariosJSON.getJSONObject(i).getString("usuario"));
-                        usu.setPassword(usuariosJSON.getJSONObject(i).getString("clave"));
-                        usu.setPermisos(usuariosJSON.getJSONObject(i).getString("permisos"));
-                        usu.setNombre(usuariosJSON.getJSONObject(i).getString("nombre"));
-                        usu.setApellido_paterno(usuariosJSON.getJSONObject(i).getString("apellido_paterno"));
-                        usu.setApellido_materno(usuariosJSON.getJSONObject(i).getString("apellido_materno"));
-                        usu.setTelefono_casa(usuariosJSON.getJSONObject(i).getString("telefono_casa"));
-                        usu.setTelefono_celular(usuariosJSON.getJSONObject(i).getString("telefono_celular"));
-                        usu.setIdSucursal(usuariosJSON.getJSONObject(i).getInt("idSucursal"));
-                        usuarios.add(usu);
+                    JSONArray productosJSON = respuestaJSON.getJSONArray("inventario");   // estado es el nombre del campo en el JSON
+                    for(int i=0;i<productosJSON.length();i++){
+                        ProductoBean prod = new ProductoBean();
+                        prod.setIdArticulo(productosJSON.getJSONObject(i).getInt("idArticulo"));
+                        prod.setCodigo(productosJSON.getJSONObject(i).getString("codigo"));
+                        prod.setDescripcion(productosJSON.getJSONObject(i).getString("descripcion"));
+                        prod.setPrecioCosto(productosJSON.getJSONObject(i).getDouble("precioCosto"));
+                        prod.setPrecioUnitario(productosJSON.getJSONObject(i).getDouble("precioUnitario"));
+                        prod.setPrecioUnitario(productosJSON.getJSONObject(i).getDouble("precioUnitario"));
+                        prod.setPorcentajeImpuesto(productosJSON.getJSONObject(i).getDouble("porcentajeImpuesto"));
+                        prod.setExistencia(productosJSON.getJSONObject(i).getDouble("existencia"));
+                        prod.setExistenciaMinima(productosJSON.getJSONObject(i).getDouble("existenciaMinima"));
+                        prod.setUbicacion(productosJSON.getJSONObject(i).getString("ubicacion"));
+                        prod.setObservaciones(productosJSON.getJSONObject(i).getString("observaciones"));
+
+                        //convierte fecha String a Date
+                        String fechaS = productosJSON.getJSONObject(i).get("fechaIngreso").toString();
+                        Util util = new Util();
+                        prod.setFechaIngreso(util.stringToDate(fechaS));
+                        prod.setIdProveedor(productosJSON.getJSONObject(i).getInt("idProveedor"));
+                        prod.setIdCategoria(productosJSON.getJSONObject(i).getInt("idCategoria"));
+                        prod.setFotoProducto(productosJSON.getJSONObject(i).getString("fotoProducto"));
+                        prod.setIdSucursal(productosJSON.getJSONObject(i).getInt("idSucursal"));
+                        productos.add(prod);
                     }
                 }
             }
@@ -154,7 +164,7 @@ public class WSInventariosList {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return usuarios;
+        return productos;
     }
     
     public ArrayList<UsuarioBean> buscaUsuariosNombreWS(String rutaWS) {
