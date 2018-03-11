@@ -3,7 +3,7 @@ package ComponenteConsulta;
 import beans.ClienteBean;
 import ComponenteDatos.BDCliente;
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -14,7 +14,7 @@ import vistas.FrmCliente;
 public class JDListaClientes extends javax.swing.JDialog {
     UsuarioBean usuario = new UsuarioBean(); 
 
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
 
     DefaultTableModel LClientes = new DefaultTableModel();

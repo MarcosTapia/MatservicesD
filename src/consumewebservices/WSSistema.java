@@ -1,7 +1,8 @@
 package consumewebservices;
 
 import beans.UsuarioBean;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
+import beans.SistemaBean;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,10 +22,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import static vistas.Ingreso.usuario;
 
-public class WSEmpresa {
+public class WSSistema {
     String cadena;
     URL url = null; // Url de donde queremos obtener información
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    SistemaBean sistemaBean = new SistemaBean();
     
 
 //        public usuarioBean ejecutaWebService(String... params) {
@@ -32,16 +33,16 @@ public class WSEmpresa {
 //        }
     
     
-    public ConfiguracionBean  ejecutaWebService(String... params) {
+    public SistemaBean  ejecutaWebService(String... params) {
         cadena = params[0];
         url = null; // Url de donde queremos obtener información
         switch (params[1]) { 
-            case "1" : configuracionBean = obtieneDatosEmpresaWS(); break;
+            case "1" : sistemaBean = obtieneDatosSistemaWS(); break;
         }
-        return configuracionBean;
+        return sistemaBean;
     }
  
-    public ConfiguracionBean obtieneDatosEmpresaWS() {
+    public SistemaBean obtieneDatosSistemaWS() {
         try {
             url = new URL(cadena);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
@@ -65,13 +66,25 @@ public class WSEmpresa {
                 //Accedemos al vector de resultados
                 int resultJSON = respuestaJSON.getInt("estado");
                 if (resultJSON == 1) {      // hay alumnos a mostrar
-                    JSONArray datosEmpresaJSON = respuestaJSON.getJSONArray("datosEmpresas");   // estado es el nombre del campo en el JSON
-                    for(int i=0;i<datosEmpresaJSON.length();i++){
-                        configuracionBean.setNombreEmpresa(datosEmpresaJSON.getJSONObject(i).getString("nombreEmpresa"));
-                    }
+                    JSONArray datosSistemaJSON = respuestaJSON.getJSONArray("sistemas");   // estado es el nombre del campo en el JSON
+                    for(int i=0;i<datosSistemaJSON.length();i++){
+                        sistemaBean.setIdSistema(datosSistemaJSON.getJSONObject(i).getInt("idSistema"));
+                        sistemaBean.setIvaEmpresa(datosSistemaJSON.getJSONObject(i).getDouble("ivaEmpresa"));
+                        sistemaBean.setHistoricoProveedores(datosSistemaJSON.getJSONObject(i).getString("historicoProveedores"));
+                        sistemaBean.setCriterioHistoricoProveedores(datosSistemaJSON.getJSONObject(i).getString("criterioHistoricoProveedores"));
+                        sistemaBean.setCamposInventario(datosSistemaJSON.getJSONObject(i).getString("camposInventario"));
+                        sistemaBean.setCamposVentas(datosSistemaJSON.getJSONObject(i).getString("camposVentas"));
+                        sistemaBean.setCamposCompras(datosSistemaJSON.getJSONObject(i).getString("camposCompras"));
+                        sistemaBean.setCamposConsultas(datosSistemaJSON.getJSONObject(i).getString("camposConsultas"));
+                        sistemaBean.setCamposProveedores(datosSistemaJSON.getJSONObject(i).getString("camposProveedores"));
+                        sistemaBean.setCamposClientes(datosSistemaJSON.getJSONObject(i).getString("camposClientes"));
+                        sistemaBean.setCamposEmpleados(datosSistemaJSON.getJSONObject(i).getString("camposEmpleados"));
+                        sistemaBean.setCamposEmpresa(datosSistemaJSON.getJSONObject(i).getString("camposEmpresa"));
+                        sistemaBean.setIvaGral(datosSistemaJSON.getJSONObject(i).getDouble("ivaGral"));
+                    }     
                 }
                 else if (resultJSON == 2){
-                    configuracionBean.setNombreEmpresa("No hay datos de la empresa registrados");
+                    sistemaBean.setCamposEmpresa("No hay datos de la empresa registrados");
                 }
             }
         } catch (MalformedURLException e) {
@@ -81,7 +94,7 @@ public class WSEmpresa {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return configuracionBean;
+        return sistemaBean;
     }
        
         

@@ -3,7 +3,7 @@ package ComponenteConsulta;
 import beans.ProveedorBean;
 import ComponenteDatos.BDProveedor;
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -13,7 +13,7 @@ import vistas.FrmProveedor;
 
 public class JDListaProveedor extends javax.swing.JDialog {
     DefaultTableModel LProveedor = new DefaultTableModel();
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
 
     public JDListaProveedor(java.awt.Frame parent, boolean modal) {

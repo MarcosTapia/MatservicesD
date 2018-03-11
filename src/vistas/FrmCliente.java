@@ -3,7 +3,7 @@ package vistas;
 import beans.ClienteBean;
 import ComponenteConsulta.JDListaClientes;
 import ComponenteDatos.*;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
 import java.awt.Toolkit;
 import java.sql.Connection;
@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 public class FrmCliente extends javax.swing.JFrame {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
     String accion = "";
 

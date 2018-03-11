@@ -1,14 +1,14 @@
 package ComponenteDatos;
 
 import ComponenteDatos.Conexion;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 
 public class ConfiguracionDAO {
-	public boolean GuardaConfiguracion(ConfiguracionBean configuracionBean) {
+	public boolean GuardaConfiguracion(DatosEmpresaBean configuracionBean) {
 		Conexion conex = new Conexion();
                 boolean status = false;
 		try {
@@ -30,8 +30,8 @@ public class ConfiguracionDAO {
                 return status;
 	}
         
-	public ConfiguracionBean obtieneConfiguracion(int id) {
-		ConfiguracionBean obj = null;
+	public DatosEmpresaBean obtieneConfiguracion(int id) {
+		DatosEmpresaBean obj = null;
 		Conexion conex = new Conexion();
 		try {
 			PreparedStatement cmd;
@@ -39,7 +39,7 @@ public class ConfiguracionDAO {
 			cmd.setInt(1, id);
 			ResultSet rs = cmd.executeQuery();
 			if (rs.next()) {
-				obj = new ConfiguracionBean();
+				obj = new DatosEmpresaBean();
                                 obj.setNombreEmpresa(rs.getString("nombreEmpresa"));
 				obj.setUtilidad(rs.getDouble("utilidad"));
 				obj.setIva(rs.getDouble("iva"));

@@ -5,7 +5,7 @@ import ComponenteConsulta.JDListaCategorias;
 import ComponenteDatos.BD;
 import ComponenteDatos.BDCategoria;
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 public class FrmCategoria extends javax.swing.JFrame {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
     String accion = "";
 

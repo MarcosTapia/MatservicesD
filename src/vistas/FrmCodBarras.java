@@ -2,7 +2,7 @@ package vistas;
 
 import ComponenteConsulta.JDListaCategorias;
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 //import com.lowagie.text.pdf.Barcode;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
@@ -24,7 +24,7 @@ import net.sourceforge.barbecue.BarcodeImageHandler;
 import net.sourceforge.barbecue.output.OutputException;
 
 public class FrmCodBarras extends javax.swing.JFrame {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
     String accion = "";
 

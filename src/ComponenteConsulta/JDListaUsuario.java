@@ -3,9 +3,9 @@ package ComponenteConsulta;
 import beans.UsuarioBean;
 import ComponenteDatos.BDUsuario;
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import constantes.ConstantesProperties;
-import consumewebservices.WSEmpresa;
+import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import java.sql.SQLException;
@@ -18,13 +18,13 @@ import vistas.FrmUsuarios;
 import vistas.Ingreso;
 
 public class JDListaUsuario extends javax.swing.JDialog {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
     DefaultTableModel LPersonal = new DefaultTableModel();
     
     //WSUsuarios
     Properties constantes = new ConstantesProperties().getProperties();
-    WSEmpresa hiloEmpresa;
+    WSDatosEmpresa hiloEmpresa;
     //WSUsuarios
     WSUsuariosList hiloUsuariosList;
     WSUsuarios hiloUsuarios;
@@ -54,10 +54,10 @@ public class JDListaUsuario extends javax.swing.JDialog {
 //            JOptionPane.showMessageDialog(null, "ERROR: " + ex.getMessage());
 //        }
 
-        hiloEmpresa = new WSEmpresa();
+        hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
                 + "GETDATOSEMPRESA");
-        ConfiguracionBean resultadoWS = hiloEmpresa.
+        DatosEmpresaBean resultadoWS = hiloEmpresa.
                 ejecutaWebService(rutaWS,"1");
         this.setTitle(resultadoWS.getNombreEmpresa());
         

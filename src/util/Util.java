@@ -1,9 +1,11 @@
 package util;
 
 import beans.CategoriaBean;
+import beans.ProveedorBean;
 import beans.SucursalBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCategoriasList;
+import consumewebservices.WSProveedoresList;
 import consumewebservices.WSSucursalesList;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,8 +23,10 @@ public class Util {
     Properties constantes = new ConstantesProperties().getProperties();
     WSSucursalesList hiloSucursalesList;
     WSCategoriasList hiloCategoriasList;
+    WSProveedoresList hiloProveedoresList;
     private Map<String,String> sucursalesHM = new HashMap();
     private Map<String,String> categoriasHM = new HashMap();
+    private Map<String,String> proveedoresHM = new HashMap();
 
     /**
      * Metodo para convertir fecha a string "dd/MM/yyyy"
@@ -106,7 +110,7 @@ public class Util {
     //********* CATEGORIAS
     /**
      * Metodo para cargar categorias
-     * @return Hash sucursales
+     * @return Hash categorias
      */
     public ArrayList<CategoriaBean> getMapCategorias() {
         ArrayList<CategoriaBean> categorias = new ArrayList();
@@ -150,6 +154,58 @@ public class Util {
         return descripCat;
     }
     //********* FIN CATEGORIAS
+
+    
+    
+    
+    //********* PROVEEDORES
+    /**
+     * Metodo para cargar proveedores
+     * @return Hash proveedores
+     */
+    public ArrayList<ProveedorBean> getMapProveedores() {
+        ArrayList<ProveedorBean> proveedores = new ArrayList();
+        hiloProveedoresList = new WSProveedoresList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETPROVEEDORES");
+        proveedores = hiloProveedoresList.ejecutaWebService(rutaWS,"1");
+        return proveedores;
+    }
+    
+    public void llenaMapProveedores(ArrayList<ProveedorBean> proveedores) {
+        //carga hashmap de proveedores
+        for (ProveedorBean s : proveedores) {
+            this.proveedoresHM.put(""+s.getIdProveedor(), s.getEmpresa());
+        }
+    }
+    
+    public int buscaIdProv(Map<String,String> proveedoresHM, String descripcionProv) {
+        Iterator it = proveedoresHM.keySet().iterator();
+        int idProv = 0;
+        while(it.hasNext()){
+          Object key = it.next();
+          if (descripcionProv.equalsIgnoreCase(proveedoresHM.get(key))) {
+              idProv = Integer.parseInt(key.toString());
+              break;
+          }
+        }        
+        return idProv;
+    }
+    
+    public String buscaDescFromIdProv(Map<String,String> proveedoresHM, String idProv) {
+        Iterator it = proveedoresHM.keySet().iterator();
+        String descripProv = "";
+        while(it.hasNext()){
+          Object key = it.next();
+          String t = key.toString();
+          if (t.equalsIgnoreCase(idProv)) {
+              descripProv = proveedoresHM.get(key).toString();
+              break;
+          }
+        }        
+        return descripProv;
+    }
+    //********* FIN PROVEEDORES
+    
     
     public Map<String, String> getSucursalesHM() {
         return sucursalesHM;
@@ -165,6 +221,14 @@ public class Util {
 
     public void setCategoriasHM(Map<String, String> categoriasHM) {
         this.categoriasHM = categoriasHM;
+    }
+
+    public Map<String, String> getProveedoresHM() {
+        return proveedoresHM;
+    }
+
+    public void setProveedoresHM(Map<String, String> proveedoresHM) {
+        this.proveedoresHM = proveedoresHM;
     }
     
     

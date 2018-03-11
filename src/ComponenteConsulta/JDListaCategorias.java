@@ -3,7 +3,7 @@ package ComponenteConsulta;
 import beans.CategoriaBean;
 import ComponenteDatos.BDCategoria;
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import vistas.FrmCategoria;
 
 public class JDListaCategorias extends javax.swing.JDialog {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
 
     DefaultTableModel LCategoria = new DefaultTableModel();

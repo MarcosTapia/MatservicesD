@@ -6,7 +6,7 @@ import ComponenteDatos.BDProducto;
 import ComponenteDatos.ConfiguracionDAO;
 import ComponenteReportes.ReporteProductoGeneral;
 import beans.CategoriaBean;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.ProductoBean;
 import beans.UsuarioBean;
 import java.awt.print.PrinterException;
@@ -25,7 +25,7 @@ import javax.swing.table.DefaultTableModel;
 import vistas.FrmProducto;
 
 public class JDListaProducto extends javax.swing.JDialog {
-    ConfiguracionBean configuracionBean;
+    DatosEmpresaBean configuracionBean;
     ConfiguracionDAO configuracionDAO;
     DefaultTableModel LProducto = new DefaultTableModel();
 

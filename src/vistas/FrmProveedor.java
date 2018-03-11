@@ -5,7 +5,7 @@ import ComponenteConsulta.JDListaProveedor;
 import ComponenteDatos.BD;
 import ComponenteDatos.BDProveedor;
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
 import java.awt.Toolkit;
 import java.sql.Connection;
@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 public class FrmProveedor extends javax.swing.JFrame {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
     
     String accion;

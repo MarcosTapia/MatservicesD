@@ -36,7 +36,7 @@ import javax.swing.UIManager;
 
 public class FrmVenta extends javax.swing.JFrame {
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     BDFechaServidor bdFechaServidor = new BDFechaServidor();
     FechaServidorBean fechaServidorBean;
     HashMap<String, String> NombreProducto = new HashMap<String, String>();

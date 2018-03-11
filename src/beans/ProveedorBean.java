@@ -1,104 +1,152 @@
 package beans;
 
 public class ProveedorBean {
+    
+    private int idProveedor;
+    //campo que sirve para hashmap usado como nombre de empresa
+    private String empresa;
+    private String nombre;
+    private String apellidos;
+    private String telefono_casa;
+    private String telefono_celular;
+    private String direccion1;
+    private String direccion2;
+    private String rfc;
+    private String email;
+    private String ciudad;
+    private String estado;
+    private String cp;
+    private String pais;
+    private String comentarios;
+    private String noCuenta;
 
-    private int nProvCodigo;
-    private String nPRovNit;
-    private String cProvNombre;
-    private String cProvDireccion;
-    private String cProvNroFax;
-    private String cProvPaginaWeb;
-    private String cProvEmail;
-    private String cProvTipoTelefono;
-    private String cProvNumTelefono;
-    private String cProvEstado;
-    private String cProvObservacion;
-
-    public String getcProvDireccion() {
-        return cProvDireccion;
+    public int getIdProveedor() {
+        return idProveedor;
     }
 
-    public void setcProvDireccion(String cProvDireccion) {
-        this.cProvDireccion = cProvDireccion;
+    public void setIdProveedor(int idProveedor) {
+        this.idProveedor = idProveedor;
     }
 
-    public String getcProvEmail() {
-        return cProvEmail;
+    public String getEmpresa() {
+        return empresa;
     }
 
-    public void setcProvEmail(String cProvEmail) {
-        this.cProvEmail = cProvEmail;
+    public void setEmpresa(String empresa) {
+        this.empresa = empresa;
     }
 
-    public String getcProvNombre() {
-        return cProvNombre;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setcProvNombre(String cProvNombre) {
-        this.cProvNombre = cProvNombre;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getcProvNroFax() {
-        return cProvNroFax;
+    public String getApellidos() {
+        return apellidos;
     }
 
-    public void setcProvNroFax(String cProvNroFax) {
-        this.cProvNroFax = cProvNroFax;
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
     }
 
-    public String getcProvNumTelefono() {
-        return cProvNumTelefono;
+    public String getTelefono_casa() {
+        return telefono_casa;
     }
 
-    public void setcProvNumTelefono(String cProvNumTelefono) {
-        this.cProvNumTelefono = cProvNumTelefono;
+    public void setTelefono_casa(String telefono_casa) {
+        this.telefono_casa = telefono_casa;
     }
 
-    public String getcProvPaginaWeb() {
-        return cProvPaginaWeb;
+    public String getTelefono_celular() {
+        return telefono_celular;
     }
 
-    public void setcProvPaginaWeb(String cProvPaginaWeb) {
-        this.cProvPaginaWeb = cProvPaginaWeb;
+    public void setTelefono_celular(String telefono_celular) {
+        this.telefono_celular = telefono_celular;
     }
 
-    public String getcProvTipoTelefono() {
-        return cProvTipoTelefono;
+    public String getDireccion1() {
+        return direccion1;
     }
 
-    public void setcProvTipoTelefono(String cProvTipoTelefono) {
-        this.cProvTipoTelefono = cProvTipoTelefono;
+    public void setDireccion1(String direccion1) {
+        this.direccion1 = direccion1;
     }
 
-    public String getnPRovNit() {
-        return nPRovNit;
+    public String getDireccion2() {
+        return direccion2;
     }
 
-    public void setnPRovNit(String nPRovNit) {
-        this.nPRovNit = nPRovNit;
+    public void setDireccion2(String direccion2) {
+        this.direccion2 = direccion2;
     }
 
-    public int getnProvCodigo() {
-        return nProvCodigo;
+    public String getRfc() {
+        return rfc;
     }
 
-    public void setnProvCodigo(int nProvCodigo) {
-        this.nProvCodigo = nProvCodigo;
+    public void setRfc(String rfc) {
+        this.rfc = rfc;
     }
 
-    public String getcProvEstado() {
-        return cProvEstado;
+    public String getEmail() {
+        return email;
     }
 
-    public void setcProvEstado(String cProvEstado) {
-        this.cProvEstado = cProvEstado;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getcProvObservacion() {
-        return cProvObservacion;
+    public String getCiudad() {
+        return ciudad;
     }
 
-    public void setcProvObservacion(String cProvObservacion) {
-        this.cProvObservacion = cProvObservacion;
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
     }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getCp() {
+        return cp;
+    }
+
+    public void setCp(String cp) {
+        this.cp = cp;
+    }
+
+    public String getPais() {
+        return pais;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
+    public String getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
+    }
+
+    public String getNoCuenta() {
+        return noCuenta;
+    }
+
+    public void setNoCuenta(String noCuenta) {
+        this.noCuenta = noCuenta;
+    }
+
+    
 }

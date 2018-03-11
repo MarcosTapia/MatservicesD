@@ -10,7 +10,7 @@ import ComponenteDatos.BDProveedor;
 import ComponenteDatos.BDUsuario;
 import ComponenteDatos.BDVentas;
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.DetalleVentaBean;
 import beans.ProductoBean;
 import beans.UsuarioBean;
@@ -34,7 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 public class FrmConsultaVentas extends javax.swing.JFrame {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
 
     ArrayList<UsuarioBean> usuarios = new ArrayList<>(); 

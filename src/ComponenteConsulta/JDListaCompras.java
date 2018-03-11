@@ -8,7 +8,7 @@ import beans.UsuarioBean;
 import ComponenteDatos.BDUsuario;
 import ComponenteDatos.ConfiguracionDAO;
 import beans.ComprasBean;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.ProductoBean;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import vistas.FrmCompras;
 
 public class JDListaCompras extends javax.swing.JDialog {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
     DefaultTableModel LPersonal = new DefaultTableModel();
     HashMap<Integer, String> usuarios = new HashMap();

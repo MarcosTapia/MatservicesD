@@ -1,10 +1,8 @@
 package beans;
 
-public class ConfiguracionBean {
-    private String nombreEmpresa;
-    private double utilidad;
-    private double iva;
+public class DatosEmpresaBean {
     private int idEmpresa;
+    private String nombreEmpresa;
     private String rfcEmpresa;
     private String direccionEmpresa;
     private String emailEmpresa;
@@ -12,31 +10,7 @@ public class ConfiguracionBean {
     private String cpEmpresa;
     private String ciudadEmpresa;
     private String estadoEmpresa;
-    private String paisEmpresa; 
-
-    public String getNombreEmpresa() {
-        return nombreEmpresa;
-    }
-
-    public void setNombreEmpresa(String nombreEmpresa) {
-        this.nombreEmpresa = nombreEmpresa;
-    }
-
-    public double getUtilidad() {
-        return utilidad;
-    }
-
-    public void setUtilidad(double utilidad) {
-        this.utilidad = utilidad;
-    }
-
-    public double getIva() {
-        return iva;
-    }
-
-    public void setIva(double iva) {
-        this.iva = iva;
-    }
+    private String paisEmpresa;
 
     public int getIdEmpresa() {
         return idEmpresa;
@@ -44,6 +18,14 @@ public class ConfiguracionBean {
 
     public void setIdEmpresa(int idEmpresa) {
         this.idEmpresa = idEmpresa;
+    }
+
+    public String getNombreEmpresa() {
+        return nombreEmpresa;
+    }
+
+    public void setNombreEmpresa(String nombreEmpresa) {
+        this.nombreEmpresa = nombreEmpresa;
     }
 
     public String getRfcEmpresa() {
@@ -110,5 +92,4 @@ public class ConfiguracionBean {
         this.paisEmpresa = paisEmpresa;
     }
     
-
 }

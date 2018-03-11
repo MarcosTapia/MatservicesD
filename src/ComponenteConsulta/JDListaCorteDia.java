@@ -5,7 +5,7 @@ import ComponenteDatos.BDUsuario;
 import ComponenteDatos.BDVentas;
 import ComponenteDatos.ConfiguracionDAO;
 import Ticket.Ticket;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.DetalleVentaBean;
 import beans.VentasBean;
 import static componenteUtil.NumberToLetterConverter.convertNumberToLetter;
@@ -22,7 +22,7 @@ import vistas.FrmConsultaVentas;
 import vistas.FrmUsuarios;
 
 public class JDListaCorteDia extends javax.swing.JDialog {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
     DefaultTableModel LPersonal = new DefaultTableModel();
     

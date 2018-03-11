@@ -4,7 +4,7 @@ import ComponenteDatos.BDProducto;
 import ComponenteDatos.BDProductosProveedoresCostos;
 import ComponenteDatos.BDProveedor;
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.ProductoBean;
 import beans.ProductosProveedoresCostosBean;
 import beans.UsuarioBean;
@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 public class FrmPedidosExcel extends javax.swing.JFrame {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
     
     ProductosProveedoresCostosBean productosProveedoresCostosBean;

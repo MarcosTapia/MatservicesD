@@ -2,11 +2,14 @@ package vistas;
 
 import ComponenteDatos.ConfiguracionDAO;
 import beans.CategoriaBean;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
+import beans.ProveedorBean;
+import beans.SistemaBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
 import constantes.ConstantesProperties;
-import consumewebservices.WSEmpresa;
+import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSSistema;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
@@ -17,17 +20,19 @@ import javax.swing.JOptionPane;
 import util.Util;
 
 public class Principal extends javax.swing.JFrame {
-    public static ConfiguracionBean configuracionBean;
+    public static DatosEmpresaBean datosEmpresaBean;
+    public static SistemaBean datosSistemaBean;
     static Map<String,String> sucursalesHM = new HashMap();
     static Map<String,String> categoriasHM = new HashMap();
-    
     static Map<String,String> proveedoresHM = new HashMap();
+    
     static Map<String,String> clientesHM = new HashMap();
     
     
     //WS
     Properties constantes = new ConstantesProperties().getProperties();
-    WSEmpresa hiloEmpresa;
+    WSDatosEmpresa hiloEmpresa;
+    WSSistema hiloSistema;
     //Fin WS
 
     public Principal() {
@@ -47,6 +52,11 @@ public class Principal extends javax.swing.JFrame {
         util.llenaMapCategorias(categorias);
         categoriasHM = util.getCategoriasHM();
         
+        //Carga proveedores
+        ArrayList<ProveedorBean> proveedores = new ArrayList();
+        proveedores = util.getMapProveedores();
+        util.llenaMapProveedores(proveedores);
+        proveedoresHM = util.getProveedoresHM();
         
         
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre());
@@ -213,11 +223,20 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel7MouseClicked
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        hiloEmpresa = new WSEmpresa();
+        // Carga datos de la empresa
+        hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSEMPRESA");
-        configuracionBean = hiloEmpresa.ejecutaWebService(rutaWS,"1");
-        this.setTitle(configuracionBean.getNombreEmpresa());
-        lblTituloNegocio.setText(configuracionBean.getNombreEmpresa());
+        datosEmpresaBean = hiloEmpresa.ejecutaWebService(rutaWS,"1");
+        // Fin Carga datos de la empresa
+        
+        // Carga datos de la empresa
+        hiloSistema = new WSSistema();
+        rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSSISTEMA");
+        datosSistemaBean = hiloSistema.ejecutaWebService(rutaWS,"1");
+        // Fin Carga datos de la empresa
+        
+        this.setTitle(datosEmpresaBean.getNombreEmpresa());
+        lblTituloNegocio.setText(datosEmpresaBean.getNombreEmpresa());
         muestraPanel(4);        
     }//GEN-LAST:event_formWindowOpened
 

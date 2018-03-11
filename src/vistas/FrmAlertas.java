@@ -6,7 +6,7 @@ import ComponenteDatos.BD;
 import ComponenteDatos.BDProducto;
 import ComponenteDatos.BDProveedor;
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.ProductoBean;
 import beans.UsuarioBean;
 import java.awt.Toolkit;
@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 public class FrmAlertas extends javax.swing.JFrame {
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
 
     public FrmAlertas() {

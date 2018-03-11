@@ -3,10 +3,10 @@ package vistas;
 import beans.UsuarioBean;
 import ComponenteConsulta.JDListaUsuario;
 import ComponenteDatos.*;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.SucursalBean;
 import constantes.ConstantesProperties;
-import consumewebservices.WSEmpresa;
+import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
@@ -28,14 +28,14 @@ public class FrmUsuarios extends javax.swing.JFrame {
     //WSUsuarios
     Util util = new Util();
     Properties constantes = new ConstantesProperties().getProperties();
-    WSEmpresa hiloEmpresa;
+    WSDatosEmpresa hiloEmpresa;
     //WSUsuarios
     WSUsuariosList hiloUsuariosList;
     WSUsuarios hiloUsuarios;
     //Fin WSUsuarios
     
     
-    ConfiguracionBean configuracionBean = new ConfiguracionBean();
+    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
 
     String accion = "";
@@ -48,10 +48,10 @@ public class FrmUsuarios extends javax.swing.JFrame {
         }
         initComponents();
         lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
-        hiloEmpresa = new WSEmpresa();
+        hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
                 + "GETDATOSEMPRESA");
-        ConfiguracionBean resultadoWS = hiloEmpresa.
+        DatosEmpresaBean resultadoWS = hiloEmpresa.
                 ejecutaWebService(rutaWS,"1");
         
         //se ocultan porque quedan incluidas en inventario

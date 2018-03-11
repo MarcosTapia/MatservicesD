@@ -8,7 +8,7 @@ import ComponenteReportes.ReporteProductoParametro;
 import ComponenteDatos.ConfiguracionDAO;
 import beans.CategoriaBean;
 import beans.ComprasBean;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.FechaServidorBean;
 import beans.ProductosProveedoresCostosBean;
 import beans.ProveedorBean;
@@ -41,7 +41,7 @@ public class FrmCompras extends javax.swing.JFrame {
     DateFormat fecha = DateFormat.getDateInstance();
     String accion = "";
     int codigoProveedor;
-    ConfiguracionBean configuracionBean;
+    DatosEmpresaBean configuracionBean;
     ConfiguracionDAO configuracionDAO;
     ProductosProveedoresCostosBean productosProveedoresCostosBean;
     BDProductosProveedoresCostos bdProductosProveedoresCostos;
@@ -140,7 +140,7 @@ public class FrmCompras extends javax.swing.JFrame {
         noCompraGral = BDCompras.obtenerUltimoId();
                 
         this.setLocationRelativeTo(null);
-        configuracionBean = new ConfiguracionBean();
+        configuracionBean = new DatosEmpresaBean();
         configuracionDAO = new ConfiguracionDAO();
         configuracionBean = configuracionDAO.obtieneConfiguracion(1);
         //txtUtilidadPro.setText(""+configuracionBean.getUtilidad());

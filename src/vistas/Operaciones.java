@@ -1,7 +1,7 @@
 package vistas;
 
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
 import java.text.DateFormat;
 import java.util.Date;
@@ -211,8 +211,8 @@ public class Operaciones extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        this.setTitle(Principal.configuracionBean.getNombreEmpresa());
-        lblTitulo.setText(Principal.configuracionBean.getNombreEmpresa());
+        this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
+        lblTitulo.setText(Principal.datosEmpresaBean.getNombreEmpresa());
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed

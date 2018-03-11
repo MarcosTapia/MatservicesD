@@ -1,7 +1,7 @@
 package vistas;
 
 import ComponenteDatos.ConfiguracionDAO;
-import beans.ConfiguracionBean;
+import beans.DatosEmpresaBean;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JOptionPane;
@@ -146,7 +146,7 @@ public class Configuracion extends javax.swing.JFrame {
 
     private void txtGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGuardarActionPerformed
         ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
-        ConfiguracionBean configuracionBean = new ConfiguracionBean();
+        DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
         configuracionBean.setNombreEmpresa(txtNombreEmpresa.getText());
         configuracionBean.setUtilidad(Double.parseDouble(txtUtilidad.getText()));
         configuracionBean.setIva(Double.parseDouble(txtIva.getText()));
