@@ -1201,6 +1201,12 @@ public class FrmProducto extends javax.swing.JFrame {
 //            txtCantidadPro.requestFocus();
 //            return;
 //        }
+        if (util.buscaProdDuplicadoEnSucursal(Principal.productos, 
+                txtCodigoPro.getText().trim(), 
+                util.buscaIdSuc(Principal.sucursalesHM, "1"))) {
+            JOptionPane.showMessageDialog(null, "Producto duplicado en sucursal");
+            return;
+        }
         if (accion.equalsIgnoreCase("Guardar")) {
             if (txtCantidadPro.getText().compareTo("") != 0
                 && txtDescripcionPro.getText().compareTo("") != 0
@@ -1491,73 +1497,70 @@ public class FrmProducto extends javax.swing.JFrame {
 //        }
     }
 
+    private ArrayList<ProductoBean> llenaTablaInventario(String buscar, int tipoBusq) {
+        ArrayList<ProductoBean> resultWS = new ArrayList<ProductoBean>();
+        ProductoBean producto = null;
+        for (int i=0; i<jtProducto.getModel().getRowCount(); i++) {
+            String campoBusq = "";
+            switch (tipoBusq) {
+                case 1 : campoBusq = jtProducto.getModel().getValueAt(
+                    i,0).toString();
+                    break;
+                case 2 : campoBusq = jtProducto.getModel().getValueAt(
+                    i,1).toString();
+                    break;
+                case 3 : campoBusq = jtProducto.getModel().getValueAt(
+                    i,5).toString();
+                    break;
+            }
+            if (campoBusq.indexOf(buscar)>=0) {
+                producto = new ProductoBean();                            
+                producto.setCodigo(jtProducto.getModel().getValueAt(i,0).toString());
+                producto.setDescripcion(jtProducto.getModel().getValueAt(
+                    i,1).toString());
+                producto.setPrecioCosto(Double.parseDouble(jtProducto.getModel().getValueAt(
+                    i,2).toString()));
+                producto.setPrecioUnitario(Double.parseDouble(jtProducto.getModel().getValueAt(
+                    i,3).toString()));
+                producto.setExistencia(Double.parseDouble(jtProducto.getModel().getValueAt(
+                    i,4).toString()));
+                int idSuc = util.buscaIdSuc(Principal.sucursalesHM, 
+                    jtProducto.getModel().getValueAt(i,5).toString());
+                producto.setIdSucursal(idSuc);
+                resultWS.add(producto);
+            }
+        }
+        return resultWS;
+    }
+    
     private void actualizarBusquedaProducto() {
         ArrayList<ProductoBean> resultWS = null;
         ProductoBean producto = null;
         if (String.valueOf(cboParametroPro.getSelectedItem()).
                 equalsIgnoreCase("Código")) {
             if (txtBuscarPro.getText().equalsIgnoreCase("")) {
-                // Actualizas tbl producto
-                hiloInventariosList = new WSInventariosList();
-                String rutaWS = constantes.getProperty("IP") 
-                        + constantes.getProperty("GETINVENTARIOS");
-                resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
+                resultWS = Principal.productos;
             } else {
-                hiloInventariosList = new WSInventariosList();
-                String rutaWS = constantes.getProperty("IP") + constantes.
-                        getProperty("GETINVENTARIOBUSQUEDACODIGO")
-                    + txtBuscarPro.getText().trim();
-                resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"3");
+                resultWS = llenaTablaInventario(
+                        txtBuscarPro.getText().trim(),1);
             }
-            //result = BDProducto.listarProductoPorCodigo(txtBuscarPro.getText());
         } else {
             if (String.valueOf(cboParametroPro.getSelectedItem()).
                     equalsIgnoreCase("Nombre")) {
                 if (txtBuscarPro.getText().equalsIgnoreCase("")) {
-                    // Actualizas tbl producto
-                    hiloInventariosList = new WSInventariosList();
-                    String rutaWS = constantes.getProperty("IP") 
-                            + constantes.getProperty("GETINVENTARIOS");
-                    resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
+                    resultWS = Principal.productos;
                 } else {
-                    hiloInventariosList = new WSInventariosList();
-                    String rutaWS = constantes.getProperty("IP") + constantes.
-                            getProperty("GETINVENTARIOBUSQUEDANOMBRE")
-                        + txtBuscarPro.getText().trim();
-                    resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"4");
+                    resultWS = llenaTablaInventario(
+                            txtBuscarPro.getText().trim(),2);
+                    resultWS = llenaTablaInventario(
+                            txtBuscarPro.getText().trim(),2);
                 }
             } else {
                 if (txtBuscarPro.getText().equalsIgnoreCase("")) {
-                    // Actualizas tbl producto
-                    hiloInventariosList = new WSInventariosList();
-                    String rutaWS = constantes.getProperty("IP") 
-                            + constantes.getProperty("GETINVENTARIOS");
-                    resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
+                    resultWS = Principal.productos;
                 } else {
-                    //checar despues por posibles mejoras
-                    resultWS = new ArrayList<ProductoBean>();
-                    String busqSuc = txtBuscarPro.getText().trim(); 
-                    for (int i=0; i<jtProducto.getModel().getRowCount(); i++) {
-                        String suc = jtProducto.getModel().getValueAt(
-                                i,5).toString();
-                        if (suc.indexOf(busqSuc)>=0) {
-                            producto = new ProductoBean();                            
-                            producto.setCodigo(jtProducto.getModel().getValueAt(i,0).toString());
-                            producto.setDescripcion(jtProducto.getModel().getValueAt(
-                                i,1).toString());
-                            producto.setPrecioCosto(Double.parseDouble(jtProducto.getModel().getValueAt(
-                                i,2).toString()));
-                            producto.setPrecioUnitario(Double.parseDouble(jtProducto.getModel().getValueAt(
-                                i,3).toString()));
-                            producto.setExistencia(Double.parseDouble(jtProducto.getModel().getValueAt(
-                                i,4).toString()));
-                            int idSuc = util.buscaIdSuc(Principal.sucursalesHM, 
-                                jtProducto.getModel().getValueAt(i,5).toString());
-                            producto.setIdSucursal(idSuc);
-                            resultWS.add(producto);
-                        }
-                    }
-                    //fin checar despues por posibles mejoras
+                    resultWS = llenaTablaInventario(
+                            txtBuscarPro.getText().trim(),3);
                 }
             }
         } 

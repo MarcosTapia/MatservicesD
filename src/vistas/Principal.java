@@ -30,6 +30,12 @@ public class Principal extends javax.swing.JFrame {
     
     static Map<String,String> clientesHM = new HashMap();
     
+    //Globales 
+    static ArrayList<SucursalBean> sucursales = new ArrayList();
+    static ArrayList<CategoriaBean> categorias = new ArrayList();
+    static ArrayList<ProveedorBean> proveedores = new ArrayList();
+    static ArrayList<ProductoBean> productos = new ArrayList();
+    
     
     //WS
     Properties constantes = new ConstantesProperties().getProperties();
@@ -43,25 +49,21 @@ public class Principal extends javax.swing.JFrame {
         Util util = new Util();
         
         //Carga sucursales
-        ArrayList<SucursalBean> sucursales = new ArrayList();
         sucursales = util.getMapSucursales();
         util.llenaMapSucursales(sucursales);
         sucursalesHM = util.getSucursalesHM();
         
-        //Carga sucursales
-        ArrayList<CategoriaBean> categorias = new ArrayList();
+        //Carga categorias
         categorias = util.getMapCategorias();
         util.llenaMapCategorias(categorias);
         categoriasHM = util.getCategoriasHM();
         
         //Carga proveedores
-        ArrayList<ProveedorBean> proveedores = new ArrayList();
         proveedores = util.getMapProveedores();
         util.llenaMapProveedores(proveedores);
         proveedoresHM = util.getProveedoresHM();
         
         //Carga productod
-        ArrayList<ProductoBean> productos = new ArrayList();
         productos = util.getMapProductos();
         util.llenaMapProductos(productos);
         productosHM = util.getProductosHM();

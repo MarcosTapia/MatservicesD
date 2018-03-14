@@ -31,7 +31,7 @@ public class Util {
     private Map<String,String> categoriasHM = new HashMap();
     private Map<String,String> proveedoresHM = new HashMap();
     private Map<String,String> productosHM = new HashMap();
-
+    
     /**
      * Metodo para convertir fecha a string "dd/MM/yyyy"
      * @param fecha La fecha en date dd/MM/yyyy
@@ -254,6 +254,19 @@ public class Util {
           }
         }        
         return descripProd;
+    }
+    
+    public boolean buscaProdDuplicadoEnSucursal(ArrayList<ProductoBean> 
+            productos, String codigo, int idSucursal) {
+        boolean existe = false;
+        for (ProductoBean s : productos) {
+            if ((codigo.equalsIgnoreCase(s.getCodigo()) &&
+                    (idSucursal == s.getIdSucursal()))) {
+                existe = true;
+                break;
+            }
+        }
+        return existe;
     }
     //********* FIN PRODUCTOD
     
