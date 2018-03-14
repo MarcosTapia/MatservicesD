@@ -119,6 +119,11 @@ public class FrmProducto extends javax.swing.JFrame {
         
         //Carga iva de la empresa de ganancia por producto
         txtIva.setText("" + Principal.datosSistemaBean.getIvaEmpresa());
+        
+        //inhabilita combos
+        cboSucursal.setEnabled(false);
+        cboProveedor.setEnabled(false);
+        cboCategoriaPro.setEnabled(false);
 //        //Carga HashMap de Provedores
 //        try {
 //            NombreProveedor = BDProveedor.mostrarProveedorHashMap();
@@ -235,6 +240,9 @@ public class FrmProducto extends javax.swing.JFrame {
     }
 
     public void activarCajaTexto(boolean b) {
+        cboSucursal.setEnabled(b);
+        cboCategoriaPro.setEnabled(b);
+        cboProveedor.setEnabled(b);
         txtCantidadPro.setEditable(b);
         txtDescripcionPro.setEditable(b);
     }
@@ -289,6 +297,11 @@ public class FrmProducto extends javax.swing.JFrame {
         txtUbicacion = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         cboSucursal = new javax.swing.JComboBox();
+        jLabel12 = new javax.swing.JLabel();
+        jCalFechaIngresoProd = new com.toedter.calendar.JDateChooser();
+        jLabel14 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtObserProd = new javax.swing.JTextArea();
         btnNuevoPro = new javax.swing.JButton();
         btnGuardarPro = new javax.swing.JButton();
         btnModificarPro = new javax.swing.JButton();
@@ -416,6 +429,11 @@ public class FrmProducto extends javax.swing.JFrame {
                 txtCodigoProActionPerformed(evt);
             }
         });
+        txtCodigoPro.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtCodigoProFocusGained(evt);
+            }
+        });
         txtCodigoPro.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtCodigoProKeyReleased(evt);
@@ -510,6 +528,11 @@ public class FrmProducto extends javax.swing.JFrame {
                 txtPrecioCostoActionPerformed(evt);
             }
         });
+        txtPrecioCosto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtPrecioCostoFocusLost(evt);
+            }
+        });
 
         jLabel5.setText("Precio Público:");
 
@@ -567,6 +590,26 @@ public class FrmProducto extends javax.swing.JFrame {
         jLabel10.setText("Sucursal : ");
 
         cboSucursal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar..." }));
+        cboSucursal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboSucursalActionPerformed(evt);
+            }
+        });
+        cboSucursal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cboSucursalKeyReleased(evt);
+            }
+        });
+
+        jLabel12.setText("Fecha Ingreso :");
+
+        jCalFechaIngresoProd.setDateFormatString("yyyy-MM-d");
+
+        jLabel14.setText("Observaciones : ");
+
+        txtObserProd.setColumns(20);
+        txtObserProd.setRows(5);
+        jScrollPane1.setViewportView(txtObserProd);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -574,59 +617,69 @@ public class FrmProducto extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(panTipoOperacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jLabel5)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jLabel4)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jLabel6)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtCantidadPro, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(17, 17, 17)
+                                    .addComponent(jLabel15)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtMinimoPro, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jLabel13)
+                                    .addGap(5, 5, 5)
+                                    .addComponent(cboCategoriaPro, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel8)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtIva, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(cboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jLabel9)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtUbicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(txtPrecioCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel12)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jCalFechaIngresoProd, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(jLabel10)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cboSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel2)
+                                        .addGap(4, 4, 4)
+                                        .addComponent(txtCodigoPro, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtDescripcionPro, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGap(58, 58, 58)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(4, 4, 4)
-                        .addComponent(txtCodigoPro, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
+                        .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboSucursal, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCantidadPro, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(17, 17, 17)
-                        .addComponent(jLabel15)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtMinimoPro))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addGap(5, 5, 5)
-                        .addComponent(cboCategoriaPro, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtIva, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(12, 12, 12)
-                        .addComponent(txtDescripcionPro))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtPrecioCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel4)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtUbicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(panTipoOperacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -635,7 +688,9 @@ public class FrmProducto extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtCodigoPro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCodigoPro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)
+                    .addComponent(cboSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
@@ -658,23 +713,29 @@ public class FrmProducto extends javax.swing.JFrame {
                     .addComponent(cboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
                     .addComponent(txtUbicacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtPrecioCosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addGap(29, 29, 29)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(txtPrecioCosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12))
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)))
+                    .addComponent(jCalFechaIngresoProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(cboSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel14)
+                        .addGap(0, 71, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panTipoOperacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         btnNuevoPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/New document.png"))); // NOI18N
@@ -783,7 +844,7 @@ public class FrmProducto extends javax.swing.JFrame {
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnCancelarPro)
                                     .addComponent(btnSalirPro, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(479, Short.MAX_VALUE))))
+                        .addContainerGap(340, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -820,7 +881,7 @@ public class FrmProducto extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1221, Short.MAX_VALUE))
+                .addContainerGap(1360, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -829,7 +890,7 @@ public class FrmProducto extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -840,7 +901,9 @@ public class FrmProducto extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         pack();
@@ -1201,14 +1264,10 @@ public class FrmProducto extends javax.swing.JFrame {
 //            txtCantidadPro.requestFocus();
 //            return;
 //        }
-        if (util.buscaProdDuplicadoEnSucursal(Principal.productos, 
-                txtCodigoPro.getText().trim(), 
-                util.buscaIdSuc(Principal.sucursalesHM, "1"))) {
-            JOptionPane.showMessageDialog(null, "Producto duplicado en sucursal");
-            return;
-        }
+        
         if (accion.equalsIgnoreCase("Guardar")) {
             if (txtCantidadPro.getText().compareTo("") != 0
+                && txtCodigoPro.getText().compareTo("") != 0
                 && txtDescripcionPro.getText().compareTo("") != 0
                 && txtMinimoPro.getText().compareTo("") != 0 
                 && !cboCategoriaPro.getSelectedItem().toString().
@@ -1218,37 +1277,29 @@ public class FrmProducto extends javax.swing.JFrame {
                 && !cboProveedor.getSelectedItem().toString().
                 equalsIgnoreCase("Seleccionar...")
             ) {
-            ProductoBean p = new ProductoBean();
-            p.setCodigo(txtCodigoPro.getText());
-            // verificar si codigo ya existe en sucursal si no se permite la alta
-            if (txtCodigoPro.getText().equalsIgnoreCase("")) {
-            }
-//                try {
-//                    ProductoBean p = new ProductoBean();
-//                    p.setCodigo(txtCodigoPro.getText());
-//                    p.setDescripcion(txtDescripcionPro.getText());
-//                    p.setCantidad(Integer.parseInt(txtCantidadPro.getText()));
-//                    CategoriaBean c = BDCategoria.buscarCategoriaDescripcion(
-//                        (String) cboCategoriaPro.getSelectedItem());
-//                    p.setCategoria(c);
-//                    p.setFormula("");
-//                    p.setUbicacion("");
-//                    p.setObservaciones("");
-//                    p.setFactura("");
-//                    p.setMinimo(Integer.parseInt(txtMinimoPro.getText()));
-//                    p.setPrecioCosto(Double.parseDouble(txtPrecioCosto.getText()));
-//                    p.setPrecioPublico(Double.parseDouble(txtPrecioPublico.getText()));
-//                    ProveedorBean prov = BDProveedor.buscarProveedorNombre(
-//                        (String) cboProveedor.getSelectedItem());
-//                    p.setCodProveedor(prov.getnProvCodigo());
-//                    BDProducto.insertarProducto(p);
-//                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
-//                    obtenerUltimoId();
-//                    borrar();
-//                    actualizarBusquedaProducto();
-//                } catch (SQLException e) {
-//                    JOptionPane.showMessageDialog(null, e.getMessage());
-//                }
+                //verifica si el producto se encuentra registrado en la sucursal
+                if (util.buscaProdDuplicadoEnSucursal(Principal.productos, 
+                        txtCodigoPro.getText().trim(), 
+                        util.buscaIdSuc(Principal.sucursalesHM, 
+                                cboSucursal.getSelectedItem().toString()))) {
+                    JOptionPane.showMessageDialog(null, "Producto duplicado en sucursal");
+                    return;
+                }
+                //fin verifica si el producto se encuentra registrado en la sucursal
+                ProductoBean p = new ProductoBean();
+                p.setCodigo(txtCodigoPro.getText());
+                p.setDescripcion(txtDescripcionPro.getText());
+                p.setExistencia(Integer.parseInt(txtCantidadPro.getText()));
+                p.setExistenciaMinima(Integer.parseInt(txtMinimoPro.getText()));
+                p.setFechaIngreso(jCalFechaIngresoProd.getDate());
+                p.setIdCategoria(util.buscaIdCat(Principal.categoriasHM, cboCategoriaPro.getSelectedItem().toString()));
+                p.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM, cboProveedor.getSelectedItem().toString()));
+                p.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM, cboSucursal.getSelectedItem().toString()));
+                p.setObservaciones(txtObserProd.getText());
+                p.setPorcentajeImpuesto(Double.parseDouble(txtIva.getText()));
+                p.setPrecioCosto(Double.parseDouble(txtPrecioCosto.getText()));
+                p.setPrecioUnitario(Double.parseDouble(txtPrecioPublico.getText()));
+                p.setUbicacion(txtUbicacion.getText());
             } else {
                 JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
             }
@@ -1347,7 +1398,7 @@ public class FrmProducto extends javax.swing.JFrame {
         accion = "Guardar";
         obtenerUltimoId();
         activarBotones(false);
-        txtCodigoPro.requestFocus();
+        cboSucursal.requestFocus();
     }//GEN-LAST:event_btnNuevoProActionPerformed
 
     private void txtPrecioPublicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioPublicoActionPerformed
@@ -1355,10 +1406,12 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPrecioPublicoActionPerformed
 
     private void txtPrecioCostoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioCostoActionPerformed
-        double utilidadProducto = Double.parseDouble(txtPrecioCosto.getText()) *
-        Double.parseDouble(txtUtilidad.getText())/100;
-        txtPrecioPublico.setText("" + (Double.parseDouble(txtPrecioCosto.getText()) + utilidadProducto));
-        txtPrecioPublico.requestFocus();
+        //calcula precio publico a partir de precio costo
+        double precioPub = Double.parseDouble(txtPrecioCosto.getText());
+        double ivaProd = Double.parseDouble(txtIva.getText());
+        precioPub = precioPub + (precioPub * (ivaProd/100));
+        txtPrecioPublico.setText("" + precioPub);
+        //fin calcula precio publico a partir de precio costo
     }//GEN-LAST:event_txtPrecioCostoActionPerformed
 
     private void cboProveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboProveedorKeyTyped
@@ -1453,34 +1506,44 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodigoProKeyReleased
 
     private void txtCodigoProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoProActionPerformed
-        try {
-            ProductoBean producto = BDProducto.buscarProducto(txtCodigoPro.getText());
-            if (producto != null) {
-                codProdAnterior = producto.getCodigo();
-                txtCodigoPro.setText(producto.getCodigo());
-                txtDescripcionPro.setText(producto.getDescripcion());
-                txtCantidadPro.setText(""+producto.getCantidad());
-                cantGlobal = Integer.parseInt(txtCantidadPro.getText());
-                cboCategoriaPro.setSelectedItem((String)producto.getCategoria().
-                    getcCatDescripcion());
-                txtMinimoPro.setText("" + producto.getMinimo());
-                txtPrecioCosto.setText("" + producto.getPrecioCosto());
-                txtPrecioPublico.setText("" + producto.getPrecioPublico());
-            } else {
-                cantGlobal = 0;
-                limpiarCajaTexto();
-                activarCajaTexto(true);
-                txtCodigoPro.setFocusable(true);
-                txtCodigoPro.requestFocus();
-                //JOptionPane.showMessageDialog(null,"No existe producto con ese código");
-            }
-            txtDescripcionPro.requestFocus();
-        } catch (SQLException ex) {
-            cantGlobal = 0;
-            JOptionPane.showMessageDialog(null,"Error Al Seleccionar "
-                + "Elemento:" + ex.getMessage());
+        //verifica si el producto se encuentra registrado en la sucursal
+        if (util.buscaProdDuplicadoEnSucursal(Principal.productos, 
+                txtCodigoPro.getText().trim(), 
+                util.buscaIdSuc(Principal.sucursalesHM, 
+                        cboSucursal.getSelectedItem().toString()))) {
+            JOptionPane.showMessageDialog(null, "Producto duplicado en sucursal");
+            txtCodigoPro.requestFocus(true);
+            return;
+        } else {
+            txtDescripcionPro.requestFocus(true);
         }
+        //fin verifica si el producto se encuentra registrado en la sucursal
     }//GEN-LAST:event_txtCodigoProActionPerformed
+
+    private void txtPrecioCostoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPrecioCostoFocusLost
+        //calcula precio publico a partir de precio costo
+        double precioPub = Double.parseDouble(txtPrecioCosto.getText());
+        double ivaProd = Double.parseDouble(txtIva.getText());
+        precioPub = precioPub + (precioPub * (ivaProd/100));
+        txtPrecioPublico.setText("" + precioPub);
+        //fin calcula precio publico a partir de precio costo
+    }//GEN-LAST:event_txtPrecioCostoFocusLost
+
+    private void txtCodigoProFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoProFocusGained
+        if (cboSucursal.getSelectedItem().toString().
+                equalsIgnoreCase("Seleccionar...")) {
+            JOptionPane.showMessageDialog(null, "Debes seleccionar una sucursal");
+            cboSucursal.requestFocus(true);
+            return;
+        } 
+    }//GEN-LAST:event_txtCodigoProFocusGained
+
+    private void cboSucursalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSucursalActionPerformed
+        txtCodigoPro.requestFocus(true);
+    }//GEN-LAST:event_cboSucursalActionPerformed
+
+    private void cboSucursalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboSucursalKeyReleased
+    }//GEN-LAST:event_cboSucursalKeyReleased
 
     private void actualizarBusquedaProveedor() {
 //        ArrayList<ProveedorBean> result = null;
@@ -1703,10 +1766,13 @@ public class FrmProducto extends javax.swing.JFrame {
     private javax.swing.JComboBox cboProveedor;
     private javax.swing.JComboBox cboSucursal;
     private javax.swing.JLabel existOriginal;
+    private com.toedter.calendar.JDateChooser jCalFechaIngresoProd;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
@@ -1721,6 +1787,7 @@ public class FrmProducto extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jtProducto;
     private javax.swing.JLabel lblUsuario;
@@ -1733,6 +1800,7 @@ public class FrmProducto extends javax.swing.JFrame {
     private javax.swing.JTextField txtDescripcionPro;
     private javax.swing.JTextField txtIva;
     private javax.swing.JTextField txtMinimoPro;
+    private javax.swing.JTextArea txtObserProd;
     private javax.swing.JTextField txtPrecioCosto;
     private javax.swing.JTextField txtPrecioPublico;
     private javax.swing.JTextField txtUbicacion;
