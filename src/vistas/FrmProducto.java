@@ -87,6 +87,7 @@ public class FrmProducto extends javax.swing.JFrame {
         obtenerUltimoId();
         // Actualizas tbl proveedor
         actualizarBusquedaProveedor();
+        
         // Actualizas tbl producto
         ArrayList<ProductoBean> resultWS = null;
         hiloInventariosList = new WSInventariosList();
@@ -319,7 +320,7 @@ public class FrmProducto extends javax.swing.JFrame {
             }
         });
 
-        cboParametroPro.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Código", "Nombre" }));
+        cboParametroPro.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Código", "Nombre", "Sucursal" }));
         cboParametroPro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboParametroProActionPerformed(evt);
@@ -578,32 +579,30 @@ public class FrmProducto extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addGap(4, 4, 4)
                         .addComponent(txtCodigoPro, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                            .addComponent(jLabel10)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(cboSucursal, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                            .addComponent(jLabel5)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                            .addComponent(jLabel6)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtCantidadPro, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(17, 17, 17)
-                            .addComponent(jLabel15)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtMinimoPro))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                            .addComponent(jLabel13)
-                            .addGap(5, 5, 5)
-                            .addComponent(cboCategoriaPro, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jLabel8)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtIva, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboSucursal, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCantidadPro, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17)
+                        .addComponent(jLabel15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtMinimoPro))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addGap(5, 5, 5)
+                        .addComponent(cboCategoriaPro, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtIva, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(12, 12, 12)
@@ -930,7 +929,7 @@ public class FrmProducto extends javax.swing.JFrame {
         cboSucursal.setSelectedItem(util.buscaDescFromIdSuc(Principal.sucursalesHM, "" + p.getIdSucursal()));
         double ganancia = Double.parseDouble(txtPrecioPublico.getText());
         ganancia = ganancia - Double.parseDouble(txtPrecioCosto.getText());
-        txtUtilidad.setText("" + ganancia);
+        txtUtilidad.setText(String.format("%.2f", ganancia));
         //falta
     }
     
@@ -1194,136 +1193,143 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_btnModificarProActionPerformed
 
     private void btnGuardarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProActionPerformed
-        if (Double.parseDouble(txtCantidadPro.getText())>9999 ||
-            Double.parseDouble(txtMinimoPro.getText())>9999) {
-            JOptionPane.showMessageDialog(null, "Existencia o mínimo inválidos");
-            txtCantidadPro.setText("");
-            txtMinimoPro.setText("0");
-            txtCantidadPro.requestFocus();
-            return;
-        }
+//        if (Double.parseDouble(txtCantidadPro.getText())>9999 ||
+//            Double.parseDouble(txtMinimoPro.getText())>9999) {
+//            JOptionPane.showMessageDialog(null, "Existencia o mínimo inválidos");
+//            txtCantidadPro.setText("");
+//            txtMinimoPro.setText("0");
+//            txtCantidadPro.requestFocus();
+//            return;
+//        }
         if (accion.equalsIgnoreCase("Guardar")) {
             if (txtCantidadPro.getText().compareTo("") != 0
                 && txtDescripcionPro.getText().compareTo("") != 0
-                && txtMinimoPro.getText().compareTo("") != 0
+                && txtMinimoPro.getText().compareTo("") != 0 
                 && !cboCategoriaPro.getSelectedItem().toString().
+                equalsIgnoreCase("Seleccionar...")
+                && !cboSucursal.getSelectedItem().toString().
                 equalsIgnoreCase("Seleccionar...")
                 && !cboProveedor.getSelectedItem().toString().
                 equalsIgnoreCase("Seleccionar...")
             ) {
-                try {
-                    ProductoBean p = new ProductoBean();
-                    p.setCodigo(txtCodigoPro.getText());
-                    p.setDescripcion(txtDescripcionPro.getText());
-                    p.setCantidad(Integer.parseInt(txtCantidadPro.getText()));
-                    CategoriaBean c = BDCategoria.buscarCategoriaDescripcion(
-                        (String) cboCategoriaPro.getSelectedItem());
-                    p.setCategoria(c);
-                    p.setFormula("");
-                    p.setUbicacion("");
-                    p.setObservaciones("");
-                    p.setFactura("");
-                    p.setMinimo(Integer.parseInt(txtMinimoPro.getText()));
-                    p.setPrecioCosto(Double.parseDouble(txtPrecioCosto.getText()));
-                    p.setPrecioPublico(Double.parseDouble(txtPrecioPublico.getText()));
-                    ProveedorBean prov = BDProveedor.buscarProveedorNombre(
-                        (String) cboProveedor.getSelectedItem());
-                    p.setCodProveedor(prov.getnProvCodigo());
-                    BDProducto.insertarProducto(p);
-                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
-                    obtenerUltimoId();
-                    borrar();
-                    actualizarBusquedaProducto();
-                } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(null, e.getMessage());
-                }
+            ProductoBean p = new ProductoBean();
+            p.setCodigo(txtCodigoPro.getText());
+            // verificar si codigo ya existe en sucursal si no se permite la alta
+            if (txtCodigoPro.getText().equalsIgnoreCase("")) {
+            }
+//                try {
+//                    ProductoBean p = new ProductoBean();
+//                    p.setCodigo(txtCodigoPro.getText());
+//                    p.setDescripcion(txtDescripcionPro.getText());
+//                    p.setCantidad(Integer.parseInt(txtCantidadPro.getText()));
+//                    CategoriaBean c = BDCategoria.buscarCategoriaDescripcion(
+//                        (String) cboCategoriaPro.getSelectedItem());
+//                    p.setCategoria(c);
+//                    p.setFormula("");
+//                    p.setUbicacion("");
+//                    p.setObservaciones("");
+//                    p.setFactura("");
+//                    p.setMinimo(Integer.parseInt(txtMinimoPro.getText()));
+//                    p.setPrecioCosto(Double.parseDouble(txtPrecioCosto.getText()));
+//                    p.setPrecioPublico(Double.parseDouble(txtPrecioPublico.getText()));
+//                    ProveedorBean prov = BDProveedor.buscarProveedorNombre(
+//                        (String) cboProveedor.getSelectedItem());
+//                    p.setCodProveedor(prov.getnProvCodigo());
+//                    BDProducto.insertarProducto(p);
+//                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+//                    obtenerUltimoId();
+//                    borrar();
+//                    actualizarBusquedaProducto();
+//                } catch (SQLException e) {
+//                    JOptionPane.showMessageDialog(null, e.getMessage());
+//                }
             } else {
                 JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
             }
         }
         if (accion.equalsIgnoreCase("Actualizar")) {
-            //valida que todo este lleno
-            if (txtCantidadPro.getText().compareTo("") != 0
-                && txtDescripcionPro.getText().compareTo("") != 0
-                && txtMinimoPro.getText().compareTo("") != 0
-                && !cboCategoriaPro.getSelectedItem().toString().
-                equalsIgnoreCase("Seleccionar...")
-                && (radioAumentar.isSelected() || radioDisminuir.isSelected())
-            ) {
-                ProductoBean p,prodBuscado;
-                try {
-                    p = BDProducto.buscarProducto(codProdAnterior);
-                    int cantOriginal = p.getCantidad();
-                    existOriginal.setText("Existencia Original: " + cantOriginal);
-                    if (radioAumentar.isSelected()) {
-                        cantOriginal = cantOriginal + Integer.parseInt(txtCantidadPro.getText());
-                    }
-                    if (radioDisminuir.isSelected()) {
-                        cantOriginal = cantOriginal - Integer.parseInt(txtCantidadPro.getText());
-                    }
-                    if (p==null) {
-                        JOptionPane.showMessageDialog(null, "[Debes de "
-                            + "seleccionar un producto, éste código no "
-                            + "existe]");
-                        return;
-                    }
-                    p.setCodigo(txtCodigoPro.getText());
-                    p.setDescripcion(txtDescripcionPro.getText());
-                    p.setCantidad(cantOriginal);
-                    CategoriaBean c = BDCategoria.buscarCategoriaDescripcion(
-                        (String) cboCategoriaPro.getSelectedItem());
-                    p.setCategoria(c);
-                    p.setFormula("");
-                    p.setUbicacion("");
-                    p.setObservaciones("");
-                    p.setFactura("");
-                    p.setMinimo(Integer.parseInt(txtMinimoPro.getText()));
-                    p.setPrecioCosto(Double.parseDouble(txtPrecioCosto.getText()));
-                    p.setPrecioPublico(Double.parseDouble(txtPrecioPublico.getText()));
-                    ProveedorBean prov = BDProveedor.buscarProveedorNombre(
-                        (String) cboProveedor.getSelectedItem());
-                    p.setCodProveedor(prov.getnProvCodigo());
-
-                    if (codProdAnterior.equalsIgnoreCase(txtCodigoPro.getText())) {
-                        // actualiza normal
-                        if (BDProducto.actualizarProducto(p)) {
-                            JOptionPane.showMessageDialog(null, " [ Datos Actualizados ]");
-                            actualizarBusquedaProducto();
-                        } else {
-                            JOptionPane.showMessageDialog(null, " [ Error al actualizar el producto ]");
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, " [ Error revisa que concuerden los productos ]");
-                    }
-                    //                    else {
-                        //                        //checar que no exista un producto con el mismo codigo
-                        //                        //JOptionPane.showMessageDialog(null, "nuevo codigo : "+txtCodigoPro.getText());
-                        //                        prodBuscado = BDProducto.buscarProducto(txtCodigoPro.getText());
-                        //                        if (prodBuscado != null) {
-                            //                            JOptionPane.showMessageDialog(null, "El producto ya existe");
-                            //                            return;
-                            //                        }
-                        //                        // borra anterior y crea nuevo
-                        //                        //borra el anterior
-                        //                        eliminarProductoPorCodigo(codProdAnterior);
-                        //                        //guarda nuevo producto
-                        //                        try {
-                            //                            BDProducto.insertarProducto(p);
-                            //                            JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
-                            //                            actualizarBusquedaProducto();
-                            //                        } catch (SQLException e) {
-                            //                            JOptionPane.showMessageDialog(null, e.getMessage());
-                            //                        }
-                        //
-                        //                        //fin guarda nuevo producto
-                        //                    }
-                } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(null, "Error BD: " + e.getMessage());
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
-                return;
-            }
+//            //valida que todo este lleno
+//            if (txtCantidadPro.getText().compareTo("") != 0
+//                && txtDescripcionPro.getText().compareTo("") != 0
+//                && txtMinimoPro.getText().compareTo("") != 0
+//                && !cboCategoriaPro.getSelectedItem().toString().
+//                equalsIgnoreCase("Seleccionar...")
+//                && (radioAumentar.isSelected() || radioDisminuir.isSelected())
+//            ) {
+//                ProductoBean p,prodBuscado;
+//                try {
+//                    p = BDProducto.buscarProducto(codProdAnterior);
+//                    int cantOriginal = p.getCantidad();
+//                    existOriginal.setText("Existencia Original: " + cantOriginal);
+//                    if (radioAumentar.isSelected()) {
+//                        cantOriginal = cantOriginal + Integer.parseInt(txtCantidadPro.getText());
+//                    }
+//                    if (radioDisminuir.isSelected()) {
+//                        cantOriginal = cantOriginal - Integer.parseInt(txtCantidadPro.getText());
+//                    }
+//                    if (p==null) {
+//                        JOptionPane.showMessageDialog(null, "[Debes de "
+//                            + "seleccionar un producto, éste código no "
+//                            + "existe]");
+//                        return;
+//                    }
+//                    p.setCodigo(txtCodigoPro.getText());
+//                    p.setDescripcion(txtDescripcionPro.getText());
+//                    p.setCantidad(cantOriginal);
+//                    CategoriaBean c = BDCategoria.buscarCategoriaDescripcion(
+//                        (String) cboCategoriaPro.getSelectedItem());
+//                    p.setCategoria(c);
+//                    p.setFormula("");
+//                    p.setUbicacion("");
+//                    p.setObservaciones("");
+//                    p.setFactura("");
+//                    p.setMinimo(Integer.parseInt(txtMinimoPro.getText()));
+//                    p.setPrecioCosto(Double.parseDouble(txtPrecioCosto.getText()));
+//                    p.setPrecioPublico(Double.parseDouble(txtPrecioPublico.getText()));
+//                    ProveedorBean prov = BDProveedor.buscarProveedorNombre(
+//                        (String) cboProveedor.getSelectedItem());
+//                    p.setCodProveedor(prov.getnProvCodigo());
+//
+//                    if (codProdAnterior.equalsIgnoreCase(txtCodigoPro.getText())) {
+//                        // actualiza normal
+//                        if (BDProducto.actualizarProducto(p)) {
+//                            JOptionPane.showMessageDialog(null, " [ Datos Actualizados ]");
+//                            actualizarBusquedaProducto();
+//                        } else {
+//                            JOptionPane.showMessageDialog(null, " [ Error al actualizar el producto ]");
+//                        }
+//                    } else {
+//                        JOptionPane.showMessageDialog(null, " [ Error revisa que concuerden los productos ]");
+//                    }
+//                    //                    else {
+//                        //                        //checar que no exista un producto con el mismo codigo
+//                        //                        //JOptionPane.showMessageDialog(null, "nuevo codigo : "+txtCodigoPro.getText());
+//                        //                        prodBuscado = BDProducto.buscarProducto(txtCodigoPro.getText());
+//                        //                        if (prodBuscado != null) {
+//                            //                            JOptionPane.showMessageDialog(null, "El producto ya existe");
+//                            //                            return;
+//                            //                        }
+//                        //                        // borra anterior y crea nuevo
+//                        //                        //borra el anterior
+//                        //                        eliminarProductoPorCodigo(codProdAnterior);
+//                        //                        //guarda nuevo producto
+//                        //                        try {
+//                            //                            BDProducto.insertarProducto(p);
+//                            //                            JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+//                            //                            actualizarBusquedaProducto();
+//                            //                        } catch (SQLException e) {
+//                            //                            JOptionPane.showMessageDialog(null, e.getMessage());
+//                            //                        }
+//                        //
+//                        //                        //fin guarda nuevo producto
+//                        //                    }
+//                } catch (SQLException e) {
+//                    JOptionPane.showMessageDialog(null, "Error BD: " + e.getMessage());
+//                }
+//            } else {
+//                JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
+//                return;
+//            }
         }
         borrar();
     }//GEN-LAST:event_btnGuardarProActionPerformed
@@ -1484,42 +1490,80 @@ public class FrmProducto extends javax.swing.JFrame {
 //            Logger.getLogger(FrmProducto.class.getName()).log(Level.SEVERE, null, ex);
 //        }
     }
-    
+
     private void actualizarBusquedaProducto() {
-        ArrayList<ProductoBean> result = null;
+        ArrayList<ProductoBean> resultWS = null;
+        ProductoBean producto = null;
         if (String.valueOf(cboParametroPro.getSelectedItem()).
                 equalsIgnoreCase("Código")) {
-            result = BDProducto.listarProductoPorCodigo(txtBuscarPro.getText());
+            if (txtBuscarPro.getText().equalsIgnoreCase("")) {
+                // Actualizas tbl producto
+                hiloInventariosList = new WSInventariosList();
+                String rutaWS = constantes.getProperty("IP") 
+                        + constantes.getProperty("GETINVENTARIOS");
+                resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
+            } else {
+                hiloInventariosList = new WSInventariosList();
+                String rutaWS = constantes.getProperty("IP") + constantes.
+                        getProperty("GETINVENTARIOBUSQUEDACODIGO")
+                    + txtBuscarPro.getText().trim();
+                resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"3");
+            }
+            //result = BDProducto.listarProductoPorCodigo(txtBuscarPro.getText());
         } else {
             if (String.valueOf(cboParametroPro.getSelectedItem()).
                     equalsIgnoreCase("Nombre")) {
-                    result = BDProducto.listarProductoPorDescripcion(txtBuscarPro.getText());                
+                if (txtBuscarPro.getText().equalsIgnoreCase("")) {
+                    // Actualizas tbl producto
+                    hiloInventariosList = new WSInventariosList();
+                    String rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GETINVENTARIOS");
+                    resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
+                } else {
+                    hiloInventariosList = new WSInventariosList();
+                    String rutaWS = constantes.getProperty("IP") + constantes.
+                            getProperty("GETINVENTARIOBUSQUEDANOMBRE")
+                        + txtBuscarPro.getText().trim();
+                    resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"4");
+                }
+            } else {
+                if (txtBuscarPro.getText().equalsIgnoreCase("")) {
+                    // Actualizas tbl producto
+                    hiloInventariosList = new WSInventariosList();
+                    String rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GETINVENTARIOS");
+                    resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
+                } else {
+                    //checar despues por posibles mejoras
+                    resultWS = new ArrayList<ProductoBean>();
+                    String busqSuc = txtBuscarPro.getText().trim(); 
+                    for (int i=0; i<jtProducto.getModel().getRowCount(); i++) {
+                        String suc = jtProducto.getModel().getValueAt(
+                                i,5).toString();
+                        if (suc.indexOf(busqSuc)>=0) {
+                            producto = new ProductoBean();                            
+                            producto.setCodigo(jtProducto.getModel().getValueAt(i,0).toString());
+                            producto.setDescripcion(jtProducto.getModel().getValueAt(
+                                i,1).toString());
+                            producto.setPrecioCosto(Double.parseDouble(jtProducto.getModel().getValueAt(
+                                i,2).toString()));
+                            producto.setPrecioUnitario(Double.parseDouble(jtProducto.getModel().getValueAt(
+                                i,3).toString()));
+                            producto.setExistencia(Double.parseDouble(jtProducto.getModel().getValueAt(
+                                i,4).toString()));
+                            int idSuc = util.buscaIdSuc(Principal.sucursalesHM, 
+                                jtProducto.getModel().getValueAt(i,5).toString());
+                            producto.setIdSucursal(idSuc);
+                            resultWS.add(producto);
+                        }
+                    }
+                    //fin checar despues por posibles mejoras
+                }
             }
         } 
-        recargarTableProductos(result);
+        recargarTableProductos(resultWS);
     }
 
-//    public void recargarTable(ArrayList<ProveedorBean> list) {
-//        Object[][] datos = new Object[list.size()][2];
-//        int i = 0;
-//        for (ProveedorBean p : list) {
-//            datos[i][0] = p.getnProvCodigo();
-//            datos[i][1] = p.getcProvNombre();
-//            i++;
-//        }
-//        jtProveedor.setModel(new javax.swing.table.DefaultTableModel(
-//                datos,
-//                new String[]{
-//                    "CODIGO", "NOMBRE"
-//                }) {
-//
-//            @Override
-//            public boolean isCellEditable(int row, int column) {
-//                return false;
-//            }
-//        });
-//    }
-    
     //Para Tabla Productos
     public void recargarTableProductos(ArrayList<ProductoBean> list) {
         Object[][] datos = new Object[list.size()][6];

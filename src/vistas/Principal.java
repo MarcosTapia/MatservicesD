@@ -3,6 +3,7 @@ package vistas;
 import ComponenteDatos.ConfiguracionDAO;
 import beans.CategoriaBean;
 import beans.DatosEmpresaBean;
+import beans.ProductoBean;
 import beans.ProveedorBean;
 import beans.SistemaBean;
 import beans.SucursalBean;
@@ -25,6 +26,7 @@ public class Principal extends javax.swing.JFrame {
     static Map<String,String> sucursalesHM = new HashMap();
     static Map<String,String> categoriasHM = new HashMap();
     static Map<String,String> proveedoresHM = new HashMap();
+    static Map<String,String> productosHM = new HashMap();
     
     static Map<String,String> clientesHM = new HashMap();
     
@@ -58,6 +60,11 @@ public class Principal extends javax.swing.JFrame {
         util.llenaMapProveedores(proveedores);
         proveedoresHM = util.getProveedoresHM();
         
+        //Carga productod
+        ArrayList<ProductoBean> productos = new ArrayList();
+        productos = util.getMapProductos();
+        util.llenaMapProductos(productos);
+        productosHM = util.getProductosHM();
         
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre());
     }

@@ -1,10 +1,12 @@
 package util;
 
 import beans.CategoriaBean;
+import beans.ProductoBean;
 import beans.ProveedorBean;
 import beans.SucursalBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCategoriasList;
+import consumewebservices.WSInventariosList;
 import consumewebservices.WSProveedoresList;
 import consumewebservices.WSSucursalesList;
 import java.text.ParseException;
@@ -24,9 +26,11 @@ public class Util {
     WSSucursalesList hiloSucursalesList;
     WSCategoriasList hiloCategoriasList;
     WSProveedoresList hiloProveedoresList;
+    WSInventariosList hiloInventariosList;
     private Map<String,String> sucursalesHM = new HashMap();
     private Map<String,String> categoriasHM = new HashMap();
     private Map<String,String> proveedoresHM = new HashMap();
+    private Map<String,String> productosHM = new HashMap();
 
     /**
      * Metodo para convertir fecha a string "dd/MM/yyyy"
@@ -156,8 +160,6 @@ public class Util {
     //********* FIN CATEGORIAS
 
     
-    
-    
     //********* PROVEEDORES
     /**
      * Metodo para cargar proveedores
@@ -206,6 +208,54 @@ public class Util {
     }
     //********* FIN PROVEEDORES
     
+
+    //********* PRODUCTOD
+    /**
+     * Metodo para cargar proveedores
+     * @return Hash proveedores
+     */
+    public ArrayList<ProductoBean> getMapProductos() {
+        ArrayList<ProductoBean> productos = new ArrayList();
+        hiloInventariosList = new WSInventariosList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETINVENTARIOS");
+        productos = hiloInventariosList.ejecutaWebService(rutaWS,"1");
+        return productos;
+    }
+    
+    public void llenaMapProductos(ArrayList<ProductoBean> productos) {
+        //carga hashmap de productos
+        for (ProductoBean s : productos) {
+            this.productosHM.put("" + s.getCodigo(), s.getDescripcion());
+        }
+    }
+    
+    public int buscaIdProd(Map<String,String> productosHM, String descripcionProd) {
+        Iterator it = productosHM.keySet().iterator();
+        int idProd = 0;
+        while(it.hasNext()){
+          Object key = it.next();
+          if (descripcionProd.equalsIgnoreCase(productosHM.get(key))) {
+              idProd = Integer.parseInt(key.toString());
+              break;
+          }
+        }        
+        return idProd;
+    }
+    
+    public String buscaDescFromIdProd(Map<String,String> productosHM, String idProd) {
+        Iterator it = productosHM.keySet().iterator();
+        String descripProd = "";
+        while(it.hasNext()){
+          Object key = it.next();
+          String t = key.toString();
+          if (t.equalsIgnoreCase(idProd)) {
+              descripProd = productosHM.get(key).toString();
+              break;
+          }
+        }        
+        return descripProd;
+    }
+    //********* FIN PRODUCTOD
     
     public Map<String, String> getSucursalesHM() {
         return sucursalesHM;
@@ -229,6 +279,14 @@ public class Util {
 
     public void setProveedoresHM(Map<String, String> proveedoresHM) {
         this.proveedoresHM = proveedoresHM;
+    }
+
+    public Map<String, String> getProductosHM() {
+        return productosHM;
+    }
+
+    public void setProductosHM(Map<String, String> productosHM) {
+        this.productosHM = productosHM;
     }
     
     
