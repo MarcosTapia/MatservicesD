@@ -3,11 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/consumewebservices/WSInventarios.java</file>
             <file>file:/C:/MatservicesDeskGH/MatservicesD/src/vistas/Principal.java</file>
             <file>file:/C:/MatservicesDeskGH/MatservicesD/src/constantes/Constantes.properties</file>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/consumewebservices/WSSistema.java</file>
+            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/consumewebservices/WSUsuarios.java</file>
             <file>file:/C:/MatservicesDeskGH/MatservicesD/src/util/Util.java</file>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/consumewebservices/WSInventariosList.java</file>
             <file>file:/C:/MatservicesDeskGH/MatservicesD/src/vistas/FrmProducto.java</file>
         </group>
     </open-files>

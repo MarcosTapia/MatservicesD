@@ -41,6 +41,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.UIManager;
 import javax.swing.table.TableColumn;
 import util.Util;
+import static vistas.Principal.productos;
 
 public class FrmProducto extends javax.swing.JFrame {
     //WSUsuarios
@@ -84,7 +85,6 @@ public class FrmProducto extends javax.swing.JFrame {
         buttonGroup1.add(radioDisminuir);
         panTipoOperacion.setVisible(false);
         
-        obtenerUltimoId();
         // Actualizas tbl proveedor
         actualizarBusquedaProveedor();
         
@@ -124,6 +124,12 @@ public class FrmProducto extends javax.swing.JFrame {
         cboSucursal.setEnabled(false);
         cboProveedor.setEnabled(false);
         cboCategoriaPro.setEnabled(false);
+        
+        java.util.Date fechaLocal = new Date();
+        jCalFechaIngresoProd.setDateFormatString("d/MM/yyyy");
+        jCalFechaIngresoProd.setDate(fechaLocal);
+        
+        
 //        //Carga HashMap de Provedores
 //        try {
 //            NombreProveedor = BDProveedor.mostrarProveedorHashMap();
@@ -192,33 +198,6 @@ public class FrmProducto extends javax.swing.JFrame {
 //        codProdAnterior = "";
     }
 
-    public void obtenerUltimoId() {
-//        try {
-//            Connection con = BD.getConnection();
-//            Statement stmt = con.createStatement();
-//            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM productos");
-//            int lastID = 0;
-//            while (rs.next()) {
-//                lastID = rs.getInt(1);
-//                boolean sigueBuscando = true;
-//                while (sigueBuscando) {
-//                    ProductoBean pt = BDProducto.buscarProducto("" + (lastID + 1));
-//                    if (pt == null) {
-//                        txtCodigoPro.setText(String.valueOf(lastID + 1));
-//                        sigueBuscando = false;
-//                        break;
-//                    } else {
-//                        lastID = (int) (Math.random() * 1000) + 1;
-//                    }
-//                }
-//            }
-//            rs.close();
-//            stmt.close();
-//            con.close();
-//        } catch (SQLException error) {
-//            JOptionPane.showMessageDialog(null, error.getMessage());
-//        }
-    }
 
     public void limpiarCajaTexto() {
         cboCategoriaPro.setSelectedItem("Seleccionar...");
@@ -234,8 +213,12 @@ public class FrmProducto extends javax.swing.JFrame {
         txtPrecioPublico.setText("");
         txtUtilidad.setText("");
         
-        txtBuscarPro.setText("");
+        java.util.Date fechaLocal = new Date();
+        jCalFechaIngresoProd.setDateFormatString("d/MM/yyyy");
+        jCalFechaIngresoProd.setDate(fechaLocal);
         
+        txtBuscarPro.setText("");
+        txtObserProd.setText("");
         codProdAnterior = "";
     }
 
@@ -245,6 +228,16 @@ public class FrmProducto extends javax.swing.JFrame {
         cboProveedor.setEnabled(b);
         txtCantidadPro.setEditable(b);
         txtDescripcionPro.setEditable(b);
+        
+        txtCodigoPro.setEditable(b);
+        txtMinimoPro.setEditable(b);
+        txtIva.setEditable(b);
+        txtUbicacion.setEditable(b);
+        txtPrecioCosto.setEditable(b);
+        txtPrecioPublico.setEditable(b);
+        txtUtilidad.setEditable(b);
+        txtObserProd.setEditable(b);
+        codProdAnterior = "";        
     }
 
     public void activarBotones(boolean b) {
@@ -423,6 +416,7 @@ public class FrmProducto extends javax.swing.JFrame {
 
         jLabel2.setText("Codigo :");
 
+        txtCodigoPro.setEditable(false);
         txtCodigoPro.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCodigoPro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -479,6 +473,7 @@ public class FrmProducto extends javax.swing.JFrame {
             }
         });
 
+        txtDescripcionPro.setEditable(false);
         txtDescripcionPro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDescripcionProActionPerformed(evt);
@@ -487,6 +482,7 @@ public class FrmProducto extends javax.swing.JFrame {
 
         jLabel15.setText("Mínimo :");
 
+        txtMinimoPro.setEditable(false);
         txtMinimoPro.setText("0");
         txtMinimoPro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -523,6 +519,7 @@ public class FrmProducto extends javax.swing.JFrame {
 
         jLabel3.setText("Precio Costo:");
 
+        txtPrecioCosto.setEditable(false);
         txtPrecioCosto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPrecioCostoActionPerformed(evt);
@@ -533,9 +530,15 @@ public class FrmProducto extends javax.swing.JFrame {
                 txtPrecioCostoFocusLost(evt);
             }
         });
+        txtPrecioCosto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrecioCostoKeyTyped(evt);
+            }
+        });
 
         jLabel5.setText("Precio Público:");
 
+        txtPrecioPublico.setEditable(false);
         txtPrecioPublico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPrecioPublicoActionPerformed(evt);
@@ -585,11 +588,41 @@ public class FrmProducto extends javax.swing.JFrame {
 
         jLabel8.setText("IVA :");
 
+        txtIva.setEditable(false);
+        txtIva.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIvaActionPerformed(evt);
+            }
+        });
+
         jLabel9.setText("Ubicación : ");
+
+        txtUbicacion.setEditable(false);
+        txtUbicacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUbicacionActionPerformed(evt);
+            }
+        });
 
         jLabel10.setText("Sucursal : ");
 
         cboSucursal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar..." }));
+        cboSucursal.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cboSucursalMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                cboSucursalMouseEntered(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                cboSucursalMousePressed(evt);
+            }
+        });
+        cboSucursal.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboSucursalItemStateChanged(evt);
+            }
+        });
         cboSucursal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboSucursalActionPerformed(evt);
@@ -599,6 +632,9 @@ public class FrmProducto extends javax.swing.JFrame {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 cboSucursalKeyReleased(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cboSucursalKeyTyped(evt);
+            }
         });
 
         jLabel12.setText("Fecha Ingreso :");
@@ -607,6 +643,7 @@ public class FrmProducto extends javax.swing.JFrame {
 
         jLabel14.setText("Observaciones : ");
 
+        txtObserProd.setEditable(false);
         txtObserProd.setColumns(20);
         txtObserProd.setRows(5);
         jScrollPane1.setViewportView(txtObserProd);
@@ -622,14 +659,6 @@ public class FrmProducto extends javax.swing.JFrame {
                         .addComponent(panTipoOperacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel4Layout.createSequentialGroup()
                             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addComponent(jLabel5)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jLabel4)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel4Layout.createSequentialGroup()
                                     .addComponent(jLabel6)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -654,14 +683,6 @@ public class FrmProducto extends javax.swing.JFrame {
                                     .addComponent(jLabel9)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(txtUbicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addComponent(jLabel3)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtPrecioCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jLabel12)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jCalFechaIngresoProd, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addComponent(jLabel10)
@@ -674,8 +695,24 @@ public class FrmProducto extends javax.swing.JFrame {
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                                         .addComponent(jLabel7)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtDescripcionPro, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGap(58, 58, 58)))
+                                        .addComponent(txtDescripcionPro, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(txtPrecioCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(17, 17, 17)
+                                    .addComponent(jLabel5)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jLabel12)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jCalFechaIngresoProd, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(8, 8, 8)
+                                    .addComponent(jLabel4)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGap(177, 177, 177)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -714,18 +751,17 @@ public class FrmProducto extends javax.swing.JFrame {
                     .addComponent(jLabel9)
                     .addComponent(txtUbicacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(32, 32, 32)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtPrecioCosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(txtPrecioCosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12))
-                        .addGap(28, 28, 28)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4)
+                        .addComponent(jLabel12))
                     .addComponent(jCalFechaIngresoProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -913,12 +949,10 @@ public class FrmProducto extends javax.swing.JFrame {
         panTipoOperacion.setVisible(false);
         limpiarCajaTexto();
         activarCajaTexto(false);
-        obtenerUltimoId();
         activarBotones(true);
         actualizarBusquedaProveedor();
         cantGlobal = 0;
-        obtenerUltimoId();
-        txtIva.setText("" + datosEmpresaBean.getUtilidad());
+        txtIva.setText("" + Principal.datosSistemaBean.getIvaEmpresa());
     }
     
     public void muestraUtilidad() {
@@ -1291,6 +1325,21 @@ public class FrmProducto extends javax.swing.JFrame {
                 p.setDescripcion(txtDescripcionPro.getText());
                 p.setExistencia(Integer.parseInt(txtCantidadPro.getText()));
                 p.setExistenciaMinima(Integer.parseInt(txtMinimoPro.getText()));
+//                if (jCalFechaIngresoProd.getDate()==null) {
+//                    int dialogResult = JOptionPane.showConfirmDialog(null, "Se guardará la fecha de tu computadora "
+//                            + "como fecha de ingreso del producto ¿estás de acuerdo?");
+//                    if(dialogResult == JOptionPane.YES_OPTION){
+//                        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+//                        JOptionPane.showMessageDialog(null, timeStamp);
+////                        p.setFechaIngreso(new Date());
+//                        p.setFechaIngreso(timeStamp);
+//                    } else {
+//                        return;
+//                    }
+//                } else {
+//                    JOptionPane.showMessageDialog(null,jCalFechaIngresoProd.getDate());
+//                    p.setFechaIngreso(jCalFechaIngresoProd.getDate());
+//                }
                 p.setFechaIngreso(jCalFechaIngresoProd.getDate());
                 p.setIdCategoria(util.buscaIdCat(Principal.categoriasHM, cboCategoriaPro.getSelectedItem().toString()));
                 p.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM, cboProveedor.getSelectedItem().toString()));
@@ -1300,6 +1349,36 @@ public class FrmProducto extends javax.swing.JFrame {
                 p.setPrecioCosto(Double.parseDouble(txtPrecioCosto.getText()));
                 p.setPrecioUnitario(Double.parseDouble(txtPrecioPublico.getText()));
                 p.setUbicacion(txtUbicacion.getText());
+                
+                //huardar producto
+                hiloInventarios = new WSInventarios();
+                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAPRODUCTO");
+                ProductoBean productoInsertado = hiloInventarios.ejecutaWebService(rutaWS,"1"
+                        ,p.getCodigo()
+                        ,p.getDescripcion()
+                        ,"" + p.getPrecioCosto()
+                        ,"" + p.getPrecioUnitario()
+                        ,"" + p.getPorcentajeImpuesto()
+                        ,"" + p.getExistencia()
+                        ,"" + p.getExistenciaMinima()
+                        ,p.getUbicacion()
+                        ,"" + p.getFechaIngreso()
+                        ,"" + p.getIdProveedor()
+                        ,"" + p.getIdCategoria()
+                        ,"" + p.getIdSucursal()
+                        ,""
+                        ,p.getObservaciones());
+                //Carga productos
+                productos = util.getMapProductos();
+                util.llenaMapProductos(productos);
+//                
+                actualizarBusquedaProducto();
+                activarBotones(true);
+                if (productoInsertado != null) {
+                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                }
+                limpiarCajaTexto();
+                cboSucursal.requestFocus(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
             }
@@ -1396,13 +1475,15 @@ public class FrmProducto extends javax.swing.JFrame {
         limpiarCajaTexto();
         activarCajaTexto(true);
         accion = "Guardar";
-        obtenerUltimoId();
         activarBotones(false);
         cboSucursal.requestFocus();
     }//GEN-LAST:event_btnNuevoProActionPerformed
 
     private void txtPrecioPublicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioPublicoActionPerformed
-        btnGuardarPro.requestFocus();
+        double utilidad = Double.parseDouble(txtPrecioCosto.getText());
+        utilidad = Double.parseDouble(txtPrecioPublico.getText()) - utilidad;
+        txtUtilidad.setText("" + String.format("%.2f", utilidad));
+        txtObserProd.requestFocus();
     }//GEN-LAST:event_txtPrecioPublicoActionPerformed
 
     private void txtPrecioCostoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioCostoActionPerformed
@@ -1412,10 +1493,14 @@ public class FrmProducto extends javax.swing.JFrame {
         precioPub = precioPub + (precioPub * (ivaProd/100));
         txtPrecioPublico.setText("" + precioPub);
         //fin calcula precio publico a partir de precio costo
+        double utilidad = Double.parseDouble(txtPrecioCosto.getText());
+        utilidad = Double.parseDouble(txtPrecioPublico.getText()) - utilidad;
+        txtUtilidad.setText("" + String.format("%.2f", utilidad));
+        txtPrecioPublico.requestFocus(true);
     }//GEN-LAST:event_txtPrecioCostoActionPerformed
 
     private void cboProveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboProveedorKeyTyped
-        txtPrecioCosto.requestFocus();
+        txtUbicacion.requestFocus();
     }//GEN-LAST:event_cboProveedorKeyTyped
 
     private void cboProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboProveedorActionPerformed
@@ -1427,6 +1512,7 @@ public class FrmProducto extends javax.swing.JFrame {
             Toolkit.getDefaultToolkit().beep();
             evt.consume();
         }
+        txtMinimoPro.requestFocus(true);
     }//GEN-LAST:event_txtMinimoProKeyTyped
 
     private void txtMinimoProKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMinimoProKeyReleased
@@ -1455,8 +1541,9 @@ public class FrmProducto extends javax.swing.JFrame {
             ////            Toolkit.getDefaultToolkit().beep();
             //            muestraUtilidad();
             //        }
-        cboProveedor.setFocusable(true);
-        cboProveedor.requestFocus();
+        txtIva.requestFocus();
+//        cboProveedor.setFocusable(true);
+//        cboProveedor.requestFocus();
     }//GEN-LAST:event_cboCategoriaProKeyTyped
 
     private void cboCategoriaProKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboCategoriaProKeyPressed
@@ -1464,8 +1551,6 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_cboCategoriaProKeyPressed
 
     private void cboCategoriaProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCategoriaProActionPerformed
-        //        cboProveedor.setFocusable(true);
-        //        cboProveedor.requestFocus();
     }//GEN-LAST:event_cboCategoriaProActionPerformed
 
     private void cboCategoriaProItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboCategoriaProItemStateChanged
@@ -1480,24 +1565,7 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCantidadProKeyTyped
 
     private void txtCantidadProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadProActionPerformed
-        //        if (!txtCantidadPro.getText().equalsIgnoreCase("")) {
-            //            //SUMA LA CANTIDAD ANTERIOR
-            //            txtCantidadPro.setText(""+(Integer.parseInt(txtCantidadPro.getText()) +
-                //                   cantGlobal));
-        //            txtMinimoPro.requestFocus();
-        //        }
-        //
-        //        if (!txtCantidadPro.getText().equalsIgnoreCase("")) {
-            //            if (txtCantidadPro.getText().length()<5) {
-                //                //SUMA LA CANTIDAD ANTERIOR
-                //                txtCantidadPro.setText(""+(Integer.parseInt(txtCantidadPro.getText()) +
-                    //                       cantGlobal));
-            //                txtMinimoPro.requestFocus();
-            //            } else {
-            //                JOptionPane.showMessageDialog(null, "Existencia excesiva");
-            //                txtCantidadPro.setText("" + cantGlobal);
-            //            }
-        //        }
+        txtMinimoPro.setText("");
         txtMinimoPro.requestFocus();
     }//GEN-LAST:event_txtCantidadProActionPerformed
 
@@ -1544,6 +1612,43 @@ public class FrmProducto extends javax.swing.JFrame {
 
     private void cboSucursalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboSucursalKeyReleased
     }//GEN-LAST:event_cboSucursalKeyReleased
+
+    private void cboSucursalKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboSucursalKeyTyped
+//        txtCodigoPro.requestFocus(true);
+    }//GEN-LAST:event_cboSucursalKeyTyped
+
+    private void cboSucursalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboSucursalMouseClicked
+    }//GEN-LAST:event_cboSucursalMouseClicked
+
+    private void cboSucursalMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboSucursalMouseEntered
+    }//GEN-LAST:event_cboSucursalMouseEntered
+
+    private void cboSucursalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboSucursalItemStateChanged
+//        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
+//            Toolkit.getDefaultToolkit().beep();
+//            evt.consume();
+//        }
+//        txtCodigoPro.requestFocus(true);
+    }//GEN-LAST:event_cboSucursalItemStateChanged
+
+    private void cboSucursalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboSucursalMousePressed
+    }//GEN-LAST:event_cboSucursalMousePressed
+
+    private void txtIvaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIvaActionPerformed
+        cboProveedor.requestFocus(true);
+    }//GEN-LAST:event_txtIvaActionPerformed
+
+    private void txtUbicacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUbicacionActionPerformed
+        txtPrecioCosto.requestFocus();
+    }//GEN-LAST:event_txtUbicacionActionPerformed
+
+    private void txtPrecioCostoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioCostoKeyTyped
+        //valida solo numeros
+        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtPrecioCostoKeyTyped
 
     private void actualizarBusquedaProveedor() {
 //        ArrayList<ProveedorBean> result = null;
