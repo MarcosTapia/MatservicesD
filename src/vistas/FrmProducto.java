@@ -124,11 +124,12 @@ public class FrmProducto extends javax.swing.JFrame {
         cboSucursal.setEnabled(false);
         cboProveedor.setEnabled(false);
         cboCategoriaPro.setEnabled(false);
+
+        //cambia formato de fecha a tipo datetime xq asi esta en bd remota
+        jCalFechaIngresoProd.setDate(new Date());
+        jCalFechaIngresoProd.setDateFormatString("yyyy-MM-dd HH:mm:ss");
         
-        java.util.Date fechaLocal = new Date();
-        jCalFechaIngresoProd.setDateFormatString("d/MM/yyyy");
-        jCalFechaIngresoProd.setDate(fechaLocal);
-        
+        txtIdArticulo.setVisible(false);
         
 //        //Carga HashMap de Provedores
 //        try {
@@ -219,6 +220,7 @@ public class FrmProducto extends javax.swing.JFrame {
         
         txtBuscarPro.setText("");
         txtObserProd.setText("");
+        txtIdArticulo.setText("");
         codProdAnterior = "";
     }
 
@@ -295,6 +297,7 @@ public class FrmProducto extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtObserProd = new javax.swing.JTextArea();
+        txtIdArticulo = new javax.swing.JTextField();
         btnNuevoPro = new javax.swing.JButton();
         btnGuardarPro = new javax.swing.JButton();
         btnModificarPro = new javax.swing.JButton();
@@ -714,7 +717,9 @@ public class FrmProducto extends javax.swing.JFrame {
                                     .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGap(177, 177, 177)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel14)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel14)
+                            .addComponent(txtIdArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -766,10 +771,13 @@ public class FrmProducto extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel14)
-                        .addGap(0, 71, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                        .addComponent(txtIdArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)))
                 .addComponent(panTipoOperacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1013,6 +1021,7 @@ public class FrmProducto extends javax.swing.JFrame {
         resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"2");
         ProductoBean p = resultWS.get(0);
 
+        txtIdArticulo.setText("" + p.getIdArticulo());
         txtCodigoPro.setText(p.getCodigo());
         txtDescripcionPro.setText(p.getDescripcion());
         txtCantidadPro.setText("" + p.getExistencia());
@@ -1325,22 +1334,12 @@ public class FrmProducto extends javax.swing.JFrame {
                 p.setDescripcion(txtDescripcionPro.getText());
                 p.setExistencia(Integer.parseInt(txtCantidadPro.getText()));
                 p.setExistenciaMinima(Integer.parseInt(txtMinimoPro.getText()));
-//                if (jCalFechaIngresoProd.getDate()==null) {
-//                    int dialogResult = JOptionPane.showConfirmDialog(null, "Se guardará la fecha de tu computadora "
-//                            + "como fecha de ingreso del producto ¿estás de acuerdo?");
-//                    if(dialogResult == JOptionPane.YES_OPTION){
-//                        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-//                        JOptionPane.showMessageDialog(null, timeStamp);
-////                        p.setFechaIngreso(new Date());
-//                        p.setFechaIngreso(timeStamp);
-//                    } else {
-//                        return;
-//                    }
-//                } else {
-//                    JOptionPane.showMessageDialog(null,jCalFechaIngresoProd.getDate());
-//                    p.setFechaIngreso(jCalFechaIngresoProd.getDate());
-//                }
+
+                jCalFechaIngresoProd.setDateFormatString("yyyy/MM/dd HH:mm:ss");
                 p.setFechaIngreso(jCalFechaIngresoProd.getDate());
+                //cambia formato para enviarla como string a ws
+                String fecha = util.cambisFormatoFecha(p.getFechaIngreso().toLocaleString());
+                
                 p.setIdCategoria(util.buscaIdCat(Principal.categoriasHM, cboCategoriaPro.getSelectedItem().toString()));
                 p.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM, cboProveedor.getSelectedItem().toString()));
                 p.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM, cboSucursal.getSelectedItem().toString()));
@@ -1362,7 +1361,7 @@ public class FrmProducto extends javax.swing.JFrame {
                         ,"" + p.getExistencia()
                         ,"" + p.getExistenciaMinima()
                         ,p.getUbicacion()
-                        ,"" + p.getFechaIngreso()
+                        ,fecha
                         ,"" + p.getIdProveedor()
                         ,"" + p.getIdCategoria()
                         ,"" + p.getIdSucursal()
@@ -1371,7 +1370,6 @@ public class FrmProducto extends javax.swing.JFrame {
                 //Carga productos
                 productos = util.getMapProductos();
                 util.llenaMapProductos(productos);
-//                
                 actualizarBusquedaProducto();
                 activarBotones(true);
                 if (productoInsertado != null) {
@@ -1384,88 +1382,71 @@ public class FrmProducto extends javax.swing.JFrame {
             }
         }
         if (accion.equalsIgnoreCase("Actualizar")) {
-//            //valida que todo este lleno
-//            if (txtCantidadPro.getText().compareTo("") != 0
-//                && txtDescripcionPro.getText().compareTo("") != 0
-//                && txtMinimoPro.getText().compareTo("") != 0
-//                && !cboCategoriaPro.getSelectedItem().toString().
-//                equalsIgnoreCase("Seleccionar...")
-//                && (radioAumentar.isSelected() || radioDisminuir.isSelected())
-//            ) {
-//                ProductoBean p,prodBuscado;
-//                try {
-//                    p = BDProducto.buscarProducto(codProdAnterior);
-//                    int cantOriginal = p.getCantidad();
-//                    existOriginal.setText("Existencia Original: " + cantOriginal);
-//                    if (radioAumentar.isSelected()) {
-//                        cantOriginal = cantOriginal + Integer.parseInt(txtCantidadPro.getText());
-//                    }
-//                    if (radioDisminuir.isSelected()) {
-//                        cantOriginal = cantOriginal - Integer.parseInt(txtCantidadPro.getText());
-//                    }
-//                    if (p==null) {
-//                        JOptionPane.showMessageDialog(null, "[Debes de "
-//                            + "seleccionar un producto, éste código no "
-//                            + "existe]");
-//                        return;
-//                    }
-//                    p.setCodigo(txtCodigoPro.getText());
-//                    p.setDescripcion(txtDescripcionPro.getText());
-//                    p.setCantidad(cantOriginal);
-//                    CategoriaBean c = BDCategoria.buscarCategoriaDescripcion(
-//                        (String) cboCategoriaPro.getSelectedItem());
-//                    p.setCategoria(c);
-//                    p.setFormula("");
-//                    p.setUbicacion("");
-//                    p.setObservaciones("");
-//                    p.setFactura("");
-//                    p.setMinimo(Integer.parseInt(txtMinimoPro.getText()));
-//                    p.setPrecioCosto(Double.parseDouble(txtPrecioCosto.getText()));
-//                    p.setPrecioPublico(Double.parseDouble(txtPrecioPublico.getText()));
-//                    ProveedorBean prov = BDProveedor.buscarProveedorNombre(
-//                        (String) cboProveedor.getSelectedItem());
-//                    p.setCodProveedor(prov.getnProvCodigo());
-//
-//                    if (codProdAnterior.equalsIgnoreCase(txtCodigoPro.getText())) {
-//                        // actualiza normal
-//                        if (BDProducto.actualizarProducto(p)) {
-//                            JOptionPane.showMessageDialog(null, " [ Datos Actualizados ]");
-//                            actualizarBusquedaProducto();
-//                        } else {
-//                            JOptionPane.showMessageDialog(null, " [ Error al actualizar el producto ]");
-//                        }
-//                    } else {
-//                        JOptionPane.showMessageDialog(null, " [ Error revisa que concuerden los productos ]");
-//                    }
-//                    //                    else {
-//                        //                        //checar que no exista un producto con el mismo codigo
-//                        //                        //JOptionPane.showMessageDialog(null, "nuevo codigo : "+txtCodigoPro.getText());
-//                        //                        prodBuscado = BDProducto.buscarProducto(txtCodigoPro.getText());
-//                        //                        if (prodBuscado != null) {
-//                            //                            JOptionPane.showMessageDialog(null, "El producto ya existe");
-//                            //                            return;
-//                            //                        }
-//                        //                        // borra anterior y crea nuevo
-//                        //                        //borra el anterior
-//                        //                        eliminarProductoPorCodigo(codProdAnterior);
-//                        //                        //guarda nuevo producto
-//                        //                        try {
-//                            //                            BDProducto.insertarProducto(p);
-//                            //                            JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
-//                            //                            actualizarBusquedaProducto();
-//                            //                        } catch (SQLException e) {
-//                            //                            JOptionPane.showMessageDialog(null, e.getMessage());
-//                            //                        }
-//                        //
-//                        //                        //fin guarda nuevo producto
-//                        //                    }
-//                } catch (SQLException e) {
-//                    JOptionPane.showMessageDialog(null, "Error BD: " + e.getMessage());
-//                }
-//            } else {
-//                JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
-//                return;
-//            }
+            if (txtCantidadPro.getText().compareTo("") != 0
+                && txtIdArticulo.getText().compareTo("") != 0
+                && txtCodigoPro.getText().compareTo("") != 0
+                && txtDescripcionPro.getText().compareTo("") != 0
+                && txtMinimoPro.getText().compareTo("") != 0 
+                && !cboCategoriaPro.getSelectedItem().toString().
+                equalsIgnoreCase("Seleccionar...")
+                && !cboSucursal.getSelectedItem().toString().
+                equalsIgnoreCase("Seleccionar...")
+                && !cboProveedor.getSelectedItem().toString().
+                equalsIgnoreCase("Seleccionar...")
+            ) {
+                ProductoBean p = new ProductoBean();
+                p.setIdArticulo(Integer.parseInt(txtIdArticulo.getText()));
+                p.setCodigo(txtCodigoPro.getText());
+                p.setDescripcion(txtDescripcionPro.getText());
+                p.setExistencia(Integer.parseInt(txtCantidadPro.getText()));
+                p.setExistenciaMinima(Integer.parseInt(txtMinimoPro.getText()));
+
+                jCalFechaIngresoProd.setDateFormatString("yyyy/MM/dd HH:mm:ss");
+                p.setFechaIngreso(jCalFechaIngresoProd.getDate());
+                //cambia formato para enviarla como string a ws
+                String fecha = util.cambisFormatoFecha(p.getFechaIngreso().toLocaleString());
+                
+                p.setIdCategoria(util.buscaIdCat(Principal.categoriasHM, cboCategoriaPro.getSelectedItem().toString()));
+                p.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM, cboProveedor.getSelectedItem().toString()));
+                p.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM, cboSucursal.getSelectedItem().toString()));
+                p.setObservaciones(txtObserProd.getText());
+                p.setPorcentajeImpuesto(Double.parseDouble(txtIva.getText()));
+                p.setPrecioCosto(Double.parseDouble(txtPrecioCosto.getText()));
+                p.setPrecioUnitario(Double.parseDouble(txtPrecioPublico.getText()));
+                p.setUbicacion(txtUbicacion.getText());
+                
+                //huardar producto
+                hiloInventarios = new WSInventarios();
+                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAPRODUCTO");
+                ProductoBean productoInsertado = hiloInventarios.ejecutaWebService(rutaWS,"2"
+                        ,"" + p.getIdArticulo()
+                        ,p.getCodigo()
+                        ,p.getDescripcion()
+                        ,"" + p.getPrecioCosto()
+                        ,"" + p.getPrecioUnitario()
+                        ,"" + p.getPorcentajeImpuesto()
+                        ,"" + p.getExistencia()
+                        ,"" + p.getExistenciaMinima()
+                        ,p.getUbicacion()
+                        ,fecha
+                        ,"" + p.getIdProveedor()
+                        ,"" + p.getIdCategoria()
+                        ,"" + p.getIdSucursal()
+                        ,""
+                        ,p.getObservaciones());
+                //Carga productos
+                productos = util.getMapProductos();
+                util.llenaMapProductos(productos);
+                actualizarBusquedaProducto();
+                activarBotones(true);
+                if (productoInsertado != null) {
+                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                }
+                limpiarCajaTexto();
+                cboSucursal.requestFocus(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
+            }
         }
         borrar();
     }//GEN-LAST:event_btnGuardarProActionPerformed
@@ -1903,6 +1884,7 @@ public class FrmProducto extends javax.swing.JFrame {
     private javax.swing.JTextField txtCantidadPro;
     private javax.swing.JTextField txtCodigoPro;
     private javax.swing.JTextField txtDescripcionPro;
+    private javax.swing.JTextField txtIdArticulo;
     private javax.swing.JTextField txtIva;
     private javax.swing.JTextField txtMinimoPro;
     private javax.swing.JTextArea txtObserProd;

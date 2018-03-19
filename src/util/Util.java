@@ -33,6 +33,29 @@ public class Util {
     private Map<String,String> productosHM = new HashMap();
     
     /**
+     * Metodo para convertir formato de fecha 
+     * de dd/mm/yyyy hh:mm:seg am(pm) a 
+     * yyyy-mm-seg hh:min:seg"
+     * @param fecha La fecha en string
+     * @return El string de fecha
+     */
+    public String cambisFormatoFecha(String fecha) {
+        String dia = fecha.substring(0, 2);
+        String mes = fecha.substring(3, 5);
+        String anio = fecha.substring(6, 10);
+
+        String hr = fecha.substring(11, 13);
+        String min = fecha.substring(14, 16);
+        String seg = fecha.substring(17, 19);
+
+        fecha =  anio + "-" + 
+                mes + "-" + dia + " " +
+                hr + ":" + min + ":" + seg;
+        return fecha;
+    }
+    
+    
+    /**
      * Metodo para convertir fecha a string "dd/MM/yyyy"
      * @param fecha La fecha en date dd/MM/yyyy
      * @return El string de fecha
