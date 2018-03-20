@@ -52,7 +52,7 @@ public class FrmProducto extends javax.swing.JFrame {
     WSInventarios hiloInventarios;
     WSInventariosList hiloInventariosList;
     //Fin WS
-    
+    double stock = 0;    
     
     
     String codProdAnterior = "";
@@ -284,6 +284,7 @@ public class FrmProducto extends javax.swing.JFrame {
         radioAumentar = new javax.swing.JRadioButton();
         radioDisminuir = new javax.swing.JRadioButton();
         existOriginal = new javax.swing.JLabel();
+        btnActualizaInvent = new javax.swing.JButton();
         txtUtilidad = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -363,6 +364,8 @@ public class FrmProducto extends javax.swing.JFrame {
                 "Codigo", "Descripción"
             }
         ));
+        jtProducto.setRowSelectionAllowed(true);
+        jtProducto.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jtProducto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jtProductoMouseClicked(evt);
@@ -557,8 +560,17 @@ public class FrmProducto extends javax.swing.JFrame {
 
         existOriginal.setBackground(new java.awt.Color(255, 153, 153));
         existOriginal.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        existOriginal.setText("Existencia Original: ");
+        existOriginal.setText("Existencia Actual: ");
         existOriginal.setOpaque(true);
+
+        btnActualizaInvent.setBackground(new java.awt.Color(153, 153, 153));
+        btnActualizaInvent.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnActualizaInvent.setText("Actualizar Existencia");
+        btnActualizaInvent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizaInventActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panTipoOperacionLayout = new javax.swing.GroupLayout(panTipoOperacion);
         panTipoOperacion.setLayout(panTipoOperacionLayout);
@@ -568,7 +580,10 @@ public class FrmProducto extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panTipoOperacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(radioAumentar)
-                    .addComponent(radioDisminuir)
+                    .addGroup(panTipoOperacionLayout.createSequentialGroup()
+                        .addComponent(radioDisminuir)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnActualizaInvent, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(existOriginal))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -577,8 +592,13 @@ public class FrmProducto extends javax.swing.JFrame {
             .addGroup(panTipoOperacionLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(radioAumentar)
-                .addGap(18, 18, 18)
-                .addComponent(radioDisminuir)
+                .addGroup(panTipoOperacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panTipoOperacionLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(radioDisminuir))
+                    .addGroup(panTipoOperacionLayout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(btnActualizaInvent)))
                 .addGap(37, 37, 37)
                 .addComponent(existOriginal))
         );
@@ -710,11 +730,11 @@ public class FrmProducto extends javax.swing.JFrame {
                                 .addGroup(jPanel4Layout.createSequentialGroup()
                                     .addComponent(jLabel12)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jCalFechaIngresoProd, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(8, 8, 8)
+                                    .addComponent(jCalFechaIngresoProd, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(jLabel4)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGap(177, 177, 177)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1036,7 +1056,13 @@ public class FrmProducto extends javax.swing.JFrame {
         double ganancia = Double.parseDouble(txtPrecioPublico.getText());
         ganancia = ganancia - Double.parseDouble(txtPrecioCosto.getText());
         txtUtilidad.setText(String.format("%.2f", ganancia));
-        //falta
+        jCalFechaIngresoProd.setDate(null);
+        jCalFechaIngresoProd.setDate(p.getFechaIngreso());
+        txtObserProd.setText(p.getObservaciones());
+        existOriginal.setText("Existencia Actual: " + 
+                Double.parseDouble(txtCantidadPro.getText()));
+        stock = Double.parseDouble(txtCantidadPro.getText());
+        jtProducto.requestFocus(true);
     }
     
     private void jtProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtProductoMouseClicked
@@ -1258,14 +1284,15 @@ public class FrmProducto extends javax.swing.JFrame {
     }
     
     private void jtProductoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtProductoKeyTyped
-//        buscaDetalleProducto();
     }//GEN-LAST:event_jtProductoKeyTyped
 
     private void jtProductoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtProductoKeyPressed
     }//GEN-LAST:event_jtProductoKeyPressed
 
     private void jtProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtProductoKeyReleased
-        buscaDetalleProducto();
+        if (evt.getKeyCode()==KeyEvent.VK_DOWN || evt.getKeyCode()==KeyEvent.VK_UP) {
+             buscaDetalleProducto();
+        }
     }//GEN-LAST:event_jtProductoKeyReleased
 
     private void btnEliminarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProActionPerformed
@@ -1287,27 +1314,26 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarProActionPerformed
 
     private void btnModificarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarProActionPerformed
-        accion = "Actualizar";
-        panTipoOperacion.setVisible(true);
-        activarCajaTexto(true);
-        btnNuevoPro.setEnabled(false);
-        btnGuardarPro.setEnabled(true);
-        btnModificarPro.setEnabled(false);
-        btnCancelarPro.setEnabled(true);
-        btnMostrarPro.setEnabled(false);
-        txtDescripcionPro.requestFocus();
+        if (!txtIdArticulo.getText().equalsIgnoreCase("")) {
+            accion = "Actualizar";
+            panTipoOperacion.setVisible(true);
+            activarCajaTexto(true);
+            btnNuevoPro.setEnabled(false);
+            btnGuardarPro.setEnabled(true);
+            btnModificarPro.setEnabled(false);
+            btnCancelarPro.setEnabled(true);
+            btnMostrarPro.setEnabled(false);
+            existOriginal.setText("Existencia Actual: " + 
+                    Double.parseDouble(txtCantidadPro.getText()));
+            JOptionPane.showMessageDialog(null, "Presiona el botón Guardar "
+                    + "cuando tus cambios estén listos");
+        } else {
+            JOptionPane.showMessageDialog(null, "Debes seleccionar un producto");
+            return;
+        }
     }//GEN-LAST:event_btnModificarProActionPerformed
 
     private void btnGuardarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProActionPerformed
-//        if (Double.parseDouble(txtCantidadPro.getText())>9999 ||
-//            Double.parseDouble(txtMinimoPro.getText())>9999) {
-//            JOptionPane.showMessageDialog(null, "Existencia o mínimo inválidos");
-//            txtCantidadPro.setText("");
-//            txtMinimoPro.setText("0");
-//            txtCantidadPro.requestFocus();
-//            return;
-//        }
-        
         if (accion.equalsIgnoreCase("Guardar")) {
             if (txtCantidadPro.getText().compareTo("") != 0
                 && txtCodigoPro.getText().compareTo("") != 0
@@ -1332,8 +1358,8 @@ public class FrmProducto extends javax.swing.JFrame {
                 ProductoBean p = new ProductoBean();
                 p.setCodigo(txtCodigoPro.getText());
                 p.setDescripcion(txtDescripcionPro.getText());
-                p.setExistencia(Integer.parseInt(txtCantidadPro.getText()));
-                p.setExistenciaMinima(Integer.parseInt(txtMinimoPro.getText()));
+                p.setExistencia(Double.parseDouble(txtCantidadPro.getText()));
+                p.setExistenciaMinima(Double.parseDouble(txtMinimoPro.getText()));
 
                 jCalFechaIngresoProd.setDateFormatString("yyyy/MM/dd HH:mm:ss");
                 p.setFechaIngreso(jCalFechaIngresoProd.getDate());
@@ -1398,9 +1424,9 @@ public class FrmProducto extends javax.swing.JFrame {
                 p.setIdArticulo(Integer.parseInt(txtIdArticulo.getText()));
                 p.setCodigo(txtCodigoPro.getText());
                 p.setDescripcion(txtDescripcionPro.getText());
-                p.setExistencia(Integer.parseInt(txtCantidadPro.getText()));
-                p.setExistenciaMinima(Integer.parseInt(txtMinimoPro.getText()));
-
+                p.setExistencia(Double.parseDouble(txtCantidadPro.getText()));
+                p.setExistenciaMinima(Double.parseDouble(txtMinimoPro.getText()));
+                existOriginal.setText("Existencia Actual: " + p.getExistencia());
                 jCalFechaIngresoProd.setDateFormatString("yyyy/MM/dd HH:mm:ss");
                 p.setFechaIngreso(jCalFechaIngresoProd.getDate());
                 //cambia formato para enviarla como string a ws
@@ -1417,7 +1443,7 @@ public class FrmProducto extends javax.swing.JFrame {
                 
                 //huardar producto
                 hiloInventarios = new WSInventarios();
-                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAPRODUCTO");
+                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICAPRODUCTO");
                 ProductoBean productoInsertado = hiloInventarios.ejecutaWebService(rutaWS,"2"
                         ,"" + p.getIdArticulo()
                         ,p.getCodigo()
@@ -1631,6 +1657,31 @@ public class FrmProducto extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtPrecioCostoKeyTyped
 
+    private void btnActualizaInventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizaInventActionPerformed
+        int dialogResult = -2;
+        if (radioAumentar.isSelected()) {
+            dialogResult = JOptionPane.showConfirmDialog(null, 
+                    "¿Realmente deseas aumentar " + 
+                    txtCantidadPro.getText() + " al stock?");
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                stock = stock + Double.parseDouble(txtCantidadPro.getText());
+                existOriginal.setText("Existencia Actual: " + stock);
+                txtCantidadPro.setText("" + stock);
+            } 
+        } else {
+            if (radioDisminuir.isSelected()) {
+                dialogResult = JOptionPane.showConfirmDialog(null, 
+                        "¿Realmente deseas disminuir " + 
+                        txtCantidadPro.getText() + " al stock?");
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    stock = stock - Double.parseDouble(txtCantidadPro.getText());
+                    existOriginal.setText("Existencia Actual: " + stock);
+                    txtCantidadPro.setText("" + stock);
+                } 
+            }
+        }
+    }//GEN-LAST:event_btnActualizaInventActionPerformed
+
     private void actualizarBusquedaProveedor() {
 //        ArrayList<ProveedorBean> result = null;
 //        try {
@@ -1839,6 +1890,7 @@ public class FrmProducto extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActualizaInvent;
     private javax.swing.JButton btnCancelarPro;
     private javax.swing.JButton btnEliminarPro;
     private javax.swing.JButton btnGuardarPro;

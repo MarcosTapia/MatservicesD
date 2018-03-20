@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import vistas.Ingreso;
 import vistas.Principal;
 
@@ -83,6 +85,24 @@ public class Util {
                 }
         }
         return ret;
+    }
+    
+    /**
+     * Metodo para convertir string a fecha datetime
+     * @param fecha La fecha en forma de string yyyy-mm-seg hh:min:seg
+     * @return El objeto de fecha
+    */
+    public Date stringToDateTime(String fecha) {
+        SimpleDateFormat sdf1 = new SimpleDateFormat();
+        sdf1.applyPattern("yyyy-MM-dd HH:mm:ss");
+        Date date = null;    
+        try{    
+            date = sdf1.parse(fecha);
+            String string=sdf1.format(date);
+        } catch (ParseException ex) {
+            date = null;
+        }
+        return date;
     }
 
     //********* SUCURSALES
