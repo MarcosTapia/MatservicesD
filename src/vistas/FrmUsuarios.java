@@ -823,12 +823,12 @@ public class FrmUsuarios extends javax.swing.JFrame {
                         ,p.getTelefono_casa()
                         ,p.getTelefono_celular()
                         ,"" + p.getIdSucursal());
-                actualizarBusqueda();
-                activarBotones(true);
                 if (usuarioInsertado != null) {
                     JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                    actualizarBusqueda();
+                    activarBotones(true);
+                    limpiarCajaTexto();
                 }
-                limpiarCajaTexto();
             } else {
                 JOptionPane.showMessageDialog(null, "Llene Todos Los "
                         + "Campos..!!");
@@ -911,10 +911,10 @@ public class FrmUsuarios extends javax.swing.JFrame {
                         ,"" + p.getIdSucursal());
                 if (usuarioModificar != null) {
                     JOptionPane.showMessageDialog(null, " [ Datos Actualizados ]");
+                    limpiarCajaTexto();
+                    actualizarBusqueda();
+                    activarBotones(true);
                 }
-                limpiarCajaTexto();
-                actualizarBusqueda();
-                activarBotones(true);
             } else {
                 JOptionPane.showMessageDialog(null, "[[ Debes seleccionar un "
                         + "registro para actualizar ]]");
@@ -1021,12 +1021,14 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 String rutaWS = constantes.getProperty("IP") + constantes.getProperty("ELIMINAUSUARIO");
                 UsuarioBean usuarioEliminar = hiloUsuarios.ejecutaWebService(rutaWS,"5"
                         ,txtCodigoUsuario.getText().trim());
-                limpiarCajaTexto();
-                actualizarBusqueda();
-                activarBotones(true);
                 if (usuarioEliminar != null) {
                     JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+                    limpiarCajaTexto();
+                    actualizarBusqueda();
+                    activarBotones(true);
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "Selecciona el usuario para eliminar");
             }
         }
     }//GEN-LAST:event_btnEliminarUsuarioActionPerformed

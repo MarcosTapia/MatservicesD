@@ -165,7 +165,6 @@
                         <Column editable="true" title="Descripci&#xf3;n" type="java.lang.Object"/>
                       </Table>
                     </Property>
-                    <Property name="rowSelectionAllowed" type="boolean" value="true"/>
                     <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
                       <JTableSelectionModel selectionMode="0"/>
                     </Property>
@@ -575,9 +574,10 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="radioNinguno" min="-2" max="-2" attributes="0"/>
                                   <Component id="radioAumentar" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="radioDisminuir" min="-2" max="-2" attributes="0"/>
@@ -595,17 +595,14 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="radioAumentar" min="-2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="radioDisminuir" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                                      <Component id="btnActualizaInvent" min="-2" max="-2" attributes="0"/>
-                                  </Group>
+                              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="btnActualizaInvent" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="radioDisminuir" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="radioNinguno" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                               <Component id="existOriginal" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -648,6 +645,11 @@
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnActualizaInventActionPerformed"/>
                       </Events>
+                    </Component>
+                    <Component class="javax.swing.JRadioButton" name="radioNinguno">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Ninguno"/>
+                      </Properties>
                     </Component>
                   </SubComponents>
                 </Container>

@@ -38,6 +38,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
 import javax.swing.UIManager;
 import javax.swing.table.TableColumn;
 import util.Util;
@@ -83,6 +84,7 @@ public class FrmProducto extends javax.swing.JFrame {
         
         buttonGroup1.add(radioAumentar);
         buttonGroup1.add(radioDisminuir);
+        buttonGroup1.add(radioNinguno);
         panTipoOperacion.setVisible(false);
         
         // Actualizas tbl proveedor
@@ -222,6 +224,7 @@ public class FrmProducto extends javax.swing.JFrame {
         txtObserProd.setText("");
         txtIdArticulo.setText("");
         codProdAnterior = "";
+        cboSucursal.requestFocus(true);
     }
 
     public void activarCajaTexto(boolean b) {
@@ -285,6 +288,7 @@ public class FrmProducto extends javax.swing.JFrame {
         radioDisminuir = new javax.swing.JRadioButton();
         existOriginal = new javax.swing.JLabel();
         btnActualizaInvent = new javax.swing.JButton();
+        radioNinguno = new javax.swing.JRadioButton();
         txtUtilidad = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -364,7 +368,6 @@ public class FrmProducto extends javax.swing.JFrame {
                 "Codigo", "Descripción"
             }
         ));
-        jtProducto.setRowSelectionAllowed(true);
         jtProducto.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jtProducto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -572,6 +575,8 @@ public class FrmProducto extends javax.swing.JFrame {
             }
         });
 
+        radioNinguno.setText("Ninguno");
+
         javax.swing.GroupLayout panTipoOperacionLayout = new javax.swing.GroupLayout(panTipoOperacion);
         panTipoOperacion.setLayout(panTipoOperacionLayout);
         panTipoOperacionLayout.setHorizontalGroup(
@@ -579,6 +584,7 @@ public class FrmProducto extends javax.swing.JFrame {
             .addGroup(panTipoOperacionLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panTipoOperacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(radioNinguno)
                     .addComponent(radioAumentar)
                     .addGroup(panTipoOperacionLayout.createSequentialGroup()
                         .addComponent(radioDisminuir)
@@ -592,14 +598,13 @@ public class FrmProducto extends javax.swing.JFrame {
             .addGroup(panTipoOperacionLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(radioAumentar)
-                .addGroup(panTipoOperacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panTipoOperacionLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(radioDisminuir))
-                    .addGroup(panTipoOperacionLayout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(btnActualizaInvent)))
-                .addGap(37, 37, 37)
+                .addGap(3, 3, 3)
+                .addGroup(panTipoOperacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnActualizaInvent)
+                    .addComponent(radioDisminuir))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(radioNinguno)
+                .addGap(25, 25, 25)
                 .addComponent(existOriginal))
         );
 
@@ -1034,11 +1039,11 @@ public class FrmProducto extends javax.swing.JFrame {
     private void buscaDetalleProducto() {
         ArrayList<ProductoBean> resultWS = null;
         hiloInventariosList = new WSInventariosList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETINVENTARIOBUSQUEDACODIGO") 
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("OBTIENEPRODUCTOPORID") 
                 + String.valueOf(
                         String.valueOf(jtProducto.getModel().getValueAt(
                             jtProducto.getSelectedRow(),0)));
-        resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"2");
+        resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"5");
         ProductoBean p = resultWS.get(0);
 
         txtIdArticulo.setText("" + p.getIdArticulo());
@@ -1186,24 +1191,32 @@ public class FrmProducto extends javax.swing.JFrame {
 //    }
     
     private void eliminarProducto() {
-        ProductoBean p;
-        try {
-            p = BDProducto.buscarProducto(txtCodigoPro.getText());
-            if (p==null) {
-                JOptionPane.showMessageDialog(null, " [ Selecciona un producto "
-                        + "de la tabla de productos ]");
-                return;
-            }
-            if (BDProducto.eliminarProducto(p)) {
-                JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
-                actualizarBusquedaProducto();
-                borrar();
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
+        if(dialogResult == JOptionPane.YES_OPTION){
+            if (txtIdArticulo.getText().compareTo("") != 0) {
+                hiloInventarios = new WSInventarios();
+                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("ELIMINAPRODUCTO");
+                ProductoBean productoEliminar = hiloInventarios.ejecutaWebService(rutaWS,"3"
+                        ,txtIdArticulo.getText().trim());
+                if (productoEliminar != null) {
+                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+                    //Carga productos
+                    productos = util.getMapProductos();
+                    util.llenaMapProductos(productos);
+                    limpiarCajaTexto();
+                    actualizarBusquedaProducto();
+                    activarBotones(true);
+                } else {
+                    JOptionPane optionPane = new JOptionPane("No es posible eliminar el "
+                            + "producto", JOptionPane.ERROR_MESSAGE);    
+                    JDialog dialog = optionPane.createDialog("Error");
+                    dialog.setAlwaysOnTop(true);
+                    dialog.setVisible(true);                    
+                }
             } else {
-                JOptionPane.showMessageDialog(null, " [ Error al eliminar registro ]");
+                JOptionPane.showMessageDialog(null, "No hay producto para eliminar");
             }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error BD: " + e.getMessage());
-        }        
+        }
     }
     
     private void eliminarProductoPorCodigo(String codProdAnterior) {
@@ -1316,6 +1329,7 @@ public class FrmProducto extends javax.swing.JFrame {
     private void btnModificarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarProActionPerformed
         if (!txtIdArticulo.getText().equalsIgnoreCase("")) {
             accion = "Actualizar";
+            btnActualizaInvent.setEnabled(true);
             panTipoOperacion.setVisible(true);
             activarCajaTexto(true);
             btnNuevoPro.setEnabled(false);
@@ -1393,16 +1407,16 @@ public class FrmProducto extends javax.swing.JFrame {
                         ,"" + p.getIdSucursal()
                         ,""
                         ,p.getObservaciones());
-                //Carga productos
-                productos = util.getMapProductos();
-                util.llenaMapProductos(productos);
-                actualizarBusquedaProducto();
-                activarBotones(true);
                 if (productoInsertado != null) {
                     JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                    //Carga productos
+                    productos = util.getMapProductos();
+                    util.llenaMapProductos(productos);
+                    actualizarBusquedaProducto();
+                    activarBotones(true);
+                    limpiarCajaTexto();
+                    cboSucursal.requestFocus(true);
                 }
-                limpiarCajaTexto();
-                cboSucursal.requestFocus(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
             }
@@ -1420,6 +1434,15 @@ public class FrmProducto extends javax.swing.JFrame {
                 && !cboProveedor.getSelectedItem().toString().
                 equalsIgnoreCase("Seleccionar...")
             ) {
+                //Verifica que ya se haya actualizado el stock
+                if (btnActualizaInvent.isEnabled()) {
+                    JOptionPane.showMessageDialog(null, "Actualiza tu inventario"
+                            + " antes de Guardar");
+                    return;
+                }
+                
+                //Fin Verifica que ya se haya actualizado el stock
+                
                 ProductoBean p = new ProductoBean();
                 p.setIdArticulo(Integer.parseInt(txtIdArticulo.getText()));
                 p.setCodigo(txtCodigoPro.getText());
@@ -1460,21 +1483,20 @@ public class FrmProducto extends javax.swing.JFrame {
                         ,"" + p.getIdSucursal()
                         ,""
                         ,p.getObservaciones());
-                //Carga productos
-                productos = util.getMapProductos();
-                util.llenaMapProductos(productos);
-                actualizarBusquedaProducto();
-                activarBotones(true);
                 if (productoInsertado != null) {
-                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                    JOptionPane.showMessageDialog(null, "[ Registro Actualizado ]");
+                    //Carga productos
+                    productos = util.getMapProductos();
+                    util.llenaMapProductos(productos);
+                    actualizarBusquedaProducto();
+                    activarBotones(true);
+                    limpiarCajaTexto();
+                    cboSucursal.requestFocus(true);
                 }
-                limpiarCajaTexto();
-                cboSucursal.requestFocus(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
             }
         }
-        borrar();
     }//GEN-LAST:event_btnGuardarProActionPerformed
 
     private void btnNuevoProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProActionPerformed
@@ -1572,7 +1594,6 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCantidadProKeyTyped
 
     private void txtCantidadProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadProActionPerformed
-        txtMinimoPro.setText("");
         txtMinimoPro.requestFocus();
     }//GEN-LAST:event_txtCantidadProActionPerformed
 
@@ -1667,6 +1688,9 @@ public class FrmProducto extends javax.swing.JFrame {
                 stock = stock + Double.parseDouble(txtCantidadPro.getText());
                 existOriginal.setText("Existencia Actual: " + stock);
                 txtCantidadPro.setText("" + stock);
+                btnActualizaInvent.setEnabled(false);
+                JOptionPane.showMessageDialog(null, "Presiona el botón Guardar"
+                        + " para registrar los cambios");
             } 
         } else {
             if (radioDisminuir.isSelected()) {
@@ -1677,7 +1701,15 @@ public class FrmProducto extends javax.swing.JFrame {
                     stock = stock - Double.parseDouble(txtCantidadPro.getText());
                     existOriginal.setText("Existencia Actual: " + stock);
                     txtCantidadPro.setText("" + stock);
+                    btnActualizaInvent.setEnabled(false);
+                    JOptionPane.showMessageDialog(null, "Presiona el botón Guardar"
+                            + " para registrar los cambios");
                 } 
+            }
+            if (radioNinguno.isSelected()) {
+                btnActualizaInvent.setEnabled(false);
+                JOptionPane.showMessageDialog(null, "Presiona el botón Guardar"
+                        + " para registrar los cambios");
             }
         }
     }//GEN-LAST:event_btnActualizaInventActionPerformed
@@ -1769,22 +1801,23 @@ public class FrmProducto extends javax.swing.JFrame {
 
     //Para Tabla Productos
     public void recargarTableProductos(ArrayList<ProductoBean> list) {
-        Object[][] datos = new Object[list.size()][6];
+        Object[][] datos = new Object[list.size()][7];
         int i = 0;
         for (ProductoBean p : list) {
-            datos[i][0] = p.getCodigo();
-            datos[i][1] = p.getDescripcion();
-            datos[i][2] = p.getPrecioCosto();
-            datos[i][3] = p.getPrecioUnitario();
-            datos[i][4] = p.getExistencia();
-            datos[i][5] = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" + p.getIdSucursal());
+            datos[i][0] = p.getIdArticulo();
+            datos[i][1] = p.getCodigo();
+            datos[i][2] = p.getDescripcion();
+            datos[i][3] = p.getPrecioCosto();
+            datos[i][4] = p.getPrecioUnitario();
+            datos[i][5] = p.getExistencia();
+            datos[i][6] = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" + p.getIdSucursal());
             NombreProducto.put(p.getCodigo(), p.getDescripcion());
             i++;
         }
         jtProducto.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
-                    "CODIGO", "DESCRIPCIÓN", "$ COSTO", "$ PÚBLICO", "EXIST.", "SUCURSAL"
+                    "ID", "CODIGO", "DESCRIPCIÓN", "$ COSTO", "$ PÚBLICO", "EXIST.", "SUCURSAL"
                 }) {
 
             @Override
@@ -1792,6 +1825,8 @@ public class FrmProducto extends javax.swing.JFrame {
                 return false;
             }
         });
+        jtProducto.getColumnModel().getColumn(0).setPreferredWidth(0);
+        jtProducto.getColumnModel().getColumn(0).setMaxWidth(0);
     } 
     
 //    public void recargarTableProductosProveedoresCostos(ArrayList
@@ -1932,6 +1967,7 @@ public class FrmProducto extends javax.swing.JFrame {
     private javax.swing.JPanel panTipoOperacion;
     private javax.swing.JRadioButton radioAumentar;
     private javax.swing.JRadioButton radioDisminuir;
+    private javax.swing.JRadioButton radioNinguno;
     private javax.swing.JTextField txtBuscarPro;
     private javax.swing.JTextField txtCantidadPro;
     private javax.swing.JTextField txtCodigoPro;
