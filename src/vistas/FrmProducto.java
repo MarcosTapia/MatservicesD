@@ -1318,7 +1318,10 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirProActionPerformed
 
     private void btnMostrarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarProActionPerformed
-        JDListaProducto jdListaP = new JDListaProducto(this,true);
+        JDListaProducto jdListaP = new JDListaProducto(this,true
+                , Principal.sucursalesHM
+                , Principal.categoriasHM
+                , Principal.proveedoresHM);
         jdListaP.setVisible(true);
     }//GEN-LAST:event_btnMostrarProActionPerformed
 

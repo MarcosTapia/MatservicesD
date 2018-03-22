@@ -1005,7 +1005,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
     }//GEN-LAST:event_txtUserKeyTyped
 
     private void btnMostrarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarPerActionPerformed
-        JDListaUsuario jdListaP = new JDListaUsuario(this, true);
+        JDListaUsuario jdListaP = new JDListaUsuario(this, true,Principal.sucursalesHM);
         jdListaP.setVisible(true);
     }//GEN-LAST:event_btnMostrarPerActionPerformed
 

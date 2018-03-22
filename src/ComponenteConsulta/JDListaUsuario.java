@@ -10,16 +10,19 @@ import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
+import util.Util;
 import vistas.FrmUsuarios;
 import vistas.Ingreso;
+import vistas.Principal;
 
 public class JDListaUsuario extends javax.swing.JDialog {
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-    ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
     DefaultTableModel LPersonal = new DefaultTableModel();
     
     //WSUsuarios
@@ -30,9 +33,10 @@ public class JDListaUsuario extends javax.swing.JDialog {
     WSUsuarios hiloUsuarios;
     //Fin WSUsuarios
     
-    
+    Map<String,String> sucursalesHMCons = new HashMap<String,String>();
+
     /** Creates new form JDListaPersonal */
-    public JDListaUsuario(java.awt.Frame parent, boolean modal) {
+    public JDListaUsuario(java.awt.Frame parent, boolean modal, Map<String,String> sucursalesHMCons) {
         super(parent, modal);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -40,20 +44,6 @@ public class JDListaUsuario extends javax.swing.JDialog {
             e.printStackTrace();
         }
         
-        
-//        configuracionBean = configuracionDAO.obtieneConfiguracion(1);
-//        this.setTitle(configuracionBean.getNombreEmpresa());
-//        String titulos[] = {"ID", "USUARIO","CLAVE","NOMBRE","CLASE"};
-//        LPersonal.setColumnIdentifiers(titulos);
-//        try {
-//            for (UsuarioBean p : BDUsuario.mostrarUsuarios()) {
-//                String Datos[] = {""+p.getIdUsuario(), p.getUsuario(), p.getPassword(), p.getNombre(), p.getClase()};
-//                LPersonal.addRow(Datos);
-//            }
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, "ERROR: " + ex.getMessage());
-//        }
-
         hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
                 + "GETDATOSEMPRESA");
@@ -67,21 +57,13 @@ public class JDListaUsuario extends javax.swing.JDialog {
                 + constantes.getProperty("GETUSUARIOS");
         resultWSArray = hiloUsuariosList.ejecutaWebService(rutaWS,"1");
         
-//Usuario*:
-//Nueva Clave:
-//Permisos*
-//Nombre:
-//Apellido Paterno:
-//Apellido Materno:
-//Telefono Casa:
-//Telefono Celular:
-//Sucursal        
+        Util util = new Util();
         FrmUsuarios frmusuarios = new FrmUsuarios();
         String titulos[] = {"ID", "USUARIO", "NOMBRE", "TELÉFONOS", "SUCURSAL"};
 //        String titulos[] = {"ID", "USUARIO","CLAVE","NOMBRE","CLASE"};
         LPersonal.setColumnIdentifiers(titulos);
         for (UsuarioBean p : resultWSArray) {
-            String sucursal = frmusuarios.buscaDescFromIdSuc("" + p.getIdSucursal());
+            String sucursal = util.buscaDescFromIdSuc(sucursalesHMCons, "" + p.getIdSucursal());
             String Datos[] = {""+p.getIdUsuario()
                     , p.getUsuario()
                     , p.getNombre() + " " + p.getApellido_paterno() + " " + p.getApellido_materno()
@@ -190,45 +172,6 @@ public class JDListaUsuario extends javax.swing.JDialog {
         FrmUsuarios frmUsuarios = new FrmUsuarios();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    public static void main(String args[]) {
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(JDListaUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(JDListaUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(JDListaUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JDListaUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                JDListaUsuario dialog = new JDListaUsuario(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
