@@ -3,6 +3,9 @@ package vistas;
 import ComponenteConsulta.JDListaCategorias;
 import ComponenteDatos.ConfiguracionDAO;
 import beans.DatosEmpresaBean;
+import constantes.ConstantesProperties;
+import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSSistema;
 //import com.lowagie.text.pdf.Barcode;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
@@ -13,6 +16,7 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -22,11 +26,16 @@ import net.sourceforge.barbecue.Barcode;
 import net.sourceforge.barbecue.BarcodeFactory;
 import net.sourceforge.barbecue.BarcodeImageHandler;
 import net.sourceforge.barbecue.output.OutputException;
+import static vistas.Principal.datosEmpresaBean;
+import static vistas.Principal.datosSistemaBean;
 
 public class FrmCodBarras extends javax.swing.JFrame {
-    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-    ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
-    String accion = "";
+    //WS
+    Properties constantes = new ConstantesProperties().getProperties();
+    WSDatosEmpresa hiloEmpresa;
+    WSSistema hiloSistema;
+    //Fin WS
+    
 
     public FrmCodBarras() {
         try {
@@ -35,10 +44,17 @@ public class FrmCodBarras extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
+        
         lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
-        configuracionBean = configuracionDAO.obtieneConfiguracion(1);
-        this.setTitle(configuracionBean.getNombreEmpresa());        
-//        this.setTitle("Categorías");
+        
+        
+        // Carga datos de la empresa
+        hiloSistema = new WSSistema();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSSISTEMA");
+        datosSistemaBean = hiloSistema.ejecutaWebService(rutaWS,"1");
+        // Fin Carga datos de la empresa
+        
+        this.setTitle(datosEmpresaBean.getNombreEmpresa());        
         this.setLocationRelativeTo(null);
     }
 

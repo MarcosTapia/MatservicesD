@@ -218,6 +218,8 @@
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="btnCancelarPro" min="-2" max="-2" attributes="0"/>
                                           <Component id="btnSalirPro" min="-2" pref="84" max="-2" attributes="0"/>
+                                          <Component id="btnExcel" min="-2" pref="84" max="-2" attributes="0"/>
+                                          <Component id="btnSalirPro1" min="-2" pref="84" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -237,7 +239,11 @@
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <Component id="btnExcel" min="-2" pref="53" max="-2" attributes="1"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="btnSalirPro1" min="-2" pref="53" max="-2" attributes="1"/>
+                              <EmptySpace min="-2" pref="139" max="-2" attributes="0"/>
                               <Component id="btnCancelarPro" min="-2" pref="53" max="-2" attributes="1"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="btnSalirPro" min="-2" pref="53" max="-2" attributes="1"/>
@@ -859,6 +865,32 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Usuario : "/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnExcel">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/img/xlsx.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="EXCEL"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExcelActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnSalirPro1">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/cod_barras.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="CREAR"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalirPro1ActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
