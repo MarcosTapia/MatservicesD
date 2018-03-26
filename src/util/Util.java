@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import vistas.Ingreso;
 import vistas.Principal;
 
@@ -33,6 +35,31 @@ public class Util {
     private Map<String,String> categoriasHM = new HashMap();
     private Map<String,String> proveedoresHM = new HashMap();
     private Map<String,String> productosHM = new HashMap();
+    
+    /**
+     * Metodo para mostrar mensaje de error
+     */
+    public void errorEliminar() {
+        JOptionPane optionPane = new JOptionPane("No es posible eliminar el "
+                + "producto", JOptionPane.ERROR_MESSAGE);    
+        JDialog dialog = optionPane.createDialog("Error");
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);                    
+    }
+
+    /**
+     * Metodo para mostrar mensaje de error
+     */
+    public void registroDuplicado(String msgConcepto) {
+        String msg = "El registro ya Existe";
+        if (!"".equalsIgnoreCase(msgConcepto)) {
+            msg = "El " + msgConcepto + " ya Existe";
+        } 
+        JOptionPane optionPane = new JOptionPane(msg, JOptionPane.ERROR_MESSAGE);    
+        JDialog dialog = optionPane.createDialog("Error");
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);                    
+    }
     
     /**
      * Metodo para convertir formato de fecha 

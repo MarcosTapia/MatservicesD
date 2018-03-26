@@ -18,6 +18,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -27,6 +28,7 @@ import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import util.Util;
 import static vistas.Ingreso.usuario;
 
 public class WSInventarios {
@@ -93,8 +95,11 @@ public class WSInventarios {
                 productoObj = modificaProductoWS(); 
                 break;
             case "3" : 
-                idArticulo = params[2];;
+                idArticulo = params[2];
                 productoObj = eliminaProductoWS(); 
+                break;
+            case "4" : 
+                productoObj = buscaProdPorCodigoWS(cadena); 
                 break;
         }
         return productoObj;
@@ -286,6 +291,62 @@ public class WSInventarios {
             e.printStackTrace();
         }
         return elimina;
+    }
+
+    public ProductoBean buscaProdPorCodigoWS(String rutaWS) {
+        ProductoBean prod = null;
+        try {
+            url = new URL(cadena);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+            //connection.setHeader("content-type", "application/json");
+            int respuesta = connection.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK){
+                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                // StringBuilder.
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);        // Paso toda la entrada al StringBuilder
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");
+                if (resultJSON == 1) {
+                    prod = new ProductoBean();
+                    prod.setIdArticulo(respuestaJSON.getJSONObject("inventario").getInt("idArticulo"));
+                    prod.setCodigo(respuestaJSON.getJSONObject("inventario").getString("codigo"));
+                    prod.setDescripcion(respuestaJSON.getJSONObject("inventario").getString("descripcion"));    
+                    prod.setPrecioCosto(respuestaJSON.getJSONObject("inventario").getDouble("precioCosto"));
+                    prod.setPrecioUnitario(respuestaJSON.getJSONObject("inventario").getDouble("precioUnitario"));
+                    prod.setPorcentajeImpuesto(respuestaJSON.getJSONObject("inventario").getDouble("porcentajeImpuesto"));
+                    prod.setExistencia(respuestaJSON.getJSONObject("inventario").getDouble("existencia"));
+                    prod.setExistenciaMinima(respuestaJSON.getJSONObject("inventario").getDouble("existenciaMinima"));
+                    prod.setUbicacion(respuestaJSON.getJSONObject("inventario").getString("ubicacion"));
+                    prod.setObservaciones(respuestaJSON.getJSONObject("inventario").getString("observaciones"));
+                    //convierte fecha String a Date
+                    String fechaS = respuestaJSON.getJSONObject("inventario").getString("fechaIngreso");
+                    Util util = new Util();
+                    prod.setFechaIngreso(util.stringToDateTime(fechaS));
+                    prod.setIdProveedor(respuestaJSON.getJSONObject("inventario").getInt("idProveedor"));
+                    prod.setIdCategoria(respuestaJSON.getJSONObject("inventario").getInt("idCategoria"));
+                    prod.setFotoProducto(respuestaJSON.getJSONObject("inventario").getString("fotoProducto"));
+                    prod.setIdSucursal(respuestaJSON.getJSONObject("inventario").getInt("idSucursal"));
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return prod;
     }
     
 }

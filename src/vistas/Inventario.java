@@ -68,26 +68,51 @@ public class Inventario extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 204, 0));
         jPanel1.setAutoscrolls(true);
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblTitulo.setFont(new java.awt.Font("Arial Black", 2, 48)); // NOI18N
         lblTitulo.setForeground(new java.awt.Color(255, 255, 255));
         lblTitulo.setText("jLabel1");
-        jPanel1.add(lblTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 70, -1, -1));
 
         jLabel2.setBackground(new java.awt.Color(0, 102, 204));
         jLabel2.setFont(new java.awt.Font("Arial Black", 1, 42)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 51, 204));
         jLabel2.setText("MÓDULO DE INVENTARIO");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 190, -1, -1));
 
         lblFecha.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
         lblFecha.setText("jLabel1");
-        jPanel1.add(lblFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 400, 550, -1));
 
         lblUsuario.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
         lblUsuario.setText("jLabel1");
-        jPanel1.add(lblUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 30, 550, -1));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(440, 440, 440)
+                .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(90, 90, 90)
+                .addComponent(lblTitulo))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(190, 190, 190)
+                .addComponent(jLabel2))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(430, 430, 430)
+                .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(lblUsuario)
+                .addGap(11, 11, 11)
+                .addComponent(lblTitulo)
+                .addGap(52, 52, 52)
+                .addComponent(jLabel2)
+                .addGap(150, 150, 150)
+                .addComponent(lblFecha))
+        );
 
         getContentPane().add(jPanel1);
         jPanel1.setBounds(0, 60, 1680, 800);

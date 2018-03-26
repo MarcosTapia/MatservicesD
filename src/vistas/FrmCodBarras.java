@@ -3,8 +3,11 @@ package vistas;
 import ComponenteConsulta.JDListaCategorias;
 import ComponenteDatos.ConfiguracionDAO;
 import beans.DatosEmpresaBean;
+import beans.ProductoBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSInventarios;
+import consumewebservices.WSInventariosList;
 import consumewebservices.WSSistema;
 //import com.lowagie.text.pdf.Barcode;
 import java.awt.Graphics2D;
@@ -16,16 +19,19 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import net.sourceforge.barbecue.Barcode;
 import net.sourceforge.barbecue.BarcodeFactory;
 import net.sourceforge.barbecue.BarcodeImageHandler;
 import net.sourceforge.barbecue.output.OutputException;
+import util.Util;
 import static vistas.Principal.datosEmpresaBean;
 import static vistas.Principal.datosSistemaBean;
 
@@ -35,6 +41,13 @@ public class FrmCodBarras extends javax.swing.JFrame {
     WSDatosEmpresa hiloEmpresa;
     WSSistema hiloSistema;
     //Fin WS
+    //WSUsuarios
+    Util util = new Util();
+    WSInventarios hiloInventarios;
+    WSInventariosList hiloInventariosList;
+    //Fin WS
+    
+    
     
 
     public FrmCodBarras() {
@@ -83,6 +96,7 @@ public class FrmCodBarras extends javax.swing.JFrame {
         btnCopiarPortapapeles = new javax.swing.JButton();
         lblcode = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
+        btnSalirCat1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -93,6 +107,11 @@ public class FrmCodBarras extends javax.swing.JFrame {
 
         txtcodigo.setFont(new java.awt.Font("Book Antiqua", 1, 20)); // NOI18N
         txtcodigo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtcodigo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtcodigoActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel2.setText("Codigo :");
@@ -153,11 +172,21 @@ public class FrmCodBarras extends javax.swing.JFrame {
         lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblUsuario.setText("Usuario:");
 
+        btnSalirCat1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Cancel.png"))); // NOI18N
+        btnSalirCat1.setText("CANCELAR");
+        btnSalirCat1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalirCat1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalirCat1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirCat1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnVerCodigoBarras, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -166,9 +195,11 @@ public class FrmCodBarras extends javax.swing.JFrame {
                 .addComponent(btnCopiarPortapapeles)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnMostrarCat)
-                .addGap(105, 105, 105)
+                .addGap(5, 5, 5)
+                .addComponent(btnSalirCat1)
+                .addGap(32, 32, 32)
                 .addComponent(btnSalirCat, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                .addGap(43, 43, 43))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -192,7 +223,6 @@ public class FrmCodBarras extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(lblUsuario))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGap(8, 8, 8)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -205,7 +235,8 @@ public class FrmCodBarras extends javax.swing.JFrame {
                     .addComponent(btnMostrarCat, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnCopiarPortapapeles, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnImprimir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnVerCodigoBarras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnVerCodigoBarras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSalirCat1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(20, 20, 20))
         );
 
@@ -267,7 +298,29 @@ public class FrmCodBarras extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnMostrarCatActionPerformed
 
+    private void verificaCodigoDuplicado() {
+        if (txtcodigo.getText().equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(null, "Debes asignar un código");
+            return;
+        }
+        //verifica que el codigo no exista
+        hiloInventarios = new WSInventarios();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("OBTIENEPRODUCTOPORCODIGO")
+                + txtcodigo.getText().trim();
+        ProductoBean productoEliminar = hiloInventarios.ejecutaWebService(rutaWS
+                ,"4");
+        if (productoEliminar != null) {
+            util.registroDuplicado("Código");
+            return;
+        } else {
+            btnVerCodigoBarras.requestFocus(true);
+        }
+        //Fin verifica que el codigo no exista
+    }
+    
     private void btnVerCodigoBarrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerCodigoBarrasActionPerformed
+        verificaCodigoDuplicado();
         Barcode barcode = null;
         try {
             barcode = BarcodeFactory.createCode39(txtcodigo.getText(), true);
@@ -315,6 +368,16 @@ public class FrmCodBarras extends javax.swing.JFrame {
         Operaciones operaciones = new Operaciones();
     }//GEN-LAST:event_btnSalirCatActionPerformed
 
+    private void txtcodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcodigoActionPerformed
+        verificaCodigoDuplicado();
+    }//GEN-LAST:event_txtcodigoActionPerformed
+
+    private void btnSalirCat1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCat1ActionPerformed
+        lblcode.setIcon(null);
+        txtcodigo.setText(null);
+        txtcodigo.requestFocus(true);
+    }//GEN-LAST:event_btnSalirCat1ActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -355,6 +418,7 @@ public class FrmCodBarras extends javax.swing.JFrame {
     private javax.swing.JButton btnImprimir;
     private javax.swing.JButton btnMostrarCat;
     private javax.swing.JButton btnSalirCat;
+    private javax.swing.JButton btnSalirCat1;
     private javax.swing.JButton btnVerCodigoBarras;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;

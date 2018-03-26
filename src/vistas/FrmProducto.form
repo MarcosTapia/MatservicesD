@@ -215,15 +215,17 @@
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jPanel4" min="-2" pref="406" max="-2" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="btnSalirPro" min="-2" pref="84" max="-2" attributes="0"/>
+                                              <Component id="btnExcel" min="-2" pref="84" max="-2" attributes="0"/>
+                                              <Component id="btnSalirPro1" min="-2" pref="84" max="-2" attributes="0"/>
+                                          </Group>
                                           <Component id="btnCancelarPro" min="-2" max="-2" attributes="0"/>
-                                          <Component id="btnSalirPro" min="-2" pref="84" max="-2" attributes="0"/>
-                                          <Component id="btnExcel" min="-2" pref="84" max="-2" attributes="0"/>
-                                          <Component id="btnSalirPro1" min="-2" pref="84" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
-                              <EmptySpace pref="340" max="32767" attributes="0"/>
+                              <EmptySpace pref="341" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -243,9 +245,9 @@
                               <Component id="btnExcel" min="-2" pref="53" max="-2" attributes="1"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="btnSalirPro1" min="-2" pref="53" max="-2" attributes="1"/>
-                              <EmptySpace min="-2" pref="139" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="85" max="-2" attributes="0"/>
                               <Component id="btnCancelarPro" min="-2" pref="53" max="-2" attributes="1"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="112" max="-2" attributes="0"/>
                               <Component id="btnSalirPro" min="-2" pref="53" max="-2" attributes="1"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
@@ -617,7 +619,6 @@
                   <SubComponents>
                     <Component class="javax.swing.JRadioButton" name="radioAumentar">
                       <Properties>
-                        <Property name="selected" type="boolean" value="true"/>
                         <Property name="text" type="java.lang.String" value="Aumentar cantidad al Inventario"/>
                       </Properties>
                     </Component>
@@ -654,6 +655,7 @@
                     </Component>
                     <Component class="javax.swing.JRadioButton" name="radioNinguno">
                       <Properties>
+                        <Property name="selected" type="boolean" value="true"/>
                         <Property name="text" type="java.lang.String" value="Ninguno"/>
                       </Properties>
                     </Component>
@@ -829,7 +831,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/imagenes/Exit.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="CERRAR"/>
+                <Property name="text" type="java.lang.String" value="SALIR"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
