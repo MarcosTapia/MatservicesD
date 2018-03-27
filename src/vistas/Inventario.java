@@ -66,21 +66,23 @@ public class Inventario extends javax.swing.JFrame {
         });
         getContentPane().setLayout(null);
 
-        jPanel1.setBackground(new java.awt.Color(0, 204, 0));
+        jPanel1.setBackground(new java.awt.Color(247, 254, 255));
         jPanel1.setAutoscrolls(true);
 
+        lblTitulo.setBackground(new java.awt.Color(247, 254, 255));
         lblTitulo.setFont(new java.awt.Font("Arial Black", 2, 48)); // NOI18N
-        lblTitulo.setForeground(new java.awt.Color(255, 255, 255));
+        lblTitulo.setForeground(new java.awt.Color(70, 99, 138));
         lblTitulo.setText("jLabel1");
 
-        jLabel2.setBackground(new java.awt.Color(0, 102, 204));
+        jLabel2.setBackground(new java.awt.Color(247, 254, 255));
         jLabel2.setFont(new java.awt.Font("Arial Black", 1, 42)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 51, 204));
+        jLabel2.setForeground(new java.awt.Color(70, 99, 138));
         jLabel2.setText("MÓDULO DE INVENTARIO");
 
         lblFecha.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
         lblFecha.setText("jLabel1");
 
+        lblUsuario.setBackground(new java.awt.Color(247, 254, 255));
         lblUsuario.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
         lblUsuario.setText("jLabel1");
 
@@ -195,7 +197,9 @@ public class Inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductosActionPerformed
+        this.dispose();
         FrmProducto frmP = new FrmProducto();
+        frmP.setExtendedState(frmP.MAXIMIZED_BOTH);
         frmP.setVisible(true);
     }//GEN-LAST:event_btnProductosActionPerformed
 

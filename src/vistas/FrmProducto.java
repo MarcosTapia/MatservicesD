@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.TableColumn;
 import util.Util;
 import static vistas.Principal.productos;
@@ -61,15 +62,16 @@ public class FrmProducto extends javax.swing.JFrame {
 
     DateFormat fecha = DateFormat.getDateInstance();
     String accion = "";
+    
     int codigoProveedor;
     DatosEmpresaBean datosEmpresaBean;
     ConfiguracionDAO configuracionDAO;
     ProductosProveedoresCostosBean productosProveedoresCostosBean;
     BDProductosProveedoresCostos bdProductosProveedoresCostos;
-    HashMap<Integer, String> NombreProveedor = new HashMap<Integer, String>();
-    HashMap<String, String> NombreProducto = new HashMap<String, String>();
+    HashMap<Integer, String> NombreProveedor = new HashMap();
+    HashMap<String, String> NombreProducto = new HashMap();
     HashMap<String, String> utilidadCategoriaHMap = new HashMap<>();
-    HashMap<Integer, String> nombreUsuarios = new HashMap<Integer, String>();
+    HashMap<Integer, String> nombreUsuarios = new HashMap();
     
     //cantidad global
     int cantGlobal = 0;
@@ -77,8 +79,7 @@ public class FrmProducto extends javax.swing.JFrame {
     public FrmProducto() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
         }
         initComponents();
         
@@ -133,6 +134,8 @@ public class FrmProducto extends javax.swing.JFrame {
         
         txtIdArticulo.setVisible(false);
         btnGuardarPro.setEnabled(false);
+        
+        this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
     }
 
 
@@ -540,8 +543,9 @@ public class FrmProducto extends javax.swing.JFrame {
                     .addComponent(radioDisminuir))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(radioNinguno)
-                .addGap(25, 25, 25)
-                .addComponent(existOriginal))
+                .addGap(18, 18, 18)
+                .addComponent(existOriginal)
+                .addGap(7, 7, 7))
         );
 
         txtUtilidad.setEditable(false);
@@ -794,7 +798,7 @@ public class FrmProducto extends javax.swing.JFrame {
         });
 
         btnSalirPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        btnSalirPro.setText("SALIR");
+        btnSalirPro.setText("CERRAR");
         btnSalirPro.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSalirPro.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnSalirPro.addActionListener(new java.awt.event.ActionListener() {
@@ -901,7 +905,7 @@ public class FrmProducto extends javax.swing.JFrame {
                     .addComponent(btnGuardarPro, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnNuevoPro, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEliminarPro, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(153, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -919,10 +923,10 @@ public class FrmProducto extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -935,7 +939,7 @@ public class FrmProducto extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -1070,6 +1074,9 @@ public class FrmProducto extends javax.swing.JFrame {
     private void btnSalirProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirProActionPerformed
         this.dispose();
         Inventario inventario = new Inventario();
+        inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
+        inventario.setVisible(true);
+//        System.exit(0);
     }//GEN-LAST:event_btnSalirProActionPerformed
 
     private void btnMostrarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarProActionPerformed

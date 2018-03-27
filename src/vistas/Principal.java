@@ -126,7 +126,7 @@ public class Principal extends javax.swing.JFrame {
         });
         getContentPane().setLayout(null);
 
-        panelOpciones.setBackground(new java.awt.Color(0, 204, 0));
+        panelOpciones.setBackground(new java.awt.Color(247, 254, 255));
         panelOpciones.setLayout(null);
 
         panelMenuPrincipal.setBackground(new java.awt.Color(102, 102, 102));

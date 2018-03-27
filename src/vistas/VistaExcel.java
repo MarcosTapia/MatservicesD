@@ -1,20 +1,28 @@
 package vistas;
 
+import beans.SucursalBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSSistema;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -25,6 +33,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import util.Renderer;
+import util.Util;
 import static vistas.Principal.datosEmpresaBean;
 import static vistas.Principal.datosSistemaBean;
 
@@ -33,7 +43,11 @@ public class VistaExcel extends javax.swing.JFrame {
     JFileChooser selecArchivo = new JFileChooser();
     File archivo;
     int contAccion=0;
+    Map<Integer,Integer> errores = new HashMap();
+    Renderer r = new Renderer();
+    DefaultTableModel dt;
 
+    Util util = new Util();
     //WS
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
@@ -50,6 +64,28 @@ public class VistaExcel extends javax.swing.JFrame {
         
         this.setTitle(datosEmpresaBean.getNombreEmpresa());        
         lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
+        
+        //carga categorias
+        Iterator it = Principal.categoriasHM.keySet().iterator();
+        while(it.hasNext()){
+          Object key = it.next();
+          cboCategoria.addItem(Principal.categoriasHM.get(key));
+        }        
+        
+        //carga proveedores
+        it = Principal.proveedoresHM.keySet().iterator();
+        while(it.hasNext()){
+          Object key = it.next();
+          cboProveedor.addItem(Principal.proveedoresHM.get(key));
+        }        
+        
+        //carga sucursales
+        it = Principal.sucursalesHM.keySet().iterator();
+        while(it.hasNext()){
+          Object key = it.next();
+          cboSucursal.addItem(Principal.sucursalesHM.get(key));
+        }        
+        
     }
 
     public void AgregarFiltro(){
@@ -58,6 +94,13 @@ public class VistaExcel extends javax.swing.JFrame {
     }
     
     public String Importar(File archivo, JTable tablaD) throws InvalidFormatException{
+        //para validar numero correcto de columnas
+        int numColumnas = 0;
+        boolean sigueImportacion = true;
+        boolean sigueImportacionEsnumero = true;
+        int renglon = 0;
+        int columna = 0;
+        
         String respuesta="No se pudo realizar la importación.";
         DefaultTableModel modeloT = new DefaultTableModel();
         tablaD.setModel(modeloT);
@@ -67,7 +110,10 @@ public class VistaExcel extends javax.swing.JFrame {
             Sheet hoja = wb.getSheetAt(0);
             Iterator filaIterator = hoja.rowIterator();
             int indiceFila=-1;
-            while (filaIterator.hasNext()) {                
+            while (filaIterator.hasNext()) {
+                if (!sigueImportacion) {
+                    break;
+                }
                 indiceFila++;
                 Row fila = (Row) filaIterator.next();
                 Iterator columnaIterator = fila.cellIterator();
@@ -77,32 +123,74 @@ public class VistaExcel extends javax.swing.JFrame {
                     indiceColumna++;
                     Cell celda = (Cell) columnaIterator.next();
                     if(indiceFila==0){
+                        numColumnas++;
                         modeloT.addColumn(celda.getStringCellValue());
                     }else{
-                        if(celda!=null){
-                            switch(celda.getCellType()){
-                                case Cell.CELL_TYPE_NUMERIC:
-                                    listaColumna[indiceColumna]= (int)Math.round(celda.getNumericCellValue());
-                                    break;
-                                case Cell.CELL_TYPE_STRING:
-                                    listaColumna[indiceColumna]= celda.getStringCellValue();
-                                    break;
-                                case Cell.CELL_TYPE_BOOLEAN:
-                                    listaColumna[indiceColumna]= celda.getBooleanCellValue();
-                                    break;
-                                default:
-                                    listaColumna[indiceColumna]=celda.getDateCellValue();
-                                    break;
+                        //verifica numero de columnas adecuado
+                        if (numColumnas != 8){
+                            sigueImportacion = false;
+                            break;                            
+                        }
+                        //fin verifica numero de columnas adecuado
+                        
+                        //verifica formato de cantidades
+                        if ((indiceColumna > 1) && (indiceColumna < 6)) {
+                            if (celda.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                                if (!util.esNumero("" + 
+                                        celda.getNumericCellValue())) {
+                                    listaColumna[indiceColumna] = "ERROR " + celda;
+                                    sigueImportacionEsnumero = false;                                    
+                                    errores.put(renglon, columna);
+                                } else {
+                                    listaColumna[indiceColumna]= celda;
+                                }
+                            } else {
+                                listaColumna[indiceColumna] = "ERROR " + celda;
+                                sigueImportacionEsnumero = false;
+                                errores.put(renglon, columna);
                             }
-                            System.out.println("col"+indiceColumna+" valor: true - "+celda+".");
-                        }                        
+                        } else {
+                            listaColumna[indiceColumna]= celda;
+                        }
+                        //fin verifica formato de cantidades
+                        
+//                        if(celda!=null){
+//                            switch(celda.getCellType()){
+//                                case Cell.CELL_TYPE_NUMERIC:
+//                                    listaColumna[indiceColumna]= (int)Math.round(celda.getNumericCellValue());
+//                                    break;
+//                                case Cell.CELL_TYPE_STRING:
+//                                    listaColumna[indiceColumna]= celda.getStringCellValue();
+//                                    break;
+//                                case Cell.CELL_TYPE_BOOLEAN:
+//                                    listaColumna[indiceColumna]= celda.getBooleanCellValue();
+//                                    break;
+//                                default:
+//                                    listaColumna[indiceColumna]=celda.getDateCellValue();
+//                                    break;
+//                            }
+//                            System.out.println("col"+indiceColumna+" valor: true - "+celda+".");
+//                        }                        
                     }
+                    columna++;
                 }
+                columna = 0;
+                renglon++;
                 if(indiceFila!=0)modeloT.addRow(listaColumna);
             }
             respuesta="Importación exitosa";
         } catch (IOException | InvalidFormatException | EncryptedDocumentException e) {
             System.err.println(e.getMessage());
+        }
+        if (!sigueImportacion) {
+            respuesta="No se pudo realizar la importación. "
+                    + "\nEstructura de archivo incorrecta";
+            return respuesta;
+        }
+        if (!sigueImportacionEsnumero) {
+            respuesta="No se pudo realizar la importación. "
+                    + "\nDatos Incorrectos";
+            return respuesta;
         }
         return respuesta;
     }
@@ -148,6 +236,13 @@ public class VistaExcel extends javax.swing.JFrame {
         jtDatos = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        cboSucursal = new javax.swing.JComboBox();
+        jLabel13 = new javax.swing.JLabel();
+        cboCategoria = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        cboProveedor = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -179,13 +274,13 @@ public class VistaExcel extends javax.swing.JFrame {
 
         jtDatos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4", "Título 5", "Título 6"
+                "Código", "Descripción", "Precio Costo", "Precio Público", "Existencia", "Existencia Minima", "Ubicación", "Observaciones "
             }
         ));
         jtDatos.setAutoscrolls(false);
@@ -202,6 +297,80 @@ public class VistaExcel extends javax.swing.JFrame {
             }
         });
 
+        lblUsuario.setText("Usuario :");
+
+        jLabel10.setText("Sucursal : ");
+
+        cboSucursal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar..." }));
+        cboSucursal.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cboSucursalMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                cboSucursalMouseEntered(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                cboSucursalMousePressed(evt);
+            }
+        });
+        cboSucursal.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboSucursalItemStateChanged(evt);
+            }
+        });
+        cboSucursal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboSucursalActionPerformed(evt);
+            }
+        });
+        cboSucursal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cboSucursalKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cboSucursalKeyTyped(evt);
+            }
+        });
+
+        jLabel13.setText("Categoria :");
+
+        cboCategoria.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar..." }));
+        cboCategoria.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboCategoriaItemStateChanged(evt);
+            }
+        });
+        cboCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboCategoriaActionPerformed(evt);
+            }
+        });
+        cboCategoria.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cboCategoriaKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cboCategoriaKeyTyped(evt);
+            }
+        });
+
+        jLabel2.setText("Proveedor");
+
+        cboProveedor.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar..." }));
+        cboProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboProveedorActionPerformed(evt);
+            }
+        });
+        cboProveedor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cboProveedorKeyTyped(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel3.setText("Selecciona los datos para la importación : ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -209,38 +378,65 @@ public class VistaExcel extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(40, 40, 40)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel1)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnImportar)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnExportar)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton1))))
+                                .addGap(74, 74, 74)
+                                .addComponent(btnImportar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnExportar)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(19, 19, 19)
-                                .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 922, Short.MAX_VALUE))
+                                .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cboSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel13)
+                                .addGap(5, 5, 5)
+                                .addComponent(cboCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(38, 38, 38)
+                                .addComponent(jLabel1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel3)))
+                        .addGap(0, 346, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
-                .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(29, 29, 29)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnExportar)
-                        .addComponent(btnImportar))
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(30, 30, 30)
+                .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(cboSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13)
+                    .addComponent(cboCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(cboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnExportar)
+                    .addComponent(btnImportar)
+                    .addComponent(jButton1))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
         );
@@ -249,14 +445,31 @@ public class VistaExcel extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnImportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportarActionPerformed
+        if (cboCategoria.getSelectedItem().toString().
+                equalsIgnoreCase("Seleccionar...")
+            || cboSucursal.getSelectedItem().toString().
+                equalsIgnoreCase("Seleccionar...")
+            || cboProveedor.getSelectedItem().toString().
+                equalsIgnoreCase("Seleccionar...")
+            ) {
+            util.errorSeleccion();
+            return;
+        }
+
+        
         contAccion++;
         if(contAccion==1)AgregarFiltro();
         if(selecArchivo.showDialog(null, "Seleccionar archivo")==JFileChooser.APPROVE_OPTION){
             archivo=selecArchivo.getSelectedFile();
             if(archivo.getName().endsWith("xls") || archivo.getName().endsWith("xlsx")){
                 try {
+                    String msg = Importar(archivo, jtDatos);
+                    r.setErrores(errores);
+                    dt = (DefaultTableModel) jtDatos.getModel();
+                    jtDatos.setDefaultRenderer(Object.class, r);
+                    jtDatos.setEnabled(false);
                     JOptionPane.showMessageDialog(null,
-                            Importar(archivo, jtDatos) + "\n Formato ."+ archivo.getName().substring(archivo.getName().lastIndexOf(".")+1),
+                            msg + "\n Formato ."+ archivo.getName().substring(archivo.getName().lastIndexOf(".")+1),
                             "IMPORTAR EXCEL", JOptionPane.INFORMATION_MESSAGE);
                 } catch (InvalidFormatException ex) {
                     Logger.getLogger(VistaExcel.class.getName()).log(Level.SEVERE, null, ex);
@@ -265,6 +478,7 @@ public class VistaExcel extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Elija un formato valido.");
             }
         }
+        btnImportar.setEnabled(false);
     }//GEN-LAST:event_btnImportarActionPerformed
 
     private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed
@@ -281,6 +495,50 @@ public class VistaExcel extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cboSucursalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboSucursalMouseClicked
+
+    }//GEN-LAST:event_cboSucursalMouseClicked
+
+    private void cboSucursalMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboSucursalMouseEntered
+    }//GEN-LAST:event_cboSucursalMouseEntered
+
+    private void cboSucursalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboSucursalMousePressed
+    }//GEN-LAST:event_cboSucursalMousePressed
+
+    private void cboSucursalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboSucursalItemStateChanged
+    }//GEN-LAST:event_cboSucursalItemStateChanged
+
+    private void cboSucursalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSucursalActionPerformed
+    }//GEN-LAST:event_cboSucursalActionPerformed
+
+    private void cboSucursalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboSucursalKeyReleased
+    }//GEN-LAST:event_cboSucursalKeyReleased
+
+    private void cboSucursalKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboSucursalKeyTyped
+    }//GEN-LAST:event_cboSucursalKeyTyped
+
+    private void cboCategoriaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboCategoriaItemStateChanged
+
+    }//GEN-LAST:event_cboCategoriaItemStateChanged
+
+    private void cboCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCategoriaActionPerformed
+
+    }//GEN-LAST:event_cboCategoriaActionPerformed
+
+    private void cboCategoriaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboCategoriaKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboCategoriaKeyPressed
+
+    private void cboCategoriaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboCategoriaKeyTyped
+    }//GEN-LAST:event_cboCategoriaKeyTyped
+
+    private void cboProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboProveedorActionPerformed
+
+    }//GEN-LAST:event_cboProveedorActionPerformed
+
+    private void cboProveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboProveedorKeyTyped
+    }//GEN-LAST:event_cboProveedorKeyTyped
 
     /**
      * @param args the command line arguments
@@ -324,11 +582,30 @@ public class VistaExcel extends javax.swing.JFrame {
         });
     }
 
+    static public class MyRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected,
+                    hasFocus, row, column);
+            c.setForeground(Color.RED);
+            return c;
+        }
+    }    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnExportar;
     public javax.swing.JButton btnImportar;
+    private javax.swing.JComboBox cboCategoria;
+    private javax.swing.JComboBox cboProveedor;
+    private javax.swing.JComboBox cboSucursal;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JTable jtDatos;
     private javax.swing.JLabel lblUsuario;

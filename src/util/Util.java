@@ -37,6 +37,18 @@ public class Util {
     private Map<String,String> productosHM = new HashMap();
     
     /**
+     * Metodo para convertir a numero
+     */
+    public boolean esNumero(String cadena){
+        try {
+            Double.parseDouble(cadena);
+            return true;
+        } catch (NumberFormatException nfe){
+            return false;
+        }
+    }    
+    
+    /**
      * Metodo para mostrar mensaje de error
      */
     public void errorEliminar() {
@@ -55,6 +67,18 @@ public class Util {
         if (!"".equalsIgnoreCase(msgConcepto)) {
             msg = "El " + msgConcepto + " ya Existe";
         } 
+        JOptionPane optionPane = new JOptionPane(msg, JOptionPane.ERROR_MESSAGE);    
+        JDialog dialog = optionPane.createDialog("Error");
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);                    
+    }
+    
+    /**
+     * Metodo para mostrar mensaje de error de seleccion
+     * de elemento
+     */
+    public void errorSeleccion() {
+        String msg = "Selecciona todos los elementos";
         JOptionPane optionPane = new JOptionPane(msg, JOptionPane.ERROR_MESSAGE);    
         JDialog dialog = optionPane.createDialog("Error");
         dialog.setAlwaysOnTop(true);
