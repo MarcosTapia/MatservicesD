@@ -25,17 +25,21 @@ public class Principal extends javax.swing.JFrame {
     public static SistemaBean datosSistemaBean;
     static Map<String,String> sucursalesHM = new HashMap();
     static Map<String,String> categoriasHM = new HashMap();
+    static Map<String,String> usuariosHM = new HashMap();
     static Map<String,String> proveedoresHM = new HashMap();
     static Map<String,String> productosHM = new HashMap();
+    static Map<String,String> productosHMID = new HashMap();
     
     static Map<String,String> clientesHM = new HashMap();
     
     //Globales 
     static ArrayList<SucursalBean> sucursales = new ArrayList();
     static ArrayList<CategoriaBean> categorias = new ArrayList();
+    static ArrayList<UsuarioBean> usuarios = new ArrayList();
     static ArrayList<ProveedorBean> proveedores = new ArrayList();
     static ArrayList<ProductoBean> productos = new ArrayList();
     
+    Util util = new Util();
     
     //WS
     Properties constantes = new ConstantesProperties().getProperties();
@@ -43,11 +47,23 @@ public class Principal extends javax.swing.JFrame {
     WSSistema hiloSistema;
     //Fin WS
 
+    public void cargaProductos() {
+        //Carga productos
+        productos = util.getMapProductos();
+        util.llenaMapProductos(productos);
+        productosHM = util.getProductosHM();
+        productosHMID = util.getProductosHMID();
+    }
+    
+    public void cargaUsuarios() {
+        //Carga usuarios
+        usuarios = util.getMapUsuarios();
+        util.llenaMapUsuarios(usuarios);
+        usuariosHM = util.getUsuariosHM();
+    }
+    
     public Principal() {
         initComponents();
-        //carga sucursales
-        Util util = new Util();
-        
         //Carga sucursales
         sucursales = util.getMapSucursales();
         util.llenaMapSucursales(sucursales);
@@ -58,17 +74,28 @@ public class Principal extends javax.swing.JFrame {
         util.llenaMapCategorias(categorias);
         categoriasHM = util.getCategoriasHM();
         
+        //Carga usuarios
+        usuarios = util.getMapUsuarios();
+        util.llenaMapUsuarios(usuarios);
+        usuariosHM = util.getUsuariosHM();
+        
         //Carga proveedores
         proveedores = util.getMapProveedores();
         util.llenaMapProveedores(proveedores);
         proveedoresHM = util.getProveedoresHM();
         
-        //Carga productod
+        //Carga productos
         productos = util.getMapProductos();
         util.llenaMapProductos(productos);
         productosHM = util.getProductosHM();
+        productosHMID = util.getProductosHMID();
         
+        this.setIcon();
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre());
+    }
+    
+    public void setIcon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
     }
     
     public void muestraPanel(int panel) {
@@ -127,6 +154,7 @@ public class Principal extends javax.swing.JFrame {
         getContentPane().setLayout(null);
 
         panelOpciones.setBackground(new java.awt.Color(247, 254, 255));
+        panelOpciones.setBorder(javax.swing.BorderFactory.createMatteBorder(60, 20, 5, 5, new java.awt.Color(70, 99, 138)));
         panelOpciones.setLayout(null);
 
         panelMenuPrincipal.setBackground(new java.awt.Color(102, 102, 102));

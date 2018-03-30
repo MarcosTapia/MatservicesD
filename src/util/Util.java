@@ -4,11 +4,16 @@ import beans.CategoriaBean;
 import beans.ProductoBean;
 import beans.ProveedorBean;
 import beans.SucursalBean;
+import beans.UsuarioBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCategoriasList;
 import consumewebservices.WSInventariosList;
 import consumewebservices.WSProveedoresList;
 import consumewebservices.WSSucursalesList;
+import consumewebservices.WSUsuarios;
+import consumewebservices.WSUsuariosList;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +25,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import vistas.Ingreso;
@@ -31,10 +37,21 @@ public class Util {
     WSCategoriasList hiloCategoriasList;
     WSProveedoresList hiloProveedoresList;
     WSInventariosList hiloInventariosList;
+    WSUsuariosList hiloUsuariosList;
     private Map<String,String> sucursalesHM = new HashMap();
     private Map<String,String> categoriasHM = new HashMap();
     private Map<String,String> proveedoresHM = new HashMap();
     private Map<String,String> productosHM = new HashMap();
+    private Map<String,String> productosHMID = new HashMap();
+    private Map<String,String> usuariosHM = new HashMap();
+
+    public Map<String, String> getUsuariosHM() {
+        return usuariosHM;
+    }
+
+    public void setUsuariosHM(Map<String, String> usuariosHM) {
+        this.usuariosHM = usuariosHM;
+    }
     
     /**
      * Metodo para convertir a numero
@@ -129,18 +146,18 @@ public class Util {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", new Locale("es", "MX"));
         Date ret = null;
         if(!"".equals(fecha)){
-                try {
-                        ret = sdf.parse(fecha);
-                } catch (ParseException ex) {
-                        ret = new Date();
-                }
+            try {
+                    ret = sdf.parse(fecha);
+            } catch (ParseException ex) {
+                    ret = new Date();
+            }
         }
         return ret;
     }
     
     /**
      * Metodo para convertir string a fecha datetime
-     * @param fecha La fecha en forma de string yyyy-mm-seg hh:min:seg
+     * @param fecha La fecha en forma de string yyyy-mm-dd hh:min:seg
      * @return El objeto de fecha
     */
     public Date stringToDateTime(String fecha) {
@@ -303,7 +320,7 @@ public class Util {
     //********* FIN PROVEEDORES
     
 
-    //********* PRODUCTOD
+    //********* PRODUCTOS
     /**
      * Metodo para cargar proveedores
      * @return Hash proveedores
@@ -320,15 +337,29 @@ public class Util {
         //carga hashmap de productos
         for (ProductoBean s : productos) {
             this.productosHM.put("" + s.getCodigo(), s.getDescripcion());
+            this.productosHMID.put("" + s.getIdArticulo(), s.getDescripcion());
         }
     }
     
-    public int buscaIdProd(Map<String,String> productosHM, String descripcionProd) {
+    public String buscaCodProd(Map<String,String> productosHM, String descripcionProd) {
         Iterator it = productosHM.keySet().iterator();
-        int idProd = 0;
+        String codProd = "";
         while(it.hasNext()){
           Object key = it.next();
           if (descripcionProd.equalsIgnoreCase(productosHM.get(key))) {
+              codProd = key.toString();
+              break;
+          }
+        }        
+        return codProd;
+    }
+    
+    public int buscaIdProd(Map<String,String> productosHM, String descripcionProd) {
+        Iterator it = productosHMID.keySet().iterator();
+        int idProd = 0;
+        while(it.hasNext()){
+          Object key = it.next();
+          if (descripcionProd.equalsIgnoreCase(productosHMID.get(key))) {
               idProd = Integer.parseInt(key.toString());
               break;
           }
@@ -336,7 +367,7 @@ public class Util {
         return idProd;
     }
     
-    public String buscaDescFromIdProd(Map<String,String> productosHM, String idProd) {
+    public String buscaDescFromCodProd(Map<String,String> productosHM, String idProd) {
         Iterator it = productosHM.keySet().iterator();
         String descripProd = "";
         while(it.hasNext()){
@@ -362,7 +393,58 @@ public class Util {
         }
         return existe;
     }
-    //********* FIN PRODUCTOD
+    //********* FIN PRODUCTOS
+    
+    //********* USUARIOS
+    /**
+     * Metodo para cargar usuarios
+     * @return Hash usuarios
+     */
+    public ArrayList<UsuarioBean> getMapUsuarios() {
+        ArrayList<UsuarioBean> usuarios = new ArrayList();
+        hiloUsuariosList = new WSUsuariosList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETUSUARIOS");
+        usuarios = hiloUsuariosList.ejecutaWebService(rutaWS,"1");
+        return usuarios;
+    }
+    
+    public void llenaMapUsuarios(ArrayList<UsuarioBean> usuarios) {
+        //carga hashmap de usuarios
+        for (UsuarioBean s : usuarios) {
+            this.usuariosHM.put(""+s.getIdUsuario(), s.getNombre() 
+            + " " + s.getApellido_paterno()
+            + " " + s.getApellido_materno());
+        }
+    }
+    
+    public int buscaIdUsuario(Map<String,String> usuariosHM, String nombre) {
+        Iterator it = categoriasHM.keySet().iterator();
+        int idUsu = 0;
+        while(it.hasNext()){
+          Object key = it.next();
+          if (nombre.equalsIgnoreCase(usuariosHM.get(key))) {
+              idUsu = Integer.parseInt(key.toString());
+              break;
+          }
+        }        
+        return idUsu;
+    }
+    
+    public String buscaDescFromIdUsu(Map<String,String> usuariosHM, String idUsu) {
+        Iterator it = usuariosHM.keySet().iterator();
+        String nombre = "";
+        while(it.hasNext()){
+          Object key = it.next();
+          String t = key.toString();
+          if (t.equalsIgnoreCase(idUsu)) {
+              nombre = usuariosHM.get(key).toString();
+              break;
+          }
+        }        
+        return nombre;
+    }
+    //********* FIN USUARIOS
+    
     
     public Map<String, String> getSucursalesHM() {
         return sucursalesHM;
@@ -392,9 +474,18 @@ public class Util {
         return productosHM;
     }
 
+    public Map<String, String> getProductosHMID() {
+        return productosHMID;
+    }
+
+    public void setProductosHMID(Map<String, String> productosHMID) {
+        this.productosHMID = productosHMID;
+    }
+    
+    
+
     public void setProductosHM(Map<String, String> productosHM) {
         this.productosHM = productosHM;
     }
-    
     
 }

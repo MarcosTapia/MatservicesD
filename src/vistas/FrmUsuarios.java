@@ -22,6 +22,7 @@ import static vistas.Ingreso.usuario;
 
 import java.security.MessageDigest;
 import util.Util;
+import static vistas.Principal.productos;
 
 
 public class FrmUsuarios extends javax.swing.JFrame {
@@ -722,6 +723,9 @@ public class FrmUsuarios extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPerActionPerformed
+        //Carga productos
+        Principal principal = new Principal();
+        principal.cargaUsuarios();
         this.dispose();
         Operaciones operaciones = new Operaciones();
     }//GEN-LAST:event_btnSalirPerActionPerformed

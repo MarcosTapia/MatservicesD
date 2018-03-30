@@ -3,6 +3,7 @@ package vistas;
 import ComponenteDatos.ConfiguracionDAO;
 import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
+import java.awt.Toolkit;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -39,6 +40,11 @@ public class Inventario extends javax.swing.JFrame {
         
         
         //Fin verifica permisos de usuario
+        this.setIcon();
+    }
+
+    public void setIcon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
     }
 
     @SuppressWarnings("unchecked")
@@ -67,6 +73,7 @@ public class Inventario extends javax.swing.JFrame {
         getContentPane().setLayout(null);
 
         jPanel1.setBackground(new java.awt.Color(247, 254, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(70, 99, 138)));
         jPanel1.setAutoscrolls(true);
 
         lblTitulo.setBackground(new java.awt.Color(247, 254, 255));

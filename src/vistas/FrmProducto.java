@@ -1,5 +1,6 @@
 package vistas;
 
+import ComponenteConsulta.JDListaMovimientos;
 import beans.ProductoBean;
 import ComponenteConsulta.JDListaProducto;
 import ComponenteDatos.*;
@@ -20,6 +21,7 @@ import consumewebservices.WSUsuariosList;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,6 +40,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -83,13 +86,12 @@ public class FrmProducto extends javax.swing.JFrame {
         }
         initComponents();
         
+        //Ingreso.usuario.getIdSucursal()
+        
         buttonGroup1.add(radioAumentar);
         buttonGroup1.add(radioDisminuir);
         buttonGroup1.add(radioNinguno);
         panTipoOperacion.setVisible(false);
-        
-        // Actualizas tbl proveedor
-        actualizarBusquedaProveedor();
         
         // Actualizas tbl producto
         ArrayList<ProductoBean> resultWS = null;
@@ -117,7 +119,12 @@ public class FrmProducto extends javax.swing.JFrame {
         it = Principal.sucursalesHM.keySet().iterator();
         while(it.hasNext()){
           Object key = it.next();
-          cboSucursal.addItem(Principal.sucursalesHM.get(key));
+          int idSucursalUser = Ingreso.usuario.getIdSucursal();
+          int idSucursal = Integer.parseInt(key.toString());
+          if ((idSucursalUser == idSucursal) ||
+             (idSucursalUser == 1)) {
+              cboSucursal.addItem(Principal.sucursalesHM.get(key));
+          }
         }        
         
         //Carga iva de la empresa de ganancia por producto
@@ -136,8 +143,13 @@ public class FrmProducto extends javax.swing.JFrame {
         btnGuardarPro.setEnabled(false);
         
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
+        this.setIcon();
     }
 
+    public void setIcon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+    }
+    
 
     public void limpiarCajaTexto() {
         cboCategoriaPro.setSelectedItem("Seleccionar...");
@@ -162,9 +174,11 @@ public class FrmProducto extends javax.swing.JFrame {
         txtIdArticulo.setText("");
         codProdAnterior = "";
         cboSucursal.requestFocus(true);
+        double stock = 0;    
     }
 
     public void activarCajaTexto(boolean b) {
+        double stock = 0;    
         cboSucursal.setEnabled(b);
         cboCategoriaPro.setEnabled(b);
         cboProveedor.setEnabled(b);
@@ -188,6 +202,7 @@ public class FrmProducto extends javax.swing.JFrame {
         btnModificarPro.setEnabled(b);
         //btnCancelarPro.setEnabled(!b);
         btnMostrarPro.setEnabled(b);
+        double stock = 0;    
     }
 
     @SuppressWarnings("unchecked")
@@ -251,12 +266,21 @@ public class FrmProducto extends javax.swing.JFrame {
         lblUsuario = new javax.swing.JLabel();
         btnExcel = new javax.swing.JButton();
         btnSalirPro1 = new javax.swing.JButton();
+        btnMovimientos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
             }
         });
 
@@ -799,6 +823,7 @@ public class FrmProducto extends javax.swing.JFrame {
 
         btnSalirPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
         btnSalirPro.setText("CERRAR");
+        btnSalirPro.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 51, 0), 1, true));
         btnSalirPro.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSalirPro.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnSalirPro.addActionListener(new java.awt.event.ActionListener() {
@@ -843,6 +868,17 @@ public class FrmProducto extends javax.swing.JFrame {
             }
         });
 
+        btnMovimientos.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        btnMovimientos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/User group.png"))); // NOI18N
+        btnMovimientos.setText("MOVIMIENTOS");
+        btnMovimientos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnMovimientos.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnMovimientos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMovimientosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -870,13 +906,14 @@ public class FrmProducto extends javax.swing.JFrame {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(btnSalirPro, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(btnExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(btnSalirPro1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnCancelarPro))))
-                        .addContainerGap(341, Short.MAX_VALUE))))
+                                    .addComponent(btnCancelarPro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnMovimientos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(359, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -891,9 +928,11 @@ public class FrmProducto extends javax.swing.JFrame {
                         .addComponent(btnExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnSalirPro1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(85, 85, 85)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnCancelarPro, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(112, 112, 112)
+                        .addGap(127, 127, 127)
                         .addComponent(btnSalirPro, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -946,6 +985,7 @@ public class FrmProducto extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void borrar() {
+        double stock = 0;    
         panTipoOperacion.setVisible(false);
         limpiarCajaTexto();
         activarCajaTexto(false);
@@ -967,9 +1007,8 @@ public class FrmProducto extends javax.swing.JFrame {
         ArrayList<ProductoBean> resultWS = null;
         hiloInventariosList = new WSInventariosList();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty("OBTIENEPRODUCTOPORID") 
-                + String.valueOf(
-                        String.valueOf(jtProducto.getModel().getValueAt(
-                            jtProducto.getSelectedRow(),0)));
+                + String.valueOf(jtProducto.getModel().getValueAt(
+                            jtProducto.getSelectedRow(),0));
         resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"5");
         ProductoBean p = resultWS.get(0);
 
@@ -1052,7 +1091,14 @@ public class FrmProducto extends javax.swing.JFrame {
     }
     
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-         lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
+        lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
+        productos = util.getMapProductos();
+        util.llenaMapProductos(productos);
+        Principal.productosHM = util.getProductosHM();
+        Principal.productosHMID = util.getProductosHMID();
+        //FrmProducto frmProducto = new FrmProducto();
+        this.actualizarBusquedaProducto(); 
+        this.recargarTableProductos(productos);
     }//GEN-LAST:event_formWindowActivated
 
     private void jtProductoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtProductoKeyTyped
@@ -1419,11 +1465,6 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_cboSucursalMouseEntered
 
     private void cboSucursalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboSucursalItemStateChanged
-//        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
-//            Toolkit.getDefaultToolkit().beep();
-//            evt.consume();
-//        }
-//        txtCodigoPro.requestFocus(true);
     }//GEN-LAST:event_cboSucursalItemStateChanged
 
     private void cboSucursalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboSucursalMousePressed
@@ -1492,19 +1533,28 @@ public class FrmProducto extends javax.swing.JFrame {
         frmCodBarras.setVisible(true);
     }//GEN-LAST:event_btnSalirPro1ActionPerformed
 
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+    }//GEN-LAST:event_formFocusGained
+
+    private void btnMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovimientosActionPerformed
+        if (txtIdArticulo.getText().equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(null, "Debes seleccionar un registro");
+            return;
+        }
+        JDListaMovimientos jdListaMovs = new JDListaMovimientos(this,true
+                , Principal.sucursalesHM
+                , Principal.productosHM
+                , Principal.productosHMID
+                , Principal.usuariosHM
+                , Principal.proveedoresHM
+                , txtIdArticulo.getText());
+        jdListaMovs.setVisible(true);
+    }//GEN-LAST:event_btnMovimientosActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+    }//GEN-LAST:event_formWindowOpened
+
     private void actualizarBusquedaProveedor() {
-//        ArrayList<ProveedorBean> result = null;
-//        try {
-//            result = BDProveedor.mostrarProveedor();
-//            DefaultComboBoxModel model = new DefaultComboBoxModel();
-//            model.addElement("Seleccionar...");
-//            for (ProveedorBean p : result) {
-//                model.addElement(p.getcProvNombre());
-//            }
-//            cboProveedor.setModel(model);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(FrmProducto.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     private ArrayList<ProductoBean> llenaTablaInventario(String buscar, int tipoBusq) {
@@ -1514,28 +1564,31 @@ public class FrmProducto extends javax.swing.JFrame {
             String campoBusq = "";
             switch (tipoBusq) {
                 case 1 : campoBusq = jtProducto.getModel().getValueAt(
-                    i,0).toString();
-                    break;
-                case 2 : campoBusq = jtProducto.getModel().getValueAt(
                     i,1).toString();
                     break;
+                case 2 : campoBusq = jtProducto.getModel().getValueAt(
+                    i,2).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
                 case 3 : campoBusq = jtProducto.getModel().getValueAt(
-                    i,5).toString();
+                    i,6).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
                     break;
             }
             if (campoBusq.indexOf(buscar)>=0) {
-                producto = new ProductoBean();                            
-                producto.setCodigo(jtProducto.getModel().getValueAt(i,0).toString());
+                producto = new ProductoBean();
+                producto.setIdArticulo(Integer.parseInt(jtProducto.getModel().getValueAt(i,0).toString()));
+                producto.setCodigo(jtProducto.getModel().getValueAt(i,1).toString());
                 producto.setDescripcion(jtProducto.getModel().getValueAt(
-                    i,1).toString());
+                    i,2).toString());
                 producto.setPrecioCosto(Double.parseDouble(jtProducto.getModel().getValueAt(
-                    i,2).toString()));
-                producto.setPrecioUnitario(Double.parseDouble(jtProducto.getModel().getValueAt(
                     i,3).toString()));
-                producto.setExistencia(Double.parseDouble(jtProducto.getModel().getValueAt(
+                producto.setPrecioUnitario(Double.parseDouble(jtProducto.getModel().getValueAt(
                     i,4).toString()));
+                producto.setExistencia(Double.parseDouble(jtProducto.getModel().getValueAt(
+                    i,5).toString()));
                 int idSuc = util.buscaIdSuc(Principal.sucursalesHM, 
-                    jtProducto.getModel().getValueAt(i,5).toString());
+                    jtProducto.getModel().getValueAt(i,6).toString());
                 producto.setIdSucursal(idSuc);
                 resultWS.add(producto);
             }
@@ -1543,7 +1596,7 @@ public class FrmProducto extends javax.swing.JFrame {
         return resultWS;
     }
     
-    private void actualizarBusquedaProducto() {
+    public void actualizarBusquedaProducto() {
         ArrayList<ProductoBean> resultWS = null;
         ProductoBean producto = null;
         if (String.valueOf(cboParametroPro.getSelectedItem()).
@@ -1582,18 +1635,37 @@ public class FrmProducto extends javax.swing.JFrame {
         Object[][] datos = new Object[list.size()][7];
         int i = 0;
         for (ProductoBean p : list) {
-            datos[i][0] = p.getIdArticulo();
-            datos[i][1] = p.getCodigo();
-            datos[i][2] = p.getDescripcion();
-            datos[i][3] = p.getPrecioCosto();
-            datos[i][4] = p.getPrecioUnitario();
-            datos[i][5] = p.getExistencia();
-            datos[i][6] = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" + p.getIdSucursal());
-            NombreProducto.put(p.getCodigo(), p.getDescripcion());
-            i++;
+            //filtra por sucursal
+            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
+                    (Ingreso.usuario.getUsuario().equalsIgnoreCase("w4mpd"))) {
+                datos[i][0] = p.getIdArticulo();
+                datos[i][1] = p.getCodigo();
+                datos[i][2] = p.getDescripcion();
+                datos[i][3] = p.getPrecioCosto();
+                datos[i][4] = p.getPrecioUnitario();
+                datos[i][5] = p.getExistencia();
+                datos[i][6] = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" + p.getIdSucursal());
+                NombreProducto.put(p.getCodigo(), p.getDescripcion());
+                i++;
+            }
         }
+        Object[][] datosFinal = new Object[i][7];
+        //Para filtrar los registros
+        for (int j=0; j<i; j++) {
+            if (datos[j][0]!=null) {
+                datosFinal[j][0] = datos[j][0];
+                datosFinal[j][1] = datos[j][1];
+                datosFinal[j][2] = datos[j][2];
+                datosFinal[j][3] = datos[j][3];
+                datosFinal[j][4] = datos[j][4];
+                datosFinal[j][5] = datos[j][5];
+                datosFinal[j][6] = datos[j][6];
+            }
+        }
+        //Fin Para filtrar los registros
+        
         jtProducto.setModel(new javax.swing.table.DefaultTableModel(
-                datos,
+                datosFinal,
                 new String[]{
                     "ID", "CODIGO", "DESCRIPCIÓN", "$ COSTO", "$ PÚBLICO", "EXIST.", "SUCURSAL"
                 }) {
@@ -1710,6 +1782,7 @@ public class FrmProducto extends javax.swing.JFrame {
     private javax.swing.JButton btnGuardarPro;
     private javax.swing.JButton btnModificarPro;
     private javax.swing.JButton btnMostrarPro;
+    private javax.swing.JButton btnMovimientos;
     private javax.swing.JButton btnNuevoPro;
     private javax.swing.JButton btnSalirPro;
     private javax.swing.JButton btnSalirPro1;
@@ -1762,4 +1835,5 @@ public class FrmProducto extends javax.swing.JFrame {
     private javax.swing.JTextField txtUtilidad;
     // End of variables declaration//GEN-END:variables
 //    private ReporteProductoParametro repProductoP;
+
 }

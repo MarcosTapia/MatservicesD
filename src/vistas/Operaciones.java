@@ -3,6 +3,7 @@ package vistas;
 import ComponenteDatos.ConfiguracionDAO;
 import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
+import java.awt.Toolkit;
 import java.text.DateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
@@ -47,6 +48,11 @@ public class Operaciones extends javax.swing.JFrame {
             btnCodigoBarras.setVisible(false);
         }
         //Fin verifica permisos de usuario
+        this.setIcon();
+    }
+
+    public void setIcon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
     }
 
     @SuppressWarnings("unchecked")

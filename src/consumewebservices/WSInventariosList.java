@@ -337,7 +337,7 @@ public class WSInventariosList {
                         //convierte fecha String a Date
                         String fechaS = productosJSON.getJSONObject(i).get("fechaIngreso").toString();
                         Util util = new Util();
-                        prod.setFechaIngreso(util.stringToDate(fechaS));
+                        prod.setFechaIngreso(util.stringToDateTime(fechaS));
                         prod.setIdProveedor(productosJSON.getJSONObject(i).getInt("idProveedor"));
                         prod.setIdCategoria(productosJSON.getJSONObject(i).getInt("idCategoria"));
                         prod.setFotoProducto(productosJSON.getJSONObject(i).getString("fotoProducto"));

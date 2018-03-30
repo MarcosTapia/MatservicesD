@@ -37,6 +37,13 @@
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="fe" red="f7" type="rgb"/>
         </Property>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
+            <MatteColorBorder bottom="5" left="5" right="5" top="5">
+              <Color PropertyName="color" blue="8a" green="63" red="46" type="rgb"/>
+            </MatteColorBorder>
+          </Border>
+        </Property>
         <Property name="autoscrolls" type="boolean" value="true"/>
       </Properties>
       <Constraints>
