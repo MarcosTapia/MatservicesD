@@ -219,12 +219,12 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                                              <Component id="btnSalirPro" min="-2" pref="84" max="-2" attributes="0"/>
                                               <Component id="btnExcel" min="-2" pref="84" max="-2" attributes="0"/>
                                               <Component id="btnSalirPro1" min="-2" pref="84" max="-2" attributes="0"/>
                                           </Group>
                                           <Component id="btnCancelarPro" alignment="1" max="32767" attributes="0"/>
                                           <Component id="btnMovimientos" max="32767" attributes="0"/>
+                                          <Component id="btnSalirPro" min="-2" pref="84" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -246,13 +246,13 @@
                           <Group type="102" attributes="0">
                               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                               <Component id="btnExcel" min="-2" pref="53" max="-2" attributes="1"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnSalirPro1" min="-2" pref="53" max="-2" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnMovimientos" min="-2" pref="53" max="-2" attributes="1"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                               <Component id="btnCancelarPro" min="-2" pref="53" max="-2" attributes="1"/>
-                              <EmptySpace min="-2" pref="127" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnSalirPro" min="-2" pref="53" max="-2" attributes="1"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">

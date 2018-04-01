@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="09b36884-6643-4275-ad9f-5656000be413">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="19"/>
+	<property name="ireport.x" value="99"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
@@ -13,70 +13,48 @@
 			<style backcolor="#E6DAC3"/>
 		</conditionalStyle>
 	</style>
+	<parameter name="empresa" class="java.lang.String"/>
+	<parameter name="fecha" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from productos as p inner join categoria as cat on cat.nCatcodigo = p.nCatCodigo]]>
+		<![CDATA[]]>
 	</queryString>
-	<field name="cantidad" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="cCatDescripcion" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="descripcion" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<group name="cCatDescripcion">
-		<groupExpression><![CDATA[$F{cCatDescripcion}]]></groupExpression>
-		<groupHeader>
-			<band height="37">
-				<frame>
-					<reportElement mode="Opaque" x="-21" y="7" width="597" height="24" forecolor="#B89F7D" backcolor="#F2EBDF" uuid="eb7791cd-bee4-4d2d-a63c-8a0e718c9546"/>
-					<rectangle>
-						<reportElement mode="Opaque" x="21" y="0" width="36" height="24" backcolor="#736343" uuid="78c9d285-1c4a-4395-8645-8a236d75e6d1"/>
-						<graphicElement>
-							<pen lineWidth="0.0"/>
-						</graphicElement>
-					</rectangle>
-					<textField>
-						<reportElement style="SubTitle" x="68" y="0" width="413" height="24" forecolor="#736343" uuid="a88d297b-ebf7-416d-aa93-8cedeed6c745"/>
-						<textElement>
-							<font isBold="true"/>
-						</textElement>
-						<textFieldExpression><![CDATA[$F{cCatDescripcion}]]></textFieldExpression>
-					</textField>
-				</frame>
-			</band>
-		</groupHeader>
-		<groupFooter>
-			<band height="6"/>
-		</groupFooter>
-	</group>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="precioCosto" class="java.lang.Double"/>
+	<field name="existencia" class="java.lang.Double"/>
+	<field name="observaciones" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="136" splitType="Stretch">
+		<band height="94" splitType="Stretch">
 			<staticText>
-				<reportElement style="Title" x="170" y="0" width="353" height="62" uuid="44ad8a4a-b04b-4c86-8f25-2b6df24dca31"/>
-				<textElement verticalAlignment="Middle">
-					<font pdfFontName="Times-Roman"/>
-				</textElement>
-				<text><![CDATA[Farmacia Lux]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="SubTitle" x="219" y="62" width="196" height="22" uuid="28331caa-96bc-4df4-9ca4-b45e3cafde72"/>
+				<reportElement style="SubTitle" x="2" y="53" width="196" height="22" uuid="28331caa-96bc-4df4-9ca4-b45e3cafde72"/>
 				<textElement>
 					<font fontName="Times New Roman" pdfFontName="Times-Roman"/>
 				</textElement>
 				<text><![CDATA[Inventario General]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="163" y="11" width="330" height="41" uuid="45291bdf-9c97-481f-b66d-830af1e1a8e2"/>
+				<textElement>
+					<font size="28" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="368" y="53" width="184" height="20" uuid="e3787a32-8d30-4433-89f0-422cd9723583"/>
+				<textElement>
+					<font fontName="Times New Roman" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
 		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="16" splitType="Stretch">
+		<band height="20" splitType="Stretch">
 			<line>
 				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="67482671-ef32-4aa0-9acd-5be4754e7c73"/>
 				<graphicElement>
@@ -88,24 +66,37 @@
 				<text><![CDATA[Descripción]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="349" y="1" width="138" height="15" forecolor="#736343" uuid="975a955a-6a73-42d7-9518-496afc142438"/>
+				<reportElement style="Column header" x="198" y="1" width="79" height="15" forecolor="#736343" uuid="975a955a-6a73-42d7-9518-496afc142438"/>
+				<text><![CDATA[Precio Costo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="308" y="0" width="79" height="15" forecolor="#736343" uuid="74977827-d26f-4ceb-b3b2-6e01838e1bcd"/>
 				<text><![CDATA[Existencia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="432" y="0" width="79" height="15" forecolor="#736343" uuid="1f251616-1196-41bc-a6b7-d8e0bab81243"/>
+				<text><![CDATA[Sucursal]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="15" splitType="Stretch">
-			<frame>
-				<reportElement style="Row" mode="Opaque" x="0" y="0" width="555" height="15" uuid="34bd3a3a-c7c4-45b1-b5b7-314b9123a369"/>
-				<textField isStretchWithOverflow="true">
-					<reportElement style="Detail" x="0" y="0" width="138" height="15" uuid="8d2aa5f1-cd27-4a0e-a04c-a1d2f4275e00"/>
-					<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true">
-					<reportElement style="Detail" x="349" y="0" width="138" height="15" uuid="afdb7aa2-e3f4-47a2-8290-c87b43af9d50"/>
-					<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
-				</textField>
-			</frame>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="0" width="187" height="20" uuid="94023ed8-14fe-4e28-a1a4-ebe24ab84d90"/>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="198" y="0" width="89" height="20" uuid="2d739b61-48cc-4324-8925-cb606eb73d8e"/>
+				<textFieldExpression><![CDATA[$F{precioCosto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="411" y="0" width="100" height="20" uuid="a0c52f74-2a32-435f-9e2c-639173892cd2"/>
+				<textFieldExpression><![CDATA[$F{observaciones}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="297" y="0" width="100" height="20" uuid="9de40fc7-17f1-4e6f-9fc1-20b9d102b66a"/>
+				<textFieldExpression><![CDATA[$F{existencia}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
@@ -116,6 +107,9 @@
 					<pen lineWidth="0.5" lineColor="#999999"/>
 				</graphicElement>
 			</line>
+			<frame>
+				<reportElement style="Row" mode="Opaque" x="0" y="4" width="555" height="15" uuid="34bd3a3a-c7c4-45b1-b5b7-314b9123a369"/>
+			</frame>
 		</band>
 	</columnFooter>
 	<pageFooter>

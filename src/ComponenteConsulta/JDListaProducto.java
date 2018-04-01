@@ -4,7 +4,6 @@ import ComponenteDatos.BD;
 import beans.ProductoBean;
 import ComponenteDatos.BDProducto;
 import ComponenteDatos.ConfiguracionDAO;
-import ComponenteReportes.ReporteProductoGeneral;
 import beans.CategoriaBean;
 import beans.DatosEmpresaBean;
 import beans.ProductoBean;
@@ -20,25 +19,36 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JRViewer;
 import util.Util;
 import vistas.FrmProducto;
 import vistas.FrmUsuarios;
+import vistas.Principal;
 
 public class JDListaProducto extends javax.swing.JDialog {
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     DefaultTableModel LProducto = new DefaultTableModel();
-    
+    String empresa = "";
     //WSUsuarios
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
@@ -46,10 +56,6 @@ public class JDListaProducto extends javax.swing.JDialog {
     WSInventariosList hiloInventariosList;
     WSInventarios hiloInventarios;
     //Fin WSUsuarios
-    
-    Map<String,String> sucursalesHMCons = new HashMap<String,String>();
-    Map<String,String> proveedoresHMCons = new HashMap<String,String>();
-    Map<String,String> categoriasHMCons = new HashMap<String,String>();
 
     public JDListaProducto(java.awt.Frame parent, boolean modal
             , Map<String,String> sucursalesHMCons
@@ -61,12 +67,14 @@ public class JDListaProducto extends javax.swing.JDialog {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
         hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
                 + "GETDATOSEMPRESA");
         DatosEmpresaBean resultadoWS = hiloEmpresa.
                 ejecutaWebService(rutaWS,"1");
         this.setTitle(resultadoWS.getNombreEmpresa());
+        this.empresa = resultadoWS.getNombreEmpresa();
         
         ArrayList<ProductoBean> resultWSArray = null;
         hiloInventariosList = new WSInventariosList();
@@ -96,7 +104,7 @@ public class JDListaProducto extends javax.swing.JDialog {
         }
         
         initComponents();
-        btnImprimir.setVisible(false);
+        //btnImprimir.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -209,23 +217,46 @@ public class JDListaProducto extends javax.swing.JDialog {
 
     
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        this.dispose();
-        repProdGral = new ReporteProductoGeneral();
-        JOptionPane.showMessageDialog(null, "Espere por favor..., puede tardar unos segundos");
-        repProdGral.runReporteProductoGeneral();
-       
-        //Esto imprime la tabla funciona pero hay que ajustar tamaño de tabla
-//        try {
-//            //Mensaje de encabezado
-//            MessageFormat headerFormat = new MessageFormat("Inventario Farmacia Lux");            
-//            //Mensaje en el pie de pagina
-//            MessageFormat footerFormat = new MessageFormat("FLUX");
-//            //Imprimir JTable
-//            tblConsultaProductos.print(JTable.PrintMode.NORMAL, headerFormat, footerFormat);
-//        } catch (PrinterException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage());
-//        }    
+        List Resultados = new ArrayList();
+        int fila = 0;
+        String datos ="";
+        ProductoBean tipo;
+        //recorrer la tabla
+        for (fila=0;fila<tblConsultaProductos.getRowCount();fila++) {
+            tipo = new ProductoBean();
+            tipo.setDescripcion(String.valueOf(tblConsultaProductos.getValueAt(fila, 2)));
+            tipo.setPrecioCosto(Double.parseDouble(String.valueOf(tblConsultaProductos.getValueAt(fila, 3))));
+            tipo.setExistencia(Double.parseDouble(String.valueOf(tblConsultaProductos.getValueAt(fila, 5))));
+            //tipo.setIdSucursal(Integer.parseInt(String.valueOf(tblConsultaProductos.getValueAt(fila, 7))));
+            
+            //lo uso para sucursal para mostrarlo como string
+            tipo.setObservaciones(String.valueOf(tblConsultaProductos.getValueAt(fila, 7)));
+            Resultados.add(tipo);
+            //util.buscaDescFromIdSuc(sucursalesHMCons, "" + p.getIdSucursal()
+        }
         
+        Map map = new HashMap();
+        JasperPrint jPrint;
+        JDialog reporte = new JDialog();
+        reporte.setSize(900,700);
+        reporte.setLocationRelativeTo(null);
+        reporte.setTitle(this.empresa);
+        
+        map.put("empresa", this.empresa);
+        java.util.Date fecha = new Date();
+        String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
+        map.put("fecha", "Fecha: " + a);
+        try {
+            this.dispose();
+            jPrint = JasperFillManager.fillReport(this.getClass().getClassLoader().getResourceAsStream("ComponenteReportes/reporteGeneralProducto.jasper")
+                    , map, new JRBeanCollectionDataSource(Resultados));
+            JRViewer jv = new JRViewer(jPrint);
+            reporte.getContentPane().add(jv);
+            reporte.setVisible(true);
+            reporte.requestFocus();
+        } catch (JRException ex) {
+            Logger.getLogger(JDListaProducto.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -242,5 +273,4 @@ public class JDListaProducto extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblConsultaProductos;
     // End of variables declaration//GEN-END:variables
-    private ReporteProductoGeneral repProdGral;
 }
