@@ -1,12 +1,14 @@
 package util;
 
 import beans.CategoriaBean;
+import beans.ClienteBean;
 import beans.ProductoBean;
 import beans.ProveedorBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCategoriasList;
+import consumewebservices.WSClientesList;
 import consumewebservices.WSInventariosList;
 import consumewebservices.WSProveedoresList;
 import consumewebservices.WSSucursalesList;
@@ -38,21 +40,15 @@ public class Util {
     WSProveedoresList hiloProveedoresList;
     WSInventariosList hiloInventariosList;
     WSUsuariosList hiloUsuariosList;
+    WSClientesList hiloClientesList;
     private Map<String,String> sucursalesHM = new HashMap();
     private Map<String,String> categoriasHM = new HashMap();
     private Map<String,String> proveedoresHM = new HashMap();
     private Map<String,String> productosHM = new HashMap();
     private Map<String,String> productosHMID = new HashMap();
     private Map<String,String> usuariosHM = new HashMap();
+    private Map<String,String> clientesHM = new HashMap();
 
-    public Map<String, String> getUsuariosHM() {
-        return usuariosHM;
-    }
-
-    public void setUsuariosHM(Map<String, String> usuariosHM) {
-        this.usuariosHM = usuariosHM;
-    }
-    
     /**
      * Metodo para convertir a numero
      */
@@ -418,7 +414,7 @@ public class Util {
     }
     
     public int buscaIdUsuario(Map<String,String> usuariosHM, String nombre) {
-        Iterator it = categoriasHM.keySet().iterator();
+        Iterator it = usuariosHM.keySet().iterator();
         int idUsu = 0;
         while(it.hasNext()){
           Object key = it.next();
@@ -444,6 +440,56 @@ public class Util {
         return nombre;
     }
     //********* FIN USUARIOS
+    
+    //********* CLIENTES
+    /**
+     * Metodo para cargar clientes
+     * @return Hash clientes
+     */
+    public ArrayList<ClienteBean> getMapClientes() {
+        ArrayList<ClienteBean> clientes = new ArrayList();
+        hiloClientesList = new WSClientesList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCLIENTES");
+        clientes = hiloClientesList.ejecutaWebService(rutaWS,"1");
+        return clientes;
+    }
+    
+    public void llenaMapClientes(ArrayList<ClienteBean> clientes) {
+        //carga hashmap de clientes
+        for (ClienteBean s : clientes) {
+            this.clientesHM.put("" + s.getIdCliente(), s.getNombre() 
+            + " " + s.getApellidos());
+        }
+    }
+    
+    public int buscaIdCliente(Map<String,String> clientesHM, String nombre) {
+        Iterator it = clientesHM.keySet().iterator();
+        int idCli = 0;
+        while(it.hasNext()){
+          Object key = it.next();
+          if (nombre.equalsIgnoreCase(clientesHM.get(key))) {
+              idCli = Integer.parseInt(key.toString());
+              break;
+          }
+        }        
+        return idCli;
+    }
+    
+    public String buscaDescFromIdCli(Map<String,String> clientesHM, String idCli) {
+        Iterator it = clientesHM.keySet().iterator();
+        String nombre = "";
+        while(it.hasNext()){
+          Object key = it.next();
+          String t = key.toString();
+          if (t.equalsIgnoreCase(idCli)) {
+              nombre = clientesHM.get(key).toString();
+              break;
+          }
+        }        
+        return nombre;
+    }
+    //********* FIN CLIENTES
+    
     
     
     public Map<String, String> getSucursalesHM() {
@@ -481,11 +527,24 @@ public class Util {
     public void setProductosHMID(Map<String, String> productosHMID) {
         this.productosHMID = productosHMID;
     }
-    
-    
 
     public void setProductosHM(Map<String, String> productosHM) {
         this.productosHM = productosHM;
     }
-    
+
+    public Map<String, String> getClientesHM() {
+        return clientesHM;
+    }
+
+    public void setClientesHM(Map<String, String> clientesHM) {
+        this.clientesHM = clientesHM;
+    }
+
+    public Map<String, String> getUsuariosHM() {
+        return usuariosHM;
+    }
+
+    public void setUsuariosHM(Map<String, String> usuariosHM) {
+        this.usuariosHM = usuariosHM;
+    }
 }

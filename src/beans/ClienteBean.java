@@ -1,95 +1,150 @@
 package beans;
 
 public class ClienteBean {
+    private int idCliente;
+    private String empresa;
+    private String nombre;
+    private String apellidos;
+    private String telefono_casa;
+    private String telefono_celular;
+    private String direccion1;
+    private String direccion2;
+    private String rfc;
+    private String email;
+    private String ciudad;
+    private String estado;
+    private String cp;
+    private String pais;
+    private String comentarios;
+    private String noCuenta;
 
-    private int nCliCodigo;
-    private String cCliNit;
-    private String cCliCi;//carnet de identidad
-    private String cCliNombre;
-    private String cCliDireccion;
-    private String cCliNumTelefono;
-    private String cCliTipoTelefono;
-    private String cCliNroFax;
-    private String cCliEmail;
-    private String cCliOtros;
-
-    public String getcCliCi() {
-        return cCliCi;
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    public void setcCliCi(String cCliCi) {
-        this.cCliCi = cCliCi;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
-    public String getcCliDireccion() {
-        return cCliDireccion;
+    public String getEmpresa() {
+        return empresa;
     }
 
-    public void setcCliDireccion(String cCliDireccion) {
-        this.cCliDireccion = cCliDireccion;
+    public void setEmpresa(String empresa) {
+        this.empresa = empresa;
     }
 
-    public String getcCliEmail() {
-        return cCliEmail;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setcCliEmail(String cCliEmail) {
-        this.cCliEmail = cCliEmail;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getcCliNombre() {
-        return cCliNombre;
+    public String getApellidos() {
+        return apellidos;
     }
 
-    public void setcCliNombre(String cCliNombre) {
-        this.cCliNombre = cCliNombre;
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
     }
 
-    public String getcCliNumTelefono() {
-        return cCliNumTelefono;
+    public String getTelefono_casa() {
+        return telefono_casa;
     }
 
-    public void setcCliNumTelefono(String cCliNumTelefono) {
-        this.cCliNumTelefono = cCliNumTelefono;
+    public void setTelefono_casa(String telefono_casa) {
+        this.telefono_casa = telefono_casa;
     }
 
-    public String getcCliOtros() {
-        return cCliOtros;
+    public String getTelefono_celular() {
+        return telefono_celular;
     }
 
-    public void setcCliOtros(String cCliOtros) {
-        this.cCliOtros = cCliOtros;
+    public void setTelefono_celular(String telefono_celular) {
+        this.telefono_celular = telefono_celular;
     }
 
-    public String getcCliTipoTelefono() {
-        return cCliTipoTelefono;
+    public String getDireccion1() {
+        return direccion1;
     }
 
-    public void setcCliTipoTelefono(String cCliTipoTelefono) {
-        this.cCliTipoTelefono = cCliTipoTelefono;
+    public void setDireccion1(String direccion1) {
+        this.direccion1 = direccion1;
     }
 
-    public int getnCliCodigo() {
-        return nCliCodigo;
+    public String getDireccion2() {
+        return direccion2;
     }
 
-    public void setnCliCodigo(int nCliCodigo) {
-        this.nCliCodigo = nCliCodigo;
+    public void setDireccion2(String direccion2) {
+        this.direccion2 = direccion2;
     }
 
-    public String getcCliNit() {
-        return cCliNit;
+    public String getRfc() {
+        return rfc;
     }
 
-    public void setcCliNit(String cCliNit) {
-        this.cCliNit = cCliNit;
+    public void setRfc(String rfc) {
+        this.rfc = rfc;
     }
 
-    public String getcCliNroFax() {
-        return cCliNroFax;
+    public String getEmail() {
+        return email;
     }
 
-    public void setcCliNroFax(String cCliNroFax) {
-        this.cCliNroFax = cCliNroFax;
+    public void setEmail(String email) {
+        this.email = email;
     }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getCp() {
+        return cp;
+    }
+
+    public void setCp(String cp) {
+        this.cp = cp;
+    }
+
+    public String getPais() {
+        return pais;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
+    public String getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
+    }
+
+    public String getNoCuenta() {
+        return noCuenta;
+    }
+
+    public void setNoCuenta(String noCuenta) {
+        this.noCuenta = noCuenta;
+    }
+    
+    
 }

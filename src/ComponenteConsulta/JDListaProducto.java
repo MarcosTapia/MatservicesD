@@ -43,6 +43,7 @@ import net.sf.jasperreports.view.JRViewer;
 import util.Util;
 import vistas.FrmProducto;
 import vistas.FrmUsuarios;
+import vistas.Ingreso;
 import vistas.Principal;
 
 public class JDListaProducto extends javax.swing.JDialog {
@@ -90,17 +91,21 @@ public class JDListaProducto extends javax.swing.JDialog {
             String sucursal = util.buscaDescFromIdSuc(sucursalesHMCons, "" + p.getIdSucursal());
             String categoria = util.buscaDescFromIdCat(categoriasHMCons, "" + p.getIdCategoria());
             String proveedor = util.buscaDescFromIdProv(proveedoresHMCons, "" + p.getIdProveedor());
-            String Datos[] = {""+p.getIdArticulo()
-                    , p.getCodigo()
-                    , p.getDescripcion()
-                    , "" + p.getPrecioCosto()
-                    , "" + p.getPrecioUnitario()
-                    , "" + p.getExistencia()
-                    , "" + p.getExistenciaMinima()
-                    , sucursal
-                    , categoria
-                    , proveedor};
-            LProducto.addRow(Datos);
+            //filtra por sucursal
+            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
+                    (Ingreso.usuario.getUsuario().equalsIgnoreCase("w4mpd"))) {
+                String Datos[] = {""+p.getIdArticulo()
+                        , p.getCodigo()
+                        , p.getDescripcion()
+                        , "" + p.getPrecioCosto()
+                        , "" + p.getPrecioUnitario()
+                        , "" + p.getExistencia()
+                        , "" + p.getExistenciaMinima()
+                        , sucursal
+                        , categoria
+                        , proveedor};
+                LProducto.addRow(Datos);
+            }
         }
         
         initComponents();

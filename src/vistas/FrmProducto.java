@@ -9,6 +9,7 @@ import ComponenteDatos.ConfiguracionDAO;
 import beans.CategoriaBean;
 import beans.DatosEmpresaBean;
 import beans.FechaServidorBean;
+import beans.MovimientosBean;
 import beans.ProductosProveedoresCostosBean;
 import beans.ProveedorBean;
 import beans.UsuarioBean;
@@ -16,6 +17,7 @@ import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSInventarios;
 import consumewebservices.WSInventariosList;
+import consumewebservices.WSMovimientos;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import java.awt.Color;
@@ -49,32 +51,22 @@ import util.Util;
 import static vistas.Principal.productos;
 
 public class FrmProducto extends javax.swing.JFrame {
-    //WSUsuarios
+    //WS
     Util util = new Util();
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
-    //WS
     WSInventarios hiloInventarios;
     WSInventariosList hiloInventariosList;
+    WSMovimientos hiloMovimientos;
     //Fin WS
     double stock = 0;    
-    
+    double precioGlobal = 0;
     
     String codProdAnterior = "";
     FechaServidorBean fechaServidorBean;
 
     DateFormat fecha = DateFormat.getDateInstance();
     String accion = "";
-    
-    int codigoProveedor;
-    DatosEmpresaBean datosEmpresaBean;
-    ConfiguracionDAO configuracionDAO;
-    ProductosProveedoresCostosBean productosProveedoresCostosBean;
-    BDProductosProveedoresCostos bdProductosProveedoresCostos;
-    HashMap<Integer, String> NombreProveedor = new HashMap();
-    HashMap<String, String> NombreProducto = new HashMap();
-    HashMap<String, String> utilidadCategoriaHMap = new HashMap<>();
-    HashMap<Integer, String> nombreUsuarios = new HashMap();
     
     //cantidad global
     int cantGlobal = 0;
@@ -85,8 +77,6 @@ public class FrmProducto extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
         }
         initComponents();
-        
-        //Ingreso.usuario.getIdSucursal()
         
         buttonGroup1.add(radioAumentar);
         buttonGroup1.add(radioDisminuir);
@@ -174,11 +164,11 @@ public class FrmProducto extends javax.swing.JFrame {
         txtIdArticulo.setText("");
         codProdAnterior = "";
         cboSucursal.requestFocus(true);
-        double stock = 0;    
+        stock = 0;
+        precioGlobal = 0;
     }
 
     public void activarCajaTexto(boolean b) {
-        double stock = 0;    
         cboSucursal.setEnabled(b);
         cboCategoriaPro.setEnabled(b);
         cboProveedor.setEnabled(b);
@@ -193,7 +183,10 @@ public class FrmProducto extends javax.swing.JFrame {
         txtPrecioPublico.setEditable(b);
         txtUtilidad.setEditable(b);
         txtObserProd.setEditable(b);
-        codProdAnterior = "";        
+        codProdAnterior = ""; 
+        radioAumentar.setEnabled(true);
+        radioDisminuir.setEnabled(true);
+        radioNinguno.setEnabled(true);
     }
 
     public void activarBotones(boolean b) {
@@ -202,7 +195,6 @@ public class FrmProducto extends javax.swing.JFrame {
         btnModificarPro.setEnabled(b);
         //btnCancelarPro.setEnabled(!b);
         btnMostrarPro.setEnabled(b);
-        double stock = 0;    
     }
 
     @SuppressWarnings("unchecked")
@@ -410,6 +402,11 @@ public class FrmProducto extends javax.swing.JFrame {
 
         txtCantidadPro.setEditable(false);
         txtCantidadPro.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCantidadPro.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtCantidadProMouseClicked(evt);
+            }
+        });
         txtCantidadPro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtCantidadProActionPerformed(evt);
@@ -456,6 +453,11 @@ public class FrmProducto extends javax.swing.JFrame {
 
         txtMinimoPro.setEditable(false);
         txtMinimoPro.setText("0");
+        txtMinimoPro.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtMinimoProMouseClicked(evt);
+            }
+        });
         txtMinimoPro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtMinimoProActionPerformed(evt);
@@ -492,12 +494,20 @@ public class FrmProducto extends javax.swing.JFrame {
         jLabel3.setText("Precio Costo:");
 
         txtPrecioCosto.setEditable(false);
+        txtPrecioCosto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtPrecioCostoMouseClicked(evt);
+            }
+        });
         txtPrecioCosto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPrecioCostoActionPerformed(evt);
             }
         });
         txtPrecioCosto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtPrecioCostoFocusGained(evt);
+            }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtPrecioCostoFocusLost(evt);
             }
@@ -985,7 +995,8 @@ public class FrmProducto extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void borrar() {
-        double stock = 0;    
+        stock = 0;
+        precioGlobal = 0;
         panTipoOperacion.setVisible(false);
         limpiarCajaTexto();
         activarCajaTexto(false);
@@ -1033,6 +1044,7 @@ public class FrmProducto extends javax.swing.JFrame {
         existOriginal.setText("Existencia Actual: " + 
                 Double.parseDouble(txtCantidadPro.getText()));
         stock = Double.parseDouble(txtCantidadPro.getText());
+        precioGlobal = Double.parseDouble(txtPrecioPublico.getText());
         jtProducto.requestFocus(true);
     }
     
@@ -1058,7 +1070,7 @@ public class FrmProducto extends javax.swing.JFrame {
                     activarBotones(true);
                 } else {
                     JOptionPane optionPane = new JOptionPane("No es posible eliminar el "
-                            + "producto", JOptionPane.ERROR_MESSAGE);    
+                            + "producto existen movimientos que lo relacionan", JOptionPane.ERROR_MESSAGE);    
                     JDialog dialog = optionPane.createDialog("Error");
                     dialog.setAlwaysOnTop(true);
                     dialog.setVisible(true);                    
@@ -1251,7 +1263,6 @@ public class FrmProducto extends javax.swing.JFrame {
                             + " antes de Guardar");
                     return;
                 }
-                
                 //Fin Verifica que ya se haya actualizado el stock
                 
                 ProductoBean p = new ProductoBean();
@@ -1278,7 +1289,7 @@ public class FrmProducto extends javax.swing.JFrame {
                 //huardar producto
                 hiloInventarios = new WSInventarios();
                 String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICAPRODUCTO");
-                ProductoBean productoInsertado = hiloInventarios.ejecutaWebService(rutaWS,"2"
+                ProductoBean productoModificado = hiloInventarios.ejecutaWebService(rutaWS,"2"
                         ,"" + p.getIdArticulo()
                         ,p.getCodigo()
                         ,p.getDescripcion()
@@ -1294,7 +1305,44 @@ public class FrmProducto extends javax.swing.JFrame {
                         ,"" + p.getIdSucursal()
                         ,""
                         ,p.getObservaciones());
-                if (productoInsertado != null) {
+                if (productoModificado != null) {
+                    //insertar movimiento
+  
+                    String tipoOperacion = "";
+                    if (radioNinguno.isSelected()) {
+                        if ((Double.parseDouble(txtPrecioPublico.getText()) != precioGlobal)
+                            && (precioGlobal) != 0){
+                            tipoOperacion = "Cambio Precio Publico";
+                        }
+                    }
+                    if (radioAumentar.isSelected()) {
+                        tipoOperacion = "Incremento Inventario Manual";
+                        if ((Double.parseDouble(txtPrecioPublico.getText()) != precioGlobal)
+                            && (precioGlobal) != 0){
+                            tipoOperacion = tipoOperacion + " y Cambio Precio Publico";
+                        }
+                    }
+                    if (radioDisminuir.isSelected()) {
+                        tipoOperacion = "Decremento Inventario Manual";
+                        if ((Double.parseDouble(txtPrecioPublico.getText()) != precioGlobal)
+                            && (precioGlobal) != 0){
+                            tipoOperacion = tipoOperacion + " y Cambio Precio Publico";
+                        }
+                    }
+                    radioNinguno.setSelected(true);
+                    
+                    MovimientosBean mov = new MovimientosBean();
+                    hiloMovimientos = new WSMovimientos();
+                    rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAMOVIMIENTO");
+                    MovimientosBean movimientoInsertado = hiloMovimientos.ejecutaWebService(rutaWS,"1"
+                        ,"" + p.getIdArticulo()
+                        ,""+Ingreso.usuario.getIdUsuario()
+                        ,tipoOperacion
+                        ,"" + p.getExistencia()
+                        ,fecha
+                        ,"" + p.getIdSucursal());
+                    //
+                
                     JOptionPane.showMessageDialog(null, "[ Registro Actualizado ]");
                     //Carga productos
                     productos = util.getMapProductos();
@@ -1520,6 +1568,9 @@ public class FrmProducto extends javax.swing.JFrame {
                         + " para registrar los cambios");
             }
         }
+        radioAumentar.setEnabled(false);
+        radioDisminuir.setEnabled(false);
+        radioNinguno.setEnabled(false);
     }//GEN-LAST:event_btnActualizaInventActionPerformed
 
     private void btnExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcelActionPerformed
@@ -1553,6 +1604,22 @@ public class FrmProducto extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
     }//GEN-LAST:event_formWindowOpened
+
+    private void txtPrecioCostoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPrecioCostoFocusGained
+    }//GEN-LAST:event_txtPrecioCostoFocusGained
+
+    private void txtPrecioCostoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPrecioCostoMouseClicked
+        txtPrecioCosto.setToolTipText("Presiona enter al terminar para calcular"
+                + " precio al público");
+    }//GEN-LAST:event_txtPrecioCostoMouseClicked
+
+    private void txtCantidadProMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtCantidadProMouseClicked
+        txtCantidadPro.setText("");
+    }//GEN-LAST:event_txtCantidadProMouseClicked
+
+    private void txtMinimoProMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtMinimoProMouseClicked
+        txtMinimoPro.setText("");
+    }//GEN-LAST:event_txtMinimoProMouseClicked
 
     private void actualizarBusquedaProveedor() {
     }
@@ -1645,7 +1712,7 @@ public class FrmProducto extends javax.swing.JFrame {
                 datos[i][4] = p.getPrecioUnitario();
                 datos[i][5] = p.getExistencia();
                 datos[i][6] = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" + p.getIdSucursal());
-                NombreProducto.put(p.getCodigo(), p.getDescripcion());
+//                NombreProducto.put(p.getCodigo(), p.getDescripcion());
                 i++;
             }
         }

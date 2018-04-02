@@ -89,6 +89,8 @@ public class JDListaMovimientos extends javax.swing.JDialog {
         String titulos[] = {"ID","PRODUCTO","USUARIO","MOVIMIENTO"
                 ,"CANTIDAD","FECHA", "SUCURSAL"};
         LMovimiento.setColumnIdentifiers(titulos);
+//        jtListaMovimientos.getColumnModel().getColumn(0).setPreferredWidth(0);
+//        jtListaMovimientos.getColumnModel().getColumn(0).setMaxWidth(0);
         for (MovimientosBean movs : resultWSArray) {
             String producto = util.buscaDescFromCodProd(productosHMIDCons, "" + movs.getIdArticulo());
             String usuario = util.buscaDescFromIdUsu(usuariosHMCons, "" + movs.getIdUsuario());
@@ -148,7 +150,7 @@ public class JDListaMovimientos extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 400, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 465, Short.MAX_VALUE)
                         .addComponent(jButton2))
                     .addComponent(jScrollPane1))
                 .addContainerGap())

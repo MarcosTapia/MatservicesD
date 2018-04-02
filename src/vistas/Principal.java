@@ -2,6 +2,7 @@ package vistas;
 
 import ComponenteDatos.ConfiguracionDAO;
 import beans.CategoriaBean;
+import beans.ClienteBean;
 import beans.DatosEmpresaBean;
 import beans.ProductoBean;
 import beans.ProveedorBean;
@@ -29,7 +30,6 @@ public class Principal extends javax.swing.JFrame {
     static Map<String,String> proveedoresHM = new HashMap();
     static Map<String,String> productosHM = new HashMap();
     static Map<String,String> productosHMID = new HashMap();
-    
     static Map<String,String> clientesHM = new HashMap();
     
     //Globales 
@@ -38,6 +38,7 @@ public class Principal extends javax.swing.JFrame {
     static ArrayList<UsuarioBean> usuarios = new ArrayList();
     static ArrayList<ProveedorBean> proveedores = new ArrayList();
     static ArrayList<ProductoBean> productos = new ArrayList();
+    static ArrayList<ClienteBean> clientes = new ArrayList();
     
     Util util = new Util();
     
@@ -89,6 +90,12 @@ public class Principal extends javax.swing.JFrame {
         util.llenaMapProductos(productos);
         productosHM = util.getProductosHM();
         productosHMID = util.getProductosHMID();
+        
+        //Carga clientes
+        clientes = util.getMapClientes();
+        util.llenaMapClientes(clientes);
+        clientesHM = util.getClientesHM();
+        
         
         this.setIcon();
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre());
