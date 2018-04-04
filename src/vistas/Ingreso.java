@@ -261,7 +261,7 @@ public class Ingreso extends javax.swing.JFrame {
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
         if (txtUser.getText().equalsIgnoreCase("admin") && txtPassword.getText().equalsIgnoreCase("12345")) {
             this.dispose();
-            Configuracion configuracion = new Configuracion();
+            ConfiguracionOculta configuracion = new ConfiguracionOculta();
             Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
             configuracion.setSize(550,400);		
             configuracion.setLocationRelativeTo(null);        

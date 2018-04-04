@@ -217,7 +217,7 @@ public class FrmAlertas extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
-        Ventas ventas = new Ventas();
+        Operaciones ventas = new Operaciones();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

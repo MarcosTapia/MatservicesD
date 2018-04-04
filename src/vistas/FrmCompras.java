@@ -880,7 +880,7 @@ public class FrmCompras extends javax.swing.JFrame {
 
     private void btnSalirProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirProActionPerformed
         this.dispose();
-        Ventas ventas = new Ventas();
+        Operaciones ventas = new Operaciones();
     }//GEN-LAST:event_btnSalirProActionPerformed
 
     private void borrar() {

@@ -640,7 +640,7 @@ public class FrmProveedor extends javax.swing.JFrame {
 
     private void btnSalirProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirProvActionPerformed
         this.dispose();
-        Operaciones operaciones = new Operaciones();
+        Configuracion operaciones = new Configuracion();
     }//GEN-LAST:event_btnSalirProvActionPerformed
 
     private void btnNuevoProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProvActionPerformed

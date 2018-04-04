@@ -115,13 +115,13 @@ public class Principal extends javax.swing.JFrame {
                 break;
             case 2: 
                 this.dispose();
-                Ventas ventas = new Ventas();
+                Operaciones ventas = new Operaciones();
                 ventas.setExtendedState(ventas.MAXIMIZED_BOTH);
                 ventas.setVisible(true);
                 break;
             case 3: 
                 this.dispose();
-                Operaciones operaciones = new Operaciones();
+                Configuracion operaciones = new Configuracion();
                 operaciones.setExtendedState(operaciones.MAXIMIZED_BOTH);
                 operaciones.setVisible(true);
                 break;

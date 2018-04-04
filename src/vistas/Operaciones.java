@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 public class Operaciones extends javax.swing.JFrame {
     String permisos = "";
-
+    
     public Operaciones() {
         initComponents();
         java.util.Date fecha = new Date();
@@ -19,33 +19,14 @@ public class Operaciones extends javax.swing.JFrame {
         lblUsuario.setText("Usuario: " + Ingreso.usuario.getNombre());
         //verifica permisos de usuario
         permisos = Ingreso.usuario.getClase();
-
-            //equivalencias de sistemas
-            //Inventario pos 0  --> inventario->productos pos 0, 
-            //            operaciones->alertas pos 0,
-            //            configuracion->codigo de barras pos 0
-            //Ventas pos 1   --> operaciones->ventas pos 1
-            //Compras pos 2 --> operaciones->compras pos 2
-            //Consultas pos 3 --> inventario->consultaventas pos 3
-            //Proveedores pos 4 --> configuracion->proveedores pos 4
-            //Clientes pos 5 --> configuracion->clientes pos 5
-            //Empleados pos 6 --> configuracion->usuarios pos 6
-            //Configuración pos 7 --> configuracion->categorias pos 7
-        
-        if (permisos.charAt(4)=='0') {
-            btnProveedores.setVisible(false);
+        if (permisos.charAt(2)=='0') {
+            btnVentas.setVisible(false);
         }
-        if (permisos.charAt(5)=='0') {
-            btnUsuarios.setVisible(false);
-        }
-        if (permisos.charAt(6)=='0') {
-            btnClientes.setVisible(false);
-        }
-        if (permisos.charAt(7)=='0') {
-            btnCategorias.setVisible(false);
+        if (permisos.charAt(3)=='0') {
+            btnCompras.setVisible(false);
         }
         if (permisos.charAt(0)=='0') {
-            btnCodigoBarras.setVisible(false);
+            btnAlertas.setVisible(false);
         }
         //Fin verifica permisos de usuario
         this.setIcon();
@@ -60,18 +41,17 @@ public class Operaciones extends javax.swing.JFrame {
     private void initComponents() {
 
         jToolBar1 = new javax.swing.JToolBar();
-        btnProveedores = new javax.swing.JButton();
-        btnUsuarios = new javax.swing.JButton();
-        btnClientes = new javax.swing.JButton();
-        btnCategorias = new javax.swing.JButton();
-        btnCodigoBarras = new javax.swing.JButton();
+        btnVentas = new javax.swing.JButton();
+        btnCompras = new javax.swing.JButton();
+        btnAlertas = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         lblTitulo = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        lblUsuario = new javax.swing.JLabel();
         lblFecha = new javax.swing.JLabel();
+        lblUsuario = new javax.swing.JLabel();
+        lblTitulo1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Control Farmacia Lux V2");
@@ -85,69 +65,45 @@ public class Operaciones extends javax.swing.JFrame {
         jToolBar1.setRollover(true);
         jToolBar1.setAutoscrolls(true);
 
-        btnProveedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/proveedores.png"))); // NOI18N
-        btnProveedores.setText("Proveedores");
-        btnProveedores.setToolTipText("");
-        btnProveedores.setFocusable(false);
-        btnProveedores.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnProveedores.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnProveedores.addActionListener(new java.awt.event.ActionListener() {
+        btnVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/VENTASS.png"))); // NOI18N
+        btnVentas.setText("VENTAS");
+        btnVentas.setToolTipText("");
+        btnVentas.setFocusable(false);
+        btnVentas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnVentas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnVentas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProveedoresActionPerformed(evt);
+                btnVentasActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnProveedores);
+        jToolBar1.add(btnVentas);
 
-        btnUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/empleados.png"))); // NOI18N
-        btnUsuarios.setText("Usuarios");
-        btnUsuarios.setFocusable(false);
-        btnUsuarios.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnUsuarios.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnUsuarios.addActionListener(new java.awt.event.ActionListener() {
+        btnCompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pedidos.png"))); // NOI18N
+        btnCompras.setText("COMPRAS");
+        btnCompras.setFocusable(false);
+        btnCompras.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCompras.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCompras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUsuariosActionPerformed(evt);
+                btnComprasActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnUsuarios);
+        jToolBar1.add(btnCompras);
 
-        btnClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/clientes.png"))); // NOI18N
-        btnClientes.setText("Clientes");
-        btnClientes.setFocusable(false);
-        btnClientes.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnClientes.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnClientes.addActionListener(new java.awt.event.ActionListener() {
+        btnAlertas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/clientes.png"))); // NOI18N
+        btnAlertas.setText("ALERTAS");
+        btnAlertas.setFocusable(false);
+        btnAlertas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAlertas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAlertas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClientesActionPerformed(evt);
+                btnAlertasActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnClientes);
-
-        btnCategorias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/report2.png"))); // NOI18N
-        btnCategorias.setText("Categorías");
-        btnCategorias.setFocusable(false);
-        btnCategorias.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnCategorias.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnCategorias.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCategoriasActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnCategorias);
-
-        btnCodigoBarras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cod_barras.png"))); // NOI18N
-        btnCodigoBarras.setText("Gen. Cód. Barras");
-        btnCodigoBarras.setFocusable(false);
-        btnCodigoBarras.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnCodigoBarras.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnCodigoBarras.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCodigoBarrasActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnCodigoBarras);
+        jToolBar1.add(btnAlertas);
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
-        jButton5.setText("Inicio");
+        jButton5.setText("INICIO");
         jButton5.setFocusable(false);
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -159,7 +115,7 @@ public class Operaciones extends javax.swing.JFrame {
         jToolBar1.add(jButton5);
 
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/salir3.png"))); // NOI18N
-        jButton6.setText("Salir");
+        jButton6.setText("SALIR");
         jButton6.setFocusable(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -173,40 +129,75 @@ public class Operaciones extends javax.swing.JFrame {
         getContentPane().add(jToolBar1);
         jToolBar1.setBounds(0, 0, 1580, 60);
 
-        jPanel1.setBackground(new java.awt.Color(0, 204, 0));
-        jPanel1.setLayout(null);
+        jPanel1.setBackground(new java.awt.Color(247, 254, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(70, 99, 138)));
+        jPanel1.setAutoscrolls(true);
+        jPanel1.setMinimumSize(new java.awt.Dimension(1680, 800));
+        jPanel1.setPreferredSize(new java.awt.Dimension(1000, 439));
 
         lblTitulo.setFont(new java.awt.Font("Arial Black", 2, 48)); // NOI18N
         lblTitulo.setForeground(new java.awt.Color(255, 255, 255));
         lblTitulo.setText("jLabel1");
-        jPanel1.add(lblTitulo);
-        lblTitulo.setBounds(170, 190, 1030, 80);
-
-        jLabel2.setBackground(new java.awt.Color(0, 102, 204));
-        jLabel2.setFont(new java.awt.Font("Arial Black", 1, 42)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 51, 204));
-        jLabel2.setText("MÓDULO DE CONFIGURACIÓN");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(170, 350, 780, 50);
-
-        lblUsuario.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
-        lblUsuario.setText("jLabel1");
-        jPanel1.add(lblUsuario);
-        lblUsuario.setBounds(400, 110, 590, 30);
 
         lblFecha.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
         lblFecha.setText("jLabel1");
-        jPanel1.add(lblFecha);
-        lblFecha.setBounds(380, 520, 600, 40);
+
+        lblUsuario.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
+        lblUsuario.setText("jLabel1");
+
+        lblTitulo1.setBackground(new java.awt.Color(247, 254, 255));
+        lblTitulo1.setFont(new java.awt.Font("Arial Black", 2, 48)); // NOI18N
+        lblTitulo1.setForeground(new java.awt.Color(70, 99, 138));
+        lblTitulo1.setText("jLabel1");
+
+        jLabel2.setBackground(new java.awt.Color(247, 254, 255));
+        jLabel2.setFont(new java.awt.Font("Arial Black", 1, 42)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(70, 99, 138));
+        jLabel2.setText("MÓDULO DE OPERACIONES");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(193, 193, 193)
+                .addComponent(jLabel2)
+                .addGap(98, 98, 98)
+                .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 1030, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(471, 471, 471)
+                .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(91, 91, 91)
+                .addComponent(lblTitulo1, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(434, 434, 434)
+                .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblTitulo1)
+                .addGap(44, 44, 44)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(125, 125, 125)
+                .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
 
         getContentPane().add(jPanel1);
-        jPanel1.setBounds(-50, -20, 1620, 1210);
+        jPanel1.setBounds(0, 60, 1680, 800);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void inicio() {
-        this.setVisible(false);
+        this.dispose();
         Principal principal = new Principal();
         principal.setExtendedState(Principal.MAXIMIZED_BOTH);
         principal.setVisible(true);        
@@ -218,38 +209,27 @@ public class Operaciones extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
-        lblTitulo.setText(Principal.datosEmpresaBean.getNombreEmpresa());
+        lblTitulo1.setText(Principal.datosEmpresaBean.getNombreEmpresa());
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         System.exit(1);
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void btnProveedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProveedoresActionPerformed
-//        this.dispose();
-        FrmProveedor frmProv = new FrmProveedor();
-        frmProv.setVisible(true);
-    }//GEN-LAST:event_btnProveedoresActionPerformed
+    private void btnVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentasActionPerformed
+        FrmVenta frmVventa = new FrmVenta();
+        frmVventa.setVisible(true);
+    }//GEN-LAST:event_btnVentasActionPerformed
 
-    private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
-        FrmCliente frmCli = new FrmCliente();
-        frmCli.setVisible(true);
-    }//GEN-LAST:event_btnClientesActionPerformed
+    private void btnAlertasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlertasActionPerformed
+        FrmAlertas frmAlertas = new FrmAlertas();
+        frmAlertas.setVisible(true);
+    }//GEN-LAST:event_btnAlertasActionPerformed
 
-    private void btnCategoriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoriasActionPerformed
-        FrmCategoria frmCat = new FrmCategoria();
-        frmCat.setVisible(true);
-    }//GEN-LAST:event_btnCategoriasActionPerformed
-
-    private void btnUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuariosActionPerformed
-        FrmUsuarios frmU = new FrmUsuarios();
-        frmU.setVisible(true);
-    }//GEN-LAST:event_btnUsuariosActionPerformed
-
-    private void btnCodigoBarrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCodigoBarrasActionPerformed
-        FrmCodBarras frmCodBarras = new FrmCodBarras();
-        frmCodBarras.setVisible(true);
-    }//GEN-LAST:event_btnCodigoBarrasActionPerformed
+    private void btnComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprasActionPerformed
+        FrmCompras frmCompra = new FrmCompras();
+        frmCompra.setVisible(true);
+    }//GEN-LAST:event_btnComprasActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -281,6 +261,30 @@ public class Operaciones extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -291,11 +295,9 @@ public class Operaciones extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCategorias;
-    private javax.swing.JButton btnClientes;
-    private javax.swing.JButton btnCodigoBarras;
-    private javax.swing.JButton btnProveedores;
-    private javax.swing.JButton btnUsuarios;
+    private javax.swing.JButton btnAlertas;
+    private javax.swing.JButton btnCompras;
+    private javax.swing.JButton btnVentas;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel2;
@@ -303,6 +305,7 @@ public class Operaciones extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblFecha;
     private javax.swing.JLabel lblTitulo;
+    private javax.swing.JLabel lblTitulo1;
     private javax.swing.JLabel lblUsuario;
     // End of variables declaration//GEN-END:variables
 }

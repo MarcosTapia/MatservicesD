@@ -832,7 +832,7 @@ public class FrmProducto extends javax.swing.JFrame {
         });
 
         btnSalirPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        btnSalirPro.setText("CERRAR");
+        btnSalirPro.setText("SALIR");
         btnSalirPro.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 51, 0), 1, true));
         btnSalirPro.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSalirPro.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

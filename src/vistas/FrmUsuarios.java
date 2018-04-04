@@ -727,7 +727,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
         Principal principal = new Principal();
         principal.cargaUsuarios();
         this.dispose();
-        Operaciones operaciones = new Operaciones();
+        Configuracion operaciones = new Configuracion();
     }//GEN-LAST:event_btnSalirPerActionPerformed
 
     private void btnNuevoPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoPerActionPerformed

@@ -496,7 +496,7 @@ public class FrmCategoria extends javax.swing.JFrame {
 
     private void btnSalirCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCatActionPerformed
         this.dispose();
-        Operaciones operaciones = new Operaciones();
+        Configuracion operaciones = new Configuracion();
     }//GEN-LAST:event_btnSalirCatActionPerformed
 
     private void btnBuscarCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarCatActionPerformed

@@ -598,7 +598,7 @@ public class FrmCliente extends javax.swing.JFrame {
 
     private void btnSalirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCliActionPerformed
         this.dispose();
-        Operaciones operaciones = new Operaciones();
+        Configuracion operaciones = new Configuracion();
     }//GEN-LAST:event_btnSalirCliActionPerformed
 
     private void btnMostrarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarCliActionPerformed

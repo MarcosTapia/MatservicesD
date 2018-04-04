@@ -1,49 +1,46 @@
 package beans;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class VentasBean {
-    private int nVenCodigo;
-    //**
-    private ClienteBean clienteBean;
-    private int nCliCodigo;
-    //**
-    private UsuarioBean usuarioBean;
+    private int idVenta;
+    private Date fecha;
+    private int idCliente;
+    private String observaciones;
     private int idUsuario;
-    
-    private String cVenFecha;
-    private double nVenMontoTotal;
+    private int idSucursal;
 
-    public int getnVenCodigo() {
-        return nVenCodigo;
+    public int getIdVenta() {
+        return idVenta;
     }
 
-    public void setnVenCodigo(int nVenCodigo) {
-        this.nVenCodigo = nVenCodigo;
+    public void setIdVenta(int idVenta) {
+        this.idVenta = idVenta;
     }
 
-    public ClienteBean getClienteBean() {
-        return clienteBean;
+    public Date getFecha() {
+        return fecha;
     }
 
-    public void setClienteBean(ClienteBean clienteBean) {
-        this.clienteBean = clienteBean;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
-    public int getnCliCodigo() {
-        return nCliCodigo;
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    public void setnCliCodigo(int nCliCodigo) {
-        this.nCliCodigo = nCliCodigo;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
-    public UsuarioBean getUsuarioBean() {
-        return usuarioBean;
+    public String getObservaciones() {
+        return observaciones;
     }
 
-    public void setUsuarioBean(UsuarioBean usuarioBean) {
-        this.usuarioBean = usuarioBean;
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
     }
 
     public int getIdUsuario() {
@@ -54,22 +51,13 @@ public class VentasBean {
         this.idUsuario = idUsuario;
     }
 
-    public String getcVenFecha() {
-        return cVenFecha;
+    public int getIdSucursal() {
+        return idSucursal;
     }
 
-    public void setcVenFecha(String cVenFecha) {
-        this.cVenFecha = cVenFecha;
+    public void setIdSucursal(int idSucursal) {
+        this.idSucursal = idSucursal;
     }
-
-    public double getnVenMontoTotal() {
-        return nVenMontoTotal;
-    }
-
-    public void setnVenMontoTotal(double nVenMontoTotal) {
-        this.nVenMontoTotal = nVenMontoTotal;
-    }
-    
     
     
 }

@@ -389,6 +389,35 @@ public class Util {
         }
         return existe;
     }
+    
+    public String buscaDescFromIdProd(Map<String,String> productosHM, String idArt) {
+        Iterator it = productosHMID.keySet().iterator();
+        String descripProd = "";
+        while(it.hasNext()){
+          Object key = it.next();
+          String t = key.toString();
+          if (t.equalsIgnoreCase(idArt)) {
+              descripProd = productosHMID.get(key).toString();
+              break;
+          }
+        }        
+        return descripProd;
+    }
+    
+//    public int buscaIdFromCodSucProd(Map<String, String> productosHM, 
+//            String codigoProd, String idSuc) {
+//        Iterator it = productosHMID.keySet().iterator();
+//        int idProd = 0;
+//        while(it.hasNext()){
+//          Object key = it.next();
+//          if (descripcionProd.equalsIgnoreCase(productosHMID.get(key))) {
+//              idProd = Integer.parseInt(key.toString());
+//              break;
+//          }
+//        }        
+//        return idProd;
+//    }
+    
     //********* FIN PRODUCTOS
     
     //********* USUARIOS
