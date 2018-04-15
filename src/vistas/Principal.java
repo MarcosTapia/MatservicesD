@@ -96,7 +96,6 @@ public class Principal extends javax.swing.JFrame {
         util.llenaMapClientes(clientes);
         clientesHM = util.getClientesHM();
         
-        
         this.setIcon();
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre());
     }

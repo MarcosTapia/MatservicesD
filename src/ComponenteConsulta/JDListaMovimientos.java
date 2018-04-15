@@ -100,7 +100,7 @@ public class JDListaMovimientos extends javax.swing.JDialog {
                 , usuario
                 , movs.getTipoOperacion()
                 , "" + movs.getCantidad()
-                , util.cambisFormatoFecha(movs.getFechaOperacion().toLocaleString())
+                , util.cambiaFormatoFecha(movs.getFechaOperacion().toLocaleString())
                 , sucursal};
             LMovimiento.addRow(Datos);
         }

@@ -545,7 +545,7 @@ public class VistaExcel extends javax.swing.JFrame {
             jCalFechaIngresoProd.setDateFormatString("yyyy/MM/dd HH:mm:ss");
             p.setFechaIngreso(jCalFechaIngresoProd.getDate());
             //cambia formato para enviarla como string a ws
-            String fecha = util.cambisFormatoFecha(p.getFechaIngreso().toLocaleString());
+            String fecha = util.cambiaFormatoFecha(p.getFechaIngreso().toLocaleString());
             p.setIdCategoria(util.buscaIdCat(Principal.categoriasHM, 
                     cboCategoria.getSelectedItem().toString()));
             p.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM, 

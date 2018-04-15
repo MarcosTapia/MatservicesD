@@ -7,7 +7,7 @@ public class DetalleVentaBean {
     private double precio;
     private double cantidad;
     private double descuento;
-    private int idSucursal;
+    private int idSucursal;    
 
     public int getIdDetalleVenta() {
         return idDetalleVenta;

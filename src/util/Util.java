@@ -105,7 +105,7 @@ public class Util {
      * @param fecha La fecha en string
      * @return El string de fecha
      */
-    public String cambisFormatoFecha(String fecha) {
+    public String cambiaFormatoFecha(String fecha) {
         String dia = fecha.substring(0, 2);
         String mes = fecha.substring(3, 5);
         String anio = fecha.substring(6, 10);
@@ -167,6 +167,20 @@ public class Util {
             date = null;
         }
         return date;
+    }
+    
+    /**
+     * Metodo para convertir date a datetime
+     * @param date La fecha en forma util.date
+     * @return El String de fecha
+    */
+    public String dateToDateTimeAsString(Date date) {
+        //java.util.Date dt = new java.util.Date();
+        java.util.Date dt = date;
+        java.text.SimpleDateFormat sdf = 
+            new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(dt);
+        return currentTime;
     }
 
     //********* SUCURSALES
@@ -486,8 +500,9 @@ public class Util {
     public void llenaMapClientes(ArrayList<ClienteBean> clientes) {
         //carga hashmap de clientes
         for (ClienteBean s : clientes) {
-            this.clientesHM.put("" + s.getIdCliente(), s.getNombre() 
-            + " " + s.getApellidos());
+            String indice = String.valueOf(s.getIdCliente());
+            String nombreCompleto = s.getNombre() + " " + s.getApellidos();
+            this.clientesHM.put(indice, nombreCompleto);
         }
     }
     

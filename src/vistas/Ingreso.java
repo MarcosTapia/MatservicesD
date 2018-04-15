@@ -3,10 +3,10 @@ package vistas;
 import ComponenteDatos.UsuarioDAO;
 import beans.SucursalBean;
 import beans.UsuarioBean;
+import com.sun.awt.AWTUtilities;
 import constantes.ConstantesProperties;
 import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
-//import com.sun.awt.AWTUtilities;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
@@ -35,7 +35,7 @@ public class Ingreso extends javax.swing.JFrame {
     public Ingreso() {
         initComponents();
         this.setLocationRelativeTo(null);
-        //AWTUtilities.setWindowOpaque(this, false);
+        AWTUtilities.setWindowOpaque(this, false);
         
         //Checa si existe archivo licencia
         File f = new File("C:\\Windows\\addins\\w4mdp.ecf");

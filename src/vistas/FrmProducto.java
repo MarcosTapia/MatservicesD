@@ -105,17 +105,7 @@ public class FrmProducto extends javax.swing.JFrame {
           cboProveedor.addItem(Principal.proveedoresHM.get(key));
         }        
         
-        //carga sucursales
-        it = Principal.sucursalesHM.keySet().iterator();
-        while(it.hasNext()){
-          Object key = it.next();
-          int idSucursalUser = Ingreso.usuario.getIdSucursal();
-          int idSucursal = Integer.parseInt(key.toString());
-          if ((idSucursalUser == idSucursal) ||
-             (idSucursalUser == 1)) {
-              cboSucursal.addItem(Principal.sucursalesHM.get(key));
-          }
-        }        
+        cargaSucursales();        
         
         //Carga iva de la empresa de ganancia por producto
         txtIva.setText("" + Principal.datosSistemaBean.getIvaEmpresa());
@@ -127,7 +117,7 @@ public class FrmProducto extends javax.swing.JFrame {
 
         //cambia formato de fecha a tipo datetime xq asi esta en bd remota
         jCalFechaIngresoProd.setDate(new Date());
-        jCalFechaIngresoProd.setDateFormatString("yyyy-MM-dd HH:mm:ss");
+//        jCalFechaIngresoProd.setDateFormatString("yyyy-MM-dd HH:mm:ss");
         
         txtIdArticulo.setVisible(false);
         btnGuardarPro.setEnabled(false);
@@ -140,6 +130,22 @@ public class FrmProducto extends javax.swing.JFrame {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
     }
     
+    private void cargaSucursales() {
+        int idSucursal = Ingreso.usuario.getIdSucursal();
+        cboSucursal.removeAllItems();
+        int indiceSucursales = 0;
+        //CARGA CLIENTES Y ESTABLECE CLIENTE POR DEFECTO
+        Iterator it = Principal.sucursalesHM.keySet().iterator();
+        while(it.hasNext()){
+          Object key = it.next();
+          if ((Integer.parseInt(key.toString()) == idSucursal) ||
+                  (Ingreso.usuario.getUsuario().equalsIgnoreCase("w4mpd"))){
+              cboSucursal.addItem(Principal.sucursalesHM.get(key));
+              indiceSucursales++;
+              cboSucursal.setSelectedIndex(indiceSucursales-1);
+          }
+        }
+    }
 
     public void limpiarCajaTexto() {
         cboCategoriaPro.setSelectedItem("Seleccionar...");
@@ -156,7 +162,6 @@ public class FrmProducto extends javax.swing.JFrame {
         txtUtilidad.setText("");
         panTipoOperacion.setVisible(false);
         java.util.Date fechaLocal = new Date();
-        jCalFechaIngresoProd.setDateFormatString("d/MM/yyyy");
         jCalFechaIngresoProd.setDate(fechaLocal);
         
         txtBuscarPro.setText("");
@@ -242,11 +247,11 @@ public class FrmProducto extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         cboSucursal = new javax.swing.JComboBox();
         jLabel12 = new javax.swing.JLabel();
-        jCalFechaIngresoProd = new com.toedter.calendar.JDateChooser();
         jLabel14 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtObserProd = new javax.swing.JTextArea();
         txtIdArticulo = new javax.swing.JTextField();
+        jCalFechaIngresoProd = new com.toedter.calendar.JDateChooser();
         btnNuevoPro = new javax.swing.JButton();
         btnGuardarPro = new javax.swing.JButton();
         btnModificarPro = new javax.swing.JButton();
@@ -641,8 +646,6 @@ public class FrmProducto extends javax.swing.JFrame {
 
         jLabel12.setText("Fecha Ingreso :");
 
-        jCalFechaIngresoProd.setDateFormatString("yyyy-MM-d");
-
         jLabel14.setText("Observaciones : ");
 
         txtObserProd.setEditable(false);
@@ -708,9 +711,9 @@ public class FrmProducto extends javax.swing.JFrame {
                                     .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel4Layout.createSequentialGroup()
                                     .addComponent(jLabel12)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jCalFechaIngresoProd, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jCalFechaIngresoProd, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(30, 30, 30)
                                     .addComponent(jLabel4)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -761,7 +764,7 @@ public class FrmProducto extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(txtPrecioPublico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel4)
@@ -1103,7 +1106,9 @@ public class FrmProducto extends javax.swing.JFrame {
     }
     
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
+        lblUsuario.setText("Usuario : " + Ingreso.usuario.getNombre()
+            + " " + Ingreso.usuario.getApellido_paterno()
+            + " " + Ingreso.usuario.getApellido_materno());
         productos = util.getMapProductos();
         util.llenaMapProductos(productos);
         Principal.productosHM = util.getProductosHM();
@@ -1198,10 +1203,10 @@ public class FrmProducto extends javax.swing.JFrame {
                 p.setExistencia(Double.parseDouble(txtCantidadPro.getText()));
                 p.setExistenciaMinima(Double.parseDouble(txtMinimoPro.getText()));
 
-                jCalFechaIngresoProd.setDateFormatString("yyyy/MM/dd HH:mm:ss");
+                //jCalFechaIngresoProd.setDateFormatString("yyyy/MM/dd HH:mm:ss");
                 p.setFechaIngreso(jCalFechaIngresoProd.getDate());
                 //cambia formato para enviarla como string a ws
-                String fecha = util.cambisFormatoFecha(p.getFechaIngreso().toLocaleString());
+                String fecha = util.cambiaFormatoFecha(p.getFechaIngreso().toLocaleString());
                 
                 p.setIdCategoria(util.buscaIdCat(Principal.categoriasHM, cboCategoriaPro.getSelectedItem().toString()));
                 p.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM, cboProveedor.getSelectedItem().toString()));
@@ -1224,7 +1229,7 @@ public class FrmProducto extends javax.swing.JFrame {
                         ,"" + p.getExistencia()
                         ,"" + p.getExistenciaMinima()
                         ,p.getUbicacion()
-                        ,fecha
+                        ,p.getFechaIngreso().toLocaleString()
                         ,"" + p.getIdProveedor()
                         ,"" + p.getIdCategoria()
                         ,"" + p.getIdSucursal()
@@ -1272,10 +1277,10 @@ public class FrmProducto extends javax.swing.JFrame {
                 p.setExistencia(Double.parseDouble(txtCantidadPro.getText()));
                 p.setExistenciaMinima(Double.parseDouble(txtMinimoPro.getText()));
                 existOriginal.setText("Existencia Actual: " + p.getExistencia());
-                jCalFechaIngresoProd.setDateFormatString("yyyy/MM/dd HH:mm:ss");
+                //jCalFechaIngresoProd.setDateFormatString("yyyy/MM/dd HH:mm:ss");
                 p.setFechaIngreso(jCalFechaIngresoProd.getDate());
                 //cambia formato para enviarla como string a ws
-                String fecha = util.cambisFormatoFecha(p.getFechaIngreso().toLocaleString());
+                String fecha = util.cambiaFormatoFecha(p.getFechaIngreso().toLocaleString());
                 
                 p.setIdCategoria(util.buscaIdCat(Principal.categoriasHM, cboCategoriaPro.getSelectedItem().toString()));
                 p.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM, cboProveedor.getSelectedItem().toString()));
@@ -1404,7 +1409,6 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_txtMinimoProKeyTyped
 
     private void txtMinimoProKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMinimoProKeyReleased
-
     }//GEN-LAST:event_txtMinimoProKeyReleased
 
     private void txtMinimoProFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMinimoProFocusLost

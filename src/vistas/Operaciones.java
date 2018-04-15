@@ -16,7 +16,9 @@ public class Operaciones extends javax.swing.JFrame {
         java.util.Date fecha = new Date();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
         lblFecha.setText("Fecha: " + a);
-        lblUsuario.setText("Usuario: " + Ingreso.usuario.getNombre());
+        lblUsuario.setText("Usuario: " + Ingreso.usuario.getNombre()
+            + " " + Ingreso.usuario.getApellido_paterno()
+            + " " + Ingreso.usuario.getApellido_materno());
         //verifica permisos de usuario
         permisos = Ingreso.usuario.getClase();
         if (permisos.charAt(2)=='0') {

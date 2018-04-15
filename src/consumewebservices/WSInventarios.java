@@ -32,6 +32,7 @@ import util.Util;
 import static vistas.Ingreso.usuario;
 
 public class WSInventarios {
+    Util util = new Util();
     String cadena;
     //parametros con valores de producto
     String codigo;
@@ -101,6 +102,11 @@ public class WSInventarios {
             case "4" : 
                 productoObj = buscaProdPorCodigoWS(cadena); 
                 break;
+            case "5" : 
+                idArticulo = params[2];
+                existencia = params[3];
+                productoObj = ajustaInventarioWS(); 
+                break;
         }
         return productoObj;
     }
@@ -129,7 +135,16 @@ public class WSInventarios {
             jsonParam.put("existencia", existencia);
             jsonParam.put("existenciaMinima", existenciaMinima);
             jsonParam.put("ubicacion", ubicacion);
-            jsonParam.put("fechaIngreso", fechaIngreso);
+            
+            if (fechaIngreso.length()==21) {
+                // agrega 0 inicial si falta
+                fechaIngreso = "0" + fechaIngreso;
+            }
+            fechaIngreso = fechaIngreso.substring(0, 19);
+            fechaIngreso = util.cambiaFormatoFecha(fechaIngreso);
+            Date a = util.stringToDateTime(fechaIngreso);
+            String b = util.dateToDateTimeAsString(a);
+            jsonParam.put("fechaIngreso", b);
             jsonParam.put("proveedor", idProveedor);
             jsonParam.put("categoria", idCategoria);
             jsonParam.put("sucursal", idSucursal);
@@ -347,6 +362,60 @@ public class WSInventarios {
             e.printStackTrace();
         }
         return prod;
+    }
+
+    public ProductoBean ajustaInventarioWS(String... params) {
+        ProductoBean ajuste = null;
+        try {
+            HttpURLConnection urlConn;
+            DataOutputStream printout;
+            DataInputStream input;
+            url = new URL(cadena);
+            urlConn = (HttpURLConnection) url.openConnection();
+            urlConn.setDoInput(true);
+            urlConn.setDoOutput(true);
+            urlConn.setUseCaches(false);
+            urlConn.setRequestProperty("Content-Type", "application/json");
+            urlConn.setRequestProperty("Accept", "application/json");
+            urlConn.connect();
+            //Creo el Objeto JSON
+            JSONObject jsonParam = new JSONObject();
+            jsonParam.put("idArticulo", idArticulo);
+            jsonParam.put("existencia", existencia);
+            // Envio los parámetros post.
+            OutputStream os = urlConn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(jsonParam.toString());
+            writer.flush();
+            writer.close();
+            int respuesta = urlConn.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br=new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+                while ((line=br.readLine()) != null) {
+                    result.append(line);
+                    //response+=line;
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
+                if (resultJSON == 1) {      // hay un alumno que mostrar
+                    ajuste = new ProductoBean();
+                } else if (resultJSON == 2) {
+                    devuelve = "No hay alumnos";
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return ajuste;
     }
     
 }

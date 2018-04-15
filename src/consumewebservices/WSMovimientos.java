@@ -68,7 +68,7 @@ public class WSMovimientos {
                 //$body['idSucursal']
 
                 /* Notas de Tipo de Movimiento
-                Venta Normal
+                Venta
                 Venta Pedido
                 Incremento Inventario Manual
                 Decremento Inventario Manual        

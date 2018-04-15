@@ -5,18 +5,37 @@ import ComponenteConsulta.JDListaClientes;
 import ComponenteDatos.*;
 import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
+import constantes.ConstantesProperties;
+import consumewebservices.WSClientes;
+import consumewebservices.WSClientesList;
+import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSUsuarios;
+import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import util.Util;
 
 public class FrmCliente extends javax.swing.JFrame {
+    //WSUsuarios
+    Util util = new Util();
+    Properties constantes = new ConstantesProperties().getProperties();
+    WSDatosEmpresa hiloEmpresa;
+    //WSUsuarios
+    WSClientesList hiloClientesList;
+    WSClientes hiloClientes;
+    //Fin WSUsuarios
+    
+    
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
+
     String accion = "";
 
     public FrmCliente() {
@@ -27,13 +46,22 @@ public class FrmCliente extends javax.swing.JFrame {
         }
         initComponents();
         lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
-        configuracionBean = configuracionDAO.obtieneConfiguracion(1);
-        this.setTitle(configuracionBean.getNombreEmpresa());
+        hiloEmpresa = new WSDatosEmpresa();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
+                + "GETDATOSEMPRESA");
+        DatosEmpresaBean resultadoWS = hiloEmpresa.
+                ejecutaWebService(rutaWS,"1");
         
-        obtenerUltimoId();
-        this.setLocationRelativeTo(null);
         actualizarBusqueda();
         activarBotones(true);
+        
+        lblUsuario.setText("Usuario : " 
+                + Ingreso.usuario.getNombre()
+                + " " + Ingreso.usuario.getApellido_paterno()
+                + " " + Ingreso.usuario.getApellido_materno());
+        configuracionBean = configuracionDAO.obtieneConfiguracion(1);
+        this.setTitle(configuracionBean.getNombreEmpresa());
+        this.setLocationRelativeTo(null);
     }
 
     public void obtenerUltimoId() {
@@ -43,7 +71,7 @@ public class FrmCliente extends javax.swing.JFrame {
             ResultSet rs = stmt.executeQuery("select max(nCliCodigo) as Codigo from Cliente");
             while (rs.next()) {
                 int lastID = rs.getInt(1);
-                txtCodigoCli.setText(String.valueOf(lastID + 1));
+                txtidCliente.setText(String.valueOf(lastID + 1));
             }
             rs.close();
             stmt.close();
@@ -54,11 +82,11 @@ public class FrmCliente extends javax.swing.JFrame {
     }
 
     public void limpiarCajatexto() {
-        txtCodigoCli.setText("");
+        txtidCliente.setText("");
         txtApellidos.setText("");
-        txtCiCli.setText("");
+        txtRFC.setText("");
         txtNombreCli.setText("");
-        txtDireccionCli.setText("");
+        txtDireccion1.setText("");
         cboTipoTelefonoCli.setSelectedItem("Seleccionar...");
         txtNroTelefonoCli.setText("");
         txtNroFaxCli.setText("");
@@ -67,11 +95,11 @@ public class FrmCliente extends javax.swing.JFrame {
     }
 
     public void activarCajatexto(boolean b) {
-        txtCodigoCli.setEditable(!b);
+        txtidCliente.setEditable(!b);
         txtApellidos.setEditable(b);
-        txtCiCli.setEditable(b);
+        txtRFC.setEditable(b);
         txtNombreCli.setEditable(b);
-        txtDireccionCli.setEditable(b);
+        txtDireccion1.setEditable(b);
         txtNroTelefonoCli.setEditable(b);
         txtNroFaxCli.setEditable(b);
         txtEmailCli.setEditable(b);
@@ -106,25 +134,21 @@ public class FrmCliente extends javax.swing.JFrame {
         btnMostrarCli = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        txtCodigoCli = new javax.swing.JTextField();
+        txtidCliente = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtApellidos = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        txtCiCli = new javax.swing.JTextField();
+        txtRFC = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtNombreCli = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        txtDireccionCli = new javax.swing.JTextField();
+        txtDireccion1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        cboTipoTelefonoCli = new javax.swing.JComboBox();
         txtNroTelefonoCli = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         txtNroFaxCli = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         txtEmailCli = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtOtrosCli = new javax.swing.JTextArea();
         btnSalirCli = new javax.swing.JButton();
         btnEliminarCli = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
@@ -152,7 +176,7 @@ public class FrmCliente extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Garamond", 1, 12)); // NOI18N
         jLabel3.setText("BUSCAR CLIENTE");
 
-        cboParametroCli.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Apellidos", "Nombre" }));
+        cboParametroCli.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Id", "Nombre" }));
         cboParametroCli.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboParametroCliActionPerformed(evt);
@@ -290,7 +314,7 @@ public class FrmCliente extends javax.swing.JFrame {
 
         jLabel2.setText("Codigo :");
 
-        txtCodigoCli.setEditable(false);
+        txtidCliente.setEditable(false);
 
         jLabel5.setText("Apellidos (*):");
 
@@ -308,15 +332,15 @@ public class FrmCliente extends javax.swing.JFrame {
 
         jLabel6.setText("RFC :");
 
-        txtCiCli.setEditable(false);
-        txtCiCli.addActionListener(new java.awt.event.ActionListener() {
+        txtRFC.setEditable(false);
+        txtRFC.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCiCliActionPerformed(evt);
+                txtRFCActionPerformed(evt);
             }
         });
-        txtCiCli.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtRFC.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtCiCliKeyTyped(evt);
+                txtRFCKeyTyped(evt);
             }
         });
 
@@ -329,23 +353,16 @@ public class FrmCliente extends javax.swing.JFrame {
             }
         });
 
-        jLabel8.setText("Dirección :");
+        jLabel8.setText("Dirección 1 :");
 
-        txtDireccionCli.setEditable(false);
-        txtDireccionCli.addActionListener(new java.awt.event.ActionListener() {
+        txtDireccion1.setEditable(false);
+        txtDireccion1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDireccionCliActionPerformed(evt);
+                txtDireccion1ActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Tipo Telefono :");
-
-        cboTipoTelefonoCli.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar...", "Casa", "Celular", "Trabajo" }));
-        cboTipoTelefonoCli.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                cboTipoTelefonoCliKeyTyped(evt);
-            }
-        });
+        jLabel1.setText("Teléfono Casa :");
 
         txtNroTelefonoCli.setEditable(false);
         txtNroTelefonoCli.addActionListener(new java.awt.event.ActionListener() {
@@ -359,7 +376,7 @@ public class FrmCliente extends javax.swing.JFrame {
             }
         });
 
-        jLabel9.setText("Nro Fax :");
+        jLabel9.setText("Teléfono Celular : ");
 
         txtNroFaxCli.setEditable(false);
         txtNroFaxCli.addActionListener(new java.awt.event.ActionListener() {
@@ -382,14 +399,6 @@ public class FrmCliente extends javax.swing.JFrame {
             }
         });
 
-        jLabel11.setText("Otros Datos:");
-
-        txtOtrosCli.setEditable(false);
-        txtOtrosCli.setColumns(8);
-        txtOtrosCli.setRows(5);
-        txtOtrosCli.setTabSize(5);
-        jScrollPane1.setViewportView(txtOtrosCli);
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -397,83 +406,71 @@ public class FrmCliente extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtNombreCli))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtDireccionCli))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cboTipoTelefonoCli, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtNroTelefonoCli, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtNroFaxCli, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtEmailCli, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel2)
-                                            .addComponent(jLabel5))
-                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(txtCodigoCli, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                                .addGap(14, 14, 14)
-                                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(txtCiCli, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                                    .addComponent(jLabel6))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11)
-                        .addGap(10, 10, 10)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addComponent(jLabel7)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(txtNombreCli))
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addComponent(jLabel8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtDireccion1))
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addComponent(jLabel9)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtNroFaxCli, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtEmailCli, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)))
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtNroTelefonoCli, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jLabel5))
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(txtidCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                            .addGap(14, 14, 14)
+                                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(txtRFC, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jLabel6))
+                            .addGap(0, 0, Short.MAX_VALUE)))
                     .addComponent(jLabel10))
-                .addContainerGap())
+                .addContainerGap(333, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(txtCodigoCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(txtCiCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(txtNombreCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtidCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtRFC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtNombreCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(txtDireccionCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDireccion1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(cboTipoTelefonoCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtNroTelefonoCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -622,7 +619,7 @@ public class FrmCliente extends javax.swing.JFrame {
         activarBotones(false);
         obtenerUltimoId();
         accion = "Guardar";
-        txtCiCli.requestFocus();
+        txtRFC.requestFocus();
     }//GEN-LAST:event_btnNuevoCliActionPerformed
 
     private void btnCancelarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCliActionPerformed
@@ -633,68 +630,68 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarCliActionPerformed
 
     private void btnGuardarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCliActionPerformed
-        if (accion.equalsIgnoreCase("Guardar")) {
-            if (txtNombreCli.getText().compareTo("") != 0 &&
-                    txtApellidos.getText().compareTo("") != 0) {
-                try {
-                    ClienteBean cli = new ClienteBean();
-                    cli.setcCliNit(txtApellidos.getText());
-                    cli.setcCliCi(txtCiCli.getText());
-                    cli.setcCliNombre(txtNombreCli.getText());
-                    cli.setcCliDireccion(txtDireccionCli.getText());
-                    cli.setcCliEmail(txtEmailCli.getText());
-                    cli.setcCliNroFax(txtNroFaxCli.getText());
-                    cli.setcCliTipoTelefono((String) cboTipoTelefonoCli.getSelectedItem());
-                    cli.setcCliNumTelefono(txtNroTelefonoCli.getText());
-                    cli.setcCliOtros(txtOtrosCli.getText());
-                    BDCliente.insertarCliente(cli);
-                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
-                    //CODIGO MIO
-                    actualizarBusqueda();
-                    limpiarCajatexto();
-                    activarCajatexto(false);
-                    activarBotones(true);
-                    obtenerUltimoId();
-                    //FIN CODIGO MIO
-                } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(null, e.getMessage());
-                }
-                limpiarCajatexto();
-                obtenerUltimoId();
-            } else {
-                JOptionPane.showMessageDialog(null, "Llena los campos requeridos!!");
-            }
-        }
-        if (accion.equalsIgnoreCase("Actualizar")) {
-            ClienteBean cli;
-            try {
-                cli = BDCliente.buscarClienteCodigo(Integer.parseInt(txtCodigoCli.getText()));
-                if (cli == null) {
-                    JOptionPane.showMessageDialog(null, "Selecciona el registro a modificar de la tabla de la izquierda");
-                    return;
-                }
-                cli.setcCliNit(txtApellidos.getText());
-                cli.setcCliCi(txtCiCli.getText());
-                cli.setcCliNombre(txtNombreCli.getText());
-                cli.setcCliDireccion(txtDireccionCli.getText());
-                cli.setcCliEmail(txtEmailCli.getText());
-                cli.setcCliNroFax(txtNroFaxCli.getText());
-                cli.setcCliTipoTelefono((String) cboTipoTelefonoCli.getSelectedItem());
-                cli.setcCliNumTelefono(txtNroTelefonoCli.getText());
-                cli.setcCliOtros(txtOtrosCli.getText());
-                BDCliente.actualizarCliente(cli);
-                JOptionPane.showMessageDialog(null, " [ Datos Actualizados ]");
-                //CODIGO MIO
-                actualizarBusqueda();
-                limpiarCajatexto();
-                activarCajatexto(false);
-                activarBotones(true);
-                obtenerUltimoId();
-                //FIN CODIGO MIO
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
-            }
-        }
+//        if (accion.equalsIgnoreCase("Guardar")) {
+//            if (txtNombreCli.getText().compareTo("") != 0 &&
+//                    txtApellidos.getText().compareTo("") != 0) {
+//                try {
+//                    ClienteBean cli = new ClienteBean();
+//                    cli.setcCliNit(txtApellidos.getText());
+//                    cli.setcCliCi(txtCiCli.getText());
+//                    cli.setcCliNombre(txtNombreCli.getText());
+//                    cli.setcCliDireccion(txtDireccionCli.getText());
+//                    cli.setcCliEmail(txtEmailCli.getText());
+//                    cli.setcCliNroFax(txtNroFaxCli.getText());
+//                    cli.setcCliTipoTelefono((String) cboTipoTelefonoCli.getSelectedItem());
+//                    cli.setcCliNumTelefono(txtNroTelefonoCli.getText());
+//                    cli.setcCliOtros(txtOtrosCli.getText());
+//                    BDCliente.insertarCliente(cli);
+//                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+//                    //CODIGO MIO
+//                    actualizarBusqueda();
+//                    limpiarCajatexto();
+//                    activarCajatexto(false);
+//                    activarBotones(true);
+//                    obtenerUltimoId();
+//                    //FIN CODIGO MIO
+//                } catch (SQLException e) {
+//                    JOptionPane.showMessageDialog(null, e.getMessage());
+//                }
+//                limpiarCajatexto();
+//                obtenerUltimoId();
+//            } else {
+//                JOptionPane.showMessageDialog(null, "Llena los campos requeridos!!");
+//            }
+//        }
+//        if (accion.equalsIgnoreCase("Actualizar")) {
+//            ClienteBean cli;
+//            try {
+//                cli = BDCliente.buscarClienteCodigo(Integer.parseInt(txtCodigoCli.getText()));
+//                if (cli == null) {
+//                    JOptionPane.showMessageDialog(null, "Selecciona el registro a modificar de la tabla de la izquierda");
+//                    return;
+//                }
+//                cli.setcCliNit(txtApellidos.getText());
+//                cli.setcCliCi(txtCiCli.getText());
+//                cli.setcCliNombre(txtNombreCli.getText());
+//                cli.setcCliDireccion(txtDireccionCli.getText());
+//                cli.setcCliEmail(txtEmailCli.getText());
+//                cli.setcCliNroFax(txtNroFaxCli.getText());
+//                cli.setcCliTipoTelefono((String) cboTipoTelefonoCli.getSelectedItem());
+//                cli.setcCliNumTelefono(txtNroTelefonoCli.getText());
+//                cli.setcCliOtros(txtOtrosCli.getText());
+//                BDCliente.actualizarCliente(cli);
+//                JOptionPane.showMessageDialog(null, " [ Datos Actualizados ]");
+//                //CODIGO MIO
+//                actualizarBusqueda();
+//                limpiarCajatexto();
+//                activarCajatexto(false);
+//                activarBotones(true);
+//                obtenerUltimoId();
+//                //FIN CODIGO MIO
+//            } catch (SQLException e) {
+//                JOptionPane.showMessageDialog(null, e.getMessage());
+//            }
+//        }
     }//GEN-LAST:event_btnGuardarCliActionPerformed
 
     private void btnModificarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarCliActionPerformed
@@ -715,12 +712,12 @@ public class FrmCliente extends javax.swing.JFrame {
 //        }
     }//GEN-LAST:event_txtApellidosKeyTyped
 
-    private void txtCiCliKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCiCliKeyTyped
+    private void txtRFCKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRFCKeyTyped
 //        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
 //            Toolkit.getDefaultToolkit().beep();
 //            evt.consume();
 //        }
-    }//GEN-LAST:event_txtCiCliKeyTyped
+    }//GEN-LAST:event_txtRFCKeyTyped
 
     private void txtNroTelefonoCliKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNroTelefonoCliKeyTyped
         // TODO add your handling code here:
@@ -731,21 +728,22 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNroTelefonoCliKeyTyped
 
     private void jtClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtClienteMouseClicked
-        try {
-            ClienteBean cli = BDCliente.buscarClienteNit(String.valueOf(jtCliente.getModel().getValueAt(jtCliente.getSelectedRow(),0)));
-            txtCodigoCli.setText(String.valueOf(cli.getnCliCodigo()));
-            txtApellidos.setText(cli.getcCliNit());
-            txtCiCli.setText(cli.getcCliCi());
-            txtNombreCli.setText(cli.getcCliNombre());
-            txtDireccionCli.setText(cli.getcCliDireccion());
-            txtEmailCli.setText(cli.getcCliEmail());
-            txtNroFaxCli.setText(cli.getcCliNroFax());
-            cboTipoTelefonoCli.setSelectedItem((String)cli.getcCliTipoTelefono());
-            txtNroTelefonoCli.setText(cli.getcCliNumTelefono());
-            txtOtrosCli.setText(cli.getcCliOtros());            
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-        }
+        ArrayList<ClienteBean> resultWS = null;
+        hiloClientesList = new WSClientesList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCLIENTEPORID")
+                + String.valueOf(jtCliente.getModel().getValueAt(jtCliente.getSelectedRow(), 0)).trim();
+        resultWS = hiloClientesList.ejecutaWebService(rutaWS,"2");
+        ClienteBean cli = resultWS.get(0);
+        txtidCliente.setText(String.valueOf(cli.getIdCliente()));
+        txtApellidos.setText(cli.getApellidos());
+        txtRFC.setText(cli.getRfc());
+        txtNombreCli.setText(cli.getNombre());
+        txtDireccion1.setText(cli.getDireccion1());
+//        txtEmailCli.setText(cli.getcCliEmail());
+//        txtNroFaxCli.setText(cli.getcCliNroFax());
+//        cboTipoTelefonoCli.setSelectedItem((String)cli.getcCliTipoTelefono());
+//        txtNroTelefonoCli.setText(cli.getcCliNumTelefono());
+//        txtOtrosCli.setText(cli.getcCliOtros());            
     }//GEN-LAST:event_jtClienteMouseClicked
 
     private void jtClienteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtClienteMouseEntered
@@ -753,35 +751,35 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_jtClienteMouseEntered
 
     private void btnEliminarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarCliActionPerformed
-            ClienteBean cli;
-            try {
-                cli = BDCliente.buscarClienteCodigo(Integer.parseInt(txtCodigoCli.getText()));
-                if (cli == null) {
-                    JOptionPane.showMessageDialog(null, "Selecciona el registro a eliminar de la tabla de la izquierda");
-                    return;
-                }
-                cli.setcCliNit(txtApellidos.getText());
-                cli.setcCliCi(txtCiCli.getText());
-                cli.setcCliNombre(txtNombreCli.getText());
-                cli.setcCliDireccion(txtDireccionCli.getText());
-                cli.setcCliEmail(txtEmailCli.getText());
-                cli.setcCliNroFax(txtNroFaxCli.getText());
-                cli.setcCliTipoTelefono((String) cboTipoTelefonoCli.getSelectedItem());
-                cli.setcCliNumTelefono(txtNroTelefonoCli.getText());
-                cli.setcCliOtros(txtOtrosCli.getText());
-                if (BDCliente.eliminarCliente(cli)) {
-                    limpiarCajatexto();
-                    activarCajatexto(false);
-                    activarBotones(true);
-                    obtenerUltimoId();
-                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
-                    actualizarBusqueda();                
-                } else {
-                    JOptionPane.showMessageDialog(null, " [ ERROR ]");                
-                }
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
-            }
+//            ClienteBean cli;
+//            try {
+//                cli = BDCliente.buscarClienteCodigo(Integer.parseInt(txtCodigoCli.getText()));
+//                if (cli == null) {
+//                    JOptionPane.showMessageDialog(null, "Selecciona el registro a eliminar de la tabla de la izquierda");
+//                    return;
+//                }
+//                cli.setcCliNit(txtApellidos.getText());
+//                cli.setcCliCi(txtCiCli.getText());
+//                cli.setcCliNombre(txtNombreCli.getText());
+//                cli.setcCliDireccion(txtDireccionCli.getText());
+//                cli.setcCliEmail(txtEmailCli.getText());
+//                cli.setcCliNroFax(txtNroFaxCli.getText());
+//                cli.setcCliTipoTelefono((String) cboTipoTelefonoCli.getSelectedItem());
+//                cli.setcCliNumTelefono(txtNroTelefonoCli.getText());
+//                cli.setcCliOtros(txtOtrosCli.getText());
+//                if (BDCliente.eliminarCliente(cli)) {
+//                    limpiarCajatexto();
+//                    activarCajatexto(false);
+//                    activarBotones(true);
+//                    obtenerUltimoId();
+//                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+//                    actualizarBusqueda();                
+//                } else {
+//                    JOptionPane.showMessageDialog(null, " [ ERROR ]");                
+//                }
+//            } catch (SQLException e) {
+//                JOptionPane.showMessageDialog(null, e.getMessage());
+//            }
     }//GEN-LAST:event_btnEliminarCliActionPerformed
 
     private void txtNroFaxCliKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNroFaxCliKeyTyped
@@ -791,28 +789,21 @@ public class FrmCliente extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtNroFaxCliKeyTyped
 
-    private void txtCiCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCiCliActionPerformed
+    private void txtRFCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRFCActionPerformed
         txtApellidos.requestFocus();
-    }//GEN-LAST:event_txtCiCliActionPerformed
+    }//GEN-LAST:event_txtRFCActionPerformed
 
     private void txtApellidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtApellidosActionPerformed
         txtNombreCli.requestFocus();
     }//GEN-LAST:event_txtApellidosActionPerformed
 
     private void txtNombreCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreCliActionPerformed
-        txtDireccionCli.requestFocus();
+        txtDireccion1.requestFocus();
     }//GEN-LAST:event_txtNombreCliActionPerformed
 
-    private void txtDireccionCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccionCliActionPerformed
+    private void txtDireccion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccion1ActionPerformed
         cboTipoTelefonoCli.requestFocus();
-    }//GEN-LAST:event_txtDireccionCliActionPerformed
-
-    private void cboTipoTelefonoCliKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboTipoTelefonoCliKeyTyped
-        int key=evt.getKeyCode();
-        if(key==0) { 
-            txtNroTelefonoCli.requestFocus();        
-        }
-    }//GEN-LAST:event_cboTipoTelefonoCliKeyTyped
+    }//GEN-LAST:event_txtDireccion1ActionPerformed
 
     private void txtNroTelefonoCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNroTelefonoCliActionPerformed
         txtNroFaxCli.requestFocus();
@@ -827,30 +818,54 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtEmailCliActionPerformed
 
     private void actualizarBusqueda() {
-        ArrayList<ClienteBean> result = null;
-        if (String.valueOf(cboParametroCli.getSelectedItem()).equalsIgnoreCase("Apellidos")) {
-            result = BDCliente.listarClientePorCodigo(txtBuscarCli.getText());
-
-        } else if (String.valueOf(cboParametroCli.getSelectedItem()).equalsIgnoreCase("Nombre")) {
-            result = BDCliente.listarClientePorNombre(txtBuscarCli.getText());
-        }
-        recargarTable(result);
+        ArrayList<ClienteBean> resultWS = null;
+        if (String.valueOf(cboParametroCli.getSelectedItem()).
+                equalsIgnoreCase("Nombre")) {
+            if (txtBuscarCli.getText().equalsIgnoreCase("")) {
+                hiloClientesList = new WSClientesList();
+                String rutaWS = constantes.getProperty("IP") + constantes.
+                        getProperty("GETCLIENTES");
+                resultWS = hiloClientesList.ejecutaWebService(rutaWS,"1");
+            } else {
+                hiloClientesList = new WSClientesList();
+                String rutaWS = constantes.getProperty("IP") + constantes.
+                        getProperty("GETUSUARIOBUSQUEDANOMBRE")
+                    + txtBuscarCli.getText().trim();
+                resultWS = hiloClientesList.ejecutaWebService(rutaWS,"3");
+            }
+        } else {
+            if (String.valueOf(cboParametroCli.getSelectedItem()).
+                    equalsIgnoreCase("Id")) {
+                if (txtBuscarCli.getText().equalsIgnoreCase("")) {
+                    hiloClientesList = new WSClientesList();
+                    String rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GETCLIENTES");
+                    resultWS = hiloClientesList.ejecutaWebService(rutaWS,"1");
+                } else {
+                    hiloClientesList = new WSClientesList();
+                    String rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GETUSUARIOBUSQUEDAID") 
+                            + txtBuscarCli.getText().trim();
+                    resultWS = hiloClientesList.ejecutaWebService(rutaWS,"2");
+                }
+            }
+        }        
+        recargarTable(resultWS);
     }
 
     public void recargarTable(ArrayList<ClienteBean> list) {
         Object[][] datos = new Object[list.size()][2];
         int i = 0;
-        for (ClienteBean cli : list) {
-            datos[i][0] = cli.getcCliNit();
-            datos[i][1] = cli.getcCliNombre();            
+        for (ClienteBean p : list) {
+            datos[i][0] = p.getIdCliente();
+            datos[i][1] = p.getNombre() + " " + p.getApellidos();
             i++;
         }
         jtCliente.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
-                    "APELLIDOS", "NOMBRE"
+                    "ID CLIENTE", "NOMBRE"
                 }) {
-
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -903,10 +918,8 @@ public class FrmCliente extends javax.swing.JFrame {
     private javax.swing.JButton btnNuevoCli;
     private javax.swing.JButton btnSalirCli;
     private javax.swing.JComboBox cboParametroCli;
-    private javax.swing.JComboBox cboTipoTelefonoCli;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -919,19 +932,17 @@ public class FrmCliente extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jtCliente;
     private javax.swing.JLabel lblUsuario;
     private javax.swing.JTextField txtApellidos;
     private javax.swing.JTextField txtBuscarCli;
-    private javax.swing.JTextField txtCiCli;
-    private javax.swing.JTextField txtCodigoCli;
-    private javax.swing.JTextField txtDireccionCli;
+    private javax.swing.JTextField txtDireccion1;
     private javax.swing.JTextField txtEmailCli;
     private javax.swing.JTextField txtNombreCli;
     private javax.swing.JTextField txtNroFaxCli;
     private javax.swing.JTextField txtNroTelefonoCli;
-    private javax.swing.JTextArea txtOtrosCli;
+    private javax.swing.JTextField txtRFC;
+    private javax.swing.JTextField txtidCliente;
     // End of variables declaration//GEN-END:variables
 }
