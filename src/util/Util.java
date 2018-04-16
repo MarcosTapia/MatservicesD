@@ -2,6 +2,7 @@ package util;
 
 import beans.CategoriaBean;
 import beans.ClienteBean;
+import beans.EstadoBean;
 import beans.ProductoBean;
 import beans.ProveedorBean;
 import beans.SucursalBean;
@@ -9,6 +10,7 @@ import beans.UsuarioBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCategoriasList;
 import consumewebservices.WSClientesList;
+import consumewebservices.WSEstadosList;
 import consumewebservices.WSInventariosList;
 import consumewebservices.WSProveedoresList;
 import consumewebservices.WSSucursalesList;
@@ -22,9 +24,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -35,12 +42,14 @@ import vistas.Principal;
 
 public class Util {
     Properties constantes = new ConstantesProperties().getProperties();
+    WSEstadosList hiloEstadosList;
     WSSucursalesList hiloSucursalesList;
     WSCategoriasList hiloCategoriasList;
     WSProveedoresList hiloProveedoresList;
     WSInventariosList hiloInventariosList;
     WSUsuariosList hiloUsuariosList;
     WSClientesList hiloClientesList;
+    private Map<String,String> estadosHM = new HashMap();
     private Map<String,String> sucursalesHM = new HashMap();
     private Map<String,String> categoriasHM = new HashMap();
     private Map<String,String> proveedoresHM = new HashMap();
@@ -534,6 +543,82 @@ public class Util {
     }
     //********* FIN CLIENTES
     
+    //********* ESTADOS
+    /**
+     * Metodo para cargar estados
+     * @return Hash estados
+     */
+    public ArrayList<EstadoBean> getMapEstados() {
+        ArrayList<EstadoBean> estados = new ArrayList();
+        hiloEstadosList = new WSEstadosList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETESTADOS");
+        estados = hiloEstadosList.ejecutaWebService(rutaWS,"1");
+        return estados;
+    }
+    
+    public void llenaMapEstados(ArrayList<EstadoBean> estados) {
+        //carga hashmap de estados
+        for (EstadoBean s : estados) {
+            this.estadosHM.put(String.valueOf(s.getIdEstado()), s.getEstado());
+        }
+        
+        //ordena hashmap por key muy bueno
+//        Map mapOrdenado = new TreeMap(this.estadosHM);
+//        Set ref = mapOrdenado.keySet();
+//        Iterator it = ref.iterator();
+//        while (it.hasNext()) {
+//            System.out.println((String)it.next());
+//        }
+//        this.estadosHM.clear();
+//        this.estadosHM = mapOrdenado;
+        
+        //ordena hashmap por valor muy bueno
+        HashMap mapResultado = new LinkedHashMap();
+        List misMapKeys = new ArrayList(this.estadosHM.keySet());
+        List misMapValues = new ArrayList(this.estadosHM.values());
+        TreeSet conjuntoOrdenado = new TreeSet(misMapValues);
+        Object[] arrayOrdenado = conjuntoOrdenado.toArray();
+        int size = arrayOrdenado.length;
+        for (int i=0; i<size; i++) {
+        mapResultado.put(misMapKeys.get(misMapValues.indexOf(arrayOrdenado[i]))
+                ,arrayOrdenado[i]);
+        }
+        Iterator it1 = mapResultado.values().iterator();
+        while (it1.hasNext()) {
+            System.out.println((String)it1.next());
+        }        
+        this.estadosHM.clear();
+        this.estadosHM = mapResultado;
+    }
+    
+    public int buscaIdEdo(Map<String,String> estadosHM, String descripcionEdo) {
+        Iterator it = estadosHM.keySet().iterator();
+        int idEdo = 0;
+        while(it.hasNext()){
+          Object key = it.next();
+          if (descripcionEdo.equalsIgnoreCase(estadosHM.get(key))) {
+              idEdo = Integer.parseInt(key.toString());
+              break;
+          }
+        }        
+        return idEdo;
+    }
+    
+    public String buscaDescFromIdEdo(Map<String,String> estadosHM, String idEdo) {
+        Iterator it = estadosHM.keySet().iterator();
+        String descripEdo = "";
+        while(it.hasNext()){
+          Object key = it.next();
+          //JOptionPane.showMessageDialog(null, key.toString());
+          String t = key.toString();
+          if (t.equalsIgnoreCase(idEdo)) {
+              descripEdo = estadosHM.get(key).toString();
+              break;
+          }
+        }        
+        return descripEdo;
+    }
+    //********* FIN ESTADOS
     
     
     public Map<String, String> getSucursalesHM() {
@@ -591,4 +676,13 @@ public class Util {
     public void setUsuariosHM(Map<String, String> usuariosHM) {
         this.usuariosHM = usuariosHM;
     }
+
+    public Map<String, String> getEstadosHM() {
+        return estadosHM;
+    }
+
+    public void setEstadosHM(Map<String, String> estadosHM) {
+        this.estadosHM = estadosHM;
+    }
+    
 }

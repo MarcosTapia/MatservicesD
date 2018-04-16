@@ -7,10 +7,9 @@
             <file>file:/C:/MatservicesDeskGH/MatservicesD/src/vistas/Principal.java</file>
             <file>file:/C:/MatservicesDeskGH/MatservicesD/src/consumewebservices/WSClientes.java</file>
             <file>file:/C:/MatservicesDeskGH/MatservicesD/src/constantes/Constantes.properties</file>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/consumewebservices/WSUsuarios.java</file>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/consumewebservices/WSClientesList.java</file>
+            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/consumewebservices/WSEstadosList.java</file>
             <file>file:/C:/MatservicesDeskGH/MatservicesD/src/util/Util.java</file>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/vistas/FrmUsuarios.java</file>
+            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/vistas/FrmProducto.java</file>
         </group>
     </open-files>
 </project-private>

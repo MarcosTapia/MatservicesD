@@ -4,6 +4,7 @@ import ComponenteDatos.ConfiguracionDAO;
 import beans.CategoriaBean;
 import beans.ClienteBean;
 import beans.DatosEmpresaBean;
+import beans.EstadoBean;
 import beans.ProductoBean;
 import beans.ProveedorBean;
 import beans.SistemaBean;
@@ -24,6 +25,7 @@ import util.Util;
 public class Principal extends javax.swing.JFrame {
     public static DatosEmpresaBean datosEmpresaBean;
     public static SistemaBean datosSistemaBean;
+    static Map<String,String> estadosHM = new HashMap();
     static Map<String,String> sucursalesHM = new HashMap();
     static Map<String,String> categoriasHM = new HashMap();
     static Map<String,String> usuariosHM = new HashMap();
@@ -33,6 +35,7 @@ public class Principal extends javax.swing.JFrame {
     static Map<String,String> clientesHM = new HashMap();
     
     //Globales 
+    static ArrayList<EstadoBean> estados = new ArrayList();
     static ArrayList<SucursalBean> sucursales = new ArrayList();
     static ArrayList<CategoriaBean> categorias = new ArrayList();
     static ArrayList<UsuarioBean> usuarios = new ArrayList();
@@ -65,6 +68,12 @@ public class Principal extends javax.swing.JFrame {
     
     public Principal() {
         initComponents();
+        
+        //Carga estados
+        estados = util.getMapEstados();
+        util.llenaMapEstados(estados);
+        estadosHM = util.getEstadosHM();
+        
         //Carga sucursales
         sucursales = util.getMapSucursales();
         util.llenaMapSucursales(sucursales);
