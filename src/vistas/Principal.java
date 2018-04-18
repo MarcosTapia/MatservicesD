@@ -4,7 +4,9 @@ import ComponenteDatos.ConfiguracionDAO;
 import beans.CategoriaBean;
 import beans.ClienteBean;
 import beans.DatosEmpresaBean;
+import beans.EdoMunBean;
 import beans.EstadoBean;
+import beans.MunicipioBean;
 import beans.ProductoBean;
 import beans.ProveedorBean;
 import beans.SistemaBean;
@@ -25,6 +27,8 @@ import util.Util;
 public class Principal extends javax.swing.JFrame {
     public static DatosEmpresaBean datosEmpresaBean;
     public static SistemaBean datosSistemaBean;
+    static Map<String,String> municipiosHM = new HashMap();
+    static Map<String,String> estadosMunHM = new HashMap();
     static Map<String,String> estadosHM = new HashMap();
     static Map<String,String> sucursalesHM = new HashMap();
     static Map<String,String> categoriasHM = new HashMap();
@@ -35,6 +39,8 @@ public class Principal extends javax.swing.JFrame {
     static Map<String,String> clientesHM = new HashMap();
     
     //Globales 
+    static ArrayList<MunicipioBean> municipios = new ArrayList();
+    static ArrayList<EdoMunBean> estadosMun = new ArrayList();
     static ArrayList<EstadoBean> estados = new ArrayList();
     static ArrayList<SucursalBean> sucursales = new ArrayList();
     static ArrayList<CategoriaBean> categorias = new ArrayList();
@@ -68,6 +74,14 @@ public class Principal extends javax.swing.JFrame {
     
     public Principal() {
         initComponents();
+        
+        //Carga estados
+        municipios = util.getMapMunicipios();
+        util.llenaMapMunicipios(municipios);
+        municipiosHM = util.getMunicipiosHM();
+        
+        //Carga estados y municipios(claves)
+        estadosMun = util.getMapEstadosMun();
         
         //Carga estados
         estados = util.getMapEstados();

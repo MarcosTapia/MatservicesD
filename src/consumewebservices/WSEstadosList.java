@@ -1,6 +1,8 @@
 package consumewebservices;
 
+import beans.EdoMunBean;
 import beans.EstadoBean;
+import beans.MunicipioBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
 import java.io.BufferedInputStream;
@@ -38,7 +40,29 @@ public class WSEstadosList {
             }
             return estados;
         }
- 
+        
+        public ArrayList<EdoMunBean> ejecutaWebService2(String... params) {
+            cadena = params[0];
+            url = null; // Url de donde queremos obtener información
+            devuelve ="";
+            ArrayList<EdoMunBean> estadosMun = new ArrayList();
+            switch (params[1]) { 
+                case "1" : estadosMun = obtenerEstadosMunWS(); break;
+            }
+            return estadosMun;
+        }
+
+        public ArrayList<MunicipioBean> ejecutaWebService3(String... params) {
+            cadena = params[0];
+            url = null; // Url de donde queremos obtener información
+            devuelve ="";
+            ArrayList<MunicipioBean> municipios = new ArrayList();
+            switch (params[1]) { 
+                case "1" : municipios = obtenerMunicipiosWS(); break;
+            }
+            return municipios;
+        }
+        
     public ArrayList<EstadoBean> obtenerEstadosWS() {
         ArrayList<EstadoBean> estados = new ArrayList();
         try {
@@ -82,7 +106,94 @@ public class WSEstadosList {
         }
         return estados;
     }
-        
+
+    public ArrayList<EdoMunBean> obtenerEstadosMunWS() {
+        ArrayList<EdoMunBean> estadosMun = new ArrayList();
+        try {
+            url = new URL(cadena);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+            //connection.setHeader("content-type", "application/json");
+            int respuesta = connection.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK){
+                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                // StringBuilder.
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);        // Paso toda la entrada al StringBuilder
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");
+                if (resultJSON == 1) {
+                    JSONArray estadosMunJSON = respuestaJSON.getJSONArray("estadosmun");   // estado es el nombre del campo en el JSON
+                    for(int i=0;i<estadosMunJSON.length();i++){
+                        EdoMunBean edoMun = new EdoMunBean();
+                        edoMun.setIdEstado(estadosMunJSON.getJSONObject(i).getInt("estados_id"));
+                        edoMun.setIdMunicipio(estadosMunJSON.getJSONObject(i).getInt("municipios_id"));
+                        estadosMun.add(edoMun);
+                    }
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return estadosMun;
+    }
+    
+    public ArrayList<MunicipioBean> obtenerMunicipiosWS() {
+        ArrayList<MunicipioBean> municipios = new ArrayList();
+        try {
+            url = new URL(cadena);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+            //connection.setHeader("content-type", "application/json");
+            int respuesta = connection.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK){
+                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                // StringBuilder.
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);        // Paso toda la entrada al StringBuilder
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");
+                if (resultJSON == 1) {
+                    JSONArray municipiosJSON = respuestaJSON.getJSONArray("municipios");   // estado es el nombre del campo en el JSON
+                    for(int i=0;i<municipiosJSON.length();i++){
+                        MunicipioBean municipio = new MunicipioBean();
+                        municipio.setIdMunicipio(municipiosJSON.getJSONObject(i).getInt("id"));
+                        municipio.setMunicipio(municipiosJSON.getJSONObject(i).getString("municipio"));
+                        municipios.add(municipio);
+                    }
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return municipios;
+    }
         
 //    public ArrayList<UsuarioBean> buscaUsuariosIdWS(String rutaWS) {
 //        ArrayList<UsuarioBean> usuarios = new ArrayList();

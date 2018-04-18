@@ -4,6 +4,7 @@ import beans.ClienteBean;
 import ComponenteConsulta.JDListaClientes;
 import ComponenteDatos.*;
 import beans.DatosEmpresaBean;
+import beans.EdoMunBean;
 import beans.UsuarioBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSClientes;
@@ -12,16 +13,22 @@ import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
+import static vistas.Principal.estadosMun;
 
 public class FrmCliente extends javax.swing.JFrame {
     //WSUsuarios
@@ -76,11 +83,9 @@ public class FrmCliente extends javax.swing.JFrame {
         txtRFC.setText("");
         txtNombreCli.setText("");
         txtDireccion1.setText("");
-        cboTipoTelefonoCli.setSelectedItem("Seleccionar...");
         txtTelefonoCasa.setText("");
         txtTelefonoCelular.setText("");
         txtEmail.setText("");
-        txtOtrosCli.setText("");
     }
 
     public void activarCajatexto(boolean b) {
@@ -220,6 +225,11 @@ public class FrmCliente extends javax.swing.JFrame {
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jtClienteMouseEntered(evt);
+            }
+        });
+        jtCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtClienteKeyReleased(evt);
             }
         });
         jScrollPane2.setViewportView(jtCliente);
@@ -405,6 +415,16 @@ public class FrmCliente extends javax.swing.JFrame {
         jLabel12.setText("Estado :");
 
         cboEstados.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar..." }));
+        cboEstados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboEstadosActionPerformed(evt);
+            }
+        });
+        cboEstados.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cboEstadosKeyTyped(evt);
+            }
+        });
 
         jLabel13.setText("Municipio :");
 
@@ -666,7 +686,6 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMostrarCliActionPerformed
 
     private void txtBuscarCliKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarCliKeyReleased
-        // TODO add your handling code here:
         actualizarBusqueda();
     }//GEN-LAST:event_txtBuscarCliKeyReleased
 
@@ -789,7 +808,7 @@ public class FrmCliente extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtTelefonoCasaKeyTyped
 
-    private void jtClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtClienteMouseClicked
+    private void buscaClienteFromJTable() {
         ArrayList<ClienteBean> resultWS = null;
         hiloClientesList = new WSClientesList();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCLIENTEPORID")
@@ -808,7 +827,27 @@ public class FrmCliente extends javax.swing.JFrame {
         txtCP.setText(cli.getCp());
         txtNoCuenta.setText(cli.getNoCuenta());
         txtComentarios.setText(cli.getComentarios());
-        //falta estado y municipio
+        String edo = "";
+        String munic = "";
+        edo = util.buscaDescFromIdEdo(Principal.estadosHM, 
+                cli.getEstado().toString());
+        if ("".equalsIgnoreCase(edo)) {
+            cboEstados.setSelectedItem("Seleccionar...");
+        } else {
+            cboEstados.setSelectedItem(edo);
+        }
+        munic = util.buscaDescFromIdMun(Principal.municipiosHM, 
+                cli.getCiudad());
+        if ("".equalsIgnoreCase(munic)) {
+            cboMunicipio.setSelectedItem("Seleccionar...");
+        } else {
+            cboMunicipio.setSelectedItem(munic);
+        }
+        jtCliente.requestFocus(true);
+    }
+    
+    private void jtClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtClienteMouseClicked
+        buscaClienteFromJTable();
     }//GEN-LAST:event_jtClienteMouseClicked
 
     private void jtClienteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtClienteMouseEntered
@@ -882,36 +921,76 @@ public class FrmCliente extends javax.swing.JFrame {
         txtOtrosCli.requestFocus();
     }//GEN-LAST:event_txtEmailActionPerformed
 
+    private void cboEstadosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboEstadosKeyTyped
+//        int key=evt.getKeyCode();
+//        if(key==0)
+//        {
+//            String item = cboEstados.getSelectedItem().toString();
+//            JOptionPane.showMessageDialog(null, item);
+//        }
+    }//GEN-LAST:event_cboEstadosKeyTyped
+
+    private void cboEstadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboEstadosActionPerformed
+        String item = cboEstados.getSelectedItem().toString();
+        int indiceEdo = util.buscaIdEdo(Principal.estadosHM, item);
+        cboMunicipio.removeAllItems();
+        List<String> listMuni = new ArrayList();
+        DefaultComboBoxModel modelo = new DefaultComboBoxModel();
+        modelo.addElement("Seleccionar...");
+        // llena combo con municipios
+        for (EdoMunBean s : Principal.estadosMun) {
+          if (s.getIdEstado() == indiceEdo) {
+            String muni = util.buscaDescFromIdMun(Principal.municipiosHM, "" 
+                    + s.getIdMunicipio());
+            listMuni.add(muni);
+          }
+        }
+        Collections.sort(listMuni);
+        //Collections.reverse(listMuni);
+        for (String listMuni1 : listMuni) {
+            modelo.addElement(listMuni1);
+        }
+        cboMunicipio.setModel(modelo);
+        // llena combo con municipios
+    }//GEN-LAST:event_cboEstadosActionPerformed
+
+    private void jtClienteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtClienteKeyReleased
+        if (evt.getKeyCode()==KeyEvent.VK_DOWN || evt.getKeyCode()==KeyEvent.VK_UP) {
+             buscaClienteFromJTable();
+        }
+    }//GEN-LAST:event_jtClienteKeyReleased
+
     private void actualizarBusqueda() {
         ArrayList<ClienteBean> resultWS = null;
+        String rutaWS = "";
         if (String.valueOf(cboParametroCli.getSelectedItem()).
                 equalsIgnoreCase("Nombre")) {
             if (txtBuscarCli.getText().equalsIgnoreCase("")) {
                 hiloClientesList = new WSClientesList();
-                String rutaWS = constantes.getProperty("IP") + constantes.
+                rutaWS = constantes.getProperty("IP") + constantes.
                         getProperty("GETCLIENTES");
                 resultWS = hiloClientesList.ejecutaWebService(rutaWS,"1");
             } else {
                 hiloClientesList = new WSClientesList();
-                String rutaWS = constantes.getProperty("IP") + constantes.
-                        getProperty("GETUSUARIOBUSQUEDANOMBRE")
+                rutaWS = constantes.getProperty("IP") + constantes.
+                        getProperty("GETCLIENTEBUSQUEDANOMBRE")
                     + txtBuscarCli.getText().trim();
-                resultWS = hiloClientesList.ejecutaWebService(rutaWS,"3");
+                resultWS = hiloClientesList.ejecutaWebService(rutaWS,"4");
             }
         } else {
             if (String.valueOf(cboParametroCli.getSelectedItem()).
                     equalsIgnoreCase("Id")) {
                 if (txtBuscarCli.getText().equalsIgnoreCase("")) {
                     hiloClientesList = new WSClientesList();
-                    String rutaWS = constantes.getProperty("IP") 
+                    rutaWS = constantes.getProperty("IP") 
                             + constantes.getProperty("GETCLIENTES");
                     resultWS = hiloClientesList.ejecutaWebService(rutaWS,"1");
                 } else {
                     hiloClientesList = new WSClientesList();
-                    String rutaWS = constantes.getProperty("IP") 
-                            + constantes.getProperty("GETUSUARIOBUSQUEDAID") 
+                    rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GETCLIENTEBUSQUEDAID") 
                             + txtBuscarCli.getText().trim();
-                    resultWS = hiloClientesList.ejecutaWebService(rutaWS,"2");
+                    resultWS = hiloClientesList.ejecutaWebService(rutaWS,"3");
                 }
             }
         }        

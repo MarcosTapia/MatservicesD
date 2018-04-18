@@ -2,7 +2,9 @@ package util;
 
 import beans.CategoriaBean;
 import beans.ClienteBean;
+import beans.EdoMunBean;
 import beans.EstadoBean;
+import beans.MunicipioBean;
 import beans.ProductoBean;
 import beans.ProveedorBean;
 import beans.SucursalBean;
@@ -49,6 +51,8 @@ public class Util {
     WSInventariosList hiloInventariosList;
     WSUsuariosList hiloUsuariosList;
     WSClientesList hiloClientesList;
+    private Map<String,String> municipiosHM = new HashMap();
+    private Map<String,String> estadosMunHM = new HashMap();
     private Map<String,String> estadosHM = new HashMap();
     private Map<String,String> sucursalesHM = new HashMap();
     private Map<String,String> categoriasHM = new HashMap();
@@ -543,7 +547,7 @@ public class Util {
     }
     //********* FIN CLIENTES
     
-    //********* ESTADOS
+    //********* ESTADOS Y MUNICIPIOS
     /**
      * Metodo para cargar estados
      * @return Hash estados
@@ -554,6 +558,31 @@ public class Util {
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETESTADOS");
         estados = hiloEstadosList.ejecutaWebService(rutaWS,"1");
         return estados;
+    }
+    
+    /**
+     * Metodo para cargar estados y municipios (claves)
+     * @return Hash estados y municipios
+     */
+    public ArrayList<EdoMunBean> getMapEstadosMun() {
+        ArrayList<EdoMunBean> estadosMun = new ArrayList();
+        hiloEstadosList = new WSEstadosList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETESTADOSMUNICIPIOS");
+        estadosMun = hiloEstadosList.ejecutaWebService2(rutaWS,"1");
+        return estadosMun;
+    }
+    
+    /**
+     * Metodo para cargar municipios
+     * @return Hash estados y municipios
+     */
+    public ArrayList<MunicipioBean> getMapMunicipios() {
+        ArrayList<MunicipioBean> municipios = new ArrayList();
+        hiloEstadosList = new WSEstadosList();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETMUNICIPIOS");
+        municipios = hiloEstadosList.ejecutaWebService3(rutaWS,"1");
+        return municipios;
     }
     
     public void llenaMapEstados(ArrayList<EstadoBean> estados) {
@@ -583,12 +612,65 @@ public class Util {
         mapResultado.put(misMapKeys.get(misMapValues.indexOf(arrayOrdenado[i]))
                 ,arrayOrdenado[i]);
         }
-        Iterator it1 = mapResultado.values().iterator();
-        while (it1.hasNext()) {
-            System.out.println((String)it1.next());
-        }        
+//        Iterator it1 = mapResultado.values().iterator();
+//        while (it1.hasNext()) {
+//            System.out.println((String)it1.next());
+//        }        
         this.estadosHM.clear();
         this.estadosHM = mapResultado;
+    }
+    
+    public void llenaMapMunicipios(ArrayList<MunicipioBean> municipios) {
+        //carga hashmap de estados
+        for (MunicipioBean s : municipios) {
+            this.municipiosHM.put(String.valueOf(s.getIdMunicipio())
+                    , s.getMunicipio());
+//            if (String.valueOf(s.getIdMunicipio()).equalsIgnoreCase("35"))
+//                JOptionPane.showMessageDialog(null, "encontre");
+        }
+        
+//        //ordena hashmap por key muy bueno
+////        Map mapOrdenado = new TreeMap(this.estadosHM);
+////        Set ref = mapOrdenado.keySet();
+////        Iterator it = ref.iterator();
+////        while (it.hasNext()) {
+////            System.out.println((String)it.next());
+////        }
+////        this.estadosHM.clear();
+////        this.estadosHM = mapOrdenado;
+//        
+//        //ordena hashmap por valor muy bueno
+//        HashMap mapResultado = new LinkedHashMap();
+//        List misMapKeys = new ArrayList(this.municipiosHM.keySet());
+//        List misMapValues = new ArrayList(this.municipiosHM.values());
+//        TreeSet conjuntoOrdenado = new TreeSet(misMapValues);
+//        Object[] arrayOrdenado = conjuntoOrdenado.toArray();
+//        int size = arrayOrdenado.length;
+//        for (int i=0; i<size; i++) {
+//        mapResultado.put(misMapKeys.get(misMapValues.indexOf(arrayOrdenado[i]))
+//                ,arrayOrdenado[i]);
+//        }
+////        Iterator it1 = mapResultado.values().iterator();
+////        while (it1.hasNext()) {
+////            System.out.println((String)it1.next());
+////        }        
+//        this.municipiosHM.clear();
+//        this.municipiosHM = mapResultado;
+    }
+    
+    public Map<String,String> ordenaMunicipios(Map<String,String> municipiosHM) {
+        //ordena hashmap por valor muy bueno
+        HashMap mapResultado = new LinkedHashMap();
+        List misMapKeys = new ArrayList(municipiosHM.keySet());
+        List misMapValues = new ArrayList(municipiosHM.values());
+        TreeSet conjuntoOrdenado = new TreeSet(misMapValues);
+        Object[] arrayOrdenado = conjuntoOrdenado.toArray();
+        int size = arrayOrdenado.length;
+        for (int i=0; i<size; i++) {
+            mapResultado.put(misMapKeys.get(misMapValues.indexOf(arrayOrdenado[i]))
+                ,arrayOrdenado[i]);
+        }
+        return mapResultado;
     }
     
     public int buscaIdEdo(Map<String,String> estadosHM, String descripcionEdo) {
@@ -602,6 +684,20 @@ public class Util {
           }
         }        
         return idEdo;
+    }
+    
+    public int buscaIdMun(Map<String,String> municipiosHM
+            , String descripcionMun) {
+        Iterator it = municipiosHM.keySet().iterator();
+        int idMun = 0;
+        while(it.hasNext()){
+          Object key = it.next();
+          if (descripcionMun.equalsIgnoreCase(municipiosHM.get(key))) {
+              idMun = Integer.parseInt(key.toString());
+              break;
+          }
+        }        
+        return idMun;
     }
     
     public String buscaDescFromIdEdo(Map<String,String> estadosHM, String idEdo) {
@@ -618,7 +714,26 @@ public class Util {
         }        
         return descripEdo;
     }
-    //********* FIN ESTADOS
+    
+    public String buscaDescFromIdMun(Map<String,String> municipiosHM
+            , String idMun) {
+        Iterator it = municipiosHM.keySet().iterator();
+        String descripMun = "";
+        while(it.hasNext()){
+          Object key = it.next();
+          //JOptionPane.showMessageDialog(null, key.toString());
+          String t = key.toString().trim();
+//          if (t.equalsIgnoreCase("34"))
+//              JOptionPane.showMessageDialog(null, "encontre");
+          if (t.equalsIgnoreCase(idMun)) {
+              descripMun = municipiosHM.get(key).toString();
+              break;
+          }
+        }        
+        return descripMun;
+    }
+
+    //********* FIN ESTADOS Y MUNICIPIOS
     
     
     public Map<String, String> getSucursalesHM() {
@@ -683,6 +798,22 @@ public class Util {
 
     public void setEstadosHM(Map<String, String> estadosHM) {
         this.estadosHM = estadosHM;
+    }
+
+    public Map<String, String> getEstadosMunHM() {
+        return estadosMunHM;
+    }
+
+    public void setEstadosMunHM(Map<String, String> estadosMunHM) {
+        this.estadosMunHM = estadosMunHM;
+    }
+
+    public Map<String, String> getMunicipiosHM() {
+        return municipiosHM;
+    }
+
+    public void setMunicipiosHM(Map<String, String> municipiosHM) {
+        this.municipiosHM = municipiosHM;
     }
     
 }
