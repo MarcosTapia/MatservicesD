@@ -5,11 +5,13 @@ import ComponenteConsulta.JDListaClientes;
 import ComponenteDatos.*;
 import beans.DatosEmpresaBean;
 import beans.EdoMunBean;
+import beans.ProductoBean;
 import beans.UsuarioBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSClientes;
 import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSInventarios;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
@@ -25,10 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
 import static vistas.Principal.estadosMun;
+import static vistas.Principal.productos;
 
 public class FrmCliente extends javax.swing.JFrame {
     //WSUsuarios
@@ -75,37 +79,60 @@ public class FrmCliente extends javax.swing.JFrame {
                 + " " + Ingreso.usuario.getApellido_materno());
         this.setTitle(configuracionBean.getNombreEmpresa());
         this.setLocationRelativeTo(null);
+        cboEstados.setEnabled(false);
+        cboMunicipio.setEnabled(false);
+        
+        btnNuevoCli.setEnabled(true);
+        btnGuardarCli.setEnabled(false);
+        //btnEliminarCli.setEnabled(true);
+        //btnModificarCli.setEnabled(false);
+        btnCancelarCli.setEnabled(true);
+        lblIdCliente.setText("");
     }
     
     public void limpiarCajatexto() {
+        cboEstados.setSelectedIndex(0);
+        cboMunicipio.setSelectedIndex(0);
+        lblIdCliente.setText("");
         txtEmpresa.setText("");
-        txtApellidos.setText("");
         txtRFC.setText("");
         txtNombreCli.setText("");
+        txtApellidos.setText("");
         txtDireccion1.setText("");
+        txtDireccion2.setText("");
         txtTelefonoCasa.setText("");
         txtTelefonoCelular.setText("");
         txtEmail.setText("");
+        txtCP.setText("");
+        txtNoCuenta.setText("");
+        txtComentarios.setText("");
+        lblIdCliente.setText("");
     }
 
     public void activarCajatexto(boolean b) {
-        txtEmpresa.setEditable(!b);
-        txtApellidos.setEditable(b);
+        txtEmpresa.setEditable(b);
         txtRFC.setEditable(b);
         txtNombreCli.setEditable(b);
+        txtApellidos.setEditable(b);
         txtDireccion1.setEditable(b);
+        txtDireccion2.setEditable(b);
         txtTelefonoCasa.setEditable(b);
         txtTelefonoCelular.setEditable(b);
         txtEmail.setEditable(b);
-        txtOtrosCli.setEditable(b);
+        cboEstados.setEnabled(b);
+        cboMunicipio.setEnabled(b);
+        txtCP.setEditable(b);
+        txtNoCuenta.setEditable(b);
+        txtComentarios.setEditable(b);
+        btnNuevoCli.setEnabled(false);
     }
     
     public void activarBotones(boolean b){
         btnNuevoCli.setEnabled(b);
         btnGuardarCli.setEnabled(!b);
-        btnModificarCli.setEnabled(b);
-        //btnCancelarCli.setEnabled(!b);
-        btnMostrarCli.setEnabled(b);
+        //btnEliminarCli.setEnabled(b);
+        //btnModificarCli.setEnabled(!b);
+        btnCancelarCli.setEnabled(!b);
     }
 
     @SuppressWarnings("unchecked")
@@ -155,6 +182,7 @@ public class FrmCliente extends javax.swing.JFrame {
         txtNoCuenta = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
         txtComentarios = new javax.swing.JTextField();
+        lblIdCliente = new javax.swing.JLabel();
         btnSalirCli = new javax.swing.JButton();
         btnEliminarCli = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
@@ -326,6 +354,11 @@ public class FrmCliente extends javax.swing.JFrame {
         jLabel2.setText("Empresa :");
 
         txtEmpresa.setEditable(false);
+        txtEmpresa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtEmpresaActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Apellidos (*):");
 
@@ -412,6 +445,13 @@ public class FrmCliente extends javax.swing.JFrame {
 
         jLabel11.setText("Direccion 2 :");
 
+        txtDireccion2.setEditable(false);
+        txtDireccion2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDireccion2ActionPerformed(evt);
+            }
+        });
+
         jLabel12.setText("Estado :");
 
         cboEstados.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar..." }));
@@ -429,12 +469,38 @@ public class FrmCliente extends javax.swing.JFrame {
         jLabel13.setText("Municipio :");
 
         cboMunicipio.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar..." }));
+        cboMunicipio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboMunicipioActionPerformed(evt);
+            }
+        });
 
         jLabel14.setText("CP :");
 
+        txtCP.setEditable(false);
+        txtCP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCPActionPerformed(evt);
+            }
+        });
+
         jLabel15.setText("No. Cuenta :");
 
+        txtNoCuenta.setEditable(false);
+        txtNoCuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNoCuentaActionPerformed(evt);
+            }
+        });
+
         jLabel16.setText("Comentarios :");
+
+        txtComentarios.setEditable(false);
+        txtComentarios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtComentariosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -516,6 +582,10 @@ public class FrmCliente extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtComentarios)))))
                 .addContainerGap(274, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(lblIdCliente)
+                .addGap(230, 230, 230))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -562,11 +632,13 @@ public class FrmCliente extends javax.swing.JFrame {
                     .addComponent(txtNoCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16)
                     .addComponent(txtComentarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addComponent(lblIdCliente)
+                .addContainerGap())
         );
 
         btnSalirCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        btnSalirCli.setText("CERRAR");
+        btnSalirCli.setText("SALIR");
         btnSalirCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSalirCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnSalirCli.addActionListener(new java.awt.event.ActionListener() {
@@ -627,13 +699,13 @@ public class FrmCliente extends javax.swing.JFrame {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSalirCli, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
-                    .addComponent(btnGuardarCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 63, Short.MAX_VALUE)
-                    .addComponent(btnNuevoCli, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
-                    .addComponent(btnModificarCli, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
-                    .addComponent(btnCancelarCli, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
-                    .addComponent(btnMostrarCli, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
-                    .addComponent(btnEliminarCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE))
+                    .addComponent(btnSalirCli, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(btnGuardarCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(btnNuevoCli, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(btnModificarCli, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(btnCancelarCli, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(btnMostrarCli, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(btnEliminarCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -681,7 +753,8 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirCliActionPerformed
 
     private void btnMostrarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarCliActionPerformed
-        JDListaClientes jdlCliente = new JDListaClientes(this,true);
+        JDListaClientes jdlCliente = new JDListaClientes(this,true
+                ,Principal.municipiosHM,Principal.estadosHM);
         jdlCliente.setVisible(true);
     }//GEN-LAST:event_btnMostrarCliActionPerformed
 
@@ -698,91 +771,172 @@ public class FrmCliente extends javax.swing.JFrame {
         limpiarCajatexto();
         activarCajatexto(true);
         activarBotones(false);
-        obtenerUltimoId();
         accion = "Guardar";
-        txtRFC.requestFocus();
+        txtEmpresa.requestFocus();
     }//GEN-LAST:event_btnNuevoCliActionPerformed
 
     private void btnCancelarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCliActionPerformed
         limpiarCajatexto();
         activarCajatexto(false);
         activarBotones(true);
-        obtenerUltimoId();
+        btnCancelarCli.setEnabled(true);
     }//GEN-LAST:event_btnCancelarCliActionPerformed
 
     private void btnGuardarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCliActionPerformed
-//        if (accion.equalsIgnoreCase("Guardar")) {
-//            if (txtNombreCli.getText().compareTo("") != 0 &&
-//                    txtApellidos.getText().compareTo("") != 0) {
-//                try {
-//                    ClienteBean cli = new ClienteBean();
-//                    cli.setcCliNit(txtApellidos.getText());
-//                    cli.setcCliCi(txtCiCli.getText());
-//                    cli.setcCliNombre(txtNombreCli.getText());
-//                    cli.setcCliDireccion(txtDireccionCli.getText());
-//                    cli.setcCliEmail(txtEmailCli.getText());
-//                    cli.setcCliNroFax(txtNroFaxCli.getText());
-//                    cli.setcCliTipoTelefono((String) cboTipoTelefonoCli.getSelectedItem());
-//                    cli.setcCliNumTelefono(txtNroTelefonoCli.getText());
-//                    cli.setcCliOtros(txtOtrosCli.getText());
-//                    BDCliente.insertarCliente(cli);
-//                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
-//                    //CODIGO MIO
-//                    actualizarBusqueda();
-//                    limpiarCajatexto();
-//                    activarCajatexto(false);
-//                    activarBotones(true);
-//                    obtenerUltimoId();
-//                    //FIN CODIGO MIO
-//                } catch (SQLException e) {
-//                    JOptionPane.showMessageDialog(null, e.getMessage());
-//                }
-//                limpiarCajatexto();
-//                obtenerUltimoId();
-//            } else {
-//                JOptionPane.showMessageDialog(null, "Llena los campos requeridos!!");
-//            }
-//        }
-//        if (accion.equalsIgnoreCase("Actualizar")) {
-//            ClienteBean cli;
-//            try {
-//                cli = BDCliente.buscarClienteCodigo(Integer.parseInt(txtCodigoCli.getText()));
-//                if (cli == null) {
-//                    JOptionPane.showMessageDialog(null, "Selecciona el registro a modificar de la tabla de la izquierda");
-//                    return;
-//                }
-//                cli.setcCliNit(txtApellidos.getText());
-//                cli.setcCliCi(txtCiCli.getText());
-//                cli.setcCliNombre(txtNombreCli.getText());
-//                cli.setcCliDireccion(txtDireccionCli.getText());
-//                cli.setcCliEmail(txtEmailCli.getText());
-//                cli.setcCliNroFax(txtNroFaxCli.getText());
-//                cli.setcCliTipoTelefono((String) cboTipoTelefonoCli.getSelectedItem());
-//                cli.setcCliNumTelefono(txtNroTelefonoCli.getText());
-//                cli.setcCliOtros(txtOtrosCli.getText());
-//                BDCliente.actualizarCliente(cli);
-//                JOptionPane.showMessageDialog(null, " [ Datos Actualizados ]");
-//                //CODIGO MIO
-//                actualizarBusqueda();
-//                limpiarCajatexto();
-//                activarCajatexto(false);
-//                activarBotones(true);
-//                obtenerUltimoId();
-//                //FIN CODIGO MIO
-//            } catch (SQLException e) {
-//                JOptionPane.showMessageDialog(null, e.getMessage());
-//            }
-//        }
+        if (accion.equalsIgnoreCase("Guardar")) {
+            if (txtNombreCli.getText().compareTo("") != 0 
+                    && txtEmpresa.getText().compareTo("") != 0
+                    && txtRFC.getText().compareTo("") != 0
+                    && txtEmpresa.getText().compareTo("") != 0
+                    && txtApellidos.getText().compareTo("") != 0
+                    && txtDireccion1.getText().compareTo("") != 0
+                    && txtTelefonoCasa.getText().compareTo("") != 0
+                    && !cboEstados.getSelectedItem().toString().
+                    equalsIgnoreCase("Seleccionar...")
+                    && !cboMunicipio.getSelectedItem().toString().
+                    equalsIgnoreCase("Seleccionar...")
+                    && txtEmpresa.getText().compareTo("") != 0
+                        ) {
+                    ClienteBean cli = new ClienteBean();
+                    cli.setEmpresa(txtEmpresa.getText());
+                    cli.setRfc(txtRFC.getText());
+                    cli.setNombre(txtNombreCli.getText());
+                    cli.setApellidos(txtApellidos.getText());
+                    cli.setDireccion1(txtDireccion1.getText());
+                    cli.setDireccion2(txtDireccion2.getText());
+                    cli.setTelefono_casa(txtTelefonoCasa.getText());
+                    cli.setTelefono_celular(txtTelefonoCelular.getText());
+                    cli.setEmail(txtEmail.getText());
+                    int edo = util.buscaIdEdo(Principal.estadosHM
+                            , cboEstados.getSelectedItem().toString());
+                    int mun = util.buscaIdMun(Principal.municipiosHM
+                            , cboMunicipio.getSelectedItem().toString());
+                    cli.setEstado("" + edo);
+                    cli.setCiudad("" + mun);
+                    cli.setCp(txtCP.getText());
+                    cli.setPais("Mx");
+                    cli.setNoCuenta(txtNoCuenta.getText());
+                    cli.setComentarios(txtComentarios.getText());
+                    //huardar producto
+                    hiloClientes = new WSClientes();
+                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDACLIENTE");
+                    ClienteBean clienteInsertado = hiloClientes.ejecutaWebService(rutaWS,"1"
+                            ,cli.getEmpresa()
+                            ,cli.getNombre()
+                            ,cli.getApellidos()
+                            ,cli.getTelefono_casa()
+                            ,cli.getTelefono_celular()
+                            ,cli.getDireccion1()
+                            ,cli.getDireccion2()
+                            ,cli.getRfc()
+                            ,cli.getEmail()
+                            ,cli.getCiudad()
+                            ,cli.getEstado()
+                            ,cli.getCp()
+                            ,cli.getPais()
+                            ,cli.getComentarios()
+                            ,cli.getNoCuenta()
+                            );
+                    if (clienteInsertado != null) {
+                        JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                        actualizarBusqueda();
+                        limpiarCajatexto();
+                        activarCajatexto(false);
+                        activarBotones(true);
+                    } else {
+                        JOptionPane.showMessageDialog(null, 
+                                "Error al guardar el registro");
+                    }    
+            } else {
+                JOptionPane.showMessageDialog(null, 
+                        "Llena los campos requeridos!!");
+            }    
+        }  
+        if (accion.equalsIgnoreCase("Actualizar")) {
+            if (txtNombreCli.getText().compareTo("") != 0 
+                    && lblIdCliente.getText().compareTo("") != 0
+                    && txtEmpresa.getText().compareTo("") != 0
+                    && txtRFC.getText().compareTo("") != 0
+                    && txtEmpresa.getText().compareTo("") != 0
+                    && txtApellidos.getText().compareTo("") != 0
+                    && txtDireccion1.getText().compareTo("") != 0
+                    && txtTelefonoCasa.getText().compareTo("") != 0
+                    && !cboEstados.getSelectedItem().toString().
+                    equalsIgnoreCase("Seleccionar...")
+                    && !cboMunicipio.getSelectedItem().toString().
+                    equalsIgnoreCase("Seleccionar...")
+                    && txtEmpresa.getText().compareTo("") != 0
+                        ) {
+                    ClienteBean cli = new ClienteBean();
+                    cli.setIdCliente(Integer.parseInt(lblIdCliente.getText()));
+                    cli.setEmpresa(txtEmpresa.getText());
+                    cli.setRfc(txtRFC.getText());
+                    cli.setNombre(txtNombreCli.getText());
+                    cli.setApellidos(txtApellidos.getText());
+                    cli.setDireccion1(txtDireccion1.getText());
+                    cli.setDireccion2(txtDireccion2.getText());
+                    cli.setTelefono_casa(txtTelefonoCasa.getText());
+                    cli.setTelefono_celular(txtTelefonoCelular.getText());
+                    cli.setEmail(txtEmail.getText());
+                    int edo = util.buscaIdEdo(Principal.estadosHM
+                            , cboEstados.getSelectedItem().toString());
+                    int mun = util.buscaIdMun(Principal.municipiosHM
+                            , cboMunicipio.getSelectedItem().toString());
+                    cli.setEstado("" + edo);
+                    cli.setCiudad("" + mun);
+                    cli.setCp(txtCP.getText());
+                    cli.setPais("Mx");
+                    cli.setNoCuenta(txtNoCuenta.getText());
+                    cli.setComentarios(txtComentarios.getText());
+                    //huardar producto
+                    hiloClientes = new WSClientes();
+                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICACLIENTE");
+                    ClienteBean clienteActualizado = hiloClientes.ejecutaWebService(rutaWS,"2"
+                            ,String.valueOf(cli.getIdCliente())
+                            ,cli.getEmpresa()
+                            ,cli.getNombre()
+                            ,cli.getApellidos()
+                            ,cli.getTelefono_casa()
+                            ,cli.getTelefono_celular()
+                            ,cli.getDireccion1()
+                            ,cli.getDireccion2()
+                            ,cli.getRfc()
+                            ,cli.getEmail()
+                            ,cli.getCiudad()
+                            ,cli.getEstado()
+                            ,cli.getCp()
+                            ,cli.getPais()
+                            ,cli.getComentarios()
+                            ,cli.getNoCuenta()
+                            );
+                    if (clienteActualizado != null) {
+                        JOptionPane.showMessageDialog(null, "[ Datos Actualizados ]");
+                        actualizarBusqueda();
+                        limpiarCajatexto();
+                        activarCajatexto(false);
+                        activarBotones(true);
+                        jtCliente.setEnabled(true);
+                    } else {
+                        JOptionPane.showMessageDialog(null, 
+                                "Error al actualizar el registro");
+                    }    
+            } else {
+                JOptionPane.showMessageDialog(null, 
+                        "Llena los campos requeridos!!");
+            }    
+        }  
+        btnNuevoCli.setEnabled(true);
     }//GEN-LAST:event_btnGuardarCliActionPerformed
 
     private void btnModificarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarCliActionPerformed
+        jtCliente.setEnabled(false);
+        accion = "Actualizar";
         activarCajatexto(true);
         btnNuevoCli.setEnabled(false);
         btnGuardarCli.setEnabled(true);
-        btnModificarCli.setEnabled(false);
-        btnCancelarCli.setEnabled(true);
-        btnMostrarCli.setEnabled(false);
-        accion = "Actualizar";
+//        btnModificarCli.setEnabled(false);
+//        btnCancelarCli.setEnabled(true);
+//        btnMostrarCli.setEnabled(false);
     }//GEN-LAST:event_btnModificarCliActionPerformed
 
     private void txtApellidosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidosKeyTyped
@@ -809,13 +963,15 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTelefonoCasaKeyTyped
 
     private void buscaClienteFromJTable() {
+        lblIdCliente.setText(jtCliente.getModel().getValueAt(
+            jtCliente.getSelectedRow(),0).toString());
         ArrayList<ClienteBean> resultWS = null;
         hiloClientesList = new WSClientesList();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCLIENTEPORID")
                 + String.valueOf(jtCliente.getModel().getValueAt(jtCliente.getSelectedRow(), 0)).trim();
         resultWS = hiloClientesList.ejecutaWebService(rutaWS,"2");
         ClienteBean cli = resultWS.get(0);
-        txtEmpresa.setText(String.valueOf(cli.getIdCliente()));
+        txtEmpresa.setText(cli.getEmpresa());
         txtApellidos.setText(cli.getApellidos());
         txtRFC.setText(cli.getRfc());
         txtNombreCli.setText(cli.getNombre());
@@ -854,36 +1010,40 @@ public class FrmCliente extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jtClienteMouseEntered
 
+    private void eliminarCliente() {
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
+        if(dialogResult == JOptionPane.YES_OPTION){
+            if (lblIdCliente.getText().compareTo("") != 0) {
+                hiloClientes = new WSClientes();
+                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("ELIMINACLIENTE");
+                ClienteBean clienteEliminar = hiloClientes.ejecutaWebService(rutaWS,"3"
+                        ,lblIdCliente.getText().trim());
+                if (clienteEliminar != null) {
+                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+                    //Carga productos
+                    actualizarBusqueda();
+                    limpiarCajatexto();
+                    activarCajatexto(false);
+                    activarBotones(true);
+                } else {
+                    JOptionPane optionPane = new JOptionPane("No es posible "
+                            + "eliminar el "
+                            + "cliente existen movimientos que lo relacionan"
+                            , JOptionPane.ERROR_MESSAGE);    
+                    JDialog dialog = optionPane.createDialog("Error");
+                    dialog.setAlwaysOnTop(true);
+                    dialog.setVisible(true);                    
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, 
+                        "No hay cliente seleccionado");
+            }
+            btnCancelarCli.setEnabled(true);
+        }
+    }
+    
     private void btnEliminarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarCliActionPerformed
-//            ClienteBean cli;
-//            try {
-//                cli = BDCliente.buscarClienteCodigo(Integer.parseInt(txtCodigoCli.getText()));
-//                if (cli == null) {
-//                    JOptionPane.showMessageDialog(null, "Selecciona el registro a eliminar de la tabla de la izquierda");
-//                    return;
-//                }
-//                cli.setcCliNit(txtApellidos.getText());
-//                cli.setcCliCi(txtCiCli.getText());
-//                cli.setcCliNombre(txtNombreCli.getText());
-//                cli.setcCliDireccion(txtDireccionCli.getText());
-//                cli.setcCliEmail(txtEmailCli.getText());
-//                cli.setcCliNroFax(txtNroFaxCli.getText());
-//                cli.setcCliTipoTelefono((String) cboTipoTelefonoCli.getSelectedItem());
-//                cli.setcCliNumTelefono(txtNroTelefonoCli.getText());
-//                cli.setcCliOtros(txtOtrosCli.getText());
-//                if (BDCliente.eliminarCliente(cli)) {
-//                    limpiarCajatexto();
-//                    activarCajatexto(false);
-//                    activarBotones(true);
-//                    obtenerUltimoId();
-//                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
-//                    actualizarBusqueda();                
-//                } else {
-//                    JOptionPane.showMessageDialog(null, " [ ERROR ]");                
-//                }
-//            } catch (SQLException e) {
-//                JOptionPane.showMessageDialog(null, e.getMessage());
-//            }
+        eliminarCliente();
     }//GEN-LAST:event_btnEliminarCliActionPerformed
 
     private void txtTelefonoCelularKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoCelularKeyTyped
@@ -894,19 +1054,19 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTelefonoCelularKeyTyped
 
     private void txtRFCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRFCActionPerformed
-        txtApellidos.requestFocus();
+        txtNombreCli.requestFocus();
     }//GEN-LAST:event_txtRFCActionPerformed
 
     private void txtApellidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtApellidosActionPerformed
-        txtNombreCli.requestFocus();
+        txtDireccion1.requestFocus();
     }//GEN-LAST:event_txtApellidosActionPerformed
 
     private void txtNombreCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreCliActionPerformed
-        txtDireccion1.requestFocus();
+        txtApellidos.requestFocus();
     }//GEN-LAST:event_txtNombreCliActionPerformed
 
     private void txtDireccion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccion1ActionPerformed
-        cboTipoTelefonoCli.requestFocus();
+        txtDireccion2.requestFocus();
     }//GEN-LAST:event_txtDireccion1ActionPerformed
 
     private void txtTelefonoCasaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTelefonoCasaActionPerformed
@@ -918,7 +1078,7 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTelefonoCelularActionPerformed
 
     private void txtEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailActionPerformed
-        txtOtrosCli.requestFocus();
+        cboEstados.requestFocus();
     }//GEN-LAST:event_txtEmailActionPerformed
 
     private void cboEstadosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboEstadosKeyTyped
@@ -952,6 +1112,7 @@ public class FrmCliente extends javax.swing.JFrame {
         }
         cboMunicipio.setModel(modelo);
         // llena combo con municipios
+        cboMunicipio.requestFocus();
     }//GEN-LAST:event_cboEstadosActionPerformed
 
     private void jtClienteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtClienteKeyReleased
@@ -959,6 +1120,30 @@ public class FrmCliente extends javax.swing.JFrame {
              buscaClienteFromJTable();
         }
     }//GEN-LAST:event_jtClienteKeyReleased
+
+    private void txtEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmpresaActionPerformed
+        txtRFC.requestFocus(true);
+    }//GEN-LAST:event_txtEmpresaActionPerformed
+
+    private void txtDireccion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccion2ActionPerformed
+        txtTelefonoCasa.requestFocus();
+    }//GEN-LAST:event_txtDireccion2ActionPerformed
+
+    private void cboMunicipioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMunicipioActionPerformed
+        txtCP.requestFocus(true);
+    }//GEN-LAST:event_cboMunicipioActionPerformed
+
+    private void txtCPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCPActionPerformed
+        txtNoCuenta.requestFocus();
+    }//GEN-LAST:event_txtCPActionPerformed
+
+    private void txtNoCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNoCuentaActionPerformed
+        txtComentarios.requestFocus();
+    }//GEN-LAST:event_txtNoCuentaActionPerformed
+
+    private void txtComentariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtComentariosActionPerformed
+        btnGuardarCli.requestFocus();
+    }//GEN-LAST:event_txtComentariosActionPerformed
 
     private void actualizarBusqueda() {
         ArrayList<ClienteBean> resultWS = null;
@@ -1086,6 +1271,7 @@ public class FrmCliente extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jtCliente;
+    private javax.swing.JLabel lblIdCliente;
     private javax.swing.JLabel lblUsuario;
     private javax.swing.JTextField txtApellidos;
     private javax.swing.JTextField txtBuscarCli;

@@ -36,7 +36,8 @@ public class JDListaUsuario extends javax.swing.JDialog {
     Map<String,String> sucursalesHMCons = new HashMap<String,String>();
 
     /** Creates new form JDListaPersonal */
-    public JDListaUsuario(java.awt.Frame parent, boolean modal, Map<String,String> sucursalesHMCons) {
+    public JDListaUsuario(java.awt.Frame parent, boolean modal, Map<String
+            , String> sucursalesHMCons) {
         super(parent, modal);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

@@ -1156,6 +1156,7 @@ public class FrmProducto extends javax.swing.JFrame {
 
     private void btnModificarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarProActionPerformed
         if (!txtIdArticulo.getText().equalsIgnoreCase("")) {
+            jtProducto.setEnabled(false);
             accion = "Actualizar";
             btnActualizaInvent.setEnabled(true);
             panTipoOperacion.setVisible(true);
@@ -1355,6 +1356,7 @@ public class FrmProducto extends javax.swing.JFrame {
                     actualizarBusquedaProducto();
                     activarBotones(true);
                     limpiarCajaTexto();
+                    jtProducto.setEnabled(true);
                     cboSucursal.requestFocus(true);
                 }
             } else {
