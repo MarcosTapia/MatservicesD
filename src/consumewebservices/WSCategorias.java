@@ -1,5 +1,6 @@
 package consumewebservices;
 
+import beans.CategoriaBean;
 import beans.ClienteBean;
 import beans.UsuarioBean;
 import java.io.BufferedInputStream;
@@ -24,76 +25,34 @@ import static vistas.Ingreso.usuario;
 public class WSCategorias {
     String cadena;
     //parametros con valores de usuario
-    String empresa;
-    String nombre;
-    String apellidos;
-    String telefono_casa;
-    String telefono_celular;
-    String direccion1;
-    String direccion2;
-    String rfc;
-    String email;
-    String ciudad;
-    String estado;
-    String cp;
-    String pais;
-    String comentarios;
-    String noCuenta;
-    String idCliente;
+    String descripcionCategoria;
+    String idCategoria;
     //parametros con valores de usuario
     URL url = null; // Url de donde queremos obtener información
     String devuelve ="";
 
-    public ClienteBean ejecutaWebService(String... params) {
+    public CategoriaBean ejecutaWebService(String... params) {
         cadena = params[0];
         url = null; // Url de donde queremos obtener información
         devuelve ="";
-        ClienteBean clienteObj = null;
+        CategoriaBean categoriaObj = null;
         switch (params[1]) { 
             case "1" : 
-                empresa = params[2];
-                nombre = params[3];
-                apellidos = params[4];
-                telefono_casa = params[5];
-                telefono_celular = params[6];
-                direccion1 = params[7];
-                direccion2 = params[8];
-                rfc = params[9];
-                email = params[10];
-                ciudad = params[11];
-                estado = params[12];
-                cp = params[13];
-                pais = params[14];
-                comentarios = params[15];
-                noCuenta = params[16];
-                clienteObj = insertaProveedorWS(); break;
+                descripcionCategoria = params[2];
+                categoriaObj = insertaCategoriaWS(); break;
             case "2" : 
-                idCliente = params[2];
-                empresa = params[3];
-                nombre = params[4];
-                apellidos = params[5];
-                telefono_casa = params[6];
-                telefono_celular = params[7];
-                direccion1 = params[8];
-                direccion2 = params[9];
-                rfc = params[10];
-                email = params[11];
-                ciudad = params[12];
-                estado = params[13];
-                cp = params[14];
-                pais = params[15];
-                comentarios = params[16];
-                noCuenta = params[17];
-                clienteObj = modificaClienteWS(); break;
+                idCategoria = params[2];
+                descripcionCategoria = params[3];
+                categoriaObj = modificaCategoriaWS(); break;
             case "3" : 
-                idCliente = params[2];
-                clienteObj = eliminaClienteWS(); break;
+                idCategoria = params[2];
+                categoriaObj = eliminaCategoriaWS(); break;
         }
-        return clienteObj;
+        return categoriaObj;
     }
  
-    public ClienteBean insertaProveedorWS(String... params) {
-        ClienteBean inserta = null;
+    public CategoriaBean insertaCategoriaWS(String... params) {
+        CategoriaBean inserta = null;
         try {
             HttpURLConnection urlConn;
             DataOutputStream printout;
@@ -108,21 +67,7 @@ public class WSCategorias {
             urlConn.connect();
             //Creo el Objeto JSON
             JSONObject jsonParam = new JSONObject();
-            jsonParam.put("empresa",empresa);
-            jsonParam.put("nombre",nombre);
-            jsonParam.put("apellidos",apellidos);
-            jsonParam.put("telefono_casa",telefono_casa);
-            jsonParam.put("telefono_celular",telefono_celular);
-            jsonParam.put("direccion1",direccion1);
-            jsonParam.put("direccion2",direccion2);
-            jsonParam.put("rfc",rfc);
-            jsonParam.put("email",email);
-            jsonParam.put("ciudad",ciudad);
-            jsonParam.put("estado",estado);
-            jsonParam.put("cp",cp);
-            jsonParam.put("pais",pais);
-            jsonParam.put("comentarios",comentarios);
-            jsonParam.put("noCuenta",noCuenta);
+            jsonParam.put("descripcionCategoria",descripcionCategoria);
             
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
@@ -145,7 +90,7 @@ public class WSCategorias {
                 //Accedemos al vector de resultados
                 int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
                 if (resultJSON == 1) {      // hay un alumno que mostrar
-                    inserta = new ClienteBean();
+                    inserta = new CategoriaBean();
                 } else if (resultJSON == 2) {
 //                    inserta = false;
                 }
@@ -160,8 +105,8 @@ public class WSCategorias {
         return inserta;
     }
 
-    public ClienteBean modificaClienteWS(String... params) {
-        ClienteBean modifica = null;
+    public CategoriaBean modificaCategoriaWS(String... params) {
+        CategoriaBean modifica = null;
         try {
             HttpURLConnection urlConn;
             DataOutputStream printout;
@@ -176,22 +121,8 @@ public class WSCategorias {
             urlConn.connect();
             //Creo el Objeto JSON
             JSONObject jsonParam = new JSONObject();
-            jsonParam.put("idCliente",idCliente);
-            jsonParam.put("empresa",empresa);
-            jsonParam.put("nombre",nombre);
-            jsonParam.put("apellidos",apellidos);
-            jsonParam.put("telefono_casa",telefono_casa);
-            jsonParam.put("telefono_celular",telefono_celular);
-            jsonParam.put("direccion1",direccion1);
-            jsonParam.put("direccion2",direccion2);
-            jsonParam.put("rfc",rfc);
-            jsonParam.put("email",email);
-            jsonParam.put("ciudad",ciudad);
-            jsonParam.put("estado",estado);
-            jsonParam.put("cp",cp);
-            jsonParam.put("pais",pais);
-            jsonParam.put("comentarios",comentarios);
-            jsonParam.put("noCuenta",noCuenta);
+            jsonParam.put("idCategoria",idCategoria);
+            jsonParam.put("descripcionCategoria",descripcionCategoria);
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
@@ -213,7 +144,7 @@ public class WSCategorias {
                 //Accedemos al vector de resultados
                 int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
                 if (resultJSON == 1) {      // hay un alumno que mostrar
-                    modifica = new ClienteBean();
+                    modifica = new CategoriaBean();
                 } else if (resultJSON == 2) {
 //                    devuelve = "El alumno no pudo actualizarse";
                 }
@@ -228,8 +159,8 @@ public class WSCategorias {
         return modifica;
     }
 
-    public ClienteBean eliminaClienteWS(String... params) {
-        ClienteBean elimina = null;
+    public CategoriaBean eliminaCategoriaWS(String... params) {
+        CategoriaBean elimina = null;
         try {
             HttpURLConnection urlConn;
             DataOutputStream printout;
@@ -244,9 +175,9 @@ public class WSCategorias {
             urlConn.connect();
             //Creo el Objeto JSON
             JSONObject jsonParam = new JSONObject();
-            jsonParam.put("idCliente", idCliente);
+            jsonParam.put("idCategoria", idCategoria);
             // Envio los parámetros post.
-           OutputStream os = urlConn.getOutputStream();
+            OutputStream os = urlConn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
             writer.write(jsonParam.toString());
@@ -266,7 +197,7 @@ public class WSCategorias {
                 //Accedemos al vector de resultados
                 int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
                 if (resultJSON == 1) {      // hay un alumno que mostrar
-                    elimina = new ClienteBean();
+                    elimina = new CategoriaBean();
                 } else if (resultJSON == 2) {
                     devuelve = "No hay alumnos";
                 }

@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import util.Util;
+import vistas.FrmCliente;
 import vistas.FrmSucursal;
 import vistas.FrmUsuarios;
 
@@ -176,7 +177,7 @@ public class JDListaClientes extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
-        FrmSucursal frmCliente = new FrmSucursal(0);
+        FrmCliente frmCliente = new FrmCliente(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -62,6 +62,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         btnUsuarios = new javax.swing.JButton();
         btnClientes = new javax.swing.JButton();
         btnCategorias = new javax.swing.JButton();
+        btnSucursales = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -131,6 +132,18 @@ public class FrmConfiguracion extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(btnCategorias);
+
+        btnSucursales.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/casa.gif"))); // NOI18N
+        btnSucursales.setText("Sucursales");
+        btnSucursales.setFocusable(false);
+        btnSucursales.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSucursales.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSucursales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSucursalesActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnSucursales);
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
         jButton5.setText("Inicio");
@@ -267,6 +280,10 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         frmU.setVisible(true);
     }//GEN-LAST:event_btnUsuariosActionPerformed
 
+    private void btnSucursalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSucursalesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSucursalesActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -334,6 +351,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
     private javax.swing.JButton btnCategorias;
     private javax.swing.JButton btnClientes;
     private javax.swing.JButton btnProveedores;
+    private javax.swing.JButton btnSucursales;
     private javax.swing.JButton btnUsuarios;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;

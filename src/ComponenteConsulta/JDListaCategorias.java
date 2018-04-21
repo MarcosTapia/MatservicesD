@@ -1,9 +1,12 @@
 package ComponenteConsulta;
 
+import beans.CategoriaBean;
 import beans.ClienteBean;
 import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
 import constantes.ConstantesProperties;
+import consumewebservices.WSCategorias;
+import consumewebservices.WSCategoriasList;
 import consumewebservices.WSClientes;
 import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
@@ -23,19 +26,18 @@ import vistas.FrmUsuarios;
 
 public class JDListaCategorias extends javax.swing.JDialog {
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-    DefaultTableModel LClientes = new DefaultTableModel();
+    DefaultTableModel LCategoria = new DefaultTableModel();
     
     //WSUsuarios
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
     //WSUsuarios
-    WSClientesList hiloClientesList;
-    WSClientes hiloClientes;
+    WSCategoriasList hiloCategoriasList;
+    WSCategorias hiloCategorias;
     //Fin WSUsuarios
     
     /** Creates new form JDListaClientes */
-    public JDListaCategorias(java.awt.Frame parent, boolean modal
-        , Map<String, String> municipios, Map<String, String> estados) {
+    public JDListaCategorias(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -49,31 +51,20 @@ public class JDListaCategorias extends javax.swing.JDialog {
                 ejecutaWebService(rutaWS,"1");
         this.setTitle(resultadoWS.getNombreEmpresa());
         
-        ArrayList<ClienteBean> resultWSArray = null;
-        hiloClientesList = new WSClientesList();
+        ArrayList<CategoriaBean> resultWSArray = null;
+        hiloCategoriasList = new WSCategoriasList();
         rutaWS = constantes.getProperty("IP") 
-                + constantes.getProperty("GETCLIENTES");
-        resultWSArray = hiloClientesList.ejecutaWebService(rutaWS,"1");
+                + constantes.getProperty("GETCATEGORIAS");
+        resultWSArray = hiloCategoriasList.ejecutaWebService(rutaWS,"1");
         
         Util util = new Util();
-        String titulos[] = {"ID", "EMPRESA", "NOMBRE", "TEL. CASA", "CELULAR"
-            , "DIRECCIÓN 1", "RFC", "EMAIL"
-            , "NO. CUENTA", "CIUDAD", "ESTADO"};
-        LClientes.setColumnIdentifiers(titulos);
-        for (ClienteBean p : resultWSArray) {
-            String Datos[] = {"" + p.getIdCliente()
-                    , p.getEmpresa()
-                    , p.getNombre() + " " + p.getApellidos()
-                    , p.getTelefono_casa()
-                    , p.getTelefono_celular()
-                    , p.getDireccion1()
-                    , p.getRfc()
-                    , p.getEmail()
-                    , p.getNoCuenta()
-                    , util.buscaDescFromIdMun(municipios, "" + p.getCiudad())
-                    , util.buscaDescFromIdEdo(estados, p.getEstado())
+        String titulos[] = {"ID", "CATEGORÍA"};
+        LCategoria.setColumnIdentifiers(titulos);
+        for (CategoriaBean p : resultWSArray) {
+            String Datos[] = {"" + p.getIdCategoria()
+                    , p.getDescripcionCategoria()
             };
-            LClientes.addRow(Datos);
+            LCategoria.addRow(Datos);
         }
         initComponents();
     }
@@ -99,7 +90,7 @@ public class JDListaCategorias extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
         jLabel1.setText("LISTA DE CLIENTES");
 
-        jtListaClientes.setModel(LClientes);
+        jtListaClientes.setModel(LCategoria);
         jScrollPane1.setViewportView(jtListaClientes);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
@@ -176,7 +167,6 @@ public class JDListaCategorias extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
-        FrmSucursal frmCliente = new FrmSucursal(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
