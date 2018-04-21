@@ -1,6 +1,5 @@
 package vistas;
 
-import ComponenteDatos.UsuarioDAO;
 import beans.SucursalBean;
 import beans.UsuarioBean;
 import com.sun.awt.AWTUtilities;

@@ -2,7 +2,6 @@ package vistas;
 
 import beans.UsuarioBean;
 import ComponenteConsulta.JDListaUsuario;
-import ComponenteDatos.*;
 import beans.DatosEmpresaBean;
 import beans.SucursalBean;
 import constantes.ConstantesProperties;
@@ -37,7 +36,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
     
     
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-    ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
 
     String accion = "";
 
@@ -728,7 +726,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
         Principal principal = new Principal();
         principal.cargaUsuarios();
         this.dispose();
-        Configuracion operaciones = new Configuracion();
+        FrmConfiguracion operaciones = new FrmConfiguracion();
     }//GEN-LAST:event_btnSalirPerActionPerformed
 
     private void btnNuevoPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoPerActionPerformed

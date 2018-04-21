@@ -1,6 +1,5 @@
 package vistas;
 
-import ComponenteDatos.ConfiguracionDAO;
 import beans.CategoriaBean;
 import beans.ClienteBean;
 import beans.DatosEmpresaBean;
@@ -71,6 +70,13 @@ public class Principal extends javax.swing.JFrame {
         util.llenaMapUsuarios(usuarios);
         usuariosHM = util.getUsuariosHM();
     }
+
+    public void cargaClientes() {
+        //Carga clientes
+        clientes = util.getMapClientes();
+        util.llenaMapClientes(clientes);
+        clientesHM = util.getClientesHM();
+    }
     
     public Principal() {
         initComponents();
@@ -115,6 +121,7 @@ public class Principal extends javax.swing.JFrame {
         productosHMID = util.getProductosHMID();
         
         //Carga clientes
+        cargaClientes();
         clientes = util.getMapClientes();
         util.llenaMapClientes(clientes);
         clientesHM = util.getClientesHM();
@@ -143,7 +150,7 @@ public class Principal extends javax.swing.JFrame {
                 break;
             case 3: 
                 this.dispose();
-                Configuracion operaciones = new Configuracion();
+                FrmConfiguracion operaciones = new FrmConfiguracion();
                 operaciones.setExtendedState(operaciones.MAXIMIZED_BOTH);
                 operaciones.setVisible(true);
                 break;

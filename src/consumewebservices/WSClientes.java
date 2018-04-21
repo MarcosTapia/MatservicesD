@@ -66,7 +66,7 @@ public class WSClientes {
                 pais = params[14];
                 comentarios = params[15];
                 noCuenta = params[16];
-                clienteObj = insertaClienteWS(); break;
+                clienteObj = insertaProveedorWS(); break;
             case "2" : 
                 idCliente = params[2];
                 empresa = params[3];
@@ -92,7 +92,7 @@ public class WSClientes {
         return clienteObj;
     }
  
-    public ClienteBean insertaClienteWS(String... params) {
+    public ClienteBean insertaProveedorWS(String... params) {
         ClienteBean inserta = null;
         try {
             HttpURLConnection urlConn;

@@ -4,9 +4,7 @@ import beans.ProductoBean;
 import beans.DetalleVentaBean;
 import beans.*;
 import ComponenteConsulta.*;
-import ComponenteDatos.*;
 //import ComponenteReportes.ReporteGVenta;
-import ComponenteDatos.ConfiguracionDAO;
 import Ticket.Ticket;
 import static componenteUtil.NumberToLetterConverter.convertNumberToLetter;
 import constantes.ConstantesProperties;
@@ -433,6 +431,11 @@ public class FrmVenta extends javax.swing.JFrame {
                 formWindowActivated(evt);
             }
         });
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(70, 99, 138));
 
@@ -729,6 +732,11 @@ public class FrmVenta extends javax.swing.JFrame {
         btnClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClientesActionPerformed(evt);
+            }
+        });
+        btnClientes.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                btnClientesFocusLost(evt);
             }
         });
 
@@ -1252,7 +1260,7 @@ public class FrmVenta extends javax.swing.JFrame {
         borrar();
     }//GEN-LAST:event_btnCancelarVActionPerformed
 
-    private void cargaClientes() {
+    public void cargaClientes() {
         cboClientes.removeAllItems();
         int indiceCliente = 0;
         //CARGA CLIENTES Y ESTABLECE CLIENTE POR DEFECTO
@@ -1295,6 +1303,9 @@ public class FrmVenta extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error en el sistema vuelve a iniciar");
             this.dispose();
         } else {
+            Principal p = new Principal();
+            p.cargaClientes();
+            cargaClientes();
             txtVendedorV.setText("" 
                     + Ingreso.usuario.getNombre()
                     + " " + Ingreso.usuario.getApellido_paterno()
@@ -1493,7 +1504,8 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_jtProductoKeyReleased
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
-        // TODO add your handling code here:
+        FrmSucursal frmCliente = new FrmSucursal(1);
+        frmCliente.setVisible(true);
     }//GEN-LAST:event_btnClientesActionPerformed
 
     private void txtDescuentoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtDescuentoMouseClicked
@@ -1523,6 +1535,13 @@ public class FrmVenta extends javax.swing.JFrame {
     private void btnClientes2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientes2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnClientes2ActionPerformed
+
+    private void btnClientesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_btnClientesFocusLost
+    }//GEN-LAST:event_btnClientesFocusLost
+
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        JOptionPane.showMessageDialog(null, "d");
+    }//GEN-LAST:event_formFocusGained
 
     private ArrayList<ProductoBean> llenaTablaInventario(String buscar, int tipoBusq) {
         ArrayList<ProductoBean> resultWS = new ArrayList<ProductoBean>();

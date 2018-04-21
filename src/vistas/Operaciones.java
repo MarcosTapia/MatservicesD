@@ -1,6 +1,5 @@
 package vistas;
 
-import ComponenteDatos.ConfiguracionDAO;
 import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
 import java.awt.Toolkit;

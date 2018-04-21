@@ -3,9 +3,6 @@ package vistas;
 import ComponenteConsulta.JDListaMovimientos;
 import beans.ProductoBean;
 import ComponenteConsulta.JDListaProducto;
-import ComponenteDatos.*;
-//import ComponenteReportes.ReporteProductoParametro;
-import ComponenteDatos.ConfiguracionDAO;
 import beans.CategoriaBean;
 import beans.DatosEmpresaBean;
 import beans.FechaServidorBean;
@@ -1085,24 +1082,24 @@ public class FrmProducto extends javax.swing.JFrame {
     }
     
     private void eliminarProductoPorCodigo(String codProdAnterior) {
-        ProductoBean p;
-        try {
-            p = BDProducto.buscarProducto(codProdAnterior);
-            if (p==null) {
-                JOptionPane.showMessageDialog(null, " [ Selecciona un producto "
-                        + "de la tabla de productos ]");
-                return;
-            }
-            if (BDProducto.eliminarProducto(p)) {
-                JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
-                actualizarBusquedaProducto();
-                borrar();
-            } else {
-                JOptionPane.showMessageDialog(null, " [ Error al eliminar registro ]");
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error BD: " + e.getMessage());
-        }        
+//        ProductoBean p;
+//        try {
+//            p = BDProducto.buscarProducto(codProdAnterior);
+//            if (p==null) {
+//                JOptionPane.showMessageDialog(null, " [ Selecciona un producto "
+//                        + "de la tabla de productos ]");
+//                return;
+//            }
+//            if (BDProducto.eliminarProducto(p)) {
+//                JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+//                actualizarBusquedaProducto();
+//                borrar();
+//            } else {
+//                JOptionPane.showMessageDialog(null, " [ Error al eliminar registro ]");
+//            }
+//        } catch (SQLException e) {
+//            JOptionPane.showMessageDialog(null, "Error BD: " + e.getMessage());
+//        }        
     }
     
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated

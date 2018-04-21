@@ -1,9 +1,6 @@
 package ComponenteConsulta;
 
-import ComponenteDatos.BD;
 import beans.ProductoBean;
-import ComponenteDatos.BDProducto;
-import ComponenteDatos.ConfiguracionDAO;
 import beans.CategoriaBean;
 import beans.DatosEmpresaBean;
 import beans.ProductoBean;

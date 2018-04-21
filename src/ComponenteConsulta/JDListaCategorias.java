@@ -1,45 +1,81 @@
 package ComponenteConsulta;
 
-import beans.CategoriaBean;
-import ComponenteDatos.BDCategoria;
-import ComponenteDatos.ConfiguracionDAO;
+import beans.ClienteBean;
 import beans.DatosEmpresaBean;
 import beans.UsuarioBean;
+import constantes.ConstantesProperties;
+import consumewebservices.WSClientes;
+import consumewebservices.WSClientesList;
+import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSUsuarios;
+import consumewebservices.WSUsuariosList;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
-import vistas.FrmCategoria;
+import util.Util;
+import vistas.FrmSucursal;
+import vistas.FrmUsuarios;
 
 public class JDListaCategorias extends javax.swing.JDialog {
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-    ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
-
-    DefaultTableModel LCategoria = new DefaultTableModel();
-
-    public JDListaCategorias(java.awt.Frame parent, boolean modal) {
+    DefaultTableModel LClientes = new DefaultTableModel();
+    
+    //WSUsuarios
+    Properties constantes = new ConstantesProperties().getProperties();
+    WSDatosEmpresa hiloEmpresa;
+    //WSUsuarios
+    WSClientesList hiloClientesList;
+    WSClientes hiloClientes;
+    //Fin WSUsuarios
+    
+    /** Creates new form JDListaClientes */
+    public JDListaCategorias(java.awt.Frame parent, boolean modal
+        , Map<String, String> municipios, Map<String, String> estados) {
         super(parent, modal);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.setTitle("Categorías");
-        String titulos[] = {"CODIGO", "DESCRIPCION", "UTILIDAD"};
-        LCategoria.setColumnIdentifiers(titulos);
-        try {
-            for (CategoriaBean c : BDCategoria.mostrarCategoria()) {
-                String Datos[] = {String.valueOf(c.getnCatCodigo()), c.getcCatDescripcion(), ""+c.getUtilidad()};
-                LCategoria.addRow(Datos);
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null,"ERROR: " + ex.getMessage());
+        hiloEmpresa = new WSDatosEmpresa();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
+                + "GETDATOSEMPRESA");
+        DatosEmpresaBean resultadoWS = hiloEmpresa.
+                ejecutaWebService(rutaWS,"1");
+        this.setTitle(resultadoWS.getNombreEmpresa());
+        
+        ArrayList<ClienteBean> resultWSArray = null;
+        hiloClientesList = new WSClientesList();
+        rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETCLIENTES");
+        resultWSArray = hiloClientesList.ejecutaWebService(rutaWS,"1");
+        
+        Util util = new Util();
+        String titulos[] = {"ID", "EMPRESA", "NOMBRE", "TEL. CASA", "CELULAR"
+            , "DIRECCIÓN 1", "RFC", "EMAIL"
+            , "NO. CUENTA", "CIUDAD", "ESTADO"};
+        LClientes.setColumnIdentifiers(titulos);
+        for (ClienteBean p : resultWSArray) {
+            String Datos[] = {"" + p.getIdCliente()
+                    , p.getEmpresa()
+                    , p.getNombre() + " " + p.getApellidos()
+                    , p.getTelefono_casa()
+                    , p.getTelefono_celular()
+                    , p.getDireccion1()
+                    , p.getRfc()
+                    , p.getEmail()
+                    , p.getNoCuenta()
+                    , util.buscaDescFromIdMun(municipios, "" + p.getCiudad())
+                    , util.buscaDescFromIdEdo(estados, p.getEstado())
+            };
+            LClientes.addRow(Datos);
         }
         initComponents();
-        this.setLocationRelativeTo(null);
-        
-        configuracionBean = configuracionDAO.obtieneConfiguracion(1);
-        this.setTitle(configuracionBean.getNombreEmpresa());        
     }
 
     @SuppressWarnings("unchecked")
@@ -50,28 +86,28 @@ public class JDListaCategorias extends javax.swing.JDialog {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jtListaCategoria = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
+        jtListaClientes = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(70, 99, 138));
 
         jPanel2.setBackground(new java.awt.Color(247, 254, 255));
 
         jLabel1.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("LISTA DE CATEGORIAS");
+        jLabel1.setText("LISTA DE CLIENTES");
 
-        jtListaCategoria.setModel(LCategoria);
-        jScrollPane1.setViewportView(jtListaCategoria);
+        jtListaClientes.setModel(LClientes);
+        jScrollPane1.setViewportView(jtListaClientes);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        jButton2.setText("SALIR");
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
+        jButton1.setText("SALIR");
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -80,29 +116,28 @@ public class JDListaCategorias extends javax.swing.JDialog {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(6, 6, 6)
+                .addGap(22, 22, 22)
                 .addComponent(jScrollPane1)
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(63, 63, 63)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(77, 77, 77)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(61, 61, 61))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 455, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(78, 78, 78))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 9, Short.MAX_VALUE)
-                        .addComponent(jLabel1))
+                        .addContainerGap()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(3, 3, 3)))
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel1)))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -127,7 +162,9 @@ public class JDListaCategorias extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,58 +174,17 @@ public class JDListaCategorias extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
-        FrmCategoria frmCategoria = new FrmCategoria();
-    }//GEN-LAST:event_jButton2ActionPerformed
+        FrmSucursal frmCliente = new FrmSucursal(0);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(JDListaCategorias.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(JDListaCategorias.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(JDListaCategorias.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JDListaCategorias.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                JDListaCategorias dialog = new JDListaCategorias(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jtListaCategoria;
+    private javax.swing.JTable jtListaClientes;
     // End of variables declaration//GEN-END:variables
 }

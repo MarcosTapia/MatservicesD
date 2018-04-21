@@ -1,7 +1,6 @@
 package vistas;
 
 import ComponenteConsulta.JDListaCategorias;
-import ComponenteDatos.ConfiguracionDAO;
 import beans.DatosEmpresaBean;
 import beans.ProductoBean;
 import constantes.ConstantesProperties;
@@ -365,7 +364,7 @@ public class FrmCodBarras extends javax.swing.JFrame {
 
     private void btnSalirCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCatActionPerformed
         this.dispose();
-        Configuracion operaciones = new Configuracion();
+        FrmConfiguracion operaciones = new FrmConfiguracion();
     }//GEN-LAST:event_btnSalirCatActionPerformed
 
     private void txtcodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcodigoActionPerformed

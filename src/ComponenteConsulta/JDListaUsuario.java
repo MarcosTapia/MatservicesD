@@ -1,8 +1,6 @@
 package ComponenteConsulta;
 
 import beans.UsuarioBean;
-import ComponenteDatos.BDUsuario;
-import ComponenteDatos.ConfiguracionDAO;
 import beans.DatosEmpresaBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
