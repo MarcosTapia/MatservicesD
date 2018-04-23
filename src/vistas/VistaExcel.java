@@ -628,7 +628,7 @@ public class VistaExcel extends javax.swing.JFrame {
         Principal principal = new Principal();
         principal.cargaProductos();
         //principal.
-        FrmProducto frmProducto = new FrmProducto();
+        FrmProducto frmProducto = new FrmProducto(0);
         frmProducto.actualizarBusquedaProducto(); 
         frmProducto.recargarTableProductos(productos);
         this.dispose();

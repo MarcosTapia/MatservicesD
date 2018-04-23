@@ -68,12 +68,23 @@ public class FrmProducto extends javax.swing.JFrame {
     //cantidad global
     int cantGlobal = 0;
 
-    public FrmProducto() {
+    private int llamadoVentaInventario;
+
+    public int getLlamadoVentaInventario() {
+        return llamadoVentaInventario;
+    }
+
+    public void setLlamadoVentaInventario(int llamadoVentaInventario) {
+        this.llamadoVentaInventario = llamadoVentaInventario;
+    }
+    
+    public FrmProducto(int llamadoVenta) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
         }
         initComponents();
+        this.setLlamadoVentaInventario(llamadoVenta);
         
         buttonGroup1.add(radioAumentar);
         buttonGroup1.add(radioDisminuir);
@@ -121,6 +132,14 @@ public class FrmProducto extends javax.swing.JFrame {
         
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
         this.setIcon();
+        
+        if (this.getLlamadoVentaInventario() == 1) {
+            btnNuevoPro.setVisible(true);
+            btnGuardarPro.setEnabled(true);
+            accion = "Guardar";
+            btnModificarPro.setVisible(false);
+            btnEliminarPro.setVisible(false);
+        }
     }
 
     public void setIcon() {
@@ -1132,10 +1151,11 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarProActionPerformed
 
     private void btnSalirProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirProActionPerformed
+        this.setLlamadoVentaInventario(0);
         this.dispose();
-        Inventario inventario = new Inventario();
-        inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
-        inventario.setVisible(true);
+//        Inventario inventario = new Inventario();
+//        inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
+//        inventario.setVisible(true);
 //        System.exit(0);
     }//GEN-LAST:event_btnSalirProActionPerformed
 
@@ -1812,38 +1832,38 @@ public class FrmProducto extends javax.swing.JFrame {
 //        
 //    } 
 
-    public static void main(String args[]) {
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-        } catch (InstantiationException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-        } catch (IllegalAccessException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                new FrmProducto().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            JOptionPane.showMessageDialog(null, ex.getMessage());
+//        } catch (InstantiationException ex) {
+//            JOptionPane.showMessageDialog(null, ex.getMessage());
+//        } catch (IllegalAccessException ex) {
+//            JOptionPane.showMessageDialog(null, ex.getMessage());
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            JOptionPane.showMessageDialog(null, ex.getMessage());
+//        }
+//        //</editor-fold>
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//
+//            public void run() {
+//                new FrmProducto().setVisible(true);
+//            }
+//        });
+//    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizaInvent;
     private javax.swing.JButton btnCancelarPro;

@@ -906,7 +906,7 @@ public class FrmVenta extends javax.swing.JFrame {
         lblUsuario.setText("Usuario:");
 
         btnGenerarPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
-        btnGenerarPedido.setText("GENERAR PEDIDO");
+        btnGenerarPedido.setText("PEDIDOS");
         btnGenerarPedido.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnGenerarPedido.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnGenerarPedido.addActionListener(new java.awt.event.ActionListener() {
@@ -1306,6 +1306,18 @@ public class FrmVenta extends javax.swing.JFrame {
             Principal p = new Principal();
             p.cargaClientes();
             cargaClientes();
+            
+            // refresca inventario
+            ArrayList<ProductoBean> resultWS = null;
+            hiloInventariosList = new WSInventariosList();
+            String rutaWS = constantes.getProperty("IP") 
+                    + constantes.getProperty("GETINVENTARIOS");
+            resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
+            recargarTableProductos(resultWS);
+            inventario = util.getMapProductos();
+            productos = util.getMapProductos();
+            util.llenaMapProductos(productos);
+            
             txtVendedorV.setText("" 
                     + Ingreso.usuario.getNombre()
                     + " " + Ingreso.usuario.getApellido_paterno()
@@ -1504,7 +1516,7 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_jtProductoKeyReleased
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
-        FrmSucursal frmCliente = new FrmSucursal(1);
+        FrmCliente frmCliente = new FrmCliente(1);
         frmCliente.setVisible(true);
     }//GEN-LAST:event_btnClientesActionPerformed
 
@@ -1513,7 +1525,8 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDescuentoMouseClicked
 
     private void btnGenerarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPedidoActionPerformed
-        // TODO add your handling code here:
+        FrmPedidos frmPedidos = new FrmPedidos();
+        frmPedidos.setVisible(true);
     }//GEN-LAST:event_btnGenerarPedidoActionPerformed
 
     private void txtCodigoProMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtCodigoProMouseClicked
@@ -1521,7 +1534,8 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodigoProMouseClicked
 
     private void btnClientes1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientes1ActionPerformed
-        // TODO add your handling code here:
+        FrmProducto frmProducto = new FrmProducto(1);
+        frmProducto.setVisible(true);
     }//GEN-LAST:event_btnClientes1ActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -1533,7 +1547,8 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarMouseEntered
 
     private void btnClientes2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientes2ActionPerformed
-        // TODO add your handling code here:
+        FrmCorte frmCorte = new FrmCorte();
+        frmCorte.setVisible(true);
     }//GEN-LAST:event_btnClientes2ActionPerformed
 
     private void btnClientesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_btnClientesFocusLost

@@ -81,7 +81,7 @@ public class JDListaProducto extends javax.swing.JDialog {
         resultWSArray = hiloInventariosList.ejecutaWebService(rutaWS,"1");
         
         Util util = new Util();
-        FrmProducto frmproductos = new FrmProducto();
+        FrmProducto frmproductos = new FrmProducto(0);
         String titulos[] = {"ID", "CODIGO", "DESCRIPCIÓN", "$ COSTO", "$ PÚBLICO", "EXIST.", "EXIST. MIN","SUCURSAL", "CATEGORÍA", "PROVEEDOR"};
         LProducto.setColumnIdentifiers(titulos);
         for (ProductoBean p : resultWSArray) {
@@ -263,7 +263,7 @@ public class JDListaProducto extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
-        FrmProducto frmProducto = new FrmProducto();
+        FrmProducto frmProducto = new FrmProducto(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -115,7 +115,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="BUSCAR PERSONAL :"/>
+                <Property name="text" type="java.lang.String" value="BUSCAR USUARIO :"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtBuscarUsuario">

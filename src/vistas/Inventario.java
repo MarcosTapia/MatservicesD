@@ -208,8 +208,8 @@ public class Inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductosActionPerformed
-        this.dispose();
-        FrmProducto frmP = new FrmProducto();
+//        this.dispose();
+        FrmProducto frmP = new FrmProducto(0);
         frmP.setExtendedState(frmP.MAXIMIZED_BOTH);
         frmP.setVisible(true);
     }//GEN-LAST:event_btnProductosActionPerformed

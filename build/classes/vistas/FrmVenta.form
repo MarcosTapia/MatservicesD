@@ -906,7 +906,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/imagenes/Save.png"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="GENERAR PEDIDO"/>
+                        <Property name="text" type="java.lang.String" value="PEDIDOS"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="verticalTextPosition" type="int" value="3"/>
                       </Properties>

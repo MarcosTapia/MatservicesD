@@ -266,7 +266,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProveedoresActionPerformed
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
-        FrmSucursal frmCli = new FrmSucursal(0);
+        FrmCliente frmCli = new FrmCliente(0);
         frmCli.setVisible(true);
     }//GEN-LAST:event_btnClientesActionPerformed
 
@@ -281,7 +281,8 @@ public class FrmConfiguracion extends javax.swing.JFrame {
     }//GEN-LAST:event_btnUsuariosActionPerformed
 
     private void btnSucursalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSucursalesActionPerformed
-        // TODO add your handling code here:
+        FrmSucursal frmSucursal = new FrmSucursal();
+        frmSucursal.setVisible(true);
     }//GEN-LAST:event_btnSucursalesActionPerformed
 
     public static void main(String args[]) {

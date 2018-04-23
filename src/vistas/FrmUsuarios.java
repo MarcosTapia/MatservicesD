@@ -187,7 +187,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(247, 254, 255));
 
-        jLabel1.setText("BUSCAR PERSONAL :");
+        jLabel1.setText("BUSCAR USUARIO :");
 
         txtBuscarUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {

@@ -47,14 +47,14 @@ public class FrmCliente extends javax.swing.JFrame {
 
     String accion = "";
     
-    private int llamadoVenta;
+    private int llamadoVentaClientes;
 
-    public int getLlamadoVenta() {
-        return llamadoVenta;
+    public int getLlamadoVentaClientes() {
+        return llamadoVentaClientes;
     }
 
-    public void setLlamadoVenta(int llamadoVenta) {
-        this.llamadoVenta = llamadoVenta;
+    public void setLlamadoVentaClientes(int llamadoVentaClientes) {
+        this.llamadoVentaClientes = llamadoVentaClientes;
     }
 
     public FrmCliente(int llamadoVenta) {
@@ -63,7 +63,7 @@ public class FrmCliente extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.setLlamadoVenta(llamadoVenta);
+        this.setLlamadoVentaClientes(llamadoVenta);
         initComponents();
         hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
@@ -96,7 +96,7 @@ public class FrmCliente extends javax.swing.JFrame {
         btnCancelarCli.setEnabled(true);
         lblIdCliente.setText("");
 //        JOptionPane.showMessageDialog(null, this.getLlamadoVenta());
-        if (this.getLlamadoVenta() == 1) {
+        if (this.getLlamadoVentaClientes() == 1) {
             btnNuevoCli.setVisible(true);
             btnGuardarCli.setEnabled(true);
             accion = "Guardar";
@@ -763,7 +763,7 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscarCliMouseClicked
 
     private void btnSalirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCliActionPerformed
-        this.setLlamadoVenta(0);
+        this.setLlamadoVentaClientes(0);
         this.dispose();
     }//GEN-LAST:event_btnSalirCliActionPerformed
 
