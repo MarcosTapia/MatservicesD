@@ -9,10 +9,12 @@ import Ticket.Ticket;
 import static componenteUtil.NumberToLetterConverter.convertNumberToLetter;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSDetallePedidos;
 import consumewebservices.WSDetalleVentas;
 import consumewebservices.WSInventarios;
 import consumewebservices.WSInventariosList;
 import consumewebservices.WSMovimientos;
+import consumewebservices.WSPedidos;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import consumewebservices.WSVentas;
@@ -53,7 +55,6 @@ public class FrmVenta extends javax.swing.JFrame {
     public double preciounitprov;
     public int stock;
     DefaultTableModel ListaProductoV = new DefaultTableModel();
-//    private ReporteGVenta rGVenta;
 
     //WS
     Util util = new Util();
@@ -63,51 +64,28 @@ public class FrmVenta extends javax.swing.JFrame {
     WSInventariosList hiloInventariosList;
     WSVentas hiloVentas;
     WSDetalleVentas hiloDetalleVentas;
+    WSPedidos hiloPedidos;
+    WSDetallePedidos hiloDetallePedidos;
     WSMovimientos hiloMovimientos;
     //Fin WS
     
     String codProdAnterior = "";
     String accion = "";
     
+    PedidoBean pedidoBean = null;
+    DetallePedidoBean detallePedidoBean = null;
+    List<DetallePedidoBean> detallePedidoProducto = new ArrayList<>();
     
-    
-//    ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
-//    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-//    BDFechaServidor bdFechaServidor = new BDFechaServidor();
-//    FechaServidorBean fechaServidorBean;
     HashMap<String, String> NombreProducto = new HashMap<String, String>();
-//    /****** temp ****/
-//    HashMap<String, String> CategoriaProducto = new HashMap<String, String>();
-//    HashMap<String, Integer> ClientesHM = new HashMap<String, Integer>();
-//    
-//    //VENTA DE PRODUCTO
-//    BDProductosProveedoresCostos bdProductosProveedoresCostos = new 
-//        BDProductosProveedoresCostos();
-//
     ProductoBean prodParcial = null;    
-//    ProductoBean prodADisminuir = null;    
-//    
-//    BDVentas bdVentas = null;
     VentasBean ventasBean;
-//    
-//    BDDetalleVenta bdDetalleVenta;
     List<DetalleVentaBean> detalleVentaProducto = new ArrayList<>();
     DetalleVentaBean detalleVenta = null;
-//
-//    ClienteBean clienteBean;
-//    BDCliente bdCliente = new BDCliente();
-//    
-//    SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
-//    Date fecha = null;
-//    double subTotal = 0.0, importe = 0.0, vuelto = 0.0, totalIGV = 
-//            0.0, montoTotal = 0.0, montoCuota = 0.0;
-//    int nTipoDocumento = 0, nVenta = 0,nCliente=0;
         //Carga iva de la empresa de ganancia por producto
     double ivaEmpresa = Principal.datosSistemaBean.getIvaEmpresa();
     double ivaGral = Principal.datosSistemaBean.getIvaGral();
     ArrayList<ProductoBean> inventario = null;
     String sucursalSistema = "";
-    
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public FrmVenta() {
         try {
@@ -288,6 +266,16 @@ public class FrmVenta extends javax.swing.JFrame {
         id = resultWS.getIdVenta() + 1;
         return id;
     }
+    
+    public int obtenerUltimoIdPedido() {
+        int id = 0;
+        PedidoBean resultWS = null;
+        hiloPedidos = new WSPedidos();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETULTIMOIDPEDIDOS");
+        resultWS = hiloPedidos.ejecutaWebService(rutaWS,"1");
+        id = resultWS.getIdPedido() + 1;
+        return id;
+    }
 
     public int getCodigopro() {
         return codigopro;
@@ -340,6 +328,7 @@ public class FrmVenta extends javax.swing.JFrame {
         txtStockPro.setText("");        
 //        prodParcial = null;
         txtCodigoPro.requestFocus();
+        txtPrecio.setText("");
     }
     
     private void limpiaCaptura() {
@@ -906,7 +895,7 @@ public class FrmVenta extends javax.swing.JFrame {
         lblUsuario.setText("Usuario:");
 
         btnGenerarPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
-        btnGenerarPedido.setText("PEDIDOS");
+        btnGenerarPedido.setText("GENERAR PEDIDO");
         btnGenerarPedido.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnGenerarPedido.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnGenerarPedido.addActionListener(new java.awt.event.ActionListener() {
@@ -1127,7 +1116,6 @@ public class FrmVenta extends javax.swing.JFrame {
                     ventasBean.setObservaciones("");
                     //fin checar despues
                     ventasBean.setIdSucursal(Ingreso.usuario.getIdSucursal());
-                    ventasBean.setObservaciones("");
 
                     //ciclo que garantiza que operacion fue hecha con exito
                     while (ventasBean != null) {
@@ -1281,6 +1269,9 @@ public class FrmVenta extends javax.swing.JFrame {
         actualizarBusquedaProducto();
         txtNroVenta.setText("" + obtenerUltimoId());
         detalleVentaProducto.clear();
+//        pedidoBean = null;
+//        detallePedidoBean = null;
+//        detallePedidoProducto.clear();
         prodParcial = null;    
         recargarTableVentaParcialProductos(detalleVentaProducto);
         limpiarCajaTexto();
@@ -1445,6 +1436,16 @@ public class FrmVenta extends javax.swing.JFrame {
 //                    limpiarCajaTexto();
 //                    return;
 //                }
+                //limpia caja texto relacionados con venta
+                txtCodigoPro.setText("");
+                txtPrecio.setText("");
+                txtDescuento.setText("0");
+                txtCantidadPro.setText("1");
+                txtStockPro.setText("");        
+                txtProducto.setText("");
+                txtIvaProd.setText("" + ivaEmpresa);
+                //fin limpia caja texto relacionados con venta
+                
                 prodParcial = null;
             } else {
                 JOptionPane.showMessageDialog(null, "No es el mismo producto que consultaste vuelve ha hacer la operación");
@@ -1525,8 +1526,74 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDescuentoMouseClicked
 
     private void btnGenerarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPedidoActionPerformed
-        FrmPedidos frmPedidos = new FrmPedidos();
-        frmPedidos.setVisible(true);
+        int result = JOptionPane.showConfirmDialog(this, "¿Deseas guardar el "
+                + "Pedido?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
+        // VERIFICA si realmente se quierte guardar la venta
+        if (result == JOptionPane.YES_OPTION) {
+            //VERIFICA SI HAY PRODUCTO A PEDIR
+            if (detalleVentaProducto.size()>0) {
+                //obtiene no. de pedido
+                int noPedido = obtenerUltimoIdPedido();
+                ventasBean = new VentasBean();
+                ventasBean.setIdUsuario(Ingreso.usuario.getIdUsuario());
+                int s = util.buscaIdCliente(Principal.clientesHM
+                        , cboClientes.getSelectedItem().toString());
+                ventasBean.setIdCliente(s);
+                //checar despues
+                ventasBean.setObservaciones("");
+                //fin checar despues
+                ventasBean.setIdSucursal(Ingreso.usuario.getIdSucursal());
+
+                //ciclo que garantiza que operacion fue hecha con exito
+                while (ventasBean != null) {
+                    //guarda pedido
+                    hiloPedidos = new WSPedidos();
+                    String rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GUARDAPEDIDO");
+                    PedidoBean pedidoGuardado = hiloPedidos
+                            .ejecutaWebService(rutaWS,"2"
+                            , "" + ventasBean.getIdCliente()
+                            , "" + ventasBean.getObservaciones()
+                            , "" + ventasBean.getIdUsuario()
+                            , "" + ventasBean.getIdSucursal());
+                    if (pedidoGuardado != null) {
+                        //guarda detalle venta
+                        for (DetalleVentaBean detVentBeanADisminuir :
+                                detalleVentaProducto) {
+                            hiloDetallePedidos = new WSDetallePedidos();
+                            rutaWS = constantes.getProperty("IP") 
+                                + constantes.getProperty("GUARDADETALLEPEDIDO");
+                            DetallePedidoBean detallePedidoGuardado = 
+                                    hiloDetallePedidos.ejecutaWebService(rutaWS,"1"
+                                    , "" + noPedido
+                                    , "" + detVentBeanADisminuir.getIdArticulo()
+                                    , "" + detVentBeanADisminuir.getPrecio()
+                                    , "" + detVentBeanADisminuir.getCantidad()
+                                    , "" + detVentBeanADisminuir.getDescuento()
+                                    , "" + Ingreso.usuario.getIdSucursal());
+                        }
+                        //fin guarda detalle pedido
+                        borrar();
+                        JOptionPane.showMessageDialog(null, 
+                                "PEDIDO GUARDADO CORRRECTAMENTE");
+//                            detalleVentaProducto.remove(detVentBeanADisminuir);
+                        ventasBean = null;
+                        int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
+                                + "Imprimir el Pedido?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
+                        if (resultado == JOptionPane.YES_OPTION) {
+                            //imprime ticket
+//                                                    imprimir(ventasBean);
+//                            JOptionPane.showMessageDialog(null, "Se imprime el ticket");                             
+                            //fin imprime ticket
+                        }
+                    } //fin guarda pedido
+                }                        
+                //fin guarda venta
+            } else {
+                JOptionPane.showMessageDialog(null, "NO HAY PRODUCTOS PARA VENDER");
+                return;
+            }
+        } //si se acepto el pedido
     }//GEN-LAST:event_btnGenerarPedidoActionPerformed
 
     private void txtCodigoProMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtCodigoProMouseClicked

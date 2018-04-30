@@ -1,23 +1,21 @@
 package beans;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
-public class ComprasBean {
-    private int idCompra;
+public class PedidoBean {
+    private int idPedido;
     private Date fecha;
-    private int idProveedor;
+    private int idCliente;
     private String observaciones;
     private int idUsuario;
-    private String factura;
     private int idSucursal;
 
-    public int getIdCompra() {
-        return idCompra;
+    public int getIdPedido() {
+        return idPedido;
     }
 
-    public void setIdCompra(int idCompra) {
-        this.idCompra = idCompra;
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
     }
 
     public Date getFecha() {
@@ -28,12 +26,12 @@ public class ComprasBean {
         this.fecha = fecha;
     }
 
-    public int getIdProveedor() {
-        return idProveedor;
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    public void setIdProveedor(int idProveedor) {
-        this.idProveedor = idProveedor;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getObservaciones() {
@@ -58,14 +56,6 @@ public class ComprasBean {
 
     public void setIdSucursal(int idSucursal) {
         this.idSucursal = idSucursal;
-    }
-
-    public String getFactura() {
-        return factura;
-    }
-
-    public void setFactura(String factura) {
-        this.factura = factura;
     }
     
 }
