@@ -49,10 +49,12 @@ public class WSCompras {
             case "1" : 
                 compraObj = obtieneUltimoIdCompraWS(); break;
             case "2" : 
-                idCompra = params[2];
+                idProveedor = params[2];
                 observaciones = params[3];
                 idUsuario = params[4];
-                idSucursal = params[5];
+                factura = params[5];
+                idSucursal = params[6];
+                fecha = params[7]; 
                 compraObj = guardaCompraWS(); break;
         }
         return compraObj;
@@ -86,12 +88,13 @@ public class WSCompras {
                     JSONArray comprasJSON = respuestaJSON.getJSONArray("compras");   // estado es el nombre del campo en el JSON
                     for(int i=0;i<comprasJSON.length();i++){
                         compra = new ComprasBean();
-                        compra.setIdProveedor(comprasJSON.getJSONObject(i).getInt("idCliente"));
+                        compra.setIdProveedor(comprasJSON.getJSONObject(i).getInt("idProveedor"));
                         compra.setIdSucursal(comprasJSON.getJSONObject(i).getInt("idSucursal"));
                         compra.setIdUsuario(comprasJSON.getJSONObject(i).getInt("idUsuario"));
-                        compra.setIdCompra(comprasJSON.getJSONObject(i).getInt("idVenta"));
+                        compra.setIdCompra(comprasJSON.getJSONObject(i).getInt("idCompra"));
                         compra.setObservaciones(comprasJSON.getJSONObject(i).getString("observaciones"));
                         compra.setFactura(comprasJSON.getJSONObject(i).getString("factura"));
+                        compra.setIdSucursal(comprasJSON.getJSONObject(i).getInt("idSucursal"));
                         
                         //convierte fecha String a Date
                         String fechaS = comprasJSON.getJSONObject(i).getString("fecha");
@@ -132,9 +135,10 @@ public class WSCompras {
 //        java.text.SimpleDateFormat sdf = 
 //            new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //        String currentTime = sdf.format(dt);
-            String fecha = util.dateToDateTimeAsString(new java.util.Date());
+            Date fechaT = util.stringToDateTime(fecha);
+            String fecha = util.dateToDateTimeAsString(fechaT);
             jsonParam.put("fecha", fecha);
-            jsonParam.put("codigoCliente", idProveedor);
+            jsonParam.put("codigoProveedor", idProveedor);
             jsonParam.put("observaciones", observaciones);
             jsonParam.put("idUsuario", idUsuario);
             jsonParam.put("factura", factura);

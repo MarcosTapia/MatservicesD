@@ -6,14 +6,20 @@ import ComponenteConsulta.JDListaProducto;
 import beans.CategoriaBean;
 import beans.ComprasBean;
 import beans.DatosEmpresaBean;
+import beans.DetalleCompraBean;
 import beans.DetallePedidoBean;
+import beans.DetalleVentaBean;
 import beans.FechaServidorBean;
+import beans.MovimientosBean;
 import beans.PedidoBean;
 import beans.ProductosProveedoresCostosBean;
 import beans.ProveedorBean;
 import beans.UsuarioBean;
+import beans.VentasBean;
 import constantes.ConstantesProperties;
+import consumewebservices.WSCompras;
 import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSDetalleCompras;
 import consumewebservices.WSDetallePedidos;
 import consumewebservices.WSDetalleVentas;
 import consumewebservices.WSInventarios;
@@ -57,8 +63,8 @@ public class FrmCompras extends javax.swing.JFrame {
     WSDatosEmpresa hiloEmpresa;
     WSInventarios hiloInventarios;
     WSInventariosList hiloInventariosList;
-    WSVentas hiloVentas;
-    WSDetalleVentas hiloDetalleVentas;
+    WSCompras hiloCompras;
+    WSDetalleCompras hiloDetalleCompras;
     WSPedidos hiloPedidos;
     WSDetallePedidos hiloDetallePedidos;
     WSMovimientos hiloMovimientos;
@@ -68,15 +74,19 @@ public class FrmCompras extends javax.swing.JFrame {
     
     HashMap<String, String> NombreProducto = new HashMap<String, String>();
     ProductoBean prodParcial = null;    
-
     //Variable que guarda el numero de compra
     int noCompraGral;
-    
     ArrayList<ProductoBean> inventario = null;
     String sucursalSistema = "";
+    
+    DetalleCompraBean detalleCompraBean = null;
+    ArrayList<DetalleCompraBean> detalleCompraTotal = new ArrayList<>();
+    ArrayList<DetalleCompraBean> detalleCompraTotalTemp = new ArrayList<>();
 
 //    //Carga iva de la empresa de ganancia por producto
 //    txtIva.setText("" + Principal.datosSistemaBean.getIvaEmpresa());
+    double ivaEmpresa = Principal.datosSistemaBean.getIvaEmpresa();
+    double ivaGral = Principal.datosSistemaBean.getIvaGral();
     
     public FrmCompras() {
         try {
@@ -106,108 +116,13 @@ public class FrmCompras extends javax.swing.JFrame {
                         + Ingreso.usuario.getIdSucursal());
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
         this.setIcon();
-        //lblIdProd.setVisible(false);
-        //Muestra max id tabla ventas
-//        txtNroVenta.setText("" + obtenerUltimoId());
         String titulos[] = {"CODIGO", "DESCRIPCION", "CANTIDAD", "PRECIO UND.", 
                             "IMPORTE"};
         ListaProductoC.setColumnIdentifiers(titulos);
         this.setLocationRelativeTo(null);
-        
         inventario = util.getMapProductos();
         productos = util.getMapProductos();
         util.llenaMapProductos(productos);
-//        txtIvaProd.setText("" + ivaEmpresa);
-        
-//        
-//        jtProductoCompras.requestFocusInWindow();
-//        jtProductoCompras.changeSelection(0, 0, false, false);        
-//        
-////        txtUtilidadPro.setEnabled(false);
-//        txtCodigoPro.requestFocus();
-//        //txtUtilidadPro.setText("");        
-//        
-//        jDateChooserFechaCompra.setLocation(jDateChooserFechaCompra.getX(), jDateChooserFechaCompra.getY()+20);
-//        
-//        // Actualizas tbl proveedor
-//        actualizarBusquedaCompras();
-//        // Actualizas tbl producto
-//        ArrayList<ProductoBean> result;  
-//        try {
-//            result = BDProducto.mostrarProducto();
-//            recargarTableProductos(result);
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, ex);
-//        }
-//        
-//        //Carga HashMap de Provvedores
-//        try {
-//            NombreProveedor = BDProveedor.mostrarProveedorHashMap();
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage());
-//        }
-//        
-//        // Para cargar la lista de Categorias al combobox
-//        // y carga hashmap de precios
-//        try {
-//            Connection con = BD.getConnection();
-//            Statement stmt = con.createStatement();
-//            ResultSet rs = stmt.executeQuery("select cCatDescripcion,utilidad from categoria");
-//            while (rs.next()) {
-//                cboCategoriaPro.addItem(rs.getObject(1));
-//                utilidadCategoriaHMap.put(""+rs.getObject(1),""+rs.getObject(2));
-//            }
-//            rs.close();
-//            stmt.close();
-//            con.close();
-//        } catch (SQLException error) {
-//            JOptionPane.showMessageDialog(null, error);
-//        }
-//        
-//        // Para cargar la lista de Proveedores al combobox
-//        try {
-//            Connection con = BD.getConnection();
-//            Statement stmt = con.createStatement();
-//            ResultSet rs = stmt.executeQuery("select cProvNombre,nProvCodigo from proveedor");
-//            while (rs.next()) {
-//                cboProovedorDescrip.addItem(rs.getObject(1));
-//            }
-//            rs.close();
-//            stmt.close();
-//            con.close();
-//        } catch (SQLException error) {
-//            JOptionPane.showMessageDialog(null, error.getMessage());
-//        }
-//        
-//        //Carga tabla compras parciales
-//        ArrayList<ComprasBean> resultCompras = new ArrayList<>();
-//        try {
-//            resultCompras = BDCompras.mostrarCompra(-1);
-//            recargarTablaCompraParcial(resultCompras);
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, ex);
-//        }
-////        String titulos[] = {"DESCRIPCIÓN", "CANTIDAD", "OBSERVACIONES", "PRECIO VENTA", "PROVEEDOR", "FECHA COMPRA"};
-////        TblCompras.setColumnModel(titulos);        
-//        
-//        //obtiene numero de compra
-//        noCompraGral = BDCompras.obtenerUltimoId();
-//                
-//        this.setLocationRelativeTo(null);
-//        configuracionBean = new DatosEmpresaBean();
-//        configuracionDAO = new ConfiguracionDAO();
-//        configuracionBean = configuracionDAO.obtieneConfiguracion(1);
-//        //txtUtilidadPro.setText(""+configuracionBean.getUtilidad());
-//        //txtIVA.setText(""+configuracionBean.getIva());
-//        this.setTitle("Compras");
-//        //solo para acceso local
-//        java.util.Date fechaLocal = new Date();
-////        String a = DateFormat.getDateInstance(DateFormat.LONG).
-////                format(fechaLocal);
-//        jDateChooserFechaCompra.setDateFormatString("d/MM/yyyy");
-//        jDateChooserFechaCompra.setDate(fechaLocal);
-//        //fin solo para acceso local
-        
         //carga proveedores
         Iterator it = Principal.proveedoresHM.keySet().iterator();
         int indiceSucursales = 1;
@@ -221,6 +136,9 @@ public class FrmCompras extends javax.swing.JFrame {
           indiceSucursales++;
         }        
         jDateChooserFechaCompra.setDate(new Date());
+        
+        txtNoCompra.setText("" + obtenerUltimoId());
+        //        
     }
 
     public void setIcon() {
@@ -230,15 +148,29 @@ public class FrmCompras extends javax.swing.JFrame {
     public void muestraUtilidad() {
         txtIva.requestFocus();
     }
+
+    public int obtenerUltimoId() {
+        int id = 0;
+        ComprasBean resultWS = null;
+        hiloCompras = new WSCompras();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETULTIMOIDCOMPRAS");
+        resultWS = hiloCompras.ejecutaWebService(rutaWS,"1");
+        id = resultWS.getIdCompra() + 1;
+        return id;
+    }
     
-    public void limpiarCajaTexto() {
+    public void limpiarCajaTexto(String factura, String noCompra, int indice) {
         txtCodigoPro.setText("");
-        cboProveedor.setSelectedItem("Seleccionar...");
-        txtCantidadPro.setText("");
-        txtPrecioCompraPro.setText("");
-        txtPrecioVentaPro.setText("");
         txtDescripcionPro.setText("");
+        txtCantidadPro.setText("1");
+        txtPrecioCompraPro.setText("");
+        txtIva.setText("" + +ivaEmpresa);
         txtObservacionesPro.setText("");
+        txtPrecioVentaPro.setText("");
+        txtUtilidad.setText("");
+        txtFacturaPro.setText(factura);
+        txtNoCompra.setText(noCompra);
+        cboProveedor.setSelectedIndex(indice);
         lblIdProd.setText("");
     }
 
@@ -246,6 +178,34 @@ public class FrmCompras extends javax.swing.JFrame {
 //        txtDescripcionPro.setEditable(b);
 //        txtPrecioVentaPro.setEditable(b);
     }
+    
+    //Actualiza totales,subtotales, etc de venta
+    public void actualizaTotales(List<DetalleCompraBean> list) {
+        double subtotal = 0;
+        double iva = 0;
+        double total;
+        int i = 0;
+        try {
+            for (DetalleCompraBean p : list) {
+                subtotal = subtotal + (p.getPrecioCosto() * p.getCantidad());
+            }            
+        } catch (java.lang.NullPointerException e) {
+            subtotal = 0;
+        }
+        
+        txtSubTotal.setText(""+subtotal);        
+        iva = subtotal * Double.parseDouble(txtIvaCompra.getText())/100;
+        //iva = iva + ((iva/100) * subtotal);
+        txtIvaPago.setText(""+iva);
+        total = iva + subtotal;
+        txtMontoApagar.setText(""+total);    
+        
+        //muestra 2 decimales en porc de descuento
+        DecimalFormat df = new DecimalFormat("#.##");   
+        txtSubTotal.setText(""+df.format(Double.parseDouble(txtSubTotal.getText())));  
+        txtIvaPago.setText(""+df.format(Double.parseDouble(txtIvaPago.getText())));  
+        txtMontoApagar.setText(""+df.format(Double.parseDouble(txtMontoApagar.getText())));  
+    } 
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -296,6 +256,16 @@ public class FrmCompras extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtUtilidad = new javax.swing.JTextField();
         btnSalirPro1 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        txtNoCompra = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        txtSubTotal = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        txtIvaPago = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        txtMontoApagar = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        txtIvaCompra = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
 
@@ -510,7 +480,7 @@ public class FrmCompras extends javax.swing.JFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jDateChooserFechaCompra, org.jdesktop.beansbinding.ObjectProperty.create(), jLabel4, org.jdesktop.beansbinding.BeanProperty.create("labelFor"));
         bindingGroup.addBinding(binding);
 
-        jDateChooserFechaCompra.setDateFormatString("yyyy-MM-d");
+        jDateChooserFechaCompra.setDateFormatString("yyyy-MM-dd HH:mm:ss");
 
         btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/addVenta.png"))); // NOI18N
         btnAgregar.setText("AGREGAR");
@@ -610,6 +580,11 @@ public class FrmCompras extends javax.swing.JFrame {
                 txtIvaActionPerformed(evt);
             }
         });
+        txtIva.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtIvaFocusGained(evt);
+            }
+        });
 
         lblIdProd.setForeground(new java.awt.Color(240, 240, 240));
 
@@ -631,6 +606,39 @@ public class FrmCompras extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("No. Compra :");
+
+        txtNoCompra.setEditable(false);
+        txtNoCompra.setBackground(new java.awt.Color(153, 153, 255));
+        txtNoCompra.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+
+        jLabel10.setFont(new java.awt.Font("Arial", 1, 20)); // NOI18N
+        jLabel10.setText("SUBTOTAL:");
+
+        txtSubTotal.setEditable(false);
+        txtSubTotal.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        txtSubTotal.setForeground(new java.awt.Color(51, 51, 255));
+
+        jLabel13.setFont(new java.awt.Font("Arial", 1, 20)); // NOI18N
+        jLabel13.setText("IVA :");
+
+        txtIvaPago.setEditable(false);
+        txtIvaPago.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        txtIvaPago.setForeground(new java.awt.Color(51, 51, 255));
+
+        jLabel19.setFont(new java.awt.Font("Arial", 1, 20)); // NOI18N
+        jLabel19.setText("TOTAL :");
+
+        txtMontoApagar.setEditable(false);
+        txtMontoApagar.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        txtMontoApagar.setForeground(new java.awt.Color(51, 51, 255));
+
+        jLabel15.setText("IVA Compra % :");
+
+        txtIvaCompra.setBackground(new java.awt.Color(153, 153, 255));
+        txtIvaCompra.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtIvaCompra.setText("16");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -640,85 +648,111 @@ public class FrmCompras extends javax.swing.JFrame {
                 .addComponent(lblIdProd)
                 .addGap(321, 321, 321))
             .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 679, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 6, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPrecioVentaPro, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSalirPro, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtIva, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtObservacionesPro, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel15)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtIvaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(txtCodigoPro, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jLabel7)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtDescripcionPro, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(txtFacturaPro))
                                 .addGroup(jPanel4Layout.createSequentialGroup()
                                     .addComponent(jLabel6)
-                                    .addGap(5, 5, 5)
-                                    .addComponent(txtCantidadPro, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(txtCantidadPro, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(30, 30, 30)
                                     .addComponent(jLabel8)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(txtPrecioCompraPro, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
                                     .addComponent(jLabel16)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jDateChooserFechaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addComponent(jLabel5)
+                                    .addComponent(jDateChooserFechaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jLabel3)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtIva, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jLabel14)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtObservacionesPro, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(cboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addComponent(jLabel9)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtPrecioVentaPro, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jLabel1)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(btnInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnSalirPro, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtCodigoPro, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtDescripcionPro, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtFacturaPro, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(3, 3, 3)))
-                        .addGap(18, 18, 18)))
-                .addContainerGap(3, Short.MAX_VALUE))
+                                    .addComponent(txtNoCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 11, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel18)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(btnAgregar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEliminarPro)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBorrarActual)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGuardarPro)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancelarPro)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSalirPro1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnMostrarPro)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(btnAgregar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnEliminarPro)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnBorrarActual)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnGuardarPro)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnCancelarPro)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSalirPro1)))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addGap(14, 14, 14)
+                                        .addComponent(jLabel10))
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel13)))
+                                .addContainerGap())
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtSubTotal)
+                                    .addComponent(txtIvaPago)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel19)
+                                            .addComponent(btnMostrarPro))
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(txtMontoApagar)))))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel18)
+                        .addContainerGap())))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -742,7 +776,11 @@ public class FrmCompras extends javax.swing.JFrame {
                             .addComponent(jLabel16)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jDateChooserFechaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel3)
+                                .addComponent(txtNoCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jDateChooserFechaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(15, 15, 15)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -750,14 +788,17 @@ public class FrmCompras extends javax.swing.JFrame {
                     .addComponent(jLabel14)
                     .addComponent(txtObservacionesPro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(cboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15)
+                    .addComponent(txtIvaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9)
-                        .addComponent(txtPrecioVentaPro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtPrecioVentaPro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel1))
-                    .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnInventario)
                     .addComponent(btnSalirPro))
                 .addGap(7, 7, 7)
@@ -773,8 +814,23 @@ public class FrmCompras extends javax.swing.JFrame {
                     .addComponent(btnMostrarPro))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel18)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtIvaPago, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel19)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtMontoApagar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(19, 19, 19))
         );
 
@@ -819,7 +875,7 @@ public class FrmCompras extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 724, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -854,26 +910,7 @@ public class FrmCompras extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirProActionPerformed
 
     private void borrar() {
-        limpiarCajaTexto();
-//        activarCajaTexto(false);
-//        
-//        //REINICIA TABLAS
-//        // Actualizas tbl proveedor
-//        actualizarBusquedaCompras();
-//        // Actualizas tbl producto
-//        ArrayList<ProductoBean> result;  
-//        ArrayList<ComprasBean> result1 = null;
-//        try {
-//            result = BDProducto.mostrarProducto();
-//            recargarTableProductos(result);
-//            //LIMPIA TABLA prodprovcost
-//            result1 = BDCompras.mostrarCompra(-1);
-//            recargarTablaCompraParcial(result1);
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, ex);
-//        }
-//        txtCodigoPro.requestFocus();
-//        detalleCompraBean.clear();
+        limpiarCajaTexto("","",1);
     }
     
     private void btnCancelarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarProActionPerformed
@@ -881,102 +918,146 @@ public class FrmCompras extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarProActionPerformed
 
     private void btnGuardarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProActionPerformed
-//        if (detalleCompraBean.size() > 0) {
-//            try {
-//                //aumento o alta de producto en inventario
-//                ProductoBean prodAAumentar = null;    
-//                for (ComprasBean compraParcial :detalleCompraBean) {
-//                    prodAAumentar = BDProducto.buscarProducto(compraParcial.getCodigo(), prodAAumentar);
-//                    if (prodAAumentar != null) {
-//                        prodAAumentar.setCantidad(prodAAumentar.getCantidad()
-//                                + compraParcial.getCantidad());
-//                        //TAMBIEN AGREGO PRECIO PUBLICO
-//                        prodAAumentar.setPrecioPublico(compraParcial.getPrecioVenta());
-//                        prodAAumentar.setPrecioCosto(compraParcial.getPrecioCosto());
-//                        BDProducto.actualizarProducto(prodAAumentar);
-//                    } else {
-//                        //Nuevo
-//                        //Crea y Llena objeto producto para insertarlo
-//                        ProductoBean nvoProd = new ProductoBean();
-//                        nvoProd.setCodigo(compraParcial.getCodigo());
-//                        nvoProd.setDescripcion(compraParcial.getDescripcion());
-//                        nvoProd.setCantidad(compraParcial.getCantidad());
-//                        CategoriaBean c = BDCategoria.buscarCategoriaDescripcion(
-//                                compraParcial.getCategoria());
-//                        nvoProd.setCategoria(c);
-//                        nvoProd.setFormula("");
-//                        nvoProd.setUbicacion("");
-//                        nvoProd.setObservaciones("");
-//                        nvoProd.setFactura("");
-//                        nvoProd.setMinimo(0);
-//                        nvoProd.setPrecioPublico(compraParcial.getPrecioVenta());
-//                        nvoProd.setPrecioCosto(compraParcial.getPrecioCosto());
-//                        BDProducto.insertarProducto(nvoProd);
-//                    }
-//                }                    
-//                //Fin aumento de producto en inventario
-//                
-//                
-//                ComprasBean p = new ComprasBean();
-//                if (BDCompras.insertarCompra(detalleCompraBean)) {
-//                    txtFacturaPro.setText("");
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "[ Error ]");                        
-//                }
-//                actualizarBusquedaCompras();
-//
-//                //Guarda precio en prodprovcostos
-//                for (ComprasBean compraParcial : detalleCompraBean) {
-//                    productosProveedoresCostosBean = new 
-//                                        ProductosProveedoresCostosBean();
-//                    productosProveedoresCostosBean.setnProvCodigo(
-//                            compraParcial.getnProvCodigo());
-//                    productosProveedoresCostosBean.setCodigo(
-//                            compraParcial.getCodigo());
-//                    productosProveedoresCostosBean.setPrecioCosto(
-//                            compraParcial.getPrecioVenta());
-////                    productosProveedoresCostosBean.setFecha(
-////                            compraParcial.getFechaCompra());
-//                    productosProveedoresCostosBean.setIdUsuario(
-//                            compraParcial.getIdUsuario());
-//                    
-//                    //nuevos
-//                    productosProveedoresCostosBean.setCategoria(compraParcial.
-//                            getCategoria());
-//                    productosProveedoresCostosBean.setPrecioCosto(compraParcial.
-//                            getPrecioCosto());
-//                    productosProveedoresCostosBean.setPrecioMaxPublico(compraParcial.
-//                            getPrecioMaxPublico());
-//                    productosProveedoresCostosBean.setPrecioSinIva(compraParcial.
-//                            getPrecioSinIva());
-//                    productosProveedoresCostosBean.setPorcentajeDescuento(compraParcial.
-//                            getPorcentajeDescuento());
-//                    productosProveedoresCostosBean.setPrecioVenta(compraParcial.getPrecioVenta());
-//                    
-//                    //realiza el guardado en la bd
-//                    bdProductosProveedoresCostos = new BDProductosProveedoresCostos();
-//                    try {
-//                        if (bdProductosProveedoresCostos.insertarProducto(
-//                                productosProveedoresCostosBean)) {
-//                            bdProductosProveedoresCostos.
-//                                    buscarProductoCodigoDescripcionEliminaMenor(
-//                                            productosProveedoresCostosBean);
-//                        }
-//                    } catch (SQLException ex) {
-//                        JOptionPane.showMessageDialog(null,ex.getMessage());
-//                    }
-//                    
-//                }                    
-//                //Fin Guarda precio en prodprovcostos
-//                JOptionPane.showMessageDialog(null,"[ Datos Agregados ]");
-//            } catch (SQLException e) {
-//                JOptionPane.showMessageDialog(null, e.getMessage());
-//            }
-//        } else {
-//            JOptionPane.showMessageDialog(null,"NO HAY COMPRAS POR GUARDAR");
-//        }
-//        noCompraGral = BDCompras.obtenerUltimoId();
-//        borrar();    
+        //lleno el objeto compra
+        ComprasBean compra = new ComprasBean();
+        compra.setFactura(txtFacturaPro.getText());
+        compra.setFecha(jDateChooserFechaCompra.getDate());
+        compra.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM, 
+                cboProveedor.getSelectedItem().toString()));
+        compra.setIdSucursal(Ingreso.usuario.getIdSucursal());
+        compra.setIdUsuario(Ingreso.usuario.getIdUsuario());
+        compra.setObservaciones(txtObservacionesPro.getText());
+        while (compra != null) {
+            //guarda compra
+            hiloCompras = new WSCompras();
+            String rutaWS = constantes.getProperty("IP") 
+                    + constantes.getProperty("GUARDACOMPRA");
+            //jDateChooserFechaCompra.setDateFormatString("yyyy-MM-dd HH:mm:ss");
+            Date f = jDateChooserFechaCompra.getDate();
+            String f2 = jDateChooserFechaCompra.getDate().toLocaleString();
+            f2 = util.cambiaFormatoFecha(f2);
+            ComprasBean compraGuardada = hiloCompras
+                    .ejecutaWebService(rutaWS,"2"
+                    , "" + compra.getIdProveedor()
+                    , "" + compra.getObservaciones()
+                    , "" + compra.getIdUsuario()
+                    , "" + compra.getFactura()
+                    , "" + compra.getIdSucursal()
+                    , f2);
+            if (compraGuardada != null) {
+                //guarda detalle compra
+                for (DetalleCompraBean detalleCompra :
+                        detalleCompraTotal) {
+                    hiloDetalleCompras = new WSDetalleCompras();
+                    rutaWS = constantes.getProperty("IP") 
+                        + constantes.getProperty("GUARDADETALLECOMPRA");
+//                                boolean detalleGuardado = false;
+//                                while (!detalleGuardado) {
+                    // para ajuste inventario                                }
+                    int idArticuloComprado = detalleCompra.getIdArticulo();
+                    double cantidadComprada = detalleCompra.getCantidad();
+                    // fin para ajuste inventario                                }
+                    DetalleCompraBean detalleCompraGuardada = 
+                            hiloDetalleCompras.
+                                    ejecutaWebService(rutaWS
+                                    ,"1"
+                            , "" + Integer.parseInt(txtNoCompra.getText().trim())
+                            , "" + detalleCompra.getIdArticulo()
+                            , "" + detalleCompra.getPrecioPublico()
+                            , "" + detalleCompra.getPrecioCosto()
+                            , "" + detalleCompra.getCantidad()
+                            , "" + detalleCompra.getDescuento()
+                            , "" + Ingreso.usuario.getIdSucursal());
+                    if (detalleCompraGuardada != null) {
+                            //Aumenta inventario
+                                //obtiene articulo para saber su cantidad original
+                            ArrayList<ProductoBean> resultWS = null;
+                            hiloInventariosList = new WSInventariosList();
+                            rutaWS = constantes.getProperty("IP") 
+                                    + constantes.getProperty("OBTIENEPRODUCTOPORID") 
+                                    + String.valueOf(idArticuloComprado);
+                            resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"5");
+                            ProductoBean p = resultWS.get(0);
+                                //fin obtiene articulo para saber su cantidad original
+
+                                //aumenta iinventario en cifras no en bd
+                            double cantidadOriginal = p.getExistencia();
+                            double cantidadFinal = cantidadOriginal 
+                                    + cantidadComprada;
+                                //fin aumenta iinventario en cifras no en bd
+
+                                //realiza ajuste inventario 
+                            hiloInventarios = new WSInventarios();
+                            rutaWS = constantes.getProperty("IP") 
+                                    + constantes.getProperty("AJUSTAINVENTARIOCOMPRA");
+                            ProductoBean ajuste = hiloInventarios
+                                    .ejecutaWebService(rutaWS,"6"
+                                    ,String.valueOf(idArticuloComprado)
+                                    ,"" + cantidadFinal
+                                    ,"" + detalleCompra.getPrecioCosto()        
+                                    ,"" + detalleCompra.getDescuento()
+                                    ,"" + detalleCompra.getPrecioPublico());
+                            if (ajuste != null) {
+                                    //Guarda movimiento
+                                String fecha = util.dateToDateTimeAsString(new java.util.Date());
+                                MovimientosBean mov = new MovimientosBean();
+                                hiloMovimientos = new WSMovimientos();
+                                rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAMOVIMIENTO");
+                                MovimientosBean movimientoInsertado = hiloMovimientos.ejecutaWebService(rutaWS,"1"
+                                    ,"" + p.getIdArticulo()
+                                    ,"" + Ingreso.usuario.getIdUsuario()
+                                    ,"Compra"
+                                    ,"" + cantidadComprada
+                                    ,fecha
+                                    ,"" + Ingreso.usuario.getIdSucursal());
+                                    //Fin Guarda movimiento
+//                                            if (movimientoInsertado != null) {
+//                                                detalleGuardado = true;
+////                                                detalleVentaProducto.remove(detalleCompra);
+//                                            }
+//                                        }
+//                                            //fin realiza ajuste inentario
+//                                    } else {
+//                                        detalleGuardado = false;
+                        }
+                    }
+                }
+                //fin guarda detalle compra
+
+                //carga productos actualizados
+                productos = util.getMapProductos();
+                util.llenaMapProductos(productos);
+                //fin carga productos actualizados
+
+                JOptionPane.showMessageDialog(null, 
+                        "COMPRA GUARDADA CORRRECTAMENTE");
+                //detalleCompraTotal.remove(detalleCompra);
+                compra = null;
+                int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
+                        + "Imprimir la Compra?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
+                if (resultado == JOptionPane.YES_OPTION) {
+                    //imprime ticket
+//                                                    imprimir(ventasBean);
+//                            JOptionPane.showMessageDialog(null, "Se imprime el ticket");                             
+                    //fin imprime ticket
+                }
+                //fin guarda detalle venta
+            }                        
+            //fin guarda compra
+        }
+        limpiarCajaTexto("","",0);
+        txtSubTotal.setText("");
+        txtIvaPago.setText("");
+        txtMontoApagar.setText("");
+        txtIva.setText("");
+        jDateChooserFechaCompra.setEnabled(true);
+        jDateChooserFechaCompra.setDate(new Date());
+        detalleCompraBean = null;
+        detalleCompraTotal.clear();
+        //actualizo tabla de compra
+        recargarTableCompraParcialProductos(detalleCompraTotal);
+        txtNoCompra.setText("" + obtenerUltimoId());
+        txtCodigoPro.requestFocus(true);
     }//GEN-LAST:event_btnGuardarProActionPerformed
 
     private void buscaComprasTbl() {
@@ -1117,79 +1198,50 @@ public class FrmCompras extends javax.swing.JFrame {
                     + "no hay usuario selecionado");
             return;            
         }
+        //valida que exista factura
+        if (txtFacturaPro.getText().equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(null, "Debe existir una factura que "
+                    + "sustente esta compra");
+            txtFacturaPro.requestFocus(true);
+            return;            
+        }
         // fin ********* Validaciones
         
-        //lleno el objeto compra
-//        ComprasBean compraParcial = new ComprasBean();
-//        compraParcial.setNoCompra(noCompraGral);
-//        compraParcial.setCodigo(txtCodigoPro.getText());
-//        compraParcial.setCantidad(Integer.parseInt(txtCantidadPro.getText()));
-//        compraParcial.setObservaciones(txtObservacionesPro.getText());
-//        compraParcial.setFactura(txtFacturaPro.getText());            
-//        compraParcial.setPrecioVenta(Double.parseDouble(txtPrecioVentaPro.getText()));
-//        
-//        try {
-//            ProveedorBean provBeanTemp = new ProveedorBean();
-//            provBeanTemp = BDProveedor.mostrarProveedorPorNombre(String.valueOf(
-//                    cboProovedorDescrip.getSelectedItem()));
-//            compraParcial.setnProvCodigo(provBeanTemp.getnProvCodigo());
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage());
-//        }            
-//        //para fecha
-//        DateFormat ft = new SimpleDateFormat("yyyy-MM-dd"); 
-//        java.util.Date fecha = null; // crea objetos tipo util.Date y sql.Date
-//        java.sql.Timestamp fecha2 = null;
-//        fecha = jDateChooserFechaCompra.getDate();
-//        java.sql.Timestamp sq = new java.sql.Timestamp(fecha.getTime());
-//        fecha2 = sq; 
-//        compraParcial.setFechaCompra(fecha2.toString());
-//        compraParcial.setEdoVenta(true);
-//        compraParcial.setIdUsuario(Ingreso.usuario.getIdUsuario()); 
-//        
-//        //verifica que la compra no este en la lisra
-////        if (buscaRepetido(compraParcial)) {
-////            JOptionPane.showMessageDialog(null, "Ya existe el pproducto en la lista");
-////        }
-//
-//        //nuevos 
-//        compraParcial.setCategoria(String.valueOf(cboCategoriaPro.getSelectedItem()));
-//        compraParcial.setPrecioCosto(Double.parseDouble(txtPrecioCompraPro.getText()));
-////        compraParcial.setPrecioMaxPublico(Double.parseDouble(txtPrecioMaxPub.getText()));
-////        if (txtPrecioSinIva.getText().equalsIgnoreCase("")) {
-////            compraParcial.setPrecioSinIva(0);
-////        } else {
-////            compraParcial.setPrecioSinIva(Double.parseDouble(txtPrecioSinIva.getText()));
-////        }
-////        if (txtPorcDesc.getText().equalsIgnoreCase("")) {
-////            compraParcial.setPorcentajeDescuento(0);
-////        } else {
-////            compraParcial.setPorcentajeDescuento(Double.parseDouble(txtPorcDesc.getText()));
-////        }
-//        
-//        //nuevo 2
-//        compraParcial.setDescripcion(txtDescripcionPro.getText());
-//        compraParcial.setPrecioVenta(Double.parseDouble(txtPrecioVentaPro.getText()));
-//        
-//        //agrega compra a la lista
-//        detalleCompraBean.add(compraParcial);
-//        recargarTablaCompraParcial(detalleCompraBean);
-//        
-//        //prepara para agregar nueva compra
-//        limpiarCajaTexto();
-//        activarCajaTexto(false);
-//        cboProovedorDescrip.setSelectedIndex(0);
-//        txtCodigoPro.requestFocus();
+        //agrega detalle compra en tabla y en memoria
+            //llena objeto detalle compra
+        detalleCompraBean = new DetalleCompraBean();
+        detalleCompraBean.setCantidad(Double.parseDouble(txtCantidadPro.getText()));
+        detalleCompraBean.setIdArticulo(Integer.parseInt(lblIdProd.getText()));
+        detalleCompraBean.setIdCompra(Integer.parseInt(txtNoCompra.getText()));
+        detalleCompraBean.setIdSucursal(Ingreso.usuario.getIdSucursal());
+        detalleCompraBean.setPrecioCosto(Double.parseDouble(txtPrecioCompraPro.getText()));
+        detalleCompraBean.setPrecioPublico(Double.parseDouble(txtPrecioVentaPro.getText()));
+        detalleCompraBean.setDescuento(Double.parseDouble(txtIva.getText()));
+            //fin llena objeto detalle compra
+
+        if (buscaRepetido(detalleCompraBean)) {
+            JOptionPane.showMessageDialog(null, "YA ESTA AGREGADO EL PRODUCTO");
+            return;
+        }
+        //agrego producto a vender a lista parcial de venta
+        detalleCompraTotal.add(detalleCompraBean);
+        //actualizo tabla de compra
+        recargarTableCompraParcialProductos(detalleCompraTotal);
+
+        //Actualiza Precios, totales y subtotales
+        jDateChooserFechaCompra.setEnabled(false);
+        actualizaTotales(detalleCompraTotal);
+        limpiarCajaTexto(txtFacturaPro.getText(), txtNoCompra.getText(),cboProveedor.getSelectedIndex());
     }
 
-    private boolean buscaRepetido(ComprasBean compraParcialP) {
+    private boolean buscaRepetido(DetalleCompraBean articulo) {
         boolean existe = false;
-//        for (ComprasBean compraParcial : detalleCompraBean) {
-//            if (compraParcialP.getCodigo().equalsIgnoreCase(compraParcial.getCodigo())) {
-//                existe = true;
-//                break;
-//            }
-//        }
+        for (DetalleCompraBean compraParcial : detalleCompraTotal) {
+            if (articulo.getIdArticulo() == compraParcial.getIdArticulo()) {
+                existe = true;
+                break;
+            }
+        }
         return existe;
     }
     
@@ -1272,7 +1324,7 @@ public class FrmCompras extends javax.swing.JFrame {
                 , txtCodigoPro.getText().trim()
                 , Ingreso.usuario.getIdSucursal());
         if (prod == null) {
-            limpiarCajaTexto();
+            limpiarCajaTexto("","",1);
             activarCajaTexto(false);
             btnInventario.requestFocus();
             JOptionPane.showMessageDialog(null, "No se encontro el producto, "
@@ -1305,10 +1357,10 @@ public class FrmCompras extends javax.swing.JFrame {
     }//GEN-LAST:event_txtObservacionesProActionPerformed
 
     private void btnBorrarActualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActualActionPerformed
-        ArrayList<ComprasBean> detalleCompraBeanTemp = new ArrayList<>();
-        recargarTablaCompraParcial(detalleCompraBeanTemp);        
-        limpiarCajaTexto();
-        txtCodigoPro.requestFocus();
+//        ArrayList<DetalleCompraBean> detalleCompraBeanTemp = new ArrayList<>();
+//        recargarTablaCompraParcial(detalleCompraBeanTemp);        
+//            limpiarCajaTexto("","",1);
+//        txtCodigoPro.requestFocus();
     }//GEN-LAST:event_btnBorrarActualActionPerformed
 
     private void jtProductoComprasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtProductoComprasMouseClicked
@@ -1323,9 +1375,18 @@ public class FrmCompras extends javax.swing.JFrame {
 
     private void txtIvaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIvaActionPerformed
         //calcula precio publico
-        double precioCompra = Double.parseDouble(txtPrecioCompraPro.getText());
+        double precioCompra;
+        double PrecioPublico;
+        try {
+            precioCompra = Double.parseDouble(txtPrecioCompraPro.getText());
+        } catch (java.lang.NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Debes registrar "
+                    + "un precio de compra");
+            txtPrecioCompraPro.requestFocus(true);
+            return;
+        }
         double iva = Double.parseDouble(txtIva.getText());
-        double PrecioPublico = precioCompra + ((iva/100) * precioCompra);
+        PrecioPublico = precioCompra + ((iva/100) * precioCompra);
         txtPrecioVentaPro.setText("" + PrecioPublico);
         
         double ganancia = PrecioPublico - precioCompra;
@@ -1337,6 +1398,12 @@ public class FrmCompras extends javax.swing.JFrame {
     private void btnSalirPro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPro1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSalirPro1ActionPerformed
+
+    private void txtIvaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtIvaFocusGained
+        if (detalleCompraTotal.size()<1) {
+            txtIva.setToolTipText("Ingresa el número de Factura");
+        }
+    }//GEN-LAST:event_txtIvaFocusGained
 
     private void actualizarBusquedaCompras() {
 //        ArrayList<ComprasBean> result = null;
@@ -1524,39 +1591,39 @@ public class FrmCompras extends javax.swing.JFrame {
         jtProductoCompras.getColumnModel().getColumn(1).setMaxWidth(0);
     } 
     
-    public void recargarTablaCompraParcial(ArrayList<ComprasBean> list) {
+    //Para Tabla Venta Parcial
+    public void recargarTableCompraParcialProductos(List<DetalleCompraBean> list) {
 //        try {
-//            if (list.size() == 0) {
-//                DefaultTableModel modelo = (DefaultTableModel) TblCompras.getModel();
-//                while(modelo.getRowCount()>0)
-//                    modelo.removeRow(0);
-//            }       
-//            Object[][] datos = new Object[list.size()][7];
-//            int i = 0;
-//            for (ComprasBean p : list) {
-//                datos[i][0] = p.getCodigo();
-////                datos[i][1] = NombreProducto.get(p.getCodigo());
-//                datos[i][1] = p.getDescripcion();
-//                datos[i][2] = p.getCantidad();
-//                datos[i][3] = p.getObservaciones(); 
-//                datos[i][4] = p.getPrecioCosto();
-//                datos[i][5] = NombreProveedor.get(p.getnProvCodigo());
-//                datos[i][6] = p.getFechaCompra();
-//                i++;
-//            }
-//            TblCompras.setModel(new javax.swing.table.DefaultTableModel(
-//                    datos,
-//                    new String[]{
-//                        "CÓDIGO","DESCRIPCIÓN", "CANTIDAD", "OBSERVACIONES", "PRECIO COSTO", "PROVEEDOR", "FECHA COMPRA"
-//                    }) {
-//
-//                @Override
-//                public boolean isCellEditable(int row, int column) {
-//                    return false;
-//                }
-//            });
-//        } catch(NullPointerException e) {
-//        }   
+            if (list == null) {
+                DefaultTableModel modelo = (DefaultTableModel) TblCompras.getModel();
+                while(modelo.getRowCount()>0)
+                    modelo.removeRow(0);
+            }
+            Object[][] datos = new Object[list.size()][5];
+            int i = 0;
+            for (DetalleCompraBean p : list) {
+                datos[i][0] = p.getIdArticulo();
+                datos[i][1] = util.buscaDescFromIdProd(Principal.productosHMID,"" 
+                        + p.getIdArticulo());
+                datos[i][2] = p.getCantidad();            
+                datos[i][3] = p.getPrecioCosto();
+                
+                datos[i][4] = p.getPrecioPublico();
+                i++;
+            }
+            TblCompras.setModel(new javax.swing.table.DefaultTableModel(
+                    datos,
+                    new String[]{
+                        "ID", "DESCRIPCION", "CANTIDAD", "$ COSTO", "$ VENTA"
+                   }) {
+
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            });
+            TblCompras.getColumnModel().getColumn(0).setPreferredWidth(1);
+            TblCompras.getColumnModel().getColumn(0).setMaxWidth(1);
     } 
 
 //    public static void main(String args[]) {
@@ -1608,13 +1675,18 @@ public class FrmCompras extends javax.swing.JFrame {
     private javax.swing.JComboBox cboProveedor;
     private com.toedter.calendar.JDateChooser jDateChooserFechaCompra;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1636,9 +1708,14 @@ public class FrmCompras extends javax.swing.JFrame {
     private javax.swing.JTextField txtDescripcionPro;
     private javax.swing.JTextField txtFacturaPro;
     private javax.swing.JTextField txtIva;
+    private javax.swing.JTextField txtIvaCompra;
+    private javax.swing.JTextField txtIvaPago;
+    private javax.swing.JTextField txtMontoApagar;
+    private javax.swing.JTextField txtNoCompra;
     private javax.swing.JTextField txtObservacionesPro;
     private javax.swing.JTextField txtPrecioCompraPro;
     private javax.swing.JTextField txtPrecioVentaPro;
+    private javax.swing.JTextField txtSubTotal;
     private javax.swing.JTextField txtUtilidad;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables

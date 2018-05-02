@@ -664,7 +664,7 @@ public class FrmVenta extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tblListaProductos);
 
         jLabel15.setFont(new java.awt.Font("Arial", 1, 20)); // NOI18N
-        jLabel15.setText("SUB. TOTAL:");
+        jLabel15.setText("SUBTOTAL:");
 
         txtSubTotal.setEditable(false);
         txtSubTotal.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
@@ -1555,7 +1555,8 @@ public class FrmVenta extends javax.swing.JFrame {
                             , "" + ventasBean.getIdCliente()
                             , "" + ventasBean.getObservaciones()
                             , "" + ventasBean.getIdUsuario()
-                            , "" + ventasBean.getIdSucursal());
+                            , "" + ventasBean.getIdSucursal()
+                            , "" + "0");
                     if (pedidoGuardado != null) {
                         //guarda detalle venta
                         for (DetalleVentaBean detVentBeanADisminuir :

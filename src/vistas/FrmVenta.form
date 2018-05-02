@@ -659,7 +659,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Arial" size="20" style="1"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="SUB. TOTAL:"/>
+                        <Property name="text" type="java.lang.String" value="SUBTOTAL:"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JTextField" name="txtSubTotal">

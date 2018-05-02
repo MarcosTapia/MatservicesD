@@ -107,6 +107,14 @@ public class WSInventarios {
                 existencia = params[3];
                 productoObj = ajustaInventarioWS(); 
                 break;
+            case "6" : 
+                idArticulo = params[2];
+                existencia = params[3];
+                precioCosto = params[4];
+                porcentajeImpuesto = params[5];
+                precioUnitario = params[6];
+                productoObj = ajustaInventarioFromCompraWS(); 
+                break;
         }
         return productoObj;
     }
@@ -382,6 +390,63 @@ public class WSInventarios {
             JSONObject jsonParam = new JSONObject();
             jsonParam.put("idArticulo", idArticulo);
             jsonParam.put("existencia", existencia);
+            // Envio los parámetros post.
+            OutputStream os = urlConn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(jsonParam.toString());
+            writer.flush();
+            writer.close();
+            int respuesta = urlConn.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br=new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+                while ((line=br.readLine()) != null) {
+                    result.append(line);
+                    //response+=line;
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
+                if (resultJSON == 1) {      // hay un alumno que mostrar
+                    ajuste = new ProductoBean();
+                } else if (resultJSON == 2) {
+                    devuelve = "No hay alumnos";
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return ajuste;
+    }
+
+    public ProductoBean ajustaInventarioFromCompraWS(String... params) {
+        ProductoBean ajuste = null;
+        try {
+            HttpURLConnection urlConn;
+            DataOutputStream printout;
+            DataInputStream input;
+            url = new URL(cadena);
+            urlConn = (HttpURLConnection) url.openConnection();
+            urlConn.setDoInput(true);
+            urlConn.setDoOutput(true);
+            urlConn.setUseCaches(false);
+            urlConn.setRequestProperty("Content-Type", "application/json");
+            urlConn.setRequestProperty("Accept", "application/json");
+            urlConn.connect();
+            //Creo el Objeto JSON
+            JSONObject jsonParam = new JSONObject();
+            jsonParam.put("idArticulo", idArticulo);
+            jsonParam.put("existencia", existencia);
+            jsonParam.put("precioCosto", precioCosto);
+            jsonParam.put("porcentajeImpuesto", porcentajeImpuesto);
+            jsonParam.put("precioUnitario", precioUnitario);
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
