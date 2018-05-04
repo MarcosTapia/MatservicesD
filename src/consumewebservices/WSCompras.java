@@ -135,9 +135,18 @@ public class WSCompras {
 //        java.text.SimpleDateFormat sdf = 
 //            new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //        String currentTime = sdf.format(dt);
-            Date fechaT = util.stringToDateTime(fecha);
-            String fecha = util.dateToDateTimeAsString(fechaT);
-            jsonParam.put("fecha", fecha);
+            
+            if (fecha.length()==21) {
+                // agrega 0 inicial si falta
+                fecha = "0" + fecha;
+            }
+            fecha = fecha.substring(0, 19);
+            fecha = util.cambiaFormatoFecha(fecha);
+            Date a = util.stringToDateTime(fecha);
+            String b = util.dateToDateTimeAsString(a);
+//            Date fechaT = util.stringToDateTime(fecha);
+//            String fecha = util.dateToDateTimeAsString(fechaT);
+            jsonParam.put("fecha", b);
             jsonParam.put("codigoProveedor", idProveedor);
             jsonParam.put("observaciones", observaciones);
             jsonParam.put("idUsuario", idUsuario);
