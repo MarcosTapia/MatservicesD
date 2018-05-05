@@ -3,18 +3,19 @@ package vistas;
 import ComponenteConsulta.JDListaCorteDia;
 import beans.ProveedorBean;
 import ComponenteConsulta.JDListaProveedor;
-import ComponenteDatos.BD;
-import ComponenteDatos.BDDetalleVenta;
-import ComponenteDatos.BDProducto;
-import ComponenteDatos.BDProveedor;
-import ComponenteDatos.BDUsuario;
-import ComponenteDatos.BDVentas;
-import ComponenteDatos.ConfiguracionDAO;
 import beans.DatosEmpresaBean;
 import beans.DetalleVentaBean;
+import beans.FechaServidorBean;
 import beans.ProductoBean;
 import beans.UsuarioBean;
 import beans.VentasBean;
+import constantes.ConstantesProperties;
+import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSInventarios;
+import consumewebservices.WSInventariosList;
+import consumewebservices.WSMovimientos;
+import consumewebservices.WSVentas;
+import consumewebservices.WSVentasList;
 import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -25,23 +26,28 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import util.Util;
 
 public class FrmConsultaVentas extends javax.swing.JFrame {
-    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-    ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
-
-    ArrayList<UsuarioBean> usuarios = new ArrayList<>(); 
-    HashMap<Integer,String> nombreUsuarios = new HashMap<>();
-    HashMap<String, String> NombreProducto = new HashMap<String, String>();
-    
-    String accion;
+    //WS
+    Util util = new Util();
+    Properties constantes = new ConstantesProperties().getProperties();
+    WSDatosEmpresa hiloEmpresa;
+    WSVentas hiloVentas;
+    WSVentasList hiloVentasList;
+    //Fin WS
+    DateFormat fecha = DateFormat.getDateInstance();
+    String accion = "";
+    ArrayList<VentasBean> ventasGlobal = null;
 
     public FrmConsultaVentas() {
         try {
@@ -50,59 +56,70 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
-        lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
-        //llena hashmap de productos
-        ArrayList<ProductoBean> resultProd;  
-        try {
-            resultProd = BDProducto.mostrarProducto();
-            for (ProductoBean p : resultProd) {
-                NombreProducto.put(p.getCodigo(), p.getDescripcion());
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-        }
+        // Actualizas tbl producto
+        hiloVentasList = new WSVentasList();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETVENTAS");
+        ventasGlobal = hiloVentasList.ejecutaWebService(rutaWS,"1");
+        recargarTableVentas(ventasGlobal);
         
+        lblUsuario.setText("Usuario : " + Ingreso.usuario.getNombre()
+            + " " + Ingreso.usuario.getApellido_paterno()
+            + " " + Ingreso.usuario.getApellido_materno());
         
-        //llena hashmap de usuarios
-        try {
-            usuarios = BDUsuario.mostrarUsuarios();
-            for (UsuarioBean usuarioBeanParcial: usuarios) {
-                nombreUsuarios.put(usuarioBeanParcial.getIdUsuario(), usuarioBeanParcial.getNombre());
-            }
-        } catch(SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex);
-        }
+//        //inhabilita combos
+//        cboSucursal.setEnabled(false);
+//        cboProveedor.setEnabled(false);
+//        cboCategoriaPro.setEnabled(false);
+//
+//        //cambia formato de fecha a tipo datetime xq asi esta en bd remota
+//        jCalFechaIngresoProd.setDate(new Date());
+////        jCalFechaIngresoProd.setDateFormatString("yyyy-MM-dd HH:mm:ss");
+//        
+//        txtIdArticulo.setVisible(false);
+//        btnGuardarPro.setEnabled(false);
         
-        // Actualizas tbl Ventas
-        ArrayList<VentasBean> result;  
-        try {
-            result = BDVentas.mostrarVentas();
-            recargarTableVentas(result);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex);
-        }                
+        this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
+        this.setIcon();
         
-        configuracionBean = configuracionDAO.obtieneConfiguracion(1);
-        this.setTitle(configuracionBean.getNombreEmpresa());
-        this.setLocationRelativeTo(null);
-        
+////        if (this.getLlamadoVentaInventario() == 1) {
+////            btnNuevoPro.setVisible(true);
+////            btnGuardarPro.setEnabled(true);
+////            accion = "Guardar";
+////            btnModificarPro.setVisible(false);
+////            btnEliminarPro.setVisible(false);
+////        }
+//        
         limpiaTblDetalleVenta();        
+    }
+    
+    public void setIcon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
     }
 
     //Para Tabla Ventas
     public void recargarTableVentas(ArrayList<VentasBean> list) {
-        Object[][] datos = new Object[list.size()][3];
+        Object[][] datos = new Object[list.size()][5];
         int i = 0;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//System.out.println(dateFormat.format(new Date()));        
         for (VentasBean p : list) {
-            datos[i][0] = p.getnVenCodigo();
-            datos[i][1] = nombreUsuarios.get(p.getIdUsuario());
-            datos[i][2] = p.getcVenFecha();
+            datos[i][0] = p.getIdVenta();
+            datos[i][1] = dateFormat.format(p.getFecha());
+//            datos[i][1] = p.getFecha();
+            datos[i][2] = util.buscaDescFromIdCli(Principal.clientesHM
+                    , "" + p.getIdCliente());
+            datos[i][3] = util.buscaDescFromIdSuc(Principal.sucursalesHM 
+                    , "" + p.getIdSucursal());
+            datos[i][4] = util.buscaDescFromIdUsu(Principal.usuariosHM 
+                    , "" + p.getIdUsuario());
             i++;
         }
         tblConsultaVentas.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
-                    "No. VENTA", "USUARIO","FECHA"
+                    "No. VENTA", "FECHA VENTA","CLIENTE","SUCURSAL","USUARIO"
                 }) {
 
             @Override
@@ -114,28 +131,28 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 
     //Para Tabla DetalleVenta
     public void recargarTablaDetalle(ArrayList<DetalleVentaBean> list) {
-        Object[][] datos = new Object[list.size()][5];
-        int i = 0;
-        for (DetalleVentaBean p : list) {
-            datos[i][0] = p.getnVenCodigo();
-//            datos[i][1] = p.getCodigo();
-            datos[i][1] = NombreProducto.get(p.getCodigo());
-            datos[i][2] = p.getCantidad();
-            datos[i][3] = p.getPrecioUnitario();
-            datos[i][4] = p.getSubTotalParcial();
-            i++;
-        }
-        tblConsultaDetalleVenta.setModel(new javax.swing.table.DefaultTableModel(
-                datos,
-                new String[]{ 
-                    "No. VENTA", "PRODUCTO","CANTIDAD","PRECIO UNITARIO","SUBTOTAL PARCIAL"
-                }) {
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        });
+//        Object[][] datos = new Object[list.size()][5];
+//        int i = 0;
+//        for (DetalleVentaBean p : list) {
+//            datos[i][0] = p.getnVenCodigo();
+////            datos[i][1] = p.getCodigo();
+//            datos[i][1] = NombreProducto.get(p.getCodigo());
+//            datos[i][2] = p.getCantidad();
+//            datos[i][3] = p.getPrecioUnitario();
+//            datos[i][4] = p.getSubTotalParcial();
+//            i++;
+//        }
+//        tblConsultaDetalleVenta.setModel(new javax.swing.table.DefaultTableModel(
+//                datos,
+//                new String[]{ 
+//                    "No. VENTA", "PRODUCTO","CANTIDAD","PRECIO UNITARIO","SUBTOTAL PARCIAL"
+//                }) {
+//
+//            @Override
+//            public boolean isCellEditable(int row, int column) {
+//                return false;
+//            }
+//        });
     } 
     
     @SuppressWarnings("unchecked")
@@ -191,7 +208,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             }
         });
 
-        cboParametroVentas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No. Venta", "Usuario" }));
+        cboParametroVentas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No. Venta", "Cliente", "Sucursal", "Usuario" }));
         cboParametroVentas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboParametroVentasActionPerformed(evt);
@@ -406,8 +423,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 468, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(87, 87, 87))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(76, 76, 76))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -433,9 +450,9 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(26, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -444,7 +461,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 996, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 993, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -459,7 +476,9 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -477,7 +496,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscarVentaActionPerformed
 
     private void txtBuscarVentaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarVentaKeyReleased
-        actualizarBusqueda();
+        actualizarBusquedaVenta();
     }//GEN-LAST:event_txtBuscarVentaKeyReleased
 
     private void tblConsultaDetalleVentaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaDetalleVentaMouseClicked
@@ -488,22 +507,22 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
-        Inventario inventario = new Inventario();
+        FrmInventario inventario = new FrmInventario();
 //        inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
 //        inventario.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void buscaDetalleVenta() {
-        ArrayList<DetalleVentaBean> listaDetalle = new ArrayList<>();
-        BDDetalleVenta bdDetalleVenta = new BDDetalleVenta();
-        try {
-            listaDetalle = bdDetalleVenta.mostrarDetalleVentaPorCodigo(
-                    Integer.parseInt(String.valueOf(tblConsultaVentas.getModel().
-                            getValueAt(tblConsultaVentas.getSelectedRow(),0))));
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-        }
-        recargarTablaDetalle(listaDetalle);
+//        ArrayList<DetalleVentaBean> listaDetalle = new ArrayList<>();
+//        BDDetalleVenta bdDetalleVenta = new BDDetalleVenta();
+//        try {
+//            listaDetalle = bdDetalleVenta.mostrarDetalleVentaPorCodigo(
+//                    Integer.parseInt(String.valueOf(tblConsultaVentas.getModel().
+//                            getValueAt(tblConsultaVentas.getSelectedRow(),0))));
+//        } catch (SQLException ex) {
+//            JOptionPane.showMessageDialog(null, ex.getMessage());
+//        }
+//        recargarTablaDetalle(listaDetalle);
     }
     
     private void tblConsultaVentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaVentasMouseClicked
@@ -511,57 +530,57 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     }//GEN-LAST:event_tblConsultaVentasMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        limpiaTblDetalleVenta();        
-        //Tomamos las dos fechas y las convierto a java.sql.date
-        java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
-        java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();
-        java.sql.Date fechaSqlDateIni;
-        java.sql.Date fechaSqlDateFin;
-        try {
-            fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
-            return;
-        }
-        try {
-            fechaSqlDateFin = new java.sql.Date(fechaUtilDateFin.getTime());
-        } catch (Exception e) {
-            fechaSqlDateFin = fechaSqlDateIni;
-        }
-        
-        if (fechaSqlDateIni.getTime() > fechaSqlDateFin.getTime()) {
-            JOptionPane.showMessageDialog(null, "Fechas Incorrectas");
-            return;
-        }
-        
-        //Parte de la consulta
-        ArrayList<VentasBean> listaVentas = new ArrayList<>();
-        try {
-            listaVentas = BDVentas.mostrarVentasPorFecha(fechaSqlDateIni, fechaSqlDateFin);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "" + ex.getMessage());        
-        }
-        recargarTableVentas(listaVentas);
+//        limpiaTblDetalleVenta();        
+//        //Tomamos las dos fechas y las convierto a java.sql.date
+//        java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
+//        java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();
+//        java.sql.Date fechaSqlDateIni;
+//        java.sql.Date fechaSqlDateFin;
+//        try {
+//            fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+//            return;
+//        }
+//        try {
+//            fechaSqlDateFin = new java.sql.Date(fechaUtilDateFin.getTime());
+//        } catch (Exception e) {
+//            fechaSqlDateFin = fechaSqlDateIni;
+//        }
+//        
+//        if (fechaSqlDateIni.getTime() > fechaSqlDateFin.getTime()) {
+//            JOptionPane.showMessageDialog(null, "Fechas Incorrectas");
+//            return;
+//        }
+//        
+//        //Parte de la consulta
+//        ArrayList<VentasBean> listaVentas = new ArrayList<>();
+//        try {
+//            listaVentas = BDVentas.mostrarVentasPorFecha(fechaSqlDateIni, fechaSqlDateFin);
+//        } catch (SQLException ex) {
+//            JOptionPane.showMessageDialog(null, "" + ex.getMessage());        
+//        }
+//        recargarTableVentas(listaVentas);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     public void limpiaTblDetalleVenta() {
-        //limpia tabla de detalle venta
-        ArrayList<DetalleVentaBean> listaDetalle = new ArrayList<>();
-        BDDetalleVenta bdDetalleVenta = new BDDetalleVenta();
-        try {
-            listaDetalle = bdDetalleVenta.mostrarDetalleVentaPorCodigo(
-                    1000000000);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-        }
-        recargarTablaDetalle(listaDetalle);
+//        //limpia tabla de detalle venta
+//        ArrayList<DetalleVentaBean> listaDetalle = new ArrayList<>();
+//        BDDetalleVenta bdDetalleVenta = new BDDetalleVenta();
+//        try {
+//            listaDetalle = bdDetalleVenta.mostrarDetalleVentaPorCodigo(
+//                    1000000000);
+//        } catch (SQLException ex) {
+//            JOptionPane.showMessageDialog(null, ex.getMessage());
+//        }
+//        recargarTablaDetalle(listaDetalle);
     }
     
     public void borrar() {
         limpiaTblDetalleVenta();        
         //LIMPIA TXT BUSQUEDA VENTAS
         txtBuscarVenta.setText("");
-        actualizarBusqueda();
+        actualizarBusquedaVenta();
         
         //limpia jcalendars
         jCalFechaIni.setDate(null);
@@ -606,72 +625,79 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         jdListaCorteDia.setVisible(true);        
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void actualizarBusqueda() {
-        ArrayList<VentasBean> result = null;
-        try {
-            if (String.valueOf(cboParametroVentas.getSelectedItem()).equalsIgnoreCase("No. Venta")) {
-                if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-                    result = BDVentas.mostrarVentas();
-                } else {
-                    try {
-                        result = BDVentas.buscarVentaPorCodigo(Integer.parseInt(txtBuscarVenta.getText()));                        
-                    } catch (Exception e) {            
-                    }
-                }
+    public void actualizarBusquedaVenta() {
+        ArrayList<VentasBean> resultWS = null;
+        ProductoBean producto = null;
+        //No. Venta, Cliente, Sucursal, Usuario
+        if (String.valueOf(cboParametroVentas.getSelectedItem()).
+                equalsIgnoreCase("No. Venta")) {
+            if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
+                resultWS = ventasGlobal;
             } else {
-                int idUsuario = BDUsuario.buscaUsuarioPorNombre(txtBuscarVenta.getText());
-                result = BDVentas.buscarVentaPorUsuario(idUsuario);
-            } 
-            recargarTableVentas(result);
-        } catch (SQLException ex){
-            JOptionPane.showMessageDialog(null, ex.getMessage());
+                resultWS = llenaTablaVentas(
+                        txtBuscarVenta.getText().trim(),0);
+            }
         }
+        if (String.valueOf(cboParametroVentas.getSelectedItem()).
+                equalsIgnoreCase("Cliente")) {
+            if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
+                resultWS = ventasGlobal;
+            } else {
+//                    resultWS = llenaTablaVentas(
+//                            txtBuscarVenta.getText().trim(),2);
+            }
+        } 
+        if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
+            resultWS = ventasGlobal;
+        } else {
+//                    resultWS = llenaTablaVentas(
+//                            txtBuscarVenta.getText().trim(),3);
+        }
+        recargarTableVentas(resultWS);
     }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+    
+    private ArrayList<VentasBean> llenaTablaVentas(String buscar, int tipoBusq) {
+        ArrayList<VentasBean> resultWS = new ArrayList<VentasBean>();
+        VentasBean venta = null;
+        for (int i=0; i<tblConsultaVentas.getModel().getRowCount(); i++) {
+            String campoBusq = "";
+            switch (tipoBusq) {
+                case 0 : campoBusq = tblConsultaVentas.getModel().getValueAt(
+                    i,0).toString();
                     break;
-
-
-                }
+                case 1 : campoBusq = tblConsultaVentas.getModel().getValueAt(
+                    i,1).toString();
+                    break;
+                case 2 : campoBusq = tblConsultaVentas.getModel().getValueAt(
+                    i,2).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
+                case 3 : campoBusq = tblConsultaVentas.getModel().getValueAt(
+                    i,6).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmConsultaVentas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmConsultaVentas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmConsultaVentas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmConsultaVentas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            if (campoBusq.indexOf(buscar)>=0) {
+                venta = new VentasBean();
+                venta.setIdVenta(Integer.parseInt(tblConsultaVentas.getModel().getValueAt(i,0).toString()));
+                
+                String fecha = String.valueOf(tblConsultaVentas.getModel().getValueAt(i,1));
+                venta.setFecha(util.stringToDate(fecha));
+                venta.setIdCliente(util.buscaIdCliente(Principal.clientesHM
+                        , tblConsultaVentas.getModel().getValueAt(i,2).toString()));
+                int idSuc = util.buscaIdSuc(Principal.sucursalesHM
+                        , "" + tblConsultaVentas
+                                .getModel().getValueAt(i,3).toString());
+                venta.setIdSucursal(idSuc);
+                venta.setIdUsuario(util.buscaIdUsuario(Principal.usuariosHM
+                        , "" + tblConsultaVentas
+                                .getModel().getValueAt(i,4).toString()));
+                resultWS.add(venta);
+            }
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                new FrmConsultaVentas().setVisible(true);
-            }
-        });
+        return resultWS;
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cboParametroVentas;
     private javax.swing.JButton jButton1;

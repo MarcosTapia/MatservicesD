@@ -127,7 +127,9 @@ public class Principal extends javax.swing.JFrame {
         clientesHM = util.getClientesHM();
         
         this.setIcon();
-        lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre());
+        lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre()
+            + " " + Ingreso.usuario.getApellido_paterno()
+            + " " + Ingreso.usuario.getApellido_materno());
     }
     
     public void setIcon() {
@@ -138,13 +140,13 @@ public class Principal extends javax.swing.JFrame {
         switch (panel) {
             case 1: 
                 this.dispose();
-                Inventario inventario = new Inventario();
+                FrmInventario inventario = new FrmInventario();
                 inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
                 inventario.setVisible(true);
                 break;
             case 2: 
                 this.dispose();
-                Operaciones ventas = new Operaciones();
+                FrmOperaciones ventas = new FrmOperaciones();
                 ventas.setExtendedState(ventas.MAXIMIZED_BOTH);
                 ventas.setVisible(true);
                 break;

@@ -896,7 +896,7 @@ public class FrmCompras extends javax.swing.JFrame {
 
     private void btnSalirProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirProActionPerformed
         this.dispose();
-        Operaciones ventas = new Operaciones();
+        FrmOperaciones ventas = new FrmOperaciones();
     }//GEN-LAST:event_btnSalirProActionPerformed
 
     private void borrar() {

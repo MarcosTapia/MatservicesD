@@ -1058,7 +1058,7 @@ public class FrmVenta extends javax.swing.JFrame {
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         this.dispose();
-        Operaciones ventas = new Operaciones();
+        FrmOperaciones ventas = new FrmOperaciones();
 //        ventas.setExtendedState(ventas.MAXIMIZED_BOTH);
 ////        ventas.setVisible(true);
     }//GEN-LAST:event_btnSalirActionPerformed

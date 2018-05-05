@@ -2,6 +2,7 @@ package util;
 
 import beans.CategoriaBean;
 import beans.ClienteBean;
+import beans.ComprasBean;
 import beans.EdoMunBean;
 import beans.EstadoBean;
 import beans.MunicipioBean;
@@ -9,6 +10,7 @@ import beans.ProductoBean;
 import beans.ProveedorBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
+import beans.VentasBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCategoriasList;
 import consumewebservices.WSClientesList;
@@ -18,6 +20,7 @@ import consumewebservices.WSProveedoresList;
 import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
+import consumewebservices.WSVentasList;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.text.ParseException;
@@ -44,6 +47,8 @@ import vistas.Principal;
 
 public class Util {
     Properties constantes = new ConstantesProperties().getProperties();
+    WSVentasList hiloVentasList;
+    //WSComprasList hiloComprasList;
     WSEstadosList hiloEstadosList;
     WSSucursalesList hiloSucursalesList;
     WSCategoriasList hiloCategoriasList;
@@ -51,6 +56,8 @@ public class Util {
     WSInventariosList hiloInventariosList;
     WSUsuariosList hiloUsuariosList;
     WSClientesList hiloClientesList;
+    private Map<String,String> ventasHM = new HashMap();
+//    private Map<String,String> ventasHM = new HashMap();
     private Map<String,String> municipiosHM = new HashMap();
     private Map<String,String> estadosMunHM = new HashMap();
     private Map<String,String> estadosHM = new HashMap();
@@ -732,9 +739,35 @@ public class Util {
         }        
         return descripMun;
     }
-
     //********* FIN ESTADOS Y MUNICIPIOS
+
+    //********* VENTAS
+    /**
+     * Metodo para cargar ventas
+     * @return Hash ventas
+     */
+    public ArrayList<VentasBean> cargaVentas() {
+        ArrayList<VentasBean> ventas = new ArrayList();
+        hiloVentasList = new WSVentasList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETVENTAS");
+        ventas = hiloVentasList.ejecutaWebService(rutaWS,"1");
+        return ventas;
+    }
+    //********* FIN VENTAS
     
+    //********* COMPRAS
+    /**
+     * Metodo para cargar compras
+     * @return Hash compras
+     */
+//    public ArrayList<ComprasBean> cargaCompras() {
+//        ArrayList<VentasBean> ventas = new ArrayList();
+//        hiloComprasList = new WSComprasList();
+//        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETVENTAS");
+//        ventas = hiloVentasList.ejecutaWebService(rutaWS,"1");
+//        return ventas;
+//    }
+    //********* FIN COMPRAS
     
     public Map<String, String> getSucursalesHM() {
         return sucursalesHM;

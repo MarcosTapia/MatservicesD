@@ -295,7 +295,7 @@ public class FrmPedidosExcel extends javax.swing.JFrame {
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         this.dispose();
-        Inventario inventario = new Inventario();
+        FrmInventario inventario = new FrmInventario();
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void actualizarBusqueda() {
