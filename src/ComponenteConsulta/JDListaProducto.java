@@ -90,7 +90,7 @@ public class JDListaProducto extends javax.swing.JDialog {
             String proveedor = util.buscaDescFromIdProv(proveedoresHMCons, "" + p.getIdProveedor());
             //filtra por sucursal
             if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
-                    (Ingreso.usuario.getUsuario().equalsIgnoreCase("w4mpd"))) {
+                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes.getProperty("SUPERUSUARIO")))) {
                 String Datos[] = {""+p.getIdArticulo()
                         , p.getCodigo()
                         , p.getDescripcion()

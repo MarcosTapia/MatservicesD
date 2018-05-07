@@ -155,7 +155,7 @@ public class FrmProducto extends javax.swing.JFrame {
         while(it.hasNext()){
           Object key = it.next();
           if ((Integer.parseInt(key.toString()) == idSucursal) ||
-                  (Ingreso.usuario.getUsuario().equalsIgnoreCase("w4mpd"))){
+                  (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes.getProperty("SUPERUSUARIO")))){
               cboSucursal.addItem(Principal.sucursalesHM.get(key));
               indiceSucursales++;
               cboSucursal.setSelectedIndex(indiceSucursales-1);
@@ -1727,7 +1727,7 @@ public class FrmProducto extends javax.swing.JFrame {
         for (ProductoBean p : list) {
             //filtra por sucursal
             if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
-                    (Ingreso.usuario.getUsuario().equalsIgnoreCase("w4mpd"))) {
+                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes.getProperty("SUPERUSUARIO")))) {
                 datos[i][0] = p.getIdArticulo();
                 datos[i][1] = p.getCodigo();
                 datos[i][2] = p.getDescripcion();

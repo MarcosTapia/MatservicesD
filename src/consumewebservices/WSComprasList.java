@@ -2,6 +2,7 @@ package consumewebservices;
 
 import beans.CategoriaBean;
 import beans.ClienteBean;
+import beans.ComprasBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
 import beans.VentasBean;
@@ -26,39 +27,34 @@ import org.json.JSONObject;
 import util.Util;
 import static vistas.Ingreso.usuario;
 
-public class WSVentasList {
+public class WSComprasList {
     String cadena;
     String fechaIni;
     String fechaFin;
     
     URL url = null; // Url de donde queremos obtener información
     String devuelve ="";
-/*
-idVenta	int(11)
-    fecha	datetime
-    idCliente	int(11)
-    observaciones	varchar(100)
-    idUsuario	int(11)
-    idSucursal    
-*/
-    public ArrayList<VentasBean> ejecutaWebService(String... params) {
+
+    public ArrayList<ComprasBean> ejecutaWebService(String... params) {
         cadena = params[0];
         url = null; // Url de donde queremos obtener información
         devuelve ="";
-        ArrayList<VentasBean> ventas = new ArrayList();
+        ArrayList<ComprasBean> compras = new ArrayList();
         switch (params[1]) { 
-            case "1" : ventas = obtenerVentasWS(); break;
+            case "1" : compras = obtenerComprasWS(); break;
             case "2" : 
-                ventas = busquedaVentasPorFechasWS(); break;
-//            case "2" : ventas = buscaCategoriaIdWS(cadena); break;
-//            case "3" : ventas = busquedaVentasPorFechasWS(cadena); break;
-//            case "4" : ventas = busquedaCategoriasPorNombreWS(cadena); break;
+                compras = busquedaComprasPorFechasWS(); break;
+//            case "2" : compras = buscaCategoriaIdWS(cadena); break;
+//            case "3" : compras = busquedaComprasPorFechasWS(cadena); break;
+//            case "4" : compras = busquedaCategoriasPorNombreWS(cadena); break;//            case "2" : compras = buscaCategoriaIdWS(cadena); break;
+//            case "3" : compras = busquedaComprasPorFechasWS(cadena); break;
+//            case "4" : compras = busquedaCategoriasPorNombreWS(cadena); break;
         }
-        return ventas;
+        return compras;
     }
  
-    public ArrayList<VentasBean> obtenerVentasWS() {
-        ArrayList<VentasBean> ventas = new ArrayList();
+    public ArrayList<ComprasBean> obtenerComprasWS() {
+        ArrayList<ComprasBean> compras = new ArrayList();
         try {
             url = new URL(cadena);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
@@ -82,24 +78,26 @@ idVenta	int(11)
                 //Accedemos al vector de resultados
                 int resultJSON = respuestaJSON.getInt("estado");
                 if (resultJSON == 1) {
-                    JSONArray ventasJSON = respuestaJSON.getJSONArray("ventas");   // estado es el nombre del campo en el JSON
-                    for(int i=0;i<ventasJSON.length();i++){
-                        VentasBean venta = new VentasBean();
+                    JSONArray comprasJSON = respuestaJSON.getJSONArray("compras");   // estado es el nombre del campo en el JSON
+                    for(int i=0;i<comprasJSON.length();i++){
+                        ComprasBean compra = new ComprasBean();
                         //convierte fecha String a Date
-                        String fechaS = ventasJSON.getJSONObject(i).get("fecha").toString();
+                        String fechaS = comprasJSON.getJSONObject(i).get("fecha").toString();
                         Util util = new Util();
-                        venta.setFecha(util.stringToDateTime(fechaS));
-                        venta.setIdCliente(ventasJSON.getJSONObject(i)
-                                .getInt("idCliente"));
-                        venta.setIdSucursal(ventasJSON.getJSONObject(i)
+                        compra.setFecha(util.stringToDateTime(fechaS));
+                        compra.setIdProveedor(comprasJSON.getJSONObject(i)
+                                .getInt("idProveedor"));
+                        compra.setIdSucursal(comprasJSON.getJSONObject(i)
                                 .getInt("idSucursal"));
-                        venta.setIdUsuario(ventasJSON.getJSONObject(i)
+                        compra.setIdUsuario(comprasJSON.getJSONObject(i)
                                 .getInt("idUsuario"));
-                        venta.setIdVenta(ventasJSON.getJSONObject(i)
-                                .getInt("idVenta"));
-                        venta.setObservaciones(ventasJSON.getJSONObject(i)
+                        compra.setIdCompra(comprasJSON.getJSONObject(i)
+                                .getInt("idCompra"));
+                        compra.setObservaciones(comprasJSON.getJSONObject(i)
                                 .getString("observaciones"));
-                        ventas.add(venta);
+                        compra.setFactura(comprasJSON.getJSONObject(i)
+                                .getString("factura"));
+                        compras.add(compra);
                     }
                 }
             }
@@ -110,11 +108,11 @@ idVenta	int(11)
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return ventas;
+        return compras;
     }
         
 //    public ArrayList<CategoriaBean> busquedaCategoriasPorNombreWS(String rutaWS) {
-//        ArrayList<CategoriaBean> ventas = new ArrayList();
+//        ArrayList<CategoriaBean> compras = new ArrayList();
 //        try {
 //            url = new URL(cadena);
 //            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
@@ -143,7 +141,7 @@ idVenta	int(11)
 //                        CategoriaBean cat = new CategoriaBean();
 //                        cat.setIdCategoria(categoriasJSON.getJSONObject(i).getInt("idCategoria"));
 //                        cat.setDescripcionCategoria(categoriasJSON.getJSONObject(i).getString("descripcionCategoria"));
-//                        ventas.add(cat);
+//                        compras.add(cat);
 //                    }
 //                }
 //            }
@@ -154,11 +152,11 @@ idVenta	int(11)
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
-//        return ventas;
+//        return compras;
 //    }
         
-    public ArrayList<VentasBean> busquedaVentasPorFechasWS(String... params) {
-        ArrayList<VentasBean> ventas = new ArrayList();
+    public ArrayList<ComprasBean> busquedaComprasPorFechasWS(String... params) {
+        ArrayList<ComprasBean> compras = new ArrayList();
 //        VentasBean usuario = null;
         //cadena = params[0];
         url = null; // Url de donde queremos obtener información
@@ -185,24 +183,26 @@ idVenta	int(11)
                 //Accedemos al vector de resultados
                 int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
                 if (resultJSON == 1){
-                    JSONArray ventasJSON = respuestaJSON.getJSONArray("ventas");   // estado es el nombre del campo en el JSON
-                    for(int i=0;i<ventasJSON.length();i++){
-                        VentasBean venta = new VentasBean();
+                    JSONArray comprasJSON = respuestaJSON.getJSONArray("compras");   // estado es el nombre del campo en el JSON
+                    for(int i=0;i<comprasJSON.length();i++){
+                        ComprasBean compra = new ComprasBean();
                         //convierte fecha String a Date
-                        String fechaS = ventasJSON.getJSONObject(i).get("fecha").toString();
+                        String fechaS = comprasJSON.getJSONObject(i).get("fecha").toString();
                         Util util = new Util();
-                        venta.setFecha(util.stringToDateTime(fechaS));
-                        venta.setIdCliente(ventasJSON.getJSONObject(i)
-                                .getInt("idCliente"));
-                        venta.setIdSucursal(ventasJSON.getJSONObject(i)
+                        compra.setFecha(util.stringToDateTime(fechaS));
+                        compra.setIdProveedor(comprasJSON.getJSONObject(i)
+                                .getInt("idProveedor"));
+                        compra.setIdSucursal(comprasJSON.getJSONObject(i)
                                 .getInt("idSucursal"));
-                        venta.setIdUsuario(ventasJSON.getJSONObject(i)
+                        compra.setIdUsuario(comprasJSON.getJSONObject(i)
                                 .getInt("idUsuario"));
-                        venta.setIdVenta(ventasJSON.getJSONObject(i)
-                                .getInt("idVenta"));
-                        venta.setObservaciones(ventasJSON.getJSONObject(i)
+                        compra.setIdCompra(comprasJSON.getJSONObject(i)
+                                .getInt("idCompra"));
+                        compra.setObservaciones(comprasJSON.getJSONObject(i)
                                 .getString("observaciones"));
-                        ventas.add(venta);
+                        compra.setFactura(comprasJSON.getJSONObject(i)
+                                .getString("factura"));
+                        compras.add(compra);
                     }
                 }
             }
@@ -214,11 +214,11 @@ idVenta	int(11)
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return ventas;
+        return compras;
     }
 
 //    public ArrayList<CategoriaBean> buscaCategoriaIdWS(String rutaWS) {
-//        ArrayList<CategoriaBean> ventas = new ArrayList();
+//        ArrayList<CategoriaBean> compras = new ArrayList();
 //        try {
 //            url = new URL(cadena);
 //            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
@@ -245,7 +245,7 @@ idVenta	int(11)
 //                    CategoriaBean cat = new CategoriaBean();
 //                    cat.setIdCategoria(respuestaJSON.getJSONObject("categoria").getInt("idCategoria"));
 //                    cat.setDescripcionCategoria(respuestaJSON.getJSONObject("categoria").getString("descripcionCategoria"));
-//                    ventas.add(cat);
+//                    compras.add(cat);
 //                }
 //            }
 //        } catch (MalformedURLException e) {
@@ -255,7 +255,7 @@ idVenta	int(11)
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
-//        return ventas;
+//        return compras;
 //    }
     
 }

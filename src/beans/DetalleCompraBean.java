@@ -8,7 +8,15 @@ public class DetalleCompraBean {
     private double precioCosto;
     private double cantidad;
     private double descuento;
-    private double idSucursal;
+    private int idSucursal;
+
+    public int getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(int idSucursal) {
+        this.idSucursal = idSucursal;
+    }
 
     public double getPrecioCosto() {
         return precioCosto;
@@ -66,12 +74,5 @@ public class DetalleCompraBean {
         this.descuento = descuento;
     }
 
-    public double getIdSucursal() {
-        return idSucursal;
-    }
-
-    public void setIdSucursal(double idSucursal) {
-        this.idSucursal = idSucursal;
-    }
     
 }

@@ -5,14 +5,17 @@ import beans.ProveedorBean;
 import ComponenteConsulta.JDListaProveedor;
 import beans.ComprasBean;
 import beans.DatosEmpresaBean;
+import beans.DetalleCompraBean;
 import beans.DetalleVentaBean;
 import beans.FechaServidorBean;
 import beans.ProductoBean;
 import beans.UsuarioBean;
 import beans.VentasBean;
 import constantes.ConstantesProperties;
+import consumewebservices.WSCompras;
 import consumewebservices.WSComprasList;
 import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSDetalleComprasList;
 import consumewebservices.WSDetalleVentasList;
 import consumewebservices.WSInventarios;
 import consumewebservices.WSInventariosList;
@@ -41,22 +44,22 @@ import javax.swing.UIManager;
 import util.Util;
 import static vistas.Principal.productos;
 
-public class FrmConsultaVentas extends javax.swing.JFrame {
+public class FrmConsultaCompras extends javax.swing.JFrame {
     //WS
     Util util = new Util();
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
-    WSVentas hiloVentas;
-    WSVentasList hiloVentasList;
-    WSDetalleVentasList hiloDetalleVentasList;
+    WSCompras hiloCompras;
+    WSComprasList hiloComprasList;
+    WSDetalleComprasList hiloDetalleComprasList;
     //Fin WS
     DateFormat fecha = DateFormat.getDateInstance();
     String accion = "";
-    ArrayList<VentasBean> ventasGlobal = null;
-    ArrayList<DetalleVentaBean> detalleVentasGlobal = null;
+    ArrayList<ComprasBean> comprasGlobal = null;
+    ArrayList<DetalleCompraBean> detalleComprasGlobal = null;
     ArrayList<ProductoBean> inventario = null;
 
-    public FrmConsultaVentas() {
+    public FrmConsultaCompras() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -64,22 +67,22 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         }
         initComponents();
         // Actualizas tbl Ventas
-        hiloVentasList = new WSVentasList();
+        hiloComprasList = new WSComprasList();
         String rutaWS = constantes.getProperty("IP") 
-                + constantes.getProperty("GETVENTAS");
-        ventasGlobal = hiloVentasList.ejecutaWebService(rutaWS,"1");
-        recargarTableVentas(ventasGlobal);
+                + constantes.getProperty("GETCOMPRAS");
+        comprasGlobal = hiloComprasList.ejecutaWebService(rutaWS,"1");
+        recargarTableCompras(comprasGlobal);
 
         inventario = util.getMapProductos();
         productos = util.getMapProductos();
         util.llenaMapProductos(productos);
         
         // Actualizas tbl DetalleVentas
-        hiloDetalleVentasList = new WSDetalleVentasList();
+        hiloDetalleComprasList = new WSDetalleComprasList();
         rutaWS = constantes.getProperty("IP") 
-                + constantes.getProperty("GETDETALLEVENTAS");
-        detalleVentasGlobal = hiloDetalleVentasList.ejecutaWebService(rutaWS,"1");
-        recargarTableDetalleVentas(detalleVentasGlobal);
+                + constantes.getProperty("GETDETALLECOMPRAS");
+        detalleComprasGlobal = hiloDetalleComprasList.ejecutaWebService(rutaWS,"1");
+        recargarTableDetalleCompras(detalleComprasGlobal);
         
         lblUsuario.setText("Usuario : " + Ingreso.usuario.getNombre()
             + " " + Ingreso.usuario.getApellido_paterno()
@@ -108,7 +111,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 ////            btnEliminarPro.setVisible(false);
 ////        }
 //        
-        limpiaTblDetalleVenta();        
+        limpiaTblDetalleCompra();        
     }
     
     public void setIcon() {
@@ -116,28 +119,30 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     }
 
     //Para Tabla Ventas
-    public void recargarTableVentas(ArrayList<VentasBean> list) {
-        Object[][] datos = new Object[list.size()][5];
+    public void recargarTableCompras(ArrayList<ComprasBean> list) {
+        Object[][] datos = new Object[list.size()][6];
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 //System.out.println(dateFormat.format(new Date()));        
-        for (VentasBean p : list) {
-            datos[i][0] = p.getIdVenta();
+        for (ComprasBean p : list) {
+            datos[i][0] = p.getIdCompra();
             datos[i][1] = dateFormat.format(p.getFecha());
+            datos[i][2] = p.getFactura();
 //            datos[i][1] = p.getFecha();
-            datos[i][2] = util.buscaDescFromIdCli(Principal.clientesHM
-                    , "" + p.getIdCliente());
-            datos[i][3] = util.buscaDescFromIdSuc(Principal.sucursalesHM 
+            datos[i][3] = util.buscaDescFromIdProv(Principal.proveedoresHM
+                    , "" + p.getIdProveedor());
+            datos[i][4] = util.buscaDescFromIdSuc(Principal.sucursalesHM 
                     , "" + p.getIdSucursal());
-            datos[i][4] = util.buscaDescFromIdUsu(Principal.usuariosHM 
+            datos[i][5] = util.buscaDescFromIdUsu(Principal.usuariosHM 
                     , "" + p.getIdUsuario());
             i++;
         }
-        tblConsultaVentas.setModel(new javax.swing.table.DefaultTableModel(
+        tblConsultaCompras.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
-                    "No. VENTA", "FECHA VENTA","CLIENTE","SUCURSAL","USUARIO"
+                    "No. COMPRA", "FECHA COMPRA", "FACTURA" 
+                        , "PROVEEDOR", "SUCURSAL", "USUARIO"
                 }) {
 
             @Override
@@ -148,20 +153,21 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     } 
 
     //Para Tabla DetalleVenta
-    public void recargarTableDetalleVentas(ArrayList<DetalleVentaBean> list) {
-        Object[][] datos = new Object[list.size()][7];
+    public void recargarTableDetalleCompras(ArrayList<DetalleCompraBean> list) {
+        Object[][] datos = new Object[list.size()][8];
         int i = 0;
-        for (DetalleVentaBean p : list) {
+        for (DetalleCompraBean p : list) {
 //            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
 //                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes.getProperty("SUPERUSUARIO")))) {
-                datos[i][0] = p.getIdDetalleVenta();
-                datos[i][1] = p.getIdVenta();
+                datos[i][0] = p.getIdDetalleCompra();
+                datos[i][1] = p.getIdCompra();
                 datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID, 
                         "" + p.getIdArticulo());
-                datos[i][3] = p.getPrecio();
-                datos[i][4] = p.getCantidad();
-                datos[i][5] = p.getDescuento();
-                datos[i][6] = util.buscaDescFromIdSuc(Principal.sucursalesHM
+                datos[i][3] = p.getPrecioPublico();
+                datos[i][4] = p.getPrecioCosto();
+                datos[i][5] = p.getCantidad();
+                datos[i][6] = p.getDescuento();
+                datos[i][7] = util.buscaDescFromIdSuc(Principal.sucursalesHM
                         , "" + p.getIdSucursal());
                 i++;
 //            }
@@ -180,10 +186,11 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 //            }
 //        }
         //Fin Para filtrar los registros
-        tblConsultaDetalleVenta.setModel(new javax.swing.table.DefaultTableModel(
+        tblConsultaDetalleCompra.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{ 
-                    "ID","No. VENTA", "PRODUCTO","PRECIO","CANTIDAD","DESCUENTO","SUCURSAL"
+                    "ID","No. COMPRA", "PRODUCTO", "$ PÚB."
+                    , "$ COSTO", "CANTIDAD", "DESCUENTO", "SUCURSAL"
                 }) {
 
             @Override
@@ -191,8 +198,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 return false;
             }
         });
-        tblConsultaDetalleVenta.getColumnModel().getColumn(0).setPreferredWidth(0);
-        tblConsultaDetalleVenta.getColumnModel().getColumn(0).setMaxWidth(0);
+        tblConsultaDetalleCompra.getColumnModel().getColumn(0).setPreferredWidth(0);
+        tblConsultaDetalleCompra.getColumnModel().getColumn(0).setMaxWidth(0);
     } 
     
     @SuppressWarnings("unchecked")
@@ -202,10 +209,10 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtBuscarVenta = new javax.swing.JTextField();
+        txtBuscarCompra = new javax.swing.JTextField();
         cboParametroVentas = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblConsultaDetalleVenta = new javax.swing.JTable();
+        tblConsultaDetalleCompra = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -215,7 +222,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblConsultaVentas = new javax.swing.JTable();
+        tblConsultaCompras = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
@@ -235,27 +242,27 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Garamond", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 102, 204));
-        jLabel1.setText("CONSULTA DE VENTAS");
+        jLabel1.setText("CONSULTA DE COMPRAS");
 
-        txtBuscarVenta.addActionListener(new java.awt.event.ActionListener() {
+        txtBuscarCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBuscarVentaActionPerformed(evt);
+                txtBuscarCompraActionPerformed(evt);
             }
         });
-        txtBuscarVenta.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtBuscarCompra.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtBuscarVentaKeyReleased(evt);
+                txtBuscarCompraKeyReleased(evt);
             }
         });
 
-        cboParametroVentas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No. Venta", "Cliente", "Sucursal", "Usuario" }));
+        cboParametroVentas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No. Compra", "Proveedor", "Sucursal", "Usuario", "Factura" }));
         cboParametroVentas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboParametroVentasActionPerformed(evt);
             }
         });
 
-        tblConsultaDetalleVenta.setModel(new javax.swing.table.DefaultTableModel(
+        tblConsultaDetalleCompra.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -282,12 +289,12 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 "Codigo", "RFC", "Nombre"
             }
         ));
-        tblConsultaDetalleVenta.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblConsultaDetalleCompra.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblConsultaDetalleVentaMouseClicked(evt);
+                tblConsultaDetalleCompraMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tblConsultaDetalleVenta);
+        jScrollPane1.setViewportView(tblConsultaDetalleCompra);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
         jButton1.setText("SALIR");
@@ -371,7 +378,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                         .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
-        tblConsultaVentas.setModel(new javax.swing.table.DefaultTableModel(
+        tblConsultaCompras.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -398,23 +405,23 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 "Codigo", "RFC", "Nombre"
             }
         ));
-        tblConsultaVentas.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblConsultaCompras.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblConsultaVentasMouseClicked(evt);
+                tblConsultaComprasMouseClicked(evt);
             }
         });
-        tblConsultaVentas.addKeyListener(new java.awt.event.KeyAdapter() {
+        tblConsultaCompras.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                tblConsultaVentasKeyReleased(evt);
+                tblConsultaComprasKeyReleased(evt);
             }
         });
-        jScrollPane2.setViewportView(tblConsultaVentas);
+        jScrollPane2.setViewportView(tblConsultaCompras);
 
         jLabel4.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
-        jLabel4.setText("VENTA");
+        jLabel4.setText("COMPRA");
 
         jLabel5.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
-        jLabel5.setText("DETALLE DE LA VENTA");
+        jLabel5.setText("DETALLE DE LA COMPRA");
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
         jButton3.setText("CANCELAR");
@@ -439,7 +446,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(txtBuscarVenta)
+                        .addComponent(txtBuscarCompra)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cboParametroVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(56, 56, 56)))
@@ -463,8 +470,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(76, 76, 76))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(103, 103, 103))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -476,7 +483,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                             .addComponent(jLabel1)
                             .addGap(15, 15, 15)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtBuscarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtBuscarCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(cboParametroVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel2Layout.createSequentialGroup()
@@ -532,15 +539,15 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 
     }//GEN-LAST:event_cboParametroVentasActionPerformed
 
-    private void txtBuscarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarVentaActionPerformed
-    }//GEN-LAST:event_txtBuscarVentaActionPerformed
+    private void txtBuscarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarCompraActionPerformed
+    }//GEN-LAST:event_txtBuscarCompraActionPerformed
 
-    private void txtBuscarVentaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarVentaKeyReleased
-        actualizarBusquedaVenta();
-    }//GEN-LAST:event_txtBuscarVentaKeyReleased
+    private void txtBuscarCompraKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarCompraKeyReleased
+        actualizarBusquedaCompra();
+    }//GEN-LAST:event_txtBuscarCompraKeyReleased
 
-    private void tblConsultaDetalleVentaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaDetalleVentaMouseClicked
-    }//GEN-LAST:event_tblConsultaDetalleVentaMouseClicked
+    private void tblConsultaDetalleCompraMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaDetalleCompraMouseClicked
+    }//GEN-LAST:event_tblConsultaDetalleCompraMouseClicked
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
@@ -552,12 +559,12 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 //        inventario.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void tblConsultaVentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaVentasMouseClicked
-        actualizarBusquedaDetalleVenta();
-    }//GEN-LAST:event_tblConsultaVentasMouseClicked
+    private void tblConsultaComprasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaComprasMouseClicked
+        actualizarBusquedaDetalleCompra();
+    }//GEN-LAST:event_tblConsultaComprasMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        limpiaTblDetalleVenta();        
+        limpiaTblDetalleCompra();        
         String fechaIni = "";
         String fechaFin = "";
         //Tomamos las dos fechas y las convierto a java.sql.date
@@ -583,23 +590,23 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             return;
         }
         // Actualizas tbl Ventas
-        ArrayList<VentasBean> ventasPorFechas = null;
-        hiloVentasList = new WSVentasList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETVENTASPORFECHASFINI") + fechaIni +
-                constantes.getProperty("GETVENTASPORFECHASFFIN") + fechaFin;
-        ventasPorFechas = hiloVentasList.ejecutaWebService(rutaWS,"2");
-        recargarTableVentas(ventasPorFechas);
+        ArrayList<ComprasBean> comprasPorFechas = null;
+        hiloComprasList = new WSComprasList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCOMPRASPORFECHASFINI") + fechaIni +
+                constantes.getProperty("GETCOMPRASPORFECHASFFIN") + fechaFin;
+        comprasPorFechas = hiloComprasList.ejecutaWebService(rutaWS,"2");
+        recargarTableCompras(comprasPorFechas);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    public void limpiaTblDetalleVenta() {
-        recargarTableDetalleVentas(detalleVentasGlobal);
+    public void limpiaTblDetalleCompra() {
+        recargarTableDetalleCompras(detalleComprasGlobal);
     }
     
     public void borrar() {
-        limpiaTblDetalleVenta();        
+        limpiaTblDetalleCompra();        
         //LIMPIA TXT BUSQUEDA VENTAS
-        txtBuscarVenta.setText("");
-        actualizarBusquedaVenta();
+        txtBuscarCompra.setText("");
+        actualizarBusquedaCompra();
         
         //limpia jcalendars
         jCalFechaIni.setDate(null);
@@ -610,12 +617,12 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         borrar();
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void tblConsultaVentasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblConsultaVentasKeyReleased
-        actualizarBusquedaDetalleVenta();
-    }//GEN-LAST:event_tblConsultaVentasKeyReleased
+    private void tblConsultaComprasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblConsultaComprasKeyReleased
+        actualizarBusquedaDetalleCompra();
+    }//GEN-LAST:event_tblConsultaComprasKeyReleased
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        limpiaTblDetalleVenta();        
+        limpiaTblDetalleCompra();        
         //Tomamos las dos fechas y las convierto a java.sql.date
         java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
         java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();
@@ -644,138 +651,154 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         jdListaCorteDia.setVisible(true);        
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    public void actualizarBusquedaVenta() {
-        ArrayList<VentasBean> resultWS = null;
+    public void actualizarBusquedaCompra() {
+        ArrayList<ComprasBean> resultWS = null;
         ProductoBean producto = null;
         //No. Venta, Cliente, Sucursal, Usuario
         if (String.valueOf(cboParametroVentas.getSelectedItem()).
-                equalsIgnoreCase("No. Venta")) {
-            if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-                resultWS = ventasGlobal;
-                recargarTableDetalleVentas(detalleVentasGlobal);
+                equalsIgnoreCase("No. Compra")) {
+            if (txtBuscarCompra.getText().equalsIgnoreCase("")) {
+                resultWS = comprasGlobal;
+                recargarTableDetalleCompras(detalleComprasGlobal);
             } else {
-                resultWS = llenaTablaVentas(
-                        txtBuscarVenta.getText().trim(),0);
+                resultWS = llenaTablaCompras(
+                        txtBuscarCompra.getText().trim(),0);
             }
         }
         if (String.valueOf(cboParametroVentas.getSelectedItem()).
-                equalsIgnoreCase("Cliente")) {
-            if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-                resultWS = ventasGlobal;
-                recargarTableDetalleVentas(detalleVentasGlobal);
+                equalsIgnoreCase("Proveedor")) {
+            if (txtBuscarCompra.getText().equalsIgnoreCase("")) {
+                resultWS = comprasGlobal;
+                recargarTableDetalleCompras(detalleComprasGlobal);
             } else {
-                resultWS = llenaTablaVentas(
-                        txtBuscarVenta.getText().trim(),1);
+                resultWS = llenaTablaCompras(
+                        txtBuscarCompra.getText().trim(),1);
             }
         } 
         if (String.valueOf(cboParametroVentas.getSelectedItem()).
                 equalsIgnoreCase("Sucursal")) {
-            if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-                resultWS = ventasGlobal;
-                recargarTableDetalleVentas(detalleVentasGlobal);
+            if (txtBuscarCompra.getText().equalsIgnoreCase("")) {
+                resultWS = comprasGlobal;
+                recargarTableDetalleCompras(detalleComprasGlobal);
             } else {
-                resultWS = llenaTablaVentas(
-                        txtBuscarVenta.getText().trim(),2);
+                resultWS = llenaTablaCompras(
+                        txtBuscarCompra.getText().trim(),2);
             }
         } 
         if (String.valueOf(cboParametroVentas.getSelectedItem()).
                 equalsIgnoreCase("Usuario")) {
-            if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-                resultWS = ventasGlobal;
-                recargarTableDetalleVentas(detalleVentasGlobal);
+            if (txtBuscarCompra.getText().equalsIgnoreCase("")) {
+                resultWS = comprasGlobal;
+                recargarTableDetalleCompras(detalleComprasGlobal);
             } else {
-                resultWS = llenaTablaVentas(
-                        txtBuscarVenta.getText().trim(),3);
+                resultWS = llenaTablaCompras(
+                        txtBuscarCompra.getText().trim(),3);
             }
         } 
-        if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-            resultWS = ventasGlobal;
-            recargarTableDetalleVentas(detalleVentasGlobal);
+        if (String.valueOf(cboParametroVentas.getSelectedItem()).
+                equalsIgnoreCase("Factura")) {
+            if (txtBuscarCompra.getText().equalsIgnoreCase("")) {
+                resultWS = comprasGlobal;
+                recargarTableDetalleCompras(detalleComprasGlobal);
+            } else {
+                resultWS = llenaTablaCompras(
+                        txtBuscarCompra.getText().trim(),4);
+            }
+        } 
+        if (txtBuscarCompra.getText().equalsIgnoreCase("")) {
+            resultWS = comprasGlobal;
+            recargarTableDetalleCompras(detalleComprasGlobal);
         } else {
-//                    resultWS = llenaTablaVentas(
+//                    resultWS = llenaTablaCompras(
 //                            txtBuscarVenta.getText().trim(),3);
         }
-        recargarTableVentas(resultWS);
+        recargarTableCompras(resultWS);
     }
     
-    private ArrayList<VentasBean> llenaTablaVentas(String buscar, int tipoBusq) {
-        ArrayList<VentasBean> resultWS = new ArrayList<VentasBean>();
-        VentasBean venta = null;
-        for (int i=0; i<tblConsultaVentas.getModel().getRowCount(); i++) {
+    private ArrayList<ComprasBean> llenaTablaCompras(String buscar, int tipoBusq) {
+        ArrayList<ComprasBean> resultWS = new ArrayList<ComprasBean>();
+        ComprasBean compra = null;
+        for (int i=0; i<tblConsultaCompras.getModel().getRowCount(); i++) {
             String campoBusq = "";
             switch (tipoBusq) {
-                case 0 : campoBusq = tblConsultaVentas.getModel().getValueAt(
+                case 0 : campoBusq = tblConsultaCompras.getModel().getValueAt(
                     i,0).toString();
                     break;
-                case 1 : campoBusq = tblConsultaVentas.getModel().getValueAt(
-                    i,2).toString();
+                case 1 : campoBusq = tblConsultaCompras.getModel().getValueAt(
+                    i,3).toString();
                     break;
-                case 2 : campoBusq = tblConsultaVentas.getModel().getValueAt(
-                    i,3).toString().toLowerCase();
+                case 2 : campoBusq = tblConsultaCompras.getModel().getValueAt(
+                    i,4).toString().toLowerCase();
                     buscar = buscar.toLowerCase();
                     break;
-                case 3 : campoBusq = tblConsultaVentas.getModel().getValueAt(
-                    i,4).toString().toLowerCase();
+                case 3 : campoBusq = tblConsultaCompras.getModel().getValueAt(
+                    i,5).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
+                case 4 : campoBusq = tblConsultaCompras.getModel().getValueAt(
+                    i,2).toString().toLowerCase();
                     buscar = buscar.toLowerCase();
                     break;
             }
             if (campoBusq.indexOf(buscar)>=0) {
-                venta = new VentasBean();
-                venta.setIdVenta(Integer.parseInt(tblConsultaVentas.getModel().getValueAt(i,0).toString()));
+                compra = new ComprasBean();
+                compra.setIdCompra(Integer.parseInt(tblConsultaCompras.getModel().getValueAt(i,0).toString()));
                 
-                String fecha = String.valueOf(tblConsultaVentas.getModel().getValueAt(i,1));
-                venta.setFecha(util.stringToDate(fecha));
-                venta.setIdCliente(util.buscaIdCliente(Principal.clientesHM
-                        , tblConsultaVentas.getModel().getValueAt(i,2).toString()));
+                String fecha = String.valueOf(tblConsultaCompras.getModel().getValueAt(i,1));
+                compra.setFecha(util.stringToDate(fecha));
+                compra.setFactura(String.valueOf(tblConsultaCompras.getModel().getValueAt(i,2)));
+                compra.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM
+                        , tblConsultaCompras.getModel().getValueAt(i,3).toString()));
                 int idSuc = util.buscaIdSuc(Principal.sucursalesHM
-                        , "" + tblConsultaVentas
-                                .getModel().getValueAt(i,3).toString());
-                venta.setIdSucursal(idSuc);
-                venta.setIdUsuario(util.buscaIdUsuario(Principal.usuariosHM
-                        , "" + tblConsultaVentas
-                                .getModel().getValueAt(i,4).toString()));
-                resultWS.add(venta);
+                        , "" + tblConsultaCompras
+                                .getModel().getValueAt(i,4).toString());
+                compra.setIdSucursal(idSuc);
+                compra.setIdUsuario(util.buscaIdUsuario(Principal.usuariosHM
+                        , "" + tblConsultaCompras
+                                .getModel().getValueAt(i,5).toString()));
+                resultWS.add(compra);
             }
         }
         return resultWS;
     }
 
-    public void actualizarBusquedaDetalleVenta() {
-        recargarTableDetalleVentas(detalleVentasGlobal);
-        ArrayList<DetalleVentaBean> resultWS = null;
+    public void actualizarBusquedaDetalleCompra() {
+        recargarTableDetalleCompras(detalleComprasGlobal);
+        ArrayList<DetalleCompraBean> resultWS = null;
         ProductoBean producto = null;
-        String idVenta = tblConsultaVentas.getModel()
-                .getValueAt(tblConsultaVentas.getSelectedRow(),0).toString();
-        resultWS = llenaTablaDetalleVentas(idVenta.trim(),0);
+        String idCompra = tblConsultaCompras.getModel()
+                .getValueAt(tblConsultaCompras.getSelectedRow(),0).toString();
+        resultWS = llenaTablaDetalleCompras(idCompra.trim(),0);
 //        if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-//            resultWS = detalleVentasGlobal;
+//            resultWS = detalleComprasGlobal;
 //        }
-        recargarTableDetalleVentas(resultWS);
+        recargarTableDetalleCompras(resultWS);
     }
     
-    private ArrayList<DetalleVentaBean> llenaTablaDetalleVentas(String buscar, int tipoBusq) {
-        ArrayList<DetalleVentaBean> resultWS = new ArrayList<DetalleVentaBean>();
-        DetalleVentaBean detalleVenta = null;
-        for (int i=0; i<tblConsultaDetalleVenta.getModel().getRowCount(); i++) {
+    private ArrayList<DetalleCompraBean> llenaTablaDetalleCompras(String buscar, int tipoBusq) {
+        ArrayList<DetalleCompraBean> resultWS = new ArrayList<DetalleCompraBean>();
+        DetalleCompraBean detalleCompra = null;
+        for (int i=0; i<tblConsultaDetalleCompra.getModel().getRowCount(); i++) {
             String campoBusq = "";
             switch (tipoBusq) {
-                case 0 : campoBusq = tblConsultaDetalleVenta.getModel().getValueAt(
+                case 0 : campoBusq = tblConsultaDetalleCompra.getModel().getValueAt(
                     i,1).toString().toLowerCase();
                     buscar = buscar.toLowerCase();
                     break;
             }
             if (campoBusq.indexOf(buscar)>=0) {
-                detalleVenta = new DetalleVentaBean();
-                detalleVenta.setIdDetalleVenta(Integer.parseInt(tblConsultaDetalleVenta.getModel().getValueAt(i,0).toString()));
-                detalleVenta.setIdVenta(Integer.parseInt(tblConsultaDetalleVenta.getModel().getValueAt(i,1).toString()));
-                detalleVenta.setIdArticulo(util.buscaIdProd(
-                        Principal.productosHM, tblConsultaDetalleVenta.getModel().getValueAt(i,2).toString()));
-                detalleVenta.setPrecio(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,3).toString()));
-                detalleVenta.setCantidad(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,4).toString()));
-                detalleVenta.setDescuento(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,5).toString()));
-                detalleVenta.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM
-                        , tblConsultaDetalleVenta.getModel().getValueAt(i,6).toString()));
-                resultWS.add(detalleVenta);
+                detalleCompra = new DetalleCompraBean();
+                detalleCompra.setIdDetalleCompra(Integer.parseInt(tblConsultaDetalleCompra.getModel().getValueAt(i,0).toString()));
+                detalleCompra.setIdCompra(Integer.parseInt(tblConsultaDetalleCompra.getModel().getValueAt(i,1).toString()));
+                detalleCompra.setIdArticulo(util.buscaIdProd(
+                        Principal.productosHM, tblConsultaDetalleCompra.getModel().getValueAt(i,2).toString()));
+                detalleCompra.setPrecioPublico(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,3).toString()));
+                detalleCompra.setPrecioCosto(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,4).toString()));
+                detalleCompra.setCantidad(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,5).toString()));
+                detalleCompra.setDescuento(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,6).toString()));
+                detalleCompra.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM
+                        , tblConsultaDetalleCompra.getModel().getValueAt(i,7).toString()));
+                resultWS.add(detalleCompra);
             }
         }
         return resultWS;
@@ -800,8 +823,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblUsuario;
-    private javax.swing.JTable tblConsultaDetalleVenta;
-    private javax.swing.JTable tblConsultaVentas;
-    private javax.swing.JTextField txtBuscarVenta;
+    private javax.swing.JTable tblConsultaCompras;
+    private javax.swing.JTable tblConsultaDetalleCompra;
+    private javax.swing.JTextField txtBuscarCompra;
     // End of variables declaration//GEN-END:variables
 }

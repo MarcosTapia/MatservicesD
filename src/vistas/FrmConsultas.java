@@ -255,6 +255,9 @@ public class FrmConsultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConsultaVentas111ActionPerformed
 
     private void btnConsultaComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaComprasActionPerformed
+//        this.dispose();
+        FrmConsultaCompras frmConsultaCompras = new FrmConsultaCompras();
+        frmConsultaCompras.setVisible(true);   
     }//GEN-LAST:event_btnConsultaComprasActionPerformed
 
     private void btnAlertasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlertasActionPerformed

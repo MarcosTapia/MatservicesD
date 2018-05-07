@@ -86,7 +86,7 @@
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="txtBuscarVenta" max="32767" attributes="0"/>
+                              <Component id="txtBuscarCompra" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cboParametroVentas" min="-2" pref="197" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
@@ -118,9 +118,9 @@
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" min="-2" pref="479" max="-2" attributes="0"/>
+                          <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="103" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -134,7 +134,7 @@
                                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="txtBuscarVenta" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtBuscarCompra" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="cboParametroVentas" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -171,23 +171,24 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="cc" green="66" red="0" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="CONSULTA DE VENTAS"/>
+                <Property name="text" type="java.lang.String" value="CONSULTA DE COMPRAS"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtBuscarVenta">
+            <Component class="javax.swing.JTextField" name="txtBuscarCompra">
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtBuscarVentaActionPerformed"/>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBuscarVentaKeyReleased"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtBuscarCompraActionPerformed"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBuscarCompraKeyReleased"/>
               </Events>
             </Component>
             <Component class="javax.swing.JComboBox" name="cboParametroVentas">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="No. Venta"/>
-                    <StringItem index="1" value="Cliente"/>
+                  <StringArray count="5">
+                    <StringItem index="0" value="No. Compra"/>
+                    <StringItem index="1" value="Proveedor"/>
                     <StringItem index="2" value="Sucursal"/>
                     <StringItem index="3" value="Usuario"/>
+                    <StringItem index="4" value="Factura"/>
                   </StringArray>
                 </Property>
               </Properties>
@@ -202,7 +203,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="tblConsultaDetalleVenta">
+                <Component class="javax.swing.JTable" name="tblConsultaDetalleCompra">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="3" rowCount="20">
@@ -213,7 +214,7 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblConsultaDetalleVentaMouseClicked"/>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblConsultaDetalleCompraMouseClicked"/>
                   </Events>
                 </Component>
               </SubComponents>
@@ -346,7 +347,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="tblConsultaVentas">
+                <Component class="javax.swing.JTable" name="tblConsultaCompras">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="3" rowCount="20">
@@ -357,8 +358,8 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblConsultaVentasMouseClicked"/>
-                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tblConsultaVentasKeyReleased"/>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblConsultaComprasMouseClicked"/>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tblConsultaComprasKeyReleased"/>
                   </Events>
                 </Component>
               </SubComponents>
@@ -368,7 +369,7 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Garamond" size="24" style="1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="VENTA"/>
+                <Property name="text" type="java.lang.String" value="COMPRA"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel5">
@@ -376,7 +377,7 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Garamond" size="24" style="1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="DETALLE DE LA VENTA"/>
+                <Property name="text" type="java.lang.String" value="DETALLE DE LA COMPRA"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButton3">
