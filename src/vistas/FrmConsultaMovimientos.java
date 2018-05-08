@@ -7,6 +7,7 @@ import beans.ComprasBean;
 import beans.DatosEmpresaBean;
 import beans.DetalleVentaBean;
 import beans.FechaServidorBean;
+import beans.MovimientosBean;
 import beans.ProductoBean;
 import beans.UsuarioBean;
 import beans.VentasBean;
@@ -17,6 +18,7 @@ import consumewebservices.WSDetalleVentasList;
 import consumewebservices.WSInventarios;
 import consumewebservices.WSInventariosList;
 import consumewebservices.WSMovimientos;
+import consumewebservices.WSMovimientosList;
 import consumewebservices.WSVentas;
 import consumewebservices.WSVentasList;
 import java.awt.Toolkit;
@@ -47,13 +49,11 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
     WSVentas hiloVentas;
-    WSVentasList hiloVentasList;
-    WSDetalleVentasList hiloDetalleVentasList;
+    WSMovimientosList hiloMovimientosList;
     //Fin WS
     DateFormat fecha = DateFormat.getDateInstance();
     String accion = "";
-    ArrayList<VentasBean> ventasGlobal = null;
-    ArrayList<DetalleVentaBean> detalleVentasGlobal = null;
+    ArrayList<MovimientosBean> movimientosGlobal = null;
     ArrayList<ProductoBean> inventario = null;
 
     public FrmConsultaMovimientos() {
@@ -63,24 +63,17 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
-        // Actualizas tbl Ventas
-        hiloVentasList = new WSVentasList();
-        String rutaWS = constantes.getProperty("IP") 
-                + constantes.getProperty("GETVENTAS");
-        ventasGlobal = hiloVentasList.ejecutaWebService(rutaWS,"1");
-        recargarTableVentas(ventasGlobal);
-
         inventario = util.getMapProductos();
         productos = util.getMapProductos();
         util.llenaMapProductos(productos);
         
-        // Actualizas tbl DetalleVentas
-        hiloDetalleVentasList = new WSDetalleVentasList();
-        rutaWS = constantes.getProperty("IP") 
-                + constantes.getProperty("GETDETALLEVENTAS");
-        detalleVentasGlobal = hiloDetalleVentasList.ejecutaWebService(rutaWS,"1");
-        recargarTableDetalleVentas(detalleVentasGlobal);
-        
+        // Actualizas tbl Ventas
+        hiloMovimientosList = new WSMovimientosList();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETMOVIMIENTOS");
+        movimientosGlobal = hiloMovimientosList.ejecutaWebService(rutaWS,"1");
+        recargarTableMovimientos(movimientosGlobal);
+
         lblUsuario.setText("Usuario : " + Ingreso.usuario.getNombre()
             + " " + Ingreso.usuario.getApellido_paterno()
             + " " + Ingreso.usuario.getApellido_materno());
@@ -108,7 +101,6 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
 ////            btnEliminarPro.setVisible(false);
 ////        }
 //        
-        limpiaTblDetalleVenta();        
     }
     
     public void setIcon() {
@@ -116,28 +108,31 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
     }
 
     //Para Tabla Ventas
-    public void recargarTableVentas(ArrayList<VentasBean> list) {
-        Object[][] datos = new Object[list.size()][5];
+    public void recargarTableMovimientos(ArrayList<MovimientosBean> list) {
+        Object[][] datos = new Object[list.size()][7];
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 //System.out.println(dateFormat.format(new Date()));        
-        for (VentasBean p : list) {
-            datos[i][0] = p.getIdVenta();
-            datos[i][1] = dateFormat.format(p.getFecha());
+        for (MovimientosBean p : list) {
+            datos[i][0] = p.getIdMovimiento();
+            datos[i][1] = dateFormat.format(p.getFechaOperacion());
 //            datos[i][1] = p.getFecha();
-            datos[i][2] = util.buscaDescFromIdCli(Principal.clientesHM
-                    , "" + p.getIdCliente());
-            datos[i][3] = util.buscaDescFromIdSuc(Principal.sucursalesHM 
+            datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID
+                    , "" + p.getIdArticulo());
+            datos[i][3] = p.getCantidad();
+            datos[i][4] = util.buscaDescFromIdSuc(Principal.sucursalesHM 
                     , "" + p.getIdSucursal());
-            datos[i][4] = util.buscaDescFromIdUsu(Principal.usuariosHM 
+            datos[i][5] = util.buscaDescFromIdUsu(Principal.usuariosHM 
                     , "" + p.getIdUsuario());
+            datos[i][6] = p.getTipoOperacion();
             i++;
         }
-        tblConsultaVentas.setModel(new javax.swing.table.DefaultTableModel(
+        tblConsultaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
-                    "No. VENTA", "FECHA VENTA","CLIENTE","SUCURSAL","USUARIO"
+                    "No. MOVIMIENTO", "FECHA MOV.", "PRODUCTO", "CANTIDAD"
+                        , "SUCURSAL", "USUARIO", "OPERACIÓN"
                 }) {
 
             @Override
@@ -147,54 +142,6 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         });
     } 
 
-    //Para Tabla DetalleVenta
-    public void recargarTableDetalleVentas(ArrayList<DetalleVentaBean> list) {
-        Object[][] datos = new Object[list.size()][7];
-        int i = 0;
-        for (DetalleVentaBean p : list) {
-//            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
-//                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes.getProperty("SUPERUSUARIO")))) {
-                datos[i][0] = p.getIdDetalleVenta();
-                datos[i][1] = p.getIdVenta();
-                datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID, 
-                        "" + p.getIdArticulo());
-                datos[i][3] = p.getPrecio();
-                datos[i][4] = p.getCantidad();
-                datos[i][5] = p.getDescuento();
-                datos[i][6] = util.buscaDescFromIdSuc(Principal.sucursalesHM
-                        , "" + p.getIdSucursal());
-                i++;
-//            }
-        }
-//        Object[][] datosFinal = new Object[i][7];
-//        //Para filtrar los registros
-//        for (int j=0; j<i; j++) {
-//            if (datos[j][0]!=null) {
-//                datosFinal[j][0] = datos[j][0];
-//                datosFinal[j][1] = datos[j][1];
-//                datosFinal[j][2] = datos[j][2];
-//                datosFinal[j][3] = datos[j][3];
-//                datosFinal[j][4] = datos[j][4];
-//                datosFinal[j][5] = datos[j][5];
-//                datosFinal[j][6] = datos[j][6];
-//            }
-//        }
-        //Fin Para filtrar los registros
-        tblConsultaDetalleVenta.setModel(new javax.swing.table.DefaultTableModel(
-                datos,
-                new String[]{ 
-                    "ID","No. VENTA", "PRODUCTO","PRECIO","CANTIDAD","DESCUENTO","SUCURSAL"
-                }) {
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        });
-        tblConsultaDetalleVenta.getColumnModel().getColumn(0).setPreferredWidth(0);
-        tblConsultaDetalleVenta.getColumnModel().getColumn(0).setMaxWidth(0);
-    } 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -202,10 +149,8 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtBuscarVenta = new javax.swing.JTextField();
+        txtBuscarMovimiento = new javax.swing.JTextField();
         cboParametroVentas = new javax.swing.JComboBox();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblConsultaDetalleVenta = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -215,9 +160,8 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblConsultaVentas = new javax.swing.JTable();
+        tblConsultaMovimientos = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
 
@@ -237,57 +181,23 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(0, 102, 204));
         jLabel1.setText("CONSULTA DE MOVIMIENTOS");
 
-        txtBuscarVenta.addActionListener(new java.awt.event.ActionListener() {
+        txtBuscarMovimiento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBuscarVentaActionPerformed(evt);
+                txtBuscarMovimientoActionPerformed(evt);
             }
         });
-        txtBuscarVenta.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtBuscarMovimiento.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtBuscarVentaKeyReleased(evt);
+                txtBuscarMovimientoKeyReleased(evt);
             }
         });
 
-        cboParametroVentas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No. Venta", "Cliente", "Sucursal", "Usuario" }));
+        cboParametroVentas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No. Movimiento", "Producto", "Sucursal", "Usuario", "Operación" }));
         cboParametroVentas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboParametroVentasActionPerformed(evt);
             }
         });
-
-        tblConsultaDetalleVenta.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "Codigo", "RFC", "Nombre"
-            }
-        ));
-        tblConsultaDetalleVenta.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblConsultaDetalleVentaMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(tblConsultaDetalleVenta);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
         jButton1.setText("SALIR");
@@ -371,7 +281,7 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
                         .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
-        tblConsultaVentas.setModel(new javax.swing.table.DefaultTableModel(
+        tblConsultaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -398,23 +308,20 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
                 "Codigo", "RFC", "Nombre"
             }
         ));
-        tblConsultaVentas.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblConsultaMovimientos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblConsultaVentasMouseClicked(evt);
+                tblConsultaMovimientosMouseClicked(evt);
             }
         });
-        tblConsultaVentas.addKeyListener(new java.awt.event.KeyAdapter() {
+        tblConsultaMovimientos.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                tblConsultaVentasKeyReleased(evt);
+                tblConsultaMovimientosKeyReleased(evt);
             }
         });
-        jScrollPane2.setViewportView(tblConsultaVentas);
+        jScrollPane2.setViewportView(tblConsultaMovimientos);
 
         jLabel4.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
         jLabel4.setText("MOVIMIENTO");
-
-        jLabel5.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
-        jLabel5.setText("DETALLE DEL MOVIMIENTO");
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
         jButton3.setText("CANCELAR");
@@ -433,38 +340,35 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel4)
+                        .addGap(878, 878, 878))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(27, 27, 27)
+                                        .addComponent(txtBuscarMovimiento)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(cboParametroVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel1)
+                                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addGap(17, 17, 17)
+                                                .addComponent(lblUsuario)))
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(27, 27, 27)
-                                .addComponent(txtBuscarVenta)
-                                .addGap(18, 18, 18)
-                                .addComponent(cboParametroVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(114, 114, 114))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblUsuario)
-                            .addComponent(jLabel4))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(109, 109, 109))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton3)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(93, 93, 93))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -481,18 +385,14 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtBuscarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtBuscarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cboParametroVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(32, 32, 32)
                         .addComponent(lblUsuario)))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel4))
+                .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -533,15 +433,12 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
 
     }//GEN-LAST:event_cboParametroVentasActionPerformed
 
-    private void txtBuscarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarVentaActionPerformed
-    }//GEN-LAST:event_txtBuscarVentaActionPerformed
+    private void txtBuscarMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarMovimientoActionPerformed
+    }//GEN-LAST:event_txtBuscarMovimientoActionPerformed
 
-    private void txtBuscarVentaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarVentaKeyReleased
-        actualizarBusquedaVenta();
-    }//GEN-LAST:event_txtBuscarVentaKeyReleased
-
-    private void tblConsultaDetalleVentaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaDetalleVentaMouseClicked
-    }//GEN-LAST:event_tblConsultaDetalleVentaMouseClicked
+    private void txtBuscarMovimientoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarMovimientoKeyReleased
+        actualizarBusquedaMovimiento();
+    }//GEN-LAST:event_txtBuscarMovimientoKeyReleased
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
@@ -553,12 +450,10 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
 //        inventario.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void tblConsultaVentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaVentasMouseClicked
-        actualizarBusquedaDetalleVenta();
-    }//GEN-LAST:event_tblConsultaVentasMouseClicked
+    private void tblConsultaMovimientosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaMovimientosMouseClicked
+    }//GEN-LAST:event_tblConsultaMovimientosMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        limpiaTblDetalleVenta();        
         String fechaIni = "";
         String fechaFin = "";
         //Tomamos las dos fechas y las convierto a java.sql.date
@@ -584,23 +479,18 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
             return;
         }
         // Actualizas tbl Ventas
-        ArrayList<VentasBean> ventasPorFechas = null;
-        hiloVentasList = new WSVentasList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETVENTASPORFECHASFINI") + fechaIni +
-                constantes.getProperty("GETVENTASPORFECHASFFIN") + fechaFin;
-        ventasPorFechas = hiloVentasList.ejecutaWebService(rutaWS,"2");
-        recargarTableVentas(ventasPorFechas);
+        ArrayList<MovimientosBean> movimientosPorFechas = null;
+        hiloMovimientosList = new WSMovimientosList();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETMOVIMIENTOSPORFECHASFINI") + fechaIni +
+                constantes.getProperty("GETMOVIMIENTOSPORFECHASFFIN") + fechaFin;
+        movimientosPorFechas = hiloMovimientosList.ejecutaWebService(rutaWS,"3");
+        recargarTableMovimientos(movimientosPorFechas);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    public void limpiaTblDetalleVenta() {
-        recargarTableDetalleVentas(detalleVentasGlobal);
-    }
-    
     public void borrar() {
-        limpiaTblDetalleVenta();        
         //LIMPIA TXT BUSQUEDA VENTAS
-        txtBuscarVenta.setText("");
-        actualizarBusquedaVenta();
+        txtBuscarMovimiento.setText("");
+        actualizarBusquedaMovimiento();
         
         //limpia jcalendars
         jCalFechaIni.setDate(null);
@@ -611,12 +501,10 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         borrar();
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void tblConsultaVentasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblConsultaVentasKeyReleased
-        actualizarBusquedaDetalleVenta();
-    }//GEN-LAST:event_tblConsultaVentasKeyReleased
+    private void tblConsultaMovimientosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblConsultaMovimientosKeyReleased
+    }//GEN-LAST:event_tblConsultaMovimientosKeyReleased
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        limpiaTblDetalleVenta();        
         //Tomamos las dos fechas y las convierto a java.sql.date
         java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
         java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();
@@ -645,143 +533,111 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         jdListaCorteDia.setVisible(true);        
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    public void actualizarBusquedaVenta() {
-        ArrayList<VentasBean> resultWS = null;
+    public void actualizarBusquedaMovimiento() {
+        ArrayList<MovimientosBean> resultWS = null;
         ProductoBean producto = null;
         //No. Venta, Cliente, Sucursal, Usuario
         if (String.valueOf(cboParametroVentas.getSelectedItem()).
-                equalsIgnoreCase("No. Venta")) {
-            if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-                resultWS = ventasGlobal;
-                recargarTableDetalleVentas(detalleVentasGlobal);
+                equalsIgnoreCase("No. Movimiento")) {
+            if (txtBuscarMovimiento.getText().equalsIgnoreCase("")) {
+                resultWS = movimientosGlobal;
             } else {
-                resultWS = llenaTablaVentas(
-                        txtBuscarVenta.getText().trim(),0);
+                resultWS = llenaTablaMovimientos(
+                        txtBuscarMovimiento.getText().trim(),0);
             }
         }
         if (String.valueOf(cboParametroVentas.getSelectedItem()).
-                equalsIgnoreCase("Cliente")) {
-            if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-                resultWS = ventasGlobal;
-                recargarTableDetalleVentas(detalleVentasGlobal);
+                equalsIgnoreCase("Producto")) {
+            if (txtBuscarMovimiento.getText().equalsIgnoreCase("")) {
+                resultWS = movimientosGlobal;
             } else {
-                resultWS = llenaTablaVentas(
-                        txtBuscarVenta.getText().trim(),1);
+                resultWS = llenaTablaMovimientos(
+                        txtBuscarMovimiento.getText().trim(),4);
             }
-        } 
+        }
         if (String.valueOf(cboParametroVentas.getSelectedItem()).
                 equalsIgnoreCase("Sucursal")) {
-            if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-                resultWS = ventasGlobal;
-                recargarTableDetalleVentas(detalleVentasGlobal);
+            if (txtBuscarMovimiento.getText().equalsIgnoreCase("")) {
+                resultWS = movimientosGlobal;
             } else {
-                resultWS = llenaTablaVentas(
-                        txtBuscarVenta.getText().trim(),2);
+                resultWS = llenaTablaMovimientos(
+                        txtBuscarMovimiento.getText().trim(),2);
             }
         } 
         if (String.valueOf(cboParametroVentas.getSelectedItem()).
                 equalsIgnoreCase("Usuario")) {
-            if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-                resultWS = ventasGlobal;
-                recargarTableDetalleVentas(detalleVentasGlobal);
+            if (txtBuscarMovimiento.getText().equalsIgnoreCase("")) {
+                resultWS = movimientosGlobal;
             } else {
-                resultWS = llenaTablaVentas(
-                        txtBuscarVenta.getText().trim(),3);
+                resultWS = llenaTablaMovimientos(
+                        txtBuscarMovimiento.getText().trim(),3);
             }
         } 
-        if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-            resultWS = ventasGlobal;
-            recargarTableDetalleVentas(detalleVentasGlobal);
-        } else {
-//                    resultWS = llenaTablaVentas(
-//                            txtBuscarVenta.getText().trim(),3);
+        if (String.valueOf(cboParametroVentas.getSelectedItem()).
+                equalsIgnoreCase("Operación")) {
+            if (txtBuscarMovimiento.getText().equalsIgnoreCase("")) {
+                resultWS = movimientosGlobal;
+            } else {
+                resultWS = llenaTablaMovimientos(
+                        txtBuscarMovimiento.getText().trim(),5);
+            }
+        } 
+        if (txtBuscarMovimiento.getText().equalsIgnoreCase("")) {
+            resultWS = movimientosGlobal;
         }
-        recargarTableVentas(resultWS);
+        recargarTableMovimientos(resultWS);
     }
     
-    private ArrayList<VentasBean> llenaTablaVentas(String buscar, int tipoBusq) {
-        ArrayList<VentasBean> resultWS = new ArrayList<VentasBean>();
-        VentasBean venta = null;
-        for (int i=0; i<tblConsultaVentas.getModel().getRowCount(); i++) {
+    private ArrayList<MovimientosBean> llenaTablaMovimientos(String buscar, int tipoBusq) {
+        ArrayList<MovimientosBean> resultWS = new ArrayList<MovimientosBean>();
+        MovimientosBean movimiento = null;
+        for (int i=0; i<tblConsultaMovimientos.getModel().getRowCount(); i++) {
             String campoBusq = "";
             switch (tipoBusq) {
-                case 0 : campoBusq = tblConsultaVentas.getModel().getValueAt(
+                case 0 : campoBusq = tblConsultaMovimientos.getModel().getValueAt(
                     i,0).toString();
                     break;
-                case 1 : campoBusq = tblConsultaVentas.getModel().getValueAt(
-                    i,2).toString();
-                    break;
-                case 2 : campoBusq = tblConsultaVentas.getModel().getValueAt(
-                    i,3).toString().toLowerCase();
+                case 2 : campoBusq = tblConsultaMovimientos.getModel().getValueAt(
+                    i,4).toString().toLowerCase();
                     buscar = buscar.toLowerCase();
                     break;
-                case 3 : campoBusq = tblConsultaVentas.getModel().getValueAt(
-                    i,4).toString().toLowerCase();
+                case 3 : campoBusq = tblConsultaMovimientos.getModel().getValueAt(
+                    i,5).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
+                case 4 : campoBusq = tblConsultaMovimientos.getModel().getValueAt(
+                    i,2).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
+                case 5 : campoBusq = tblConsultaMovimientos.getModel().getValueAt(
+                    i,6).toString().toLowerCase();
                     buscar = buscar.toLowerCase();
                     break;
             }
             if (campoBusq.indexOf(buscar)>=0) {
-                venta = new VentasBean();
-                venta.setIdVenta(Integer.parseInt(tblConsultaVentas.getModel().getValueAt(i,0).toString()));
-                
-                String fecha = String.valueOf(tblConsultaVentas.getModel().getValueAt(i,1));
-                venta.setFecha(util.stringToDate(fecha));
-                venta.setIdCliente(util.buscaIdCliente(Principal.clientesHM
-                        , tblConsultaVentas.getModel().getValueAt(i,2).toString()));
+                movimiento = new MovimientosBean();
+                movimiento.setIdMovimiento(Integer.parseInt(
+                        tblConsultaMovimientos.getModel().getValueAt(i,0).toString()));
+                String fecha = String.valueOf(tblConsultaMovimientos.getModel().getValueAt(i,1));
+                movimiento.setFechaOperacion(util.stringToDate(fecha));
+                movimiento.setIdArticulo(util.buscaIdProd(Principal.productosHMID
+                        , tblConsultaMovimientos.getModel().getValueAt(i,2).toString()));
+                movimiento.setCantidad(Double.parseDouble(
+                        tblConsultaMovimientos.getModel().getValueAt(i,3).toString()));
                 int idSuc = util.buscaIdSuc(Principal.sucursalesHM
-                        , "" + tblConsultaVentas
-                                .getModel().getValueAt(i,3).toString());
-                venta.setIdSucursal(idSuc);
-                venta.setIdUsuario(util.buscaIdUsuario(Principal.usuariosHM
-                        , "" + tblConsultaVentas
-                                .getModel().getValueAt(i,4).toString()));
-                resultWS.add(venta);
+                        , "" + tblConsultaMovimientos
+                                .getModel().getValueAt(i,4).toString());
+                movimiento.setIdSucursal(idSuc);
+                movimiento.setIdUsuario(util.buscaIdUsuario(Principal.usuariosHM
+                        , "" + tblConsultaMovimientos
+                                .getModel().getValueAt(i,5).toString()));
+                movimiento.setTipoOperacion(tblConsultaMovimientos.getModel().getValueAt(i,6).toString());
+                resultWS.add(movimiento);
             }
         }
         return resultWS;
     }
 
-    public void actualizarBusquedaDetalleVenta() {
-        recargarTableDetalleVentas(detalleVentasGlobal);
-        ArrayList<DetalleVentaBean> resultWS = null;
-        ProductoBean producto = null;
-        String idVenta = tblConsultaVentas.getModel()
-                .getValueAt(tblConsultaVentas.getSelectedRow(),0).toString();
-        resultWS = llenaTablaDetalleVentas(idVenta.trim(),0);
-//        if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-//            resultWS = detalleVentasGlobal;
-//        }
-        recargarTableDetalleVentas(resultWS);
-    }
-    
-    private ArrayList<DetalleVentaBean> llenaTablaDetalleVentas(String buscar, int tipoBusq) {
-        ArrayList<DetalleVentaBean> resultWS = new ArrayList<DetalleVentaBean>();
-        DetalleVentaBean detalleVenta = null;
-        for (int i=0; i<tblConsultaDetalleVenta.getModel().getRowCount(); i++) {
-            String campoBusq = "";
-            switch (tipoBusq) {
-                case 0 : campoBusq = tblConsultaDetalleVenta.getModel().getValueAt(
-                    i,1).toString().toLowerCase();
-                    buscar = buscar.toLowerCase();
-                    break;
-            }
-            if (campoBusq.indexOf(buscar)>=0) {
-                detalleVenta = new DetalleVentaBean();
-                detalleVenta.setIdDetalleVenta(Integer.parseInt(tblConsultaDetalleVenta.getModel().getValueAt(i,0).toString()));
-                detalleVenta.setIdVenta(Integer.parseInt(tblConsultaDetalleVenta.getModel().getValueAt(i,1).toString()));
-                detalleVenta.setIdArticulo(util.buscaIdProd(
-                        Principal.productosHM, tblConsultaDetalleVenta.getModel().getValueAt(i,2).toString()));
-                detalleVenta.setPrecio(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,3).toString()));
-                detalleVenta.setCantidad(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,4).toString()));
-                detalleVenta.setDescuento(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,5).toString()));
-                detalleVenta.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM
-                        , tblConsultaDetalleVenta.getModel().getValueAt(i,6).toString()));
-                resultWS.add(detalleVenta);
-            }
-        }
-        return resultWS;
-    }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cboParametroVentas;
     private javax.swing.JButton jButton1;
@@ -794,15 +650,12 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblUsuario;
-    private javax.swing.JTable tblConsultaDetalleVenta;
-    private javax.swing.JTable tblConsultaVentas;
-    private javax.swing.JTextField txtBuscarVenta;
+    private javax.swing.JTable tblConsultaMovimientos;
+    private javax.swing.JTextField txtBuscarMovimiento;
     // End of variables declaration//GEN-END:variables
 }
