@@ -269,11 +269,15 @@ public class FrmConsultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAlertasActionPerformed
 
     private void btnConsultaMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaMovimientosActionPerformed
-        // TODO add your handling code here:
+//        this.dispose();
+        FrmConsultaMovimientos frmConsultaMovimientos = new FrmConsultaMovimientos();
+        frmConsultaMovimientos.setVisible(true);   
     }//GEN-LAST:event_btnConsultaMovimientosActionPerformed
 
     private void btnConsultaPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaPedidosActionPerformed
-        // TODO add your handling code here:
+//        this.dispose();
+        FrmConsultaPedidos frmConsultaPedidos = new FrmConsultaPedidos();
+        frmConsultaPedidos.setVisible(true);   
     }//GEN-LAST:event_btnConsultaPedidosActionPerformed
 
     /**

@@ -1,6 +1,5 @@
 package vistas;
 
-import ComponenteConsulta.JDListaCompras;
 import beans.ProductoBean;
 import ComponenteConsulta.JDListaProducto;
 import beans.CategoriaBean;
@@ -246,7 +245,6 @@ public class FrmCompras extends javax.swing.JFrame {
         btnGuardarPro = new javax.swing.JButton();
         btnEliminarPro = new javax.swing.JButton();
         btnCancelarPro = new javax.swing.JButton();
-        btnMostrarPro = new javax.swing.JButton();
         btnSalirPro = new javax.swing.JButton();
         btnInventario = new javax.swing.JButton();
         btnBorrarActual = new javax.swing.JButton();
@@ -528,16 +526,6 @@ public class FrmCompras extends javax.swing.JFrame {
             }
         });
 
-        btnMostrarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
-        btnMostrarPro.setText("MOSTRAR");
-        btnMostrarPro.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnMostrarPro.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnMostrarPro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMostrarProActionPerformed(evt);
-            }
-        });
-
         btnSalirPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
         btnSalirPro.setText("SALIR");
         btnSalirPro.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -739,9 +727,8 @@ public class FrmCompras extends javax.swing.JFrame {
                                         .addComponent(btnSalirPro1))
                                     .addComponent(btnInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnMostrarPro)
-                                    .addComponent(btnSalirPro, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(btnSalirPro, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)))
                         .addGap(52, 52, 52))))
         );
         jPanel4Layout.setVerticalGroup(
@@ -800,8 +787,7 @@ public class FrmCompras extends javax.swing.JFrame {
                     .addComponent(btnBorrarActual)
                     .addComponent(btnGuardarPro)
                     .addComponent(btnCancelarPro)
-                    .addComponent(btnSalirPro1)
-                    .addComponent(btnMostrarPro))
+                    .addComponent(btnSalirPro1))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1091,11 +1077,6 @@ public class FrmCompras extends javax.swing.JFrame {
             evt.consume();
         }
     }//GEN-LAST:event_txtPrecioCompraProKeyTyped
-
-    private void btnMostrarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarProActionPerformed
-        JDListaCompras jdListaC = new JDListaCompras(this, true);
-        jdListaC.setVisible(true);
-    }//GEN-LAST:event_btnMostrarProActionPerformed
    
     private void txtBuscarProKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarProKeyReleased
         actualizarBusquedaProducto();
@@ -1681,7 +1662,6 @@ public class FrmCompras extends javax.swing.JFrame {
     private javax.swing.JButton btnEliminarPro;
     private javax.swing.JButton btnGuardarPro;
     private javax.swing.JButton btnInventario;
-    private javax.swing.JButton btnMostrarPro;
     private javax.swing.JButton btnSalirPro;
     private javax.swing.JButton btnSalirPro1;
     private javax.swing.JComboBox cboParametroPro;

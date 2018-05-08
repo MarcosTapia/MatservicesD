@@ -12,6 +12,7 @@ import consumewebservices.WSMovimientosList;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -84,11 +85,13 @@ public class JDListaMovimientos extends javax.swing.JDialog {
         
         Util util = new Util();
         //FrmProducto frmproductos = new FrmProducto();
-        String titulos[] = {"ID","PRODUCTO","USUARIO","MOVIMIENTO"
+        String titulos[] = {"ID MOVIMIENTO","PRODUCTO","USUARIO","MOVIMIENTO"
                 ,"CANTIDAD","FECHA", "SUCURSAL"};
         LMovimiento.setColumnIdentifiers(titulos);
 //        jtListaMovimientos.getColumnModel().getColumn(0).setPreferredWidth(0);
 //        jtListaMovimientos.getColumnModel().getColumn(0).setMaxWidth(0);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
+//dateFormat.format(p.getFecha());
         for (MovimientosBean movs : resultWSArray) {
             String producto = util.buscaDescFromCodProd(productosHMIDCons, "" + movs.getIdArticulo());
             String usuario = util.buscaDescFromIdUsu(usuariosHMCons, "" + movs.getIdUsuario());
@@ -98,7 +101,8 @@ public class JDListaMovimientos extends javax.swing.JDialog {
                 , usuario
                 , movs.getTipoOperacion()
                 , "" + movs.getCantidad()
-                , util.cambiaFormatoFecha(movs.getFechaOperacion().toLocaleString())
+//                , util.cambiaFormatoFecha(movs.getFechaOperacion().toLocaleString())
+                , dateFormat.format(movs.getFechaOperacion())
                 , sucursal};
             LMovimiento.addRow(Datos);
         }

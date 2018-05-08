@@ -1,9 +1,6 @@
 package ComponenteConsulta;
 
 import beans.UsuarioBean;
-import ComponenteDatos.BDUsuario;
-import ComponenteDatos.BDVentas;
-import ComponenteDatos.ConfiguracionDAO;
 import Ticket.Ticket;
 import beans.DatosEmpresaBean;
 import beans.DetalleVentaBean;
@@ -22,13 +19,13 @@ import vistas.FrmConsultaVentas;
 import vistas.FrmUsuarios;
 
 public class JDListaCorteDia extends javax.swing.JDialog {
-    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-    ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
+//    DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
+//    ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
     DefaultTableModel LPersonal = new DefaultTableModel();
-    
-    private java.sql.Date paramFechaIni;
-    private java.sql.Date paramFechaFin;
-    double totalVenta = 0;
+//    
+//    private java.sql.Date paramFechaIni;
+//    private java.sql.Date paramFechaFin;
+//    double totalVenta = 0;
 
     /** Creates new form JDListaPersonal */
     public JDListaCorteDia(java.awt.Frame parent, boolean modal,java.sql.Date fecha1,java.sql.Date fecha2) {
@@ -39,35 +36,35 @@ public class JDListaCorteDia extends javax.swing.JDialog {
             e.printStackTrace();
         }
         
-        this.paramFechaIni = fecha1;
-        this.paramFechaFin = fecha2;
-        
-        configuracionBean = configuracionDAO.obtieneConfiguracion(1);
-        this.setTitle(configuracionBean.getNombreEmpresa());
-        String titulos[] = {"FECHA","IDVENTA","TOTAL"};
-        LPersonal.setColumnIdentifiers(titulos);
-        try {
-//            for (UsuarioBean p : BDUsuario.mostrarUsuarios()) {
-//                String Datos[] = {""+ p.getUsuario(), p.getPassword(), p.getNombre()};
+//        this.paramFechaIni = fecha1;
+//        this.paramFechaFin = fecha2;
+//        
+//        configuracionBean = configuracionDAO.obtieneConfiguracion(1);
+//        this.setTitle(configuracionBean.getNombreEmpresa());
+//        String titulos[] = {"FECHA","IDVENTA","TOTAL"};
+//        LPersonal.setColumnIdentifiers(titulos);
+//        try {
+////            for (UsuarioBean p : BDUsuario.mostrarUsuarios()) {
+////                String Datos[] = {""+ p.getUsuario(), p.getPassword(), p.getNombre()};
+////                LPersonal.addRow(Datos);
+////            }
+//            
+//            //Parte de la consulta
+//            ArrayList<VentasBean> listaVentas = new ArrayList<>();
+//           
+//            listaVentas = BDVentas.mostrarVentasPorFecha(this.paramFechaIni, this.paramFechaFin);
+//            for (VentasBean p : listaVentas) {
+//                String Datos[] = {""+ p.getcVenFecha(), "" + p.getnVenCodigo(), "" + p.getnVenMontoTotal()};
 //                LPersonal.addRow(Datos);
+//                totalVenta = totalVenta + p.getnVenMontoTotal();
 //            }
-            
-            //Parte de la consulta
-            ArrayList<VentasBean> listaVentas = new ArrayList<>();
-           
-            listaVentas = BDVentas.mostrarVentasPorFecha(this.paramFechaIni, this.paramFechaFin);
-            for (VentasBean p : listaVentas) {
-                String Datos[] = {""+ p.getcVenFecha(), "" + p.getnVenCodigo(), "" + p.getnVenMontoTotal()};
-                LPersonal.addRow(Datos);
-                totalVenta = totalVenta + p.getnVenMontoTotal();
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "ERROR: " + ex.getMessage());
-        }
-        initComponents();
-        lblTotal.setText("" + totalVenta);
-        DecimalFormat df = new DecimalFormat("#.##");   
-        lblTotal.setText(""+df.format(Double.parseDouble(lblTotal.getText())));  
+//        } catch (SQLException ex) {
+//            JOptionPane.showMessageDialog(null, "ERROR: " + ex.getMessage());
+//        }
+//        initComponents();
+//        lblTotal.setText("" + totalVenta);
+//        DecimalFormat df = new DecimalFormat("#.##");   
+//        lblTotal.setText(""+df.format(Double.parseDouble(lblTotal.getText())));  
     }
 
     @SuppressWarnings("unchecked")
@@ -202,32 +199,32 @@ public class JDListaCorteDia extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void imprimir(){
-        try{
-            Ticket ticket = new Ticket();
-            ticket.AddCabecera("CORTE DE CAJA");
-            ticket.AddCabecera(ticket.DarEspacio());
-            ticket.AddCabecera("");
-            ticket.AddCabecera(ticket.DarEspacio());
-            if (this.paramFechaIni == this.paramFechaFin) {
-                ticket.AddCabecera("FECHA: " + this.paramFechaIni);                
-            } else {
-                ticket.AddCabecera("FECHA INI: " + this.paramFechaIni);                
-                ticket.AddCabecera(ticket.DarEspacio());
-                ticket.AddCabecera("FECHA FIN: " + this.paramFechaFin);
-            }
-            ticket.AddCabecera(ticket.DarEspacio());
-            ticket.AddCabecera("Total: " + lblTotal.getText());
-            ticket.AddCabecera(ticket.DarEspacio());
-            String numEnLetra = convertNumberToLetter(lblTotal.getText());
-            ticket.AddTotal("",numEnLetra.trim());
-            ticket.AddPieLinea(ticket.DarEspacio());     
-            ticket.AddPieLinea("                 GRACIAS!");
-            ticket.AddCabecera(ticket.DarEspacio());
-//            ticket.ImprimirDocumento("LPT1",true);
-            ticket.ImprimirDocumento("USB002",true);
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "\nerror "+e.getMessage());
-        }     
+//        try{
+//            Ticket ticket = new Ticket();
+//            ticket.AddCabecera("CORTE DE CAJA");
+//            ticket.AddCabecera(ticket.DarEspacio());
+//            ticket.AddCabecera("");
+//            ticket.AddCabecera(ticket.DarEspacio());
+//            if (this.paramFechaIni == this.paramFechaFin) {
+//                ticket.AddCabecera("FECHA: " + this.paramFechaIni);                
+//            } else {
+//                ticket.AddCabecera("FECHA INI: " + this.paramFechaIni);                
+//                ticket.AddCabecera(ticket.DarEspacio());
+//                ticket.AddCabecera("FECHA FIN: " + this.paramFechaFin);
+//            }
+//            ticket.AddCabecera(ticket.DarEspacio());
+//            ticket.AddCabecera("Total: " + lblTotal.getText());
+//            ticket.AddCabecera(ticket.DarEspacio());
+//            String numEnLetra = convertNumberToLetter(lblTotal.getText());
+//            ticket.AddTotal("",numEnLetra.trim());
+//            ticket.AddPieLinea(ticket.DarEspacio());     
+//            ticket.AddPieLinea("                 GRACIAS!");
+//            ticket.AddCabecera(ticket.DarEspacio());
+////            ticket.ImprimirDocumento("LPT1",true);
+//            ticket.ImprimirDocumento("USB002",true);
+//        }catch(Exception e){
+//            JOptionPane.showMessageDialog(null, "\nerror "+e.getMessage());
+//        }     
     }    
     
     

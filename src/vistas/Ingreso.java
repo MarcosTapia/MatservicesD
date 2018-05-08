@@ -258,14 +258,14 @@ public class Ingreso extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-        if (txtUser.getText().equalsIgnoreCase("admin") && txtPassword.getText().equalsIgnoreCase("12345")) {
-            this.dispose();
-            ConfiguracionOculta configuracion = new ConfiguracionOculta();
-            Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
-            configuracion.setSize(550,400);		
-            configuracion.setLocationRelativeTo(null);        
-            configuracion.setVisible(true);            
-        } 
+//        if (txtUser.getText().equalsIgnoreCase("admin") && txtPassword.getText().equalsIgnoreCase("12345")) {
+//            this.dispose();
+//            ConfiguracionOculta configuracion = new ConfiguracionOculta();
+//            Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+//            configuracion.setSize(550,400);		
+//            configuracion.setLocationRelativeTo(null);        
+//            configuracion.setVisible(true);            
+//        } 
     }//GEN-LAST:event_jLabel7MouseClicked
 
     private void txtUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUserActionPerformed
