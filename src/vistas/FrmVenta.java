@@ -545,6 +545,11 @@ public class FrmVenta extends javax.swing.JFrame {
                 txtDescuentoMouseClicked(evt);
             }
         });
+        txtDescuento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDescuentoActionPerformed(evt);
+            }
+        });
 
         jLabel14.setText("IVA :");
 
@@ -1625,6 +1630,10 @@ public class FrmVenta extends javax.swing.JFrame {
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
         JOptionPane.showMessageDialog(null, "d");
     }//GEN-LAST:event_formFocusGained
+
+    private void txtDescuentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDescuentoActionPerformed
+        txtCantidadPro.requestFocus(true);
+    }//GEN-LAST:event_txtDescuentoActionPerformed
 
     private ArrayList<ProductoBean> llenaTablaInventario(String buscar, int tipoBusq) {
         ArrayList<ProductoBean> resultWS = new ArrayList<ProductoBean>();

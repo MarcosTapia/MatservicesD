@@ -63,6 +63,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         btnClientes = new javax.swing.JButton();
         btnCategorias = new javax.swing.JButton();
         btnSucursales = new javax.swing.JButton();
+        btnSistema = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -144,6 +145,18 @@ public class FrmConfiguracion extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(btnSucursales);
+
+        btnSistema.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/sistema.png"))); // NOI18N
+        btnSistema.setText("Sistema");
+        btnSistema.setFocusable(false);
+        btnSistema.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSistema.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSistema.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSistemaActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnSistema);
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
         jButton5.setText("Inicio");
@@ -285,6 +298,11 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         frmSucursal.setVisible(true);
     }//GEN-LAST:event_btnSucursalesActionPerformed
 
+    private void btnSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSistemaActionPerformed
+        FrmSistema frmSistema = new FrmSistema();
+        frmSistema.setVisible(true);
+    }//GEN-LAST:event_btnSistemaActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -352,6 +370,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
     private javax.swing.JButton btnCategorias;
     private javax.swing.JButton btnClientes;
     private javax.swing.JButton btnProveedores;
+    private javax.swing.JButton btnSistema;
     private javax.swing.JButton btnSucursales;
     private javax.swing.JButton btnUsuarios;
     private javax.swing.JButton jButton5;

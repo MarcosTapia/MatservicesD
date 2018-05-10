@@ -51,7 +51,7 @@ idVenta	int(11)
             case "1" : pedidos = obtenerPedidosWS(); break;
             case "2" : 
                 pedidos = busquedaPedidosPorFechasWS(); break;
-//            case "2" : pedidos = buscaCategoriaIdWS(cadena); break;
+            case "3" : pedidos = buscaPedidoPorIdWS(cadena); break;
 //            case "3" : pedidos = busquedaPedidosPorFechasWS(cadena); break;
 //            case "4" : pedidos = busquedaCategoriasPorNombreWS(cadena); break;//            case "2" : pedidos = buscaCategoriaIdWS(cadena); break;
 //            case "3" : pedidos = busquedaPedidosPorFechasWS(cadena); break;
@@ -143,10 +143,10 @@ idVenta	int(11)
 //                if (resultJSON == 1) {
 //                    JSONArray categoriasJSON = respuestaJSON.getJSONArray("categoria");   // estado es el nombre del campo en el JSON
 //                    for(int i=0;i<categoriasJSON.length();i++){
-//                        CategoriaBean cat = new CategoriaBean();
-//                        cat.setIdCategoria(categoriasJSON.getJSONObject(i).getInt("idCategoria"));
-//                        cat.setDescripcionCategoria(categoriasJSON.getJSONObject(i).getString("descripcionCategoria"));
-//                        pedidos.add(cat);
+//                        CategoriaBean pedido = new CategoriaBean();
+//                        pedido.setIdCategoria(categoriasJSON.getJSONObject(i).getInt("idCategoria"));
+//                        pedido.setDescripcionCategoria(categoriasJSON.getJSONObject(i).getString("descripcionCategoria"));
+//                        pedidos.add(pedido);
 //                    }
 //                }
 //            }
@@ -220,45 +220,52 @@ idVenta	int(11)
         return pedidos;
     }
 
-//    public ArrayList<CategoriaBean> buscaCategoriaIdWS(String rutaWS) {
-//        ArrayList<CategoriaBean> pedidos = new ArrayList();
-//        try {
-//            url = new URL(cadena);
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
-//            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
-//                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
-//            //connection.setHeader("content-type", "application/json");
-//            int respuesta = connection.getResponseCode();
-//            StringBuilder result = new StringBuilder();
-//            if (respuesta == HttpURLConnection.HTTP_OK){
-//                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
-//                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
-//                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
-//                // StringBuilder.
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//                    result.append(line);        // Paso toda la entrada al StringBuilder
-//                }
-//                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
-//                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
-//                //Accedemos al vector de resultados
-//                int resultJSON = respuestaJSON.getInt("estado");
-//                if (resultJSON == 1) {
-//                    CategoriaBean cat = new CategoriaBean();
-//                    cat.setIdCategoria(respuestaJSON.getJSONObject("categoria").getInt("idCategoria"));
-//                    cat.setDescripcionCategoria(respuestaJSON.getJSONObject("categoria").getString("descripcionCategoria"));
-//                    pedidos.add(cat);
-//                }
-//            }
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        return pedidos;
-//    }
+    public ArrayList<PedidoBean> buscaPedidoPorIdWS(String rutaWS) {
+        ArrayList<PedidoBean> pedidos = new ArrayList();
+        try {
+            url = new URL(cadena);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+            //connection.setHeader("content-type", "application/json");
+            int respuesta = connection.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK){
+                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                // StringBuilder.
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);        // Paso toda la entrada al StringBuilder
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");
+                if (resultJSON == 1) {
+                    PedidoBean pedido = new PedidoBean();
+                    //convierte fecha String a Date
+                    String fechaS = respuestaJSON.getJSONObject("pedido").get("fecha").toString();
+                    Util util = new Util();
+                    pedido.setFecha(util.stringToDateTime(fechaS));
+                    pedido.setIdCliente(respuestaJSON.getJSONObject("pedido").getInt("idCliente"));
+                    pedido.setIdSucursal(respuestaJSON.getJSONObject("pedido").getInt("idSucursal"));
+                    pedido.setIdUsuario(respuestaJSON.getJSONObject("pedido").getInt("idUsuario"));
+                    pedido.setIdPedido(respuestaJSON.getJSONObject("pedido").getInt("idPedido"));
+                    pedido.setObservaciones(respuestaJSON.getJSONObject("pedido").getString("observaciones"));
+                    pedidos.add(pedido);
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return pedidos;
+    }
     
 }
