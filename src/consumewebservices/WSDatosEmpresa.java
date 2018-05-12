@@ -2,6 +2,7 @@ package consumewebservices;
 
 import beans.UsuarioBean;
 import beans.DatosEmpresaBean;
+import beans.SucursalBean;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,17 +27,32 @@ public class WSDatosEmpresa {
     URL url = null; // Url de donde queremos obtener información
     DatosEmpresaBean datosEmpresaBean = new DatosEmpresaBean();
     
-
-//        public usuarioBean ejecutaWebService(String... params) {
-//            return 
-//        }
-    
+    String nombreEmpresa;
+    String rfcEmpresa;
+    String emailEmpresa;
+    String direccionEmpresa;
+    String cpEmpresa;
+    String telEmpresa;
+    String estadoEmpresa;
+    String ciudadEmpresa;
+    String paisEmpresa;
     
     public DatosEmpresaBean  ejecutaWebService(String... params) {
         cadena = params[0];
         url = null; // Url de donde queremos obtener información
         switch (params[1]) { 
             case "1" : datosEmpresaBean = obtieneDatosEmpresaWS(); break;
+            case "2" : 
+                nombreEmpresa = params[2];
+                rfcEmpresa = params[3];
+                emailEmpresa = params[4];
+                direccionEmpresa = params[5];
+                cpEmpresa = params[6];
+                telEmpresa = params[7];
+                estadoEmpresa = params[8];
+                ciudadEmpresa = params[9];
+                paisEmpresa = params[10];
+                datosEmpresaBean = modificaDatosEmpresaWS(); break;
         }
         return datosEmpresaBean;
     }
@@ -93,5 +109,66 @@ public class WSDatosEmpresa {
         return datosEmpresaBean;
     }
        
+    public DatosEmpresaBean modificaDatosEmpresaWS(String... params) {
+        DatosEmpresaBean modifica = null;
+        try {
+            HttpURLConnection urlConn;
+            DataOutputStream printout;
+            DataInputStream input;
+            url = new URL(cadena);
+            urlConn = (HttpURLConnection) url.openConnection();
+            urlConn.setDoInput(true);
+            urlConn.setDoOutput(true);
+            urlConn.setUseCaches(false);
+            urlConn.setRequestProperty("Content-Type", "application/json");
+            urlConn.setRequestProperty("Accept", "application/json");
+            urlConn.connect();
+            //Creo el Objeto JSON
+            JSONObject jsonParam = new JSONObject();
+            jsonParam.put("idEmpresa","1");
+            jsonParam.put("nombreEmpresa",nombreEmpresa);
+            jsonParam.put("rfcEmpresa",rfcEmpresa);
+            jsonParam.put("direccionEmpresa",direccionEmpresa);
+            jsonParam.put("emailEmpresa",emailEmpresa);
+            jsonParam.put("telEmpresa",telEmpresa);
+            jsonParam.put("cpEmpresa",cpEmpresa);
+            jsonParam.put("ciudadEmpresa",ciudadEmpresa);
+            jsonParam.put("estadoEmpresa",estadoEmpresa);
+            jsonParam.put("paisEmpresa",paisEmpresa);
+            // Envio los parámetros post.
+            OutputStream os = urlConn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(jsonParam.toString());
+            writer.flush();
+            writer.close();
+            int respuesta = urlConn.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br=new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+                while ((line=br.readLine()) != null) {
+                    result.append(line);
+                    //response+=line;
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
+                if (resultJSON == 1) {      // hay un alumno que mostrar
+                    modifica = new DatosEmpresaBean();
+                } else if (resultJSON == 2) {
+//                    devuelve = "La sucursal no pudo actualizarse";
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return modifica;
+    }
         
 }

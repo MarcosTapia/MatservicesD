@@ -6,6 +6,7 @@ import ComponenteConsulta.JDListaSucursales;
 import beans.DatosEmpresaBean;
 import beans.EdoMunBean;
 import beans.ProductoBean;
+import beans.SistemaBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
 import constantes.ConstantesProperties;
@@ -13,6 +14,7 @@ import consumewebservices.WSClientes;
 import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSInventarios;
+import consumewebservices.WSSistema;
 import consumewebservices.WSSucursales;
 import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
@@ -34,6 +36,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
+import static vistas.Principal.datosEmpresaBean;
 import static vistas.Principal.estadosMun;
 import static vistas.Principal.productos;
 
@@ -42,12 +45,14 @@ public class FrmSistema extends javax.swing.JFrame {
     Util util = new Util();
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
+    WSSistema hiloSistema;
     //WSUsuarios
     WSSucursalesList hiloSucursalesList;
     WSSucursales hiloSucursales;
     //Fin WSUsuarios
     
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
+    SistemaBean sistemaBean = new SistemaBean();
 
     String accion = "";
     
@@ -64,40 +69,101 @@ public class FrmSistema extends javax.swing.JFrame {
         DatosEmpresaBean configuracionBean = hiloEmpresa.
                 ejecutaWebService(rutaWS,"1");
         activarBotones(true);
-
+        
+        hiloSistema = new WSSistema();
+        rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
+                + "GETDATOSSISTEMA");
+        SistemaBean sistemaBean = hiloSistema.
+                ejecutaWebService(rutaWS,"1");
+        activarBotonesSist(true);
+        
+        
+        //carga estados
+        Iterator it = Principal.estadosHM.keySet().iterator();
+        while(it.hasNext()){
+          Object key = it.next();
+          cboEstados.addItem(Principal.estadosHM.get(key));
+        }
+        cargaDatosEmpresa(configuracionBean);
+        cargaDatosSistema(sistemaBean);
+        cboEstados.setEnabled(false);
+        cboMunicipio.setEnabled(false);
         lblUsuario.setText("Usuario : " 
                 + Ingreso.usuario.getNombre()
                 + " " + Ingreso.usuario.getApellido_paterno()
                 + " " + Ingreso.usuario.getApellido_materno());
         this.setTitle(configuracionBean.getNombreEmpresa());
         this.setLocationRelativeTo(null);
-        
-        btnNuevoCli.setEnabled(true);
-        btnGuardarCli.setEnabled(false);
-        //btnEliminarCli.setEnabled(true);
-        //btnModificarCli.setEnabled(false);
-        btnCancelarCli.setEnabled(true);
+        btnGuardarCEmp.setEnabled(false);
         lblIdSucursal.setText("");
+    }
+    
+    public void cargaDatosEmpresa(DatosEmpresaBean configuracionBean) {
+        txtNombreEmpresa.setText(configuracionBean.getNombreEmpresa());
+        txtRfcEmpresa.setText(configuracionBean.getRfcEmpresa());
+        txtEmailEmp.setText(configuracionBean.getEmailEmpresa());
+        txtDirEmpresa.setText(configuracionBean.getDireccionEmpresa());
+        txtCPEmp.setText(configuracionBean.getCpEmpresa());
+        txtTelEmp.setText(configuracionBean.getTelEmpresa());
+        String edo = "";
+        String munic = "";
+        edo = util.buscaDescFromIdEdo(Principal.estadosHM, 
+                configuracionBean.getEstadoEmpresa().toString());
+        if ("".equalsIgnoreCase(edo)) {
+            cboEstados.setSelectedItem("Seleccionar...");
+        } else {
+            cboEstados.setSelectedItem(edo);
+        }
+        munic = util.buscaDescFromIdMun(Principal.municipiosHM, 
+                configuracionBean.getCiudadEmpresa());
+        if ("".equalsIgnoreCase(munic)) {
+            cboMunicipio.setSelectedItem("Seleccionar...");
+        } else {
+            cboMunicipio.setSelectedItem(munic);
+        }
+        txtNombreEmpresa.requestFocus(true);
+    }
+    
+    public void cargaDatosSistema(SistemaBean sistemaBean) {
+        txtIvaEmpresa.setText("" + sistemaBean.getIvaEmpresa());
+        txtIvaGral.setText("" + sistemaBean.getIvaGral());
+        txtIvaEmpresa.requestFocus(true);
     }
     
     public void limpiarCajatexto() {
         lblIdSucursal.setText("");
-        txtIvaEmpresa.setText("");
+        txtNombreEmpresa.setText("");
+        cboEstados.setSelectedIndex(0);
+        cboMunicipio.setSelectedIndex(0);
     }
 
     public void activarCajatexto(boolean b) {
+        txtNombreEmpresa.setEditable(b);
+        txtRfcEmpresa.setEditable(b);
+        txtEmailEmp.setEditable(b);
+        txtDirEmpresa.setEditable(b);
+        txtCPEmp.setEditable(b);
+        txtTelEmp.setEditable(b);
+        cboEstados.setEnabled(b);
+        cboMunicipio.setEnabled(b);
+        txtNombreEmpresa.requestFocus(true);
+    }
+    
+    public void activarCajatextoSistema(boolean b) {
         txtIvaEmpresa.setEditable(b);
-        btnNuevoCli.setEnabled(false);
+        txtIvaGral.setEditable(b);
+        txtIvaEmpresa.requestFocus(true);
     }
     
     public void activarBotones(boolean b){
-        btnNuevoCli.setEnabled(b);
-        btnGuardarCli.setEnabled(!b);
-        //btnEliminarCli.setEnabled(b);
-        //btnModificarCli.setEnabled(!b);
-        btnCancelarCli.setEnabled(!b);
+        btnGuardarCEmp.setEnabled(!b);
     }
 
+    public void activarBotonesSist(boolean b){
+        btnGuardarDatSist.setEnabled(!b);
+        btnModificarDatSist.setEnabled(true);
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -108,23 +174,33 @@ public class FrmSistema extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         lblIdSucursal = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        txtIvaEmpresa = new javax.swing.JTextField();
+        txtNombreEmpresa = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        btnNuevoCli = new javax.swing.JButton();
-        btnGuardarCli = new javax.swing.JButton();
-        btnModificarCli = new javax.swing.JButton();
-        btnCancelarCli = new javax.swing.JButton();
+        txtRfcEmpresa = new javax.swing.JTextField();
+        btnGuardarCEmp = new javax.swing.JButton();
+        btnModificarDatEmp = new javax.swing.JButton();
+        btnCancelarDatEmp = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        txtDirEmpresa = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtEmailEmp = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtTelEmp = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtCPEmp = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        cboEstados = new javax.swing.JComboBox();
+        jLabel13 = new javax.swing.JLabel();
+        cboMunicipio = new javax.swing.JComboBox();
         jPanel5 = new javax.swing.JPanel();
         lblIdSucursal1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtIvaEmpresa1 = new javax.swing.JTextField();
+        txtIvaEmpresa = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        btnNuevoCli1 = new javax.swing.JButton();
-        btnGuardarCli1 = new javax.swing.JButton();
-        btnModificarCli1 = new javax.swing.JButton();
-        btnCancelarCli1 = new javax.swing.JButton();
+        txtIvaGral = new javax.swing.JTextField();
+        btnGuardarDatSist = new javax.swing.JButton();
+        btnModificarDatSist = new javax.swing.JButton();
+        btnCancelarDatSist = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
@@ -150,51 +226,110 @@ public class FrmSistema extends javax.swing.JFrame {
         jPanel4.setBackground(new java.awt.Color(247, 254, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Valores Globales (Datos de la Empresa)"));
 
-        jLabel1.setText("IVA EMPRESA (Ganancia por Producto) :");
+        jLabel1.setText("Nombre :");
 
-        txtIvaEmpresa.setEditable(false);
-
-        jLabel2.setText("IVA GENERAL (Iva para Ventas) :");
-
-        jTextField1.setEditable(false);
-
-        btnNuevoCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/New document_1.png"))); // NOI18N
-        btnNuevoCli.setText("NUEVO");
-        btnNuevoCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnNuevoCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNuevoCli.addActionListener(new java.awt.event.ActionListener() {
+        txtNombreEmpresa.setEditable(false);
+        txtNombreEmpresa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevoCliActionPerformed(evt);
+                txtNombreEmpresaActionPerformed(evt);
             }
         });
 
-        btnGuardarCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
-        btnGuardarCli.setText("GUARDAR");
-        btnGuardarCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnGuardarCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnGuardarCli.addActionListener(new java.awt.event.ActionListener() {
+        jLabel2.setText("RFC :");
+
+        txtRfcEmpresa.setEditable(false);
+        txtRfcEmpresa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarCliActionPerformed(evt);
+                txtRfcEmpresaActionPerformed(evt);
             }
         });
 
-        btnModificarCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Modify.png"))); // NOI18N
-        btnModificarCli.setText("MODIFICAR");
-        btnModificarCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnModificarCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnModificarCli.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardarCEmp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
+        btnGuardarCEmp.setText("GUARDAR");
+        btnGuardarCEmp.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnGuardarCEmp.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGuardarCEmp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarCliActionPerformed(evt);
+                btnGuardarCEmpActionPerformed(evt);
             }
         });
 
-        btnCancelarCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
-        btnCancelarCli.setText("CANCELAR");
-        btnCancelarCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnCancelarCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnCancelarCli.addActionListener(new java.awt.event.ActionListener() {
+        btnModificarDatEmp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Modify.png"))); // NOI18N
+        btnModificarDatEmp.setText("MODIFICAR");
+        btnModificarDatEmp.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnModificarDatEmp.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnModificarDatEmp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarCliActionPerformed(evt);
+                btnModificarDatEmpActionPerformed(evt);
+            }
+        });
+
+        btnCancelarDatEmp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
+        btnCancelarDatEmp.setText("CANCELAR");
+        btnCancelarDatEmp.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCancelarDatEmp.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCancelarDatEmp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarDatEmpActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Dirección :");
+
+        txtDirEmpresa.setEditable(false);
+        txtDirEmpresa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDirEmpresaActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("Email :");
+
+        txtEmailEmp.setEditable(false);
+        txtEmailEmp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtEmailEmpActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setText("Teléfono :");
+
+        txtTelEmp.setEditable(false);
+        txtTelEmp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTelEmpActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setText("CP :");
+
+        txtCPEmp.setEditable(false);
+        txtCPEmp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCPEmpActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setText("Estado :");
+
+        cboEstados.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar..." }));
+        cboEstados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboEstadosActionPerformed(evt);
+            }
+        });
+        cboEstados.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cboEstadosKeyTyped(evt);
+            }
+        });
+
+        jLabel13.setText("Municipio :");
+
+        cboMunicipio.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar..." }));
+        cboMunicipio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboMunicipioActionPerformed(evt);
             }
         });
 
@@ -210,41 +345,83 @@ public class FrmSistema extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
-                            .addComponent(txtIvaEmpresa)))
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtDirEmpresa))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(btnNuevoCli, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGuardarCli, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnModificarCli, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancelarCli, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtRfcEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtEmailEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(btnGuardarCEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnModificarDatEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnCancelarDatEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtCPEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(53, 53, 53)
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtTelEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cboEstados, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cboMunicipio, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
+                .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtIvaEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48)
+                    .addComponent(txtNombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(98, 98, 98)
+                    .addComponent(txtRfcEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtEmailEmp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtDirEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtCPEmp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtTelEmp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(cboEstados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13)
+                    .addComponent(cboMunicipio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(51, 51, 51)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnCancelarCli, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnModificarCli)
-                        .addComponent(btnNuevoCli))
-                    .addComponent(btnGuardarCli))
+                        .addComponent(btnCancelarDatEmp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnModificarDatEmp))
+                    .addComponent(btnGuardarCEmp))
                 .addGap(30, 30, 30)
                 .addComponent(lblIdSucursal)
                 .addContainerGap())
@@ -255,49 +432,49 @@ public class FrmSistema extends javax.swing.JFrame {
 
         jLabel3.setText("IVA EMPRESA (Ganancia por Producto) :");
 
-        txtIvaEmpresa1.setEditable(false);
+        txtIvaEmpresa.setEditable(false);
+        txtIvaEmpresa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIvaEmpresaActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("IVA GENERAL (Iva para Ventas) :");
 
-        jTextField2.setEditable(false);
-
-        btnNuevoCli1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/New document_1.png"))); // NOI18N
-        btnNuevoCli1.setText("NUEVO");
-        btnNuevoCli1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnNuevoCli1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNuevoCli1.addActionListener(new java.awt.event.ActionListener() {
+        txtIvaGral.setEditable(false);
+        txtIvaGral.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevoCli1ActionPerformed(evt);
+                txtIvaGralActionPerformed(evt);
             }
         });
 
-        btnGuardarCli1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
-        btnGuardarCli1.setText("GUARDAR");
-        btnGuardarCli1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnGuardarCli1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnGuardarCli1.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardarDatSist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
+        btnGuardarDatSist.setText("GUARDAR");
+        btnGuardarDatSist.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnGuardarDatSist.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGuardarDatSist.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarCli1ActionPerformed(evt);
+                btnGuardarDatSistActionPerformed(evt);
             }
         });
 
-        btnModificarCli1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Modify.png"))); // NOI18N
-        btnModificarCli1.setText("MODIFICAR");
-        btnModificarCli1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnModificarCli1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnModificarCli1.addActionListener(new java.awt.event.ActionListener() {
+        btnModificarDatSist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Modify.png"))); // NOI18N
+        btnModificarDatSist.setText("MODIFICAR");
+        btnModificarDatSist.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnModificarDatSist.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnModificarDatSist.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarCli1ActionPerformed(evt);
+                btnModificarDatSistActionPerformed(evt);
             }
         });
 
-        btnCancelarCli1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
-        btnCancelarCli1.setText("CANCELAR");
-        btnCancelarCli1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnCancelarCli1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnCancelarCli1.addActionListener(new java.awt.event.ActionListener() {
+        btnCancelarDatSist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
+        btnCancelarDatSist.setText("CANCELAR");
+        btnCancelarDatSist.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCancelarDatSist.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCancelarDatSist.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarCli1ActionPerformed(evt);
+                btnCancelarDatSistActionPerformed(evt);
             }
         });
 
@@ -306,7 +483,7 @@ public class FrmSistema extends javax.swing.JFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 168, Short.MAX_VALUE)
                 .addComponent(lblIdSucursal1)
                 .addGap(230, 230, 230))
             .addGroup(jPanel5Layout.createSequentialGroup()
@@ -318,17 +495,15 @@ public class FrmSistema extends javax.swing.JFrame {
                             .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
-                            .addComponent(txtIvaEmpresa1)))
+                            .addComponent(txtIvaGral, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                            .addComponent(txtIvaEmpresa)))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(btnNuevoCli1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnGuardarDatSist, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGuardarCli1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnModificarDatSist, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnModificarCli1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancelarCli1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnCancelarDatSist, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -336,18 +511,17 @@ public class FrmSistema extends javax.swing.JFrame {
                 .addGap(33, 33, 33)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtIvaEmpresa1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtIvaEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(48, 48, 48)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtIvaGral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(98, 98, 98)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnCancelarCli1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnModificarCli1)
-                        .addComponent(btnNuevoCli1))
-                    .addComponent(btnGuardarCli1))
+                        .addComponent(btnCancelarDatSist, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnModificarDatSist))
+                    .addComponent(btnGuardarDatSist))
                 .addGap(30, 30, 30)
                 .addComponent(lblIdSucursal1)
                 .addContainerGap())
@@ -473,64 +647,65 @@ public class FrmSistema extends javax.swing.JFrame {
         jdlSucursal.setVisible(true);
     }//GEN-LAST:event_btnMostrarCliActionPerformed
 
-    private void btnNuevoCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoCliActionPerformed
-        limpiarCajatexto();
-        activarCajatexto(true);
-        activarBotones(false);
-        accion = "Guardar";
-        txtIvaEmpresa.requestFocus();
-    }//GEN-LAST:event_btnNuevoCliActionPerformed
+    private void btnCancelarDatEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarDatEmpActionPerformed
+        // Carga datos de la empresa
+        hiloEmpresa = new WSDatosEmpresa();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSEMPRESA");
+        datosEmpresaBean = hiloEmpresa.ejecutaWebService(rutaWS,"1");
+        // Fin Carga datos de la empresa
+        cargaDatosEmpresa(datosEmpresaBean);
+        btnModificarDatEmp.setEnabled(true);
+        btnGuardarCEmp.setEnabled(false);
+    }//GEN-LAST:event_btnCancelarDatEmpActionPerformed
 
-    private void btnCancelarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCliActionPerformed
-        limpiarCajatexto();
-        activarCajatexto(false);
-        activarBotones(true);
-        btnCancelarCli.setEnabled(true);
-    }//GEN-LAST:event_btnCancelarCliActionPerformed
-
-    private void btnGuardarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCliActionPerformed
-        if (accion.equalsIgnoreCase("Guardar")) {
-            if (txtIvaEmpresa.getText().compareTo("") != 0 ) {
-                    SucursalBean suc = new SucursalBean();
-                    suc.setDescripcionSucursal(txtIvaEmpresa.getText());
-                    //guardar sucursal
-                    hiloSucursales = new WSSucursales();
-                    String rutaWS = constantes.getProperty("IP") 
-                            + constantes.getProperty("GUARDASUCURSAL");
-                    SucursalBean sucursalInsertada = hiloSucursales.ejecutaWebService(rutaWS,"1"
-                            ,suc.getDescripcionSucursal()
-                            );
-                    if (sucursalInsertada != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
-                        limpiarCajatexto();
-                        activarCajatexto(false);
-                        activarBotones(true);
-                    } else {
-                        JOptionPane.showMessageDialog(null, 
-                                "Error al guardar el registro");
-                    }    
-            } else {
-                JOptionPane.showMessageDialog(null, 
-                        "Llena los campos requeridos!!");
-            }    
-        }  
+    private void btnGuardarCEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCEmpActionPerformed
         if (accion.equalsIgnoreCase("Actualizar")) {
-            if (txtIvaEmpresa.getText().compareTo("") != 0 
-                    && lblIdSucursal.getText().compareTo("") != 0
-                        ) {
-                    SucursalBean suc = new SucursalBean();
-                    suc.setIdSucursal(Integer.parseInt(lblIdSucursal.getText()));
-                    suc.setDescripcionSucursal(txtIvaEmpresa.getText());
+            if ((txtNombreEmpresa.getText().compareTo("") != 0) 
+                    && !cboEstados.getSelectedItem().toString().
+                    equalsIgnoreCase("Seleccionar...")
+                    && !cboMunicipio.getSelectedItem().toString().
+                    equalsIgnoreCase("Seleccionar..."))
+                    {
+                    DatosEmpresaBean configuracionBeanGuardar = 
+                            new DatosEmpresaBean();
+                    configuracionBeanGuardar.setNombreEmpresa
+                        (txtNombreEmpresa.getText());
+                    configuracionBeanGuardar.setRfcEmpresa
+                        (txtRfcEmpresa.getText());
+                    configuracionBeanGuardar.setEmailEmpresa
+                        (txtEmailEmp.getText());
+                    configuracionBeanGuardar.setDireccionEmpresa
+                        (txtDirEmpresa.getText());
+                    configuracionBeanGuardar.setCpEmpresa(txtCPEmp.getText());
+                    configuracionBeanGuardar.setTelEmpresa(txtTelEmp.getText());
+                    int edo = util.buscaIdEdo(Principal.estadosHM
+                            , cboEstados.getSelectedItem().toString());
+                    int mun = util.buscaIdMun(Principal.municipiosHM
+                            , cboMunicipio.getSelectedItem().toString());
+                    configuracionBeanGuardar.setEstadoEmpresa("" + edo);
+                    configuracionBeanGuardar.setCiudadEmpresa("" + mun);
+                    configuracionBeanGuardar.setPaisEmpresa("México");
                     //huardar producto
-                    hiloSucursales = new WSSucursales();
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICASUCURSAL");
-                    SucursalBean sucursalActualizada = hiloSucursales.ejecutaWebService(rutaWS,"2"
-                            ,String.valueOf(suc.getIdSucursal())
-                            ,suc.getDescripcionSucursal()
-                            );
-                    if (sucursalActualizada != null) {
+                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICADATOSEMPRESA");
+                    DatosEmpresaBean datosEmpresaActualizada = hiloEmpresa.ejecutaWebService(rutaWS,"2"
+                            ,configuracionBeanGuardar.getNombreEmpresa()
+                            ,configuracionBeanGuardar.getRfcEmpresa()
+                            ,configuracionBeanGuardar.getEmailEmpresa()
+                            ,configuracionBeanGuardar.getDireccionEmpresa()
+                            ,configuracionBeanGuardar.getCpEmpresa()
+                            ,configuracionBeanGuardar.getTelEmpresa()
+                            ,configuracionBeanGuardar.getEstadoEmpresa()
+                            ,configuracionBeanGuardar.getCiudadEmpresa()
+                            ,configuracionBeanGuardar.getPaisEmpresa()
+                    );
+                    if (datosEmpresaActualizada != null) {
                         JOptionPane.showMessageDialog(null, "[ Datos Actualizados ]");
-                        limpiarCajatexto();
+                        // Carga datos de la empresa
+                        hiloEmpresa = new WSDatosEmpresa();
+                        rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSEMPRESA");
+                        datosEmpresaBean = hiloEmpresa.ejecutaWebService(rutaWS,"1");
+                        // Fin Carga datos de la empresa
+                        cargaDatosEmpresa(datosEmpresaBean);
                         activarCajatexto(false);
                         activarBotones(true);
                     } else {
@@ -542,38 +717,160 @@ public class FrmSistema extends javax.swing.JFrame {
                         "Llena los campos requeridos!!");
             }    
         }  
-        btnNuevoCli.setEnabled(true);
-    }//GEN-LAST:event_btnGuardarCliActionPerformed
+    }//GEN-LAST:event_btnGuardarCEmpActionPerformed
 
-    private void btnModificarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarCliActionPerformed
-        if (lblIdSucursal.getText().equalsIgnoreCase("")) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar un registro");
-            return;
-        }
+    private void btnModificarDatEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarDatEmpActionPerformed
         accion = "Actualizar";
         activarCajatexto(true);
-        btnNuevoCli.setEnabled(false);
-        btnGuardarCli.setEnabled(true);
-//        btnModificarCli.setEnabled(false);
-//        btnCancelarCli.setEnabled(true);
-//        btnMostrarCli.setEnabled(false);
-    }//GEN-LAST:event_btnModificarCliActionPerformed
+        btnGuardarCEmp.setEnabled(true);
+        btnModificarDatEmp.setEnabled(false);
+    }//GEN-LAST:event_btnModificarDatEmpActionPerformed
 
-    private void btnNuevoCli1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoCli1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnNuevoCli1ActionPerformed
+    private void btnGuardarDatSistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarDatSistActionPerformed
+        if (accion.equalsIgnoreCase("Actualizar")) {
+            if ((txtIvaEmpresa.getText().compareTo("") != 0) 
+                    && (txtIvaGral.getText().compareTo("") != 0))
+                    {
+                    SistemaBean sistemaBean = 
+                            new SistemaBean();
+                    sistemaBean.setIvaEmpresa(Double.parseDouble(txtIvaEmpresa.getText()));
+                    sistemaBean.setHistoricoProveedores("1");
+                    sistemaBean.setCriterioHistoricoProveedores("3");
+                    sistemaBean.setCamposInventario("0111111110");
+                    sistemaBean.setCamposVentas("0111111111");
+                    sistemaBean.setCamposCompras("0111111111");
+                    sistemaBean.setCamposConsultas("0111111111");
+                    sistemaBean.setCamposProveedores("0111111111");
+                    sistemaBean.setCamposClientes("0111111111");
+                    sistemaBean.setCamposEmpleados("0111111111");
+                    sistemaBean.setCamposEmpresa("0111111111");
+                    sistemaBean.setIvaGral(Double.parseDouble(txtIvaGral.getText()));
+                    //huardar producto
+                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICADATOSSISTEMA");
+                    SistemaBean sistemaActualizado = hiloSistema.ejecutaWebService(rutaWS,"2"
+                        ,"" + sistemaBean.getIvaEmpresa()
+                        ,"" + sistemaBean.getHistoricoProveedores()
+                        ,"" + sistemaBean.getCriterioHistoricoProveedores()
+                        ,"" + sistemaBean.getCamposInventario()
+                        ,"" + sistemaBean.getCamposVentas()
+                        ,"" + sistemaBean.getCamposCompras()
+                        ,"" + sistemaBean.getCamposConsultas()
+                        ,"" + sistemaBean.getCamposProveedores()
+                        ,"" + sistemaBean.getCamposClientes()
+                        ,"" + sistemaBean.getCamposEmpleados()
+                        ,"" + sistemaBean.getCamposEmpresa()
+                        ,"" + sistemaBean.getIvaGral()
+                    );
+                    if (sistemaActualizado != null) {
+                        JOptionPane.showMessageDialog(null, "[ Datos Actualizados ]");
+        
+                        // Carga datos de la empresa
+                        hiloSistema = new WSSistema();
+                        rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSSISTEMA");
+                        sistemaBean = hiloSistema.ejecutaWebService(rutaWS,"1");
+                        // Fin Carga datos de la empresa
+                        cargaDatosSistema(sistemaBean);
+                        
+                        activarCajatextoSistema(false);
+                        activarBotonesSist(true);
+                    } else {
+                        JOptionPane.showMessageDialog(null, 
+                                "Error al actualizar el registro");
+                    }    
+            } else {
+                JOptionPane.showMessageDialog(null, 
+                        "Llena los campos requeridos!!");
+            }    
+        }  
+    }//GEN-LAST:event_btnGuardarDatSistActionPerformed
 
-    private void btnGuardarCli1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCli1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnGuardarCli1ActionPerformed
+    private void btnModificarDatSistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarDatSistActionPerformed
+        accion = "Actualizar";
+        activarCajatextoSistema(true);
+        btnGuardarDatSist.setEnabled(true);
+        btnModificarDatSist.setEnabled(false);        
+    }//GEN-LAST:event_btnModificarDatSistActionPerformed
 
-    private void btnModificarCli1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarCli1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnModificarCli1ActionPerformed
+    private void btnCancelarDatSistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarDatSistActionPerformed
+        // Carga datos de la empresa
+        hiloEmpresa = new WSDatosEmpresa();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSEMPRESA");
+        datosEmpresaBean = hiloEmpresa.ejecutaWebService(rutaWS,"1");
+        // Fin Carga datos de la empresa
+        cargaDatosEmpresa(datosEmpresaBean);
+        btnModificarDatSist.setEnabled(true);
+        btnGuardarDatSist.setEnabled(false);
+    }//GEN-LAST:event_btnCancelarDatSistActionPerformed
 
-    private void btnCancelarCli1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCli1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCancelarCli1ActionPerformed
+    private void cboEstadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboEstadosActionPerformed
+        String item = cboEstados.getSelectedItem().toString();
+        int indiceEdo = util.buscaIdEdo(Principal.estadosHM, item);
+        cboMunicipio.removeAllItems();
+        List<String> listMuni = new ArrayList();
+        DefaultComboBoxModel modelo = new DefaultComboBoxModel();
+        modelo.addElement("Seleccionar...");
+        // llena combo con municipios
+        for (EdoMunBean s : Principal.estadosMun) {
+            if (s.getIdEstado() == indiceEdo) {
+                String muni = util.buscaDescFromIdMun(Principal.municipiosHM, ""
+                    + s.getIdMunicipio());
+                listMuni.add(muni);
+            }
+        }
+        Collections.sort(listMuni);
+        //Collections.reverse(listMuni);
+        for (String listMuni1 : listMuni) {
+            modelo.addElement(listMuni1);
+        }
+        cboMunicipio.setModel(modelo);
+        // llena combo con municipios
+        cboMunicipio.requestFocus();
+    }//GEN-LAST:event_cboEstadosActionPerformed
+
+    private void cboEstadosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboEstadosKeyTyped
+        //        int key=evt.getKeyCode();
+        //        if(key==0)
+        //        {
+            //            String item = cboEstados.getSelectedItem().toString();
+            //            JOptionPane.showMessageDialog(null, item);
+            //        }
+    }//GEN-LAST:event_cboEstadosKeyTyped
+
+    private void cboMunicipioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMunicipioActionPerformed
+        btnGuardarCEmp.requestFocus(true);
+    }//GEN-LAST:event_cboMunicipioActionPerformed
+
+    private void txtNombreEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreEmpresaActionPerformed
+        txtRfcEmpresa.requestFocus(true);
+    }//GEN-LAST:event_txtNombreEmpresaActionPerformed
+
+    private void txtRfcEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRfcEmpresaActionPerformed
+        txtEmailEmp.requestFocus(true);
+    }//GEN-LAST:event_txtRfcEmpresaActionPerformed
+
+    private void txtEmailEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailEmpActionPerformed
+        txtDirEmpresa.requestFocus(true);
+    }//GEN-LAST:event_txtEmailEmpActionPerformed
+
+    private void txtDirEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDirEmpresaActionPerformed
+        txtCPEmp.requestFocus(true);
+    }//GEN-LAST:event_txtDirEmpresaActionPerformed
+
+    private void txtCPEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCPEmpActionPerformed
+        txtTelEmp.requestFocus(true);
+    }//GEN-LAST:event_txtCPEmpActionPerformed
+
+    private void txtTelEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTelEmpActionPerformed
+        cboEstados.requestFocus(true);
+    }//GEN-LAST:event_txtTelEmpActionPerformed
+
+    private void txtIvaEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIvaEmpresaActionPerformed
+        txtIvaGral.requestFocus();
+    }//GEN-LAST:event_txtIvaEmpresaActionPerformed
+
+    private void txtIvaGralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIvaGralActionPerformed
+        btnGuardarDatSist.requestFocus();
+    }//GEN-LAST:event_txtIvaGralActionPerformed
 
     private void eliminarSucursal() {
         int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
@@ -603,37 +900,47 @@ public class FrmSistema extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, 
                         "No hay sucursal seleccionada");
             }
-            btnCancelarCli.setEnabled(true);
+            btnCancelarDatEmp.setEnabled(true);
         }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancelarCli;
-    private javax.swing.JButton btnCancelarCli1;
-    private javax.swing.JButton btnGuardarCli;
-    private javax.swing.JButton btnGuardarCli1;
-    private javax.swing.JButton btnModificarCli;
-    private javax.swing.JButton btnModificarCli1;
+    private javax.swing.JButton btnCancelarDatEmp;
+    private javax.swing.JButton btnCancelarDatSist;
+    private javax.swing.JButton btnGuardarCEmp;
+    private javax.swing.JButton btnGuardarDatSist;
+    private javax.swing.JButton btnModificarDatEmp;
+    private javax.swing.JButton btnModificarDatSist;
     private javax.swing.JButton btnMostrarCli;
-    private javax.swing.JButton btnNuevoCli;
-    private javax.swing.JButton btnNuevoCli1;
     private javax.swing.JButton btnSalirCli;
+    private javax.swing.JComboBox cboEstados;
+    private javax.swing.JComboBox cboMunicipio;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lblIdSucursal;
     private javax.swing.JLabel lblIdSucursal1;
     private javax.swing.JLabel lblUsuario;
+    private javax.swing.JTextField txtCPEmp;
+    private javax.swing.JTextField txtDirEmpresa;
+    private javax.swing.JTextField txtEmailEmp;
     private javax.swing.JTextField txtIvaEmpresa;
-    private javax.swing.JTextField txtIvaEmpresa1;
+    private javax.swing.JTextField txtIvaGral;
+    private javax.swing.JTextField txtNombreEmpresa;
+    private javax.swing.JTextField txtRfcEmpresa;
+    private javax.swing.JTextField txtTelEmp;
     // End of variables declaration//GEN-END:variables
 }
