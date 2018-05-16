@@ -316,15 +316,6 @@
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="txtIva" min="-2" pref="68" max="-2" attributes="0"/>
                                           </Group>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="cboProveedor" min="-2" pref="152" max="-2" attributes="0"/>
-                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                              <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="txtUbicacion" min="-2" pref="96" max="-2" attributes="0"/>
-                                          </Group>
                                           <Group type="103" alignment="0" groupAlignment="1" attributes="0">
                                               <Group type="102" attributes="0">
                                                   <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
@@ -350,26 +341,44 @@
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="txtPrecioPublico" min="-2" pref="120" max="-2" attributes="0"/>
                                           </Group>
+                                          <Component id="txtIdArticulo" min="-2" pref="46" max="-2" attributes="0"/>
                                           <Group type="102" alignment="0" attributes="0">
-                                              <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="cboProveedor" min="-2" pref="152" max="-2" attributes="0"/>
                                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                              <Component id="jCalFechaIngresoProd" min="-2" pref="119" max="-2" attributes="0"/>
-                                              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                                              <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                              <Component id="txtUtilidad" min="-2" pref="70" max="-2" attributes="0"/>
+                                              <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="txtUbicacion" min="-2" pref="96" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                                  <Component id="cboUMedida" max="32767" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="jCalFechaIngresoProd" min="-2" pref="105" max="-2" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="jLabel16" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="jCalFechaCaducidadProd" min="-2" pref="105" max="-2" attributes="0"/>
+                                              </Group>
                                           </Group>
                                       </Group>
-                                      <EmptySpace min="-2" pref="177" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="384" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtIdArticulo" min="-2" pref="46" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jScrollPane1" min="-2" pref="286" max="-2" attributes="0"/>
+                                  <Component id="txtObserProd" min="-2" pref="156" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="txtUtilidad" min="-2" pref="70" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
@@ -419,28 +428,28 @@
                               <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtPrecioPublico" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="txtUtilidad" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
                               <Component id="jCalFechaIngresoProd" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel16" min="-2" max="-2" attributes="0"/>
+                              <Component id="jCalFechaCaducidadProd" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="34" max="32767" attributes="0"/>
-                                  <Component id="txtIdArticulo" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                              </Group>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel18" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cboUMedida" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtObserProd" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtUtilidad" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="txtIdArticulo" min="-2" pref="11" max="-2" attributes="0"/>
+                          <EmptySpace pref="22" max="32767" attributes="0"/>
                           <Component id="panTipoOperacion" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -746,25 +755,67 @@
                     <Property name="text" type="java.lang.String" value="Observaciones : "/>
                   </Properties>
                 </Component>
-                <Container class="javax.swing.JScrollPane" name="jScrollPane1">
-                  <AuxValues>
-                    <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-                  </AuxValues>
-
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-                  <SubComponents>
-                    <Component class="javax.swing.JTextArea" name="txtObserProd">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="columns" type="int" value="20"/>
-                        <Property name="rows" type="int" value="5"/>
-                      </Properties>
-                    </Component>
-                  </SubComponents>
-                </Container>
                 <Component class="javax.swing.JTextField" name="txtIdArticulo">
                 </Component>
                 <Component class="com.toedter.calendar.JDateChooser" name="jCalFechaIngresoProd">
+                </Component>
+                <Component class="javax.swing.JTextField" name="txtObserProd">
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel16">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="F.Caducidad :"/>
+                  </Properties>
+                </Component>
+                <Component class="com.toedter.calendar.JDateChooser" name="jCalFechaCaducidadProd">
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel18">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="U.Medida"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JComboBox" name="cboUMedida">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="36">
+                        <StringItem index="0" value="Seleccionar..."/>
+                        <StringItem index="1" value="Pieza"/>
+                        <StringItem index="2" value="Elemento (Pieza) unidad de medida Inglesa"/>
+                        <StringItem index="3" value="Unidad de servicio"/>
+                        <StringItem index="4" value="Kilogramo"/>
+                        <StringItem index="5" value="Gramo"/>
+                        <StringItem index="6" value="Tar&#xed;fa"/>
+                        <StringItem index="7" value="Metro"/>
+                        <StringItem index="8" value="Pulgada"/>
+                        <StringItem index="9" value="Pie"/>
+                        <StringItem index="10" value="Yarda"/>
+                        <StringItem index="11" value="Milla (milla estatal)"/>
+                        <StringItem index="12" value="Metro cuadrado"/>
+                        <StringItem index="13" value="Cent&#xed;metro cuadrado"/>
+                        <StringItem index="14" value="Metro c&#xfa;bico"/>
+                        <StringItem index="15" value="Litro"/>
+                        <StringItem index="16" value="Gal&#xf3;n (UK)"/>
+                        <StringItem index="17" value="Gal&#xf3;n (EUA)"/>
+                        <StringItem index="18" value="Hora"/>
+                        <StringItem index="19" value="D&#xed;a"/>
+                        <StringItem index="20" value="A&#xf1;o"/>
+                        <StringItem index="21" value="Uno"/>
+                        <StringItem index="22" value="Batch"/>
+                        <StringItem index="23" value="Paquete a granel"/>
+                        <StringItem index="24" value="Lote [unidad de adquisici&#xf3;n]"/>
+                        <StringItem index="25" value="Lote"/>
+                        <StringItem index="26" value="Hora de trabajo"/>
+                        <StringItem index="27" value="Variedad"/>
+                        <StringItem index="28" value="Cabeza"/>
+                        <StringItem index="29" value="Personas"/>
+                        <StringItem index="30" value="N&#xfa;mero de paquetes"/>
+                        <StringItem index="31" value="Conjunto"/>
+                        <StringItem index="32" value="Mutuamente definido"/>
+                        <StringItem index="33" value="Caja"/>
+                        <StringItem index="34" value="Kit (Conjunto de piezas)"/>
+                        <StringItem index="35" value="Bloque"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>

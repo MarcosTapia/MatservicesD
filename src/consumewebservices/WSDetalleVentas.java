@@ -35,6 +35,7 @@ public class WSDetalleVentas {
     String precio;
     String cantidad;
     String descuento;
+    String unidadMedida;  
     String idSucursal;  
     
     //parametros con valores de venta
@@ -52,7 +53,8 @@ public class WSDetalleVentas {
                 precio = params[4];
                 cantidad = params[5];
                 descuento = params[6];
-                idSucursal = params[7];                   
+                unidadMedida = params[7];                   
+                idSucursal = params[8];                   
                 detalleVentaObj = guardaDetalleVentaWS(); break;
         }
         return detalleVentaObj;
@@ -131,6 +133,7 @@ public class WSDetalleVentas {
             jsonParam.put("precio", precio);
             jsonParam.put("cantidad", cantidad);
             jsonParam.put("descuento", descuento);
+            jsonParam.put("unidadMedida", unidadMedida);
             jsonParam.put("idSucursal", idSucursal);
             
             // Envio los parámetros post.            

@@ -49,6 +49,8 @@ public class WSInventarios {
     String idCategoria;
     String fotoProducto;
     String idSucursal;
+    String unidadMedida;
+    String fechaCaducidad;
     String idArticulo;
     //parametros con valores de usuario
     URL url = null; // Url de donde queremos obtener información
@@ -75,6 +77,8 @@ public class WSInventarios {
                 idSucursal = params[13];
                 fotoProducto = params[14];
                 observaciones = params[15];
+                unidadMedida = params[16];
+                fechaCaducidad = params[17];
                 productoObj = insertaProductoWS(); 
                 break;
             case "2" : 
@@ -93,6 +97,8 @@ public class WSInventarios {
                 idSucursal = params[14];
                 fotoProducto = params[15];
                 observaciones = params[16];
+                unidadMedida = params[17];
+                fechaCaducidad = params[18];
                 productoObj = modificaProductoWS(); 
                 break;
             case "3" : 
@@ -158,6 +164,17 @@ public class WSInventarios {
             jsonParam.put("sucursal", idSucursal);
             jsonParam.put("nombre_img", fotoProducto);
             jsonParam.put("observaciones", observaciones);
+            jsonParam.put("unidadMedida", unidadMedida);
+            
+            if (fechaCaducidad.length()==21) {
+                // agrega 0 inicial si falta
+                fechaCaducidad = "0" + fechaCaducidad;
+            }
+            fechaCaducidad = fechaCaducidad.substring(0, 19);
+            fechaCaducidad = util.cambiaFormatoFecha(fechaCaducidad);
+            Date c = util.stringToDateTime(fechaCaducidad);
+            String d = util.dateToDateTimeAsString(c);
+            jsonParam.put("fechaCaducidad", d);
             
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
@@ -226,6 +243,8 @@ public class WSInventarios {
             jsonParam.put("sucursal", idSucursal);
             jsonParam.put("nombre_img", fotoProducto);
             jsonParam.put("observaciones", observaciones);
+            jsonParam.put("unidadMedida", unidadMedida);
+            jsonParam.put("fechaCaducidad", fechaCaducidad);
             
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
@@ -360,6 +379,9 @@ public class WSInventarios {
                     prod.setIdCategoria(respuestaJSON.getJSONObject("inventario").getInt("idCategoria"));
                     prod.setFotoProducto(respuestaJSON.getJSONObject("inventario").getString("fotoProducto"));
                     prod.setIdSucursal(respuestaJSON.getJSONObject("inventario").getInt("idSucursal"));
+                    String fechaSCad = respuestaJSON.getJSONObject("inventario").getString("fechaCaducidad");
+                    prod.setFechaCaducidad(util.stringToDateTime(fechaSCad));
+                    prod.setUnidadMedida(respuestaJSON.getJSONObject("inventario").getString("unidadMedida"));
                 }
             }
         } catch (MalformedURLException e) {

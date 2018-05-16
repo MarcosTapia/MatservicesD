@@ -18,6 +18,24 @@ public class ProductoBean {
     private int idCategoria;
     private String fotoProducto;
     private int idSucursal;
+    private String unidadMedida;
+    private Date fechaCaducidad;
+
+    public String getUnidadMedida() {
+        return unidadMedida;
+    }
+
+    public void setUnidadMedida(String unidadmedida) {
+        this.unidadMedida = unidadmedida;
+    }
+
+    public Date getFechaCaducidad() {
+        return fechaCaducidad;
+    }
+
+    public void setFechaCaducidad(Date fechaCaducidad) {
+        this.fechaCaducidad = fechaCaducidad;
+    }
 
     public int getIdArticulo() {
         return idArticulo;

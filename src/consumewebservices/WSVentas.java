@@ -34,6 +34,13 @@ public class WSVentas {
     String idUsuario;
     String idSucursal;    
     String idVenta;
+    String subtotal;
+    String iva;
+    String total;
+    String tipovta;
+    String cancelada;
+    String facturada;
+    String idFactura;
     
     //parametros con valores de venta
     URL url = null; // Url de donde queremos obtener información
@@ -51,6 +58,13 @@ public class WSVentas {
                 observaciones = params[3];
                 idUsuario = params[4];
                 idSucursal = params[5];
+                subtotal = params[6];
+                iva = params[7];
+                total = params[8];
+                tipovta = params[9];
+                cancelada = params[10];
+                facturada = params[11];
+                idFactura = params[12];
                 ventaObj = guardaVentaWS(); break;
         }
         return ventaObj;
@@ -135,6 +149,14 @@ public class WSVentas {
             jsonParam.put("observaciones", observaciones);
             jsonParam.put("idUsuario", idUsuario);
             jsonParam.put("idSucursal", idSucursal);
+            
+            jsonParam.put("subtotal", subtotal);
+            jsonParam.put("iva", iva);
+            jsonParam.put("total", total);
+            jsonParam.put("tipovta", tipovta);
+            jsonParam.put("cancelada", cancelada);
+            jsonParam.put("facturada", facturada);
+            jsonParam.put("idFactura", idFactura);
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(

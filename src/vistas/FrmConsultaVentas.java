@@ -124,7 +124,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 
     //Para Tabla Ventas
     public void recargarTableVentas(ArrayList<VentasBean> list) {
-        Object[][] datos = new Object[list.size()][5];
+        Object[][] datos = new Object[list.size()][8];
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -139,12 +139,16 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                     , "" + p.getIdSucursal());
             datos[i][4] = util.buscaDescFromIdUsu(Principal.usuariosHM 
                     , "" + p.getIdUsuario());
+            datos[i][5] = p.getSubtotal();
+            datos[i][6] = p.getIva();
+            datos[i][7] = p.getTotal();
             i++;
         }
         tblConsultaVentas.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
                     "No. VENTA", "FECHA VENTA","CLIENTE","SUCURSAL","USUARIO"
+                        ,"SUBTOTAL","IVA","TOTAL"
                 }) {
 
             @Override
@@ -156,7 +160,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 
     //Para Tabla DetalleVenta
     public void recargarTableDetalleVentas(ArrayList<DetalleVentaBean> list) {
-        Object[][] datos = new Object[list.size()][7];
+        Object[][] datos = new Object[list.size()][8];
         int i = 0;
         for (DetalleVentaBean p : list) {
 //            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
@@ -168,7 +172,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 datos[i][3] = p.getPrecio();
                 datos[i][4] = p.getCantidad();
                 datos[i][5] = p.getDescuento();
-                datos[i][6] = util.buscaDescFromIdSuc(Principal.sucursalesHM
+                datos[i][6] = p.getUnidadMedida();
+                datos[i][7] = util.buscaDescFromIdSuc(Principal.sucursalesHM
                         , "" + p.getIdSucursal());
                 i++;
 //            }
@@ -190,7 +195,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         tblConsultaDetalleVenta.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{ 
-                    "ID","No. VENTA", "PRODUCTO","PRECIO","CANTIDAD","DESCUENTO","SUCURSAL"
+                    "ID","No. VENTA", "PRODUCTO","PRECIO","CANTIDAD","DESCUENTO"
+                        ,"UNIDAD","SUCURSAL"
                 }) {
 
             @Override
@@ -899,6 +905,9 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 venta.setIdUsuario(util.buscaIdUsuario(Principal.usuariosHM
                         , "" + tblConsultaVentas
                                 .getModel().getValueAt(i,4).toString()));
+                venta.setSubtotal(Double.parseDouble(tblConsultaVentas.getModel().getValueAt(i,5).toString()));
+                venta.setIva(Double.parseDouble(tblConsultaVentas.getModel().getValueAt(i,6).toString()));
+                venta.setTotal(Double.parseDouble(tblConsultaVentas.getModel().getValueAt(i,7).toString()));
                 resultWS.add(venta);
             }
         }
@@ -938,8 +947,9 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 detalleVenta.setPrecio(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,3).toString()));
                 detalleVenta.setCantidad(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,4).toString()));
                 detalleVenta.setDescuento(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,5).toString()));
+                detalleVenta.setUnidadMedida(String.valueOf(tblConsultaDetalleVenta.getModel().getValueAt(i,6).toString()));
                 detalleVenta.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM
-                        , tblConsultaDetalleVenta.getModel().getValueAt(i,6).toString()));
+                        , tblConsultaDetalleVenta.getModel().getValueAt(i,7).toString()));
                 resultWS.add(detalleVenta);
             }
         }

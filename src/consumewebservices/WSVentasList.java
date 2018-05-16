@@ -99,6 +99,19 @@ idVenta	int(11)
                                 .getInt("idVenta"));
                         venta.setObservaciones(ventasJSON.getJSONObject(i)
                                 .getString("observaciones"));
+                        
+                        venta.setSubtotal(ventasJSON.getJSONObject(i)
+                                .getDouble("subtotal"));
+                        venta.setIva(ventasJSON.getJSONObject(i)
+                                .getDouble("iva"));
+                        venta.setTotal(ventasJSON.getJSONObject(i)
+                                .getDouble("total"));
+                        venta.setCancelada(ventasJSON.getJSONObject(i)
+                                .getInt("cancelada"));
+                        venta.setFacturada(ventasJSON.getJSONObject(i)
+                                .getInt("facturada"));
+                        venta.setIdFactura(ventasJSON.getJSONObject(i)
+                                .getInt("idFactura"));
                         ventas.add(venta);
                     }
                 }
@@ -202,6 +215,18 @@ idVenta	int(11)
                                 .getInt("idVenta"));
                         venta.setObservaciones(ventasJSON.getJSONObject(i)
                                 .getString("observaciones"));
+                        venta.setSubtotal(ventasJSON.getJSONObject(i)
+                                .getDouble("subtotal"));
+                        venta.setIva(ventasJSON.getJSONObject(i)
+                                .getDouble("iva"));
+                        venta.setTotal(ventasJSON.getJSONObject(i)
+                                .getDouble("total"));
+                        venta.setCancelada(ventasJSON.getJSONObject(i)
+                                .getInt("cancelada"));
+                        venta.setFacturada(ventasJSON.getJSONObject(i)
+                                .getInt("facturada"));
+                        venta.setIdFactura(ventasJSON.getJSONObject(i)
+                                .getInt("idFactura"));
                         ventas.add(venta);
                     }
                 }

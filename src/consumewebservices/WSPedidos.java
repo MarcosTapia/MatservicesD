@@ -36,6 +36,13 @@ public class WSPedidos {
     String idSucursal;    
     String status;    
     String idPedido;
+    String subtotal;
+    String iva;
+    String total;
+    String tipovta;
+    String cancelada;
+    String facturada;
+    String idFactura;    
     
     //parametros con valores de pedido
     URL url = null; // Url de donde queremos obtener información
@@ -54,6 +61,13 @@ public class WSPedidos {
                 idUsuario = params[4];
                 idSucursal = params[5];
                 status = params[6];
+                subtotal = params[7];
+                iva = params[8];
+                total = params[9];
+                tipovta = params[10];
+                cancelada = params[11];
+                facturada = params[12];
+                idFactura = params[13];                
                 pedidoObj = guardaPedidoWS(); break;
             case "3" : 
                 idPedido = params[2];
@@ -145,6 +159,14 @@ public class WSPedidos {
             jsonParam.put("idUsuario", idUsuario);
             jsonParam.put("idSucursal", idSucursal);
             jsonParam.put("status", status);
+            
+            jsonParam.put("subtotal", subtotal);
+            jsonParam.put("iva", iva);
+            jsonParam.put("total", total);
+            jsonParam.put("tipovta", tipovta);
+            jsonParam.put("cancelada", cancelada);
+            jsonParam.put("facturada", facturada);
+            jsonParam.put("idFactura", idFactura);            
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(

@@ -359,7 +359,6 @@ public class FrmVenta extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtFecha = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtNroVenta = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -401,12 +400,14 @@ public class FrmVenta extends javax.swing.JFrame {
         btnClientes = new javax.swing.JButton();
         btnClientes1 = new javax.swing.JButton();
         btnClientes2 = new javax.swing.JButton();
+        cboTipoVenta = new javax.swing.JComboBox();
         jPanel7 = new javax.swing.JPanel();
         btnGenerarVenta = new javax.swing.JButton();
         btnCancelarV = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
         btnGenerarPedido = new javax.swing.JButton();
+        txtFecha = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         txtBuscarPro = new javax.swing.JTextField();
         cboParametroPro = new javax.swing.JComboBox();
@@ -435,11 +436,7 @@ public class FrmVenta extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(247, 254, 255));
 
-        jLabel1.setText("FECHA :");
-
-        txtFecha.setEditable(false);
-        txtFecha.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtFecha.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+        jLabel1.setText("TIPO VENTA :");
 
         jLabel2.setText("Nro VENTA :");
 
@@ -754,6 +751,8 @@ public class FrmVenta extends javax.swing.JFrame {
             }
         });
 
+        cboTipoVenta.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Normal" }));
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -767,8 +766,8 @@ public class FrmVenta extends javax.swing.JFrame {
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtFecha, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
-                            .addComponent(txtVendedorV))
+                            .addComponent(txtVendedorV, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                            .addComponent(cboTipoVenta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
@@ -823,9 +822,9 @@ public class FrmVenta extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
-                            .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
-                            .addComponent(txtNroVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtNroVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cboTipoVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
@@ -909,13 +908,20 @@ public class FrmVenta extends javax.swing.JFrame {
             }
         });
 
+        txtFecha.setEditable(false);
+        txtFecha.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFecha.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+        txtFecha.setBorder(null);
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblUsuario)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblUsuario)
+                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnGenerarVenta)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -930,9 +936,12 @@ public class FrmVenta extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnGenerarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblUsuario)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(lblUsuario)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancelarV, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGenerarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1121,6 +1130,14 @@ public class FrmVenta extends javax.swing.JFrame {
                     ventasBean.setObservaciones("");
                     //fin checar despues
                     ventasBean.setIdSucursal(Ingreso.usuario.getIdSucursal());
+                    
+                    ventasBean.setSubtotal(Double.parseDouble(txtSubTotal.getText()));
+                    ventasBean.setIva(Double.parseDouble(txtIva.getText()));
+                    ventasBean.setTotal(Double.parseDouble(txtMontoApagar.getText()));
+                    ventasBean.setTipovta(cboTipoVenta.getSelectedItem().toString());
+                    ventasBean.setCancelada(0);
+                    ventasBean.setFacturada(0);
+                    ventasBean.setIdFactura(1);
 
                     //ciclo que garantiza que operacion fue hecha con exito
                     while (ventasBean != null) {
@@ -1133,7 +1150,15 @@ public class FrmVenta extends javax.swing.JFrame {
                                 , "" + ventasBean.getIdCliente()
                                 , "" + ventasBean.getObservaciones()
                                 , "" + ventasBean.getIdUsuario()
-                                , "" + ventasBean.getIdSucursal());
+                                , "" + ventasBean.getIdSucursal()
+                                , "" + ventasBean.getSubtotal()
+                                , "" + ventasBean.getIva()
+                                , "" + ventasBean.getTotal()
+                                , "" + ventasBean.getTipovta()
+                                , "" + ventasBean.getCancelada()
+                                , "" + ventasBean.getFacturada()
+                                , "" + ventasBean.getIdFactura()
+                                );
                         if (ventaGuardada != null) {
                             //guarda detalle venta
                             for (DetalleVentaBean detVentBeanADisminuir :
@@ -1156,7 +1181,9 @@ public class FrmVenta extends javax.swing.JFrame {
                                             , "" + detVentBeanADisminuir.getPrecio()
                                             , "" + detVentBeanADisminuir.getCantidad()
                                             , "" + detVentBeanADisminuir.getDescuento()
-                                            , "" + Ingreso.usuario.getIdSucursal());
+                                            , detVentBeanADisminuir.getUnidadMedida()
+                                            , "" + Ingreso.usuario.getIdSucursal()
+                                                    );
                                     if (detalleVentaGuardada != null) {
                                         //Dismimuye inventario
                                             //obtiene articulo para saber su cantidad original
@@ -1423,6 +1450,7 @@ public class FrmVenta extends javax.swing.JFrame {
                             detalleVenta.setPrecio(prodParcial.getPrecioUnitario() 
                                     - Double.parseDouble(txtDescuento.getText()));  
                         }
+                        detalleVenta.setUnidadMedida(prodParcial.getUnidadMedida());
                         //agrego producto a vender a lista parcial de venta
                         detalleVentaProducto.add(detalleVenta);
                         //actualizo tabla de venta
@@ -1549,6 +1577,14 @@ public class FrmVenta extends javax.swing.JFrame {
                 //fin checar despues
                 ventasBean.setIdSucursal(Ingreso.usuario.getIdSucursal());
 
+                ventasBean.setSubtotal(Double.parseDouble(txtSubTotal.getText()));
+                ventasBean.setIva(Double.parseDouble(txtIva.getText()));
+                ventasBean.setTotal(Double.parseDouble(txtMontoApagar.getText()));
+                ventasBean.setTipovta(cboTipoVenta.getSelectedItem().toString());
+                ventasBean.setCancelada(0);
+                ventasBean.setFacturada(0);
+                ventasBean.setIdFactura(1);
+                    
                 //ciclo que garantiza que operacion fue hecha con exito
                 while (ventasBean != null) {
                     //guarda pedido
@@ -1561,7 +1597,15 @@ public class FrmVenta extends javax.swing.JFrame {
                             , "" + ventasBean.getObservaciones()
                             , "" + ventasBean.getIdUsuario()
                             , "" + ventasBean.getIdSucursal()
-                            , "" + "0");
+                            , "" + "0"
+                            , "" + ventasBean.getSubtotal()
+                            , "" + ventasBean.getIva()
+                            , "" + ventasBean.getTotal()
+                            , "" + ventasBean.getTipovta()
+                            , "" + ventasBean.getCancelada()
+                            , "" + ventasBean.getFacturada()
+                            , "" + ventasBean.getIdFactura()
+                            );
                     if (pedidoGuardado != null) {
                         //guarda detalle venta
                         for (DetalleVentaBean detVentBeanADisminuir :
@@ -1576,7 +1620,9 @@ public class FrmVenta extends javax.swing.JFrame {
                                     , "" + detVentBeanADisminuir.getPrecio()
                                     , "" + detVentBeanADisminuir.getCantidad()
                                     , "" + detVentBeanADisminuir.getDescuento()
-                                    , "" + Ingreso.usuario.getIdSucursal());
+                                    , detVentBeanADisminuir.getUnidadMedida()
+                                    , "" + Ingreso.usuario.getIdSucursal()
+                                    );
                         }
                         //fin guarda detalle pedido
                         borrar();
@@ -1867,6 +1913,7 @@ public class FrmVenta extends javax.swing.JFrame {
     private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox cboClientes;
     private javax.swing.JComboBox cboParametroPro;
+    private javax.swing.JComboBox cboTipoVenta;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

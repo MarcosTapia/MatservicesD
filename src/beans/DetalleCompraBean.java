@@ -9,6 +9,15 @@ public class DetalleCompraBean {
     private double cantidad;
     private double descuento;
     private int idSucursal;
+    private String unidadMedida;
+
+    public String getUnidadMedida() {
+        return unidadMedida;
+    }
+
+    public void setUnidadMedida(String unidadMedida) {
+        this.unidadMedida = unidadMedida;
+    }
 
     public int getIdSucursal() {
         return idSucursal;

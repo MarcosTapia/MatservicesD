@@ -10,6 +10,70 @@ public class PedidoBean {
     private int idUsuario;
     private int idSucursal;
     private int status;
+    
+    private double subtotal;
+    private double iva;
+    private double total;
+    private String tipovta;
+    private int cancelada;
+    private int facturada;
+    private int idFactura;    
+
+    public double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public double getIva() {
+        return iva;
+    }
+
+    public void setIva(double iva) {
+        this.iva = iva;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public String getTipovta() {
+        return tipovta;
+    }
+
+    public void setTipovta(String tipovta) {
+        this.tipovta = tipovta;
+    }
+
+    public int getCancelada() {
+        return cancelada;
+    }
+
+    public void setCancelada(int cancelada) {
+        this.cancelada = cancelada;
+    }
+
+    public int getFacturada() {
+        return facturada;
+    }
+
+    public void setFacturada(int facturada) {
+        this.facturada = facturada;
+    }
+
+    public int getIdFactura() {
+        return idFactura;
+    }
+
+    public void setIdFactura(int idFactura) {
+        this.idFactura = idFactura;
+    }
 
     public int getStatus() {
         return status;

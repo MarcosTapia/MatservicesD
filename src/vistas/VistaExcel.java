@@ -137,7 +137,7 @@ public class VistaExcel extends javax.swing.JFrame {
                         modeloT.addColumn(celda.getStringCellValue());
                     }else{
                         //verifica numero de columnas adecuado
-                        if (numColumnas != 8){
+                        if (numColumnas != 9){
                             sigueImportacion = false;
                             break;                            
                         }
@@ -190,7 +190,7 @@ public class VistaExcel extends javax.swing.JFrame {
             }
             respuesta="Importación exitosa";
         } catch (IOException | InvalidFormatException | EncryptedDocumentException e) {
-            System.err.println(e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
         if (!sigueImportacion) {
             respuesta="No se pudo realizar la importación. "
@@ -229,7 +229,7 @@ public class VistaExcel extends javax.swing.JFrame {
             }
             respuesta="Exportación exitosa.";
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
         return respuesta;
     }
@@ -239,7 +239,6 @@ public class VistaExcel extends javax.swing.JFrame {
     private void initComponents() {
 
         btnImportar = new javax.swing.JButton();
-        btnExportar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtDatos = new javax.swing.JTable();
@@ -264,16 +263,6 @@ public class VistaExcel extends javax.swing.JFrame {
         btnImportar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnImportarActionPerformed(evt);
-            }
-        });
-
-        btnExportar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnExportar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/xls.png"))); // NOI18N
-        btnExportar.setText("EXPORTAR");
-        btnExportar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnExportar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExportarActionPerformed(evt);
             }
         });
 
@@ -428,9 +417,7 @@ public class VistaExcel extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(83, 83, 83)
                 .addComponent(btnImportar)
-                .addGap(18, 18, 18)
-                .addComponent(btnExportar)
-                .addGap(18, 18, 18)
+                .addGap(147, 147, 147)
                 .addComponent(jButton1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -457,7 +444,6 @@ public class VistaExcel extends javax.swing.JFrame {
                         .addComponent(jCalFechaIngresoProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnExportar)
                     .addComponent(btnImportar)
                     .addComponent(jButton1))
                 .addGap(18, 18, 18)
@@ -502,6 +488,7 @@ public class VistaExcel extends javax.swing.JFrame {
                     columnModel.getColumn(5).setPreferredWidth(100);
                     columnModel.getColumn(6).setPreferredWidth(100);
                     columnModel.getColumn(7).setPreferredWidth(100);
+                    columnModel.getColumn(8).setPreferredWidth(100);
                     //fin cambio ancho de columnas
                     
                     
@@ -545,7 +532,7 @@ public class VistaExcel extends javax.swing.JFrame {
             jCalFechaIngresoProd.setDateFormatString("yyyy/MM/dd HH:mm:ss");
             p.setFechaIngreso(jCalFechaIngresoProd.getDate());
             //cambia formato para enviarla como string a ws
-            String fecha = util.cambiaFormatoFecha(p.getFechaIngreso().toLocaleString());
+            //String fecha = util.cambiaFormatoFecha(p.getFechaIngreso().toLocaleString());
             p.setIdCategoria(util.buscaIdCat(Principal.categoriasHM, 
                     cboCategoria.getSelectedItem().toString()));
             p.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM, 
@@ -569,6 +556,10 @@ public class VistaExcel extends javax.swing.JFrame {
             p.setPrecioUnitario(precioPublico);
             p.setUbicacion(String.valueOf(jtDatos.getModel()
                     .getValueAt(filaTabla,6)));
+            p.setUnidadMedida(String.valueOf(jtDatos.getModel()
+                    .getValueAt(filaTabla,8)));
+            p.setFechaCaducidad(jCalFechaIngresoProd.getDate());
+            
             //Arma objeto producto por renglon de la tabla
             
             //verifica si el producto se encuentra registrado 
@@ -592,12 +583,15 @@ public class VistaExcel extends javax.swing.JFrame {
                         ,"" + p.getExistencia()
                         ,"" + p.getExistenciaMinima()
                         ,p.getUbicacion()
-                        ,fecha
+                        ,p.getFechaIngreso().toLocaleString()
                         ,"" + p.getIdProveedor()
                         ,"" + p.getIdCategoria()
                         ,"" + p.getIdSucursal()
                         ,""
-                        ,p.getObservaciones());
+                        ,p.getObservaciones()
+                        ,p.getUnidadMedida()
+                        ,p.getFechaCaducidad().toLocaleString()
+                );
                 if (productoInsertado != null) {
                     DefaultTableModel modelo = (DefaultTableModel)jtDatos.getModel(); 
                     modelo.removeRow(filaTabla);
@@ -611,17 +605,6 @@ public class VistaExcel extends javax.swing.JFrame {
         //Fin Arma objeto producto por renglon de la tabla
         return importados;
     }
-
-    private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed
-        if(selecArchivo.showDialog(null, "Exportar")==JFileChooser.APPROVE_OPTION){
-            archivo=selecArchivo.getSelectedFile();
-            if(archivo.getName().endsWith("xls") || archivo.getName().endsWith("xlsx")){
-                JOptionPane.showMessageDialog(null, Exportar(archivo, jtDatos) + "\n Formato ."+ archivo.getName().substring(archivo.getName().lastIndexOf(".")+1));
-            }else{
-                JOptionPane.showMessageDialog(null, "Elija un formato valido.");
-            }
-        }
-    }//GEN-LAST:event_btnExportarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Carga productos
@@ -733,7 +716,6 @@ public class VistaExcel extends javax.swing.JFrame {
     }    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton btnExportar;
     public javax.swing.JButton btnImportar;
     private javax.swing.JComboBox cboCategoria;
     private javax.swing.JComboBox cboProveedor;

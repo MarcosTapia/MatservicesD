@@ -98,6 +98,7 @@ public class WSDetalleVentasList {
                         detalleVenta.setPrecio(detalleVentasJSON.getJSONObject(i).getDouble("precio"));
                         detalleVenta.setCantidad(detalleVentasJSON.getJSONObject(i).getDouble("cantidad"));
                         detalleVenta.setDescuento(detalleVentasJSON.getJSONObject(i).getDouble("descuento"));
+                        detalleVenta.setUnidadMedida(detalleVentasJSON.getJSONObject(i).getString("unidadMedida"));
                         detalleVenta.setIdSucursal(detalleVentasJSON.getJSONObject(i).getInt("idSucursal"));
                         detalleVentas.add(detalleVenta);
                     }
