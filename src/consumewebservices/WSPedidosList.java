@@ -102,6 +102,22 @@ idVenta	int(11)
                                 .getInt("idPedido"));
                         pedido.setObservaciones(pedidosJSON.getJSONObject(i)
                                 .getString("observaciones"));
+                        
+                        pedido.setSubtotal(pedidosJSON.getJSONObject(i)
+                                .getDouble("subtotal"));
+                        pedido.setIva(pedidosJSON.getJSONObject(i)
+                                .getDouble("iva"));
+                        pedido.setTotal(pedidosJSON.getJSONObject(i)
+                                .getDouble("total"));
+                        pedido.setCancelada(pedidosJSON.getJSONObject(i)
+                                .getInt("cancelada"));
+                        pedido.setFacturada(pedidosJSON.getJSONObject(i)
+                                .getInt("facturada"));
+                        pedido.setIdFactura(pedidosJSON.getJSONObject(i)
+                                .getInt("idFactura"));
+                        pedido.setTipovta(pedidosJSON.getJSONObject(i)
+                                .getString("tipovta"));
+                        
                         pedidos.add(pedido);
                     }
                 }
@@ -205,6 +221,21 @@ idVenta	int(11)
                                 .getInt("idPedido"));
                         pedido.setObservaciones(pedidosJSON.getJSONObject(i)
                                 .getString("observaciones"));
+
+                        pedido.setSubtotal(pedidosJSON.getJSONObject(i)
+                                .getDouble("subtotal"));
+                        pedido.setIva(pedidosJSON.getJSONObject(i)
+                                .getDouble("iva"));
+                        pedido.setTotal(pedidosJSON.getJSONObject(i)
+                                .getDouble("total"));
+                        pedido.setCancelada(pedidosJSON.getJSONObject(i)
+                                .getInt("cancelada"));
+                        pedido.setFacturada(pedidosJSON.getJSONObject(i)
+                                .getInt("facturada"));
+                        pedido.setIdFactura(pedidosJSON.getJSONObject(i)
+                                .getInt("idFactura"));
+                        pedido.setTipovta(pedidosJSON.getJSONObject(i)
+                                .getString("tipovta"));
                         pedidos.add(pedido);
                     }
                 }
@@ -255,6 +286,15 @@ idVenta	int(11)
                     pedido.setIdUsuario(respuestaJSON.getJSONObject("pedido").getInt("idUsuario"));
                     pedido.setIdPedido(respuestaJSON.getJSONObject("pedido").getInt("idPedido"));
                     pedido.setObservaciones(respuestaJSON.getJSONObject("pedido").getString("observaciones"));
+
+                    pedido.setSubtotal(respuestaJSON.getJSONObject("pedido").getDouble("subtotal"));
+                    pedido.setIva(respuestaJSON.getJSONObject("pedido").getDouble("iva"));
+                    pedido.setTotal(respuestaJSON.getJSONObject("pedido").getDouble("total"));
+                    pedido.setCancelada(respuestaJSON.getJSONObject("pedido").getInt("cancelada"));
+                    pedido.setFacturada(respuestaJSON.getJSONObject("pedido").getInt("facturada"));
+                    pedido.setIdFactura(respuestaJSON.getJSONObject("pedido").getInt("idFactura"));
+                    pedido.setTipovta(respuestaJSON.getJSONObject("pedido").getString("tipovta"));
+                    
                     pedidos.add(pedido);
                 }
             }

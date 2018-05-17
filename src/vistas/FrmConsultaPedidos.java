@@ -233,6 +233,15 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
             int idVenta = obtenerUltimoIdVenta();
             ventasBean.setIdVenta(idVenta);
             ventasBean.setObservaciones(pedido.getObservaciones());
+            
+            ventasBean.setSubtotal(pedido.getSubtotal());
+            ventasBean.setIva(pedido.getIva());
+            ventasBean.setTotal(pedido.getTotal());
+            ventasBean.setTipovta(pedido.getTipovta());
+            ventasBean.setCancelada(pedido.getCancelada());
+            ventasBean.setFacturada(pedido.getFacturada());
+            ventasBean.setIdFactura(pedido.getIdFactura());
+            
                 //fin convierto pedido a ventasBean para guardarlo como ventasBean
             
                 //convierto detallepedido a detalleventa para guardarlo como detalleventa
@@ -249,6 +258,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                 detalleVentaObj.setIdSucursal(detallePedidoTemp.getIdSucursal());
                 detalleVentaObj.setIdVenta(idVenta);
                 detalleVentaObj.setPrecio(detallePedidoTemp.getPrecio());
+                detalleVentaObj.setUnidadMedida(detallePedidoTemp.getUnidadMedida());
                 detalleVentaProducto.add(detalleVentaObj);
             }
                     //regresa tabla originalmente
@@ -270,7 +280,15 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                         , "" + ventasBean.getIdCliente()
                         , "" + ventasBean.getObservaciones()
                         , "" + ventasBean.getIdUsuario()
-                        , "" + ventasBean.getIdSucursal());
+                        , "" + ventasBean.getIdSucursal()
+                        , "" + ventasBean.getSubtotal()
+                        , "" + ventasBean.getIva()
+                        , "" + ventasBean.getTotal()
+                        , "" + ventasBean.getTipovta()
+                        , "" + ventasBean.getCancelada()
+                        , "" + ventasBean.getFacturada()
+                        , "" + ventasBean.getIdFactura()
+                        );
                 if (ventaGuardada != null) {
                     //guarda detalle ventasBean
                     for (DetalleVentaBean detVentBeanADisminuir :
@@ -293,6 +311,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                                     , "" + detVentBeanADisminuir.getPrecio()
                                     , "" + detVentBeanADisminuir.getCantidad()
                                     , "" + detVentBeanADisminuir.getDescuento()
+                                    , detVentBeanADisminuir.getUnidadMedida()
                                     , "" + Ingreso.usuario.getIdSucursal());
                             if (detalleVentaGuardada != null) {
                                 //Dismimuye inventario
@@ -329,7 +348,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                                     MovimientosBean movimientoInsertado = hiloMovimientos.ejecutaWebService(rutaWS,"1"
                                         ,"" + p.getIdArticulo()
                                         ,"" + Ingreso.usuario.getIdUsuario()
-                                        ,"Venta"
+                                        ,"Venta desde Pedido"
                                         ,"" + cantidadVendida
                                         ,fecha
                                         ,"" + Ingreso.usuario.getIdSucursal());
@@ -379,7 +398,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
     
     //Para Tabla Pedidos
     public void recargarTablePedidos(ArrayList<PedidoBean> list) {
-        Object[][] datos = new Object[list.size()][5];
+        Object[][] datos = new Object[list.size()][8];
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -394,12 +413,16 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                     , "" + p.getIdSucursal());
             datos[i][4] = util.buscaDescFromIdUsu(Principal.usuariosHM 
                     , "" + p.getIdUsuario());
+            datos[i][5] = p.getSubtotal();
+            datos[i][6] = p.getIva();
+            datos[i][7] = p.getTotal();
             i++;
         }
         tblConsultaPedidos.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
                     "No. PEDIDO", "FECHA PEDIDO","CLIENTE","SUCURSAL","USUARIO"
+                        ,"SUBTOTAL","IVA","TOTAL"
                 }) {
 
             @Override
@@ -411,7 +434,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
 
     //Para Tabla DetalleVenta
     public void recargarTableDetallePedidos(ArrayList<DetallePedidoBean> list) {
-        Object[][] datos = new Object[list.size()][7];
+        Object[][] datos = new Object[list.size()][8];
         int i = 0;
         for (DetallePedidoBean p : list) {
 //            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
@@ -423,7 +446,8 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                 datos[i][3] = p.getPrecio();
                 datos[i][4] = p.getCantidad();
                 datos[i][5] = p.getDescuento();
-                datos[i][6] = util.buscaDescFromIdSuc(Principal.sucursalesHM
+                datos[i][6] = p.getUnidadMedida();
+                datos[i][7] = util.buscaDescFromIdSuc(Principal.sucursalesHM
                         , "" + p.getIdSucursal());
                 i++;
 //            }
@@ -445,7 +469,8 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
         tblConsultaDetallePedido.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{ 
-                    "ID","No. PED.", "PRODUCTO","PRECIO VTA","CANT.","DESC APLICADO","SUCURSAL"
+                    "ID","No. PED.", "PRODUCTO","PRECIO VTA","CANT.","DESC APLICADO"
+                        ,"UNIDAD","SUCURSAL"
                 }) {
 
             @Override
@@ -1094,6 +1119,12 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                 pedido.setIdUsuario(util.buscaIdUsuario(Principal.usuariosHM
                         , "" + tblConsultaPedidos
                                 .getModel().getValueAt(i,4).toString()));
+                pedido.setSubtotal(Double.parseDouble(tblConsultaPedidos
+                                .getModel().getValueAt(i,5).toString()));
+                pedido.setIva(Double.parseDouble(tblConsultaPedidos
+                                .getModel().getValueAt(i,6).toString()));
+                pedido.setTotal(Double.parseDouble(tblConsultaPedidos
+                                .getModel().getValueAt(i,7).toString()));
                 resultWS.add(pedido);
             }
         }
@@ -1133,8 +1164,9 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                 detallePedido.setPrecio(Double.parseDouble(tblConsultaDetallePedido.getModel().getValueAt(i,3).toString()));
                 detallePedido.setCantidad(Double.parseDouble(tblConsultaDetallePedido.getModel().getValueAt(i,4).toString()));
                 detallePedido.setDescuento(Double.parseDouble(tblConsultaDetallePedido.getModel().getValueAt(i,5).toString()));
+                detallePedido.setUnidadMedida(String.valueOf(tblConsultaDetallePedido.getModel().getValueAt(i,6).toString()));
                 detallePedido.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM
-                        , tblConsultaDetallePedido.getModel().getValueAt(i,6).toString()));
+                        , tblConsultaDetallePedido.getModel().getValueAt(i,7).toString()));
                 resultWS.add(detallePedido);
             }
         }

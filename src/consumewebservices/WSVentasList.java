@@ -112,6 +112,8 @@ idVenta	int(11)
                                 .getInt("facturada"));
                         venta.setIdFactura(ventasJSON.getJSONObject(i)
                                 .getInt("idFactura"));
+                        venta.setTipovta(ventasJSON.getJSONObject(i)
+                                .getString("tipovta"));
                         ventas.add(venta);
                     }
                 }
@@ -227,6 +229,8 @@ idVenta	int(11)
                                 .getInt("facturada"));
                         venta.setIdFactura(ventasJSON.getJSONObject(i)
                                 .getInt("idFactura"));
+                        venta.setTipovta(ventasJSON.getJSONObject(i)
+                                .getString("tipovta"));
                         ventas.add(venta);
                     }
                 }
