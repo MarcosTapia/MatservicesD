@@ -120,7 +120,7 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
 
     //Para Tabla Ventas
     public void recargarTableCompras(ArrayList<ComprasBean> list) {
-        Object[][] datos = new Object[list.size()][6];
+        Object[][] datos = new Object[list.size()][9];
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -136,13 +136,17 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
                     , "" + p.getIdSucursal());
             datos[i][5] = util.buscaDescFromIdUsu(Principal.usuariosHM 
                     , "" + p.getIdUsuario());
+            datos[i][6] = p.getSubtotal();
+            datos[i][7] = p.getIva();
+            datos[i][8] = p.getTotal();
             i++;
         }
         tblConsultaCompras.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
                     "No. COMPRA", "FECHA COMPRA", "FACTURA" 
-                        , "PROVEEDOR", "SUCURSAL", "USUARIO"
+                        , "PROVEEDOR", "SUCURSAL", "USUARIO","SUBTOTAL","IVA"
+                        , "TOTAL"
                 }) {
 
             @Override
@@ -154,7 +158,7 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
 
     //Para Tabla DetalleVenta
     public void recargarTableDetalleCompras(ArrayList<DetalleCompraBean> list) {
-        Object[][] datos = new Object[list.size()][8];
+        Object[][] datos = new Object[list.size()][9];
         int i = 0;
         for (DetalleCompraBean p : list) {
 //            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
@@ -167,7 +171,8 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
                 datos[i][4] = p.getPrecioCosto();
                 datos[i][5] = p.getCantidad();
                 datos[i][6] = p.getDescuento();
-                datos[i][7] = util.buscaDescFromIdSuc(Principal.sucursalesHM
+                datos[i][7] = p.getUnidadMedida();
+                datos[i][8] = util.buscaDescFromIdSuc(Principal.sucursalesHM
                         , "" + p.getIdSucursal());
                 i++;
 //            }
@@ -190,7 +195,7 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
                 datos,
                 new String[]{ 
                     "ID","No. COMPRA", "PRODUCTO", "$ PÚB."
-                    , "$ COSTO", "CANTIDAD", "DESCUENTO", "SUCURSAL"
+                    , "$ COSTO", "CANTIDAD", "DESCUENTO", "UNIDAD", "SUCURSAL"
                 }) {
 
             @Override
@@ -756,6 +761,10 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
                 compra.setIdUsuario(util.buscaIdUsuario(Principal.usuariosHM
                         , "" + tblConsultaCompras
                                 .getModel().getValueAt(i,5).toString()));
+
+                compra.setSubtotal(Double.parseDouble(tblConsultaCompras.getModel().getValueAt(i,6).toString()));
+                compra.setIva(Double.parseDouble(tblConsultaCompras.getModel().getValueAt(i,7).toString()));
+                compra.setTotal(Double.parseDouble(tblConsultaCompras.getModel().getValueAt(i,8).toString()));
                 resultWS.add(compra);
             }
         }
@@ -796,8 +805,9 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
                 detalleCompra.setPrecioCosto(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,4).toString()));
                 detalleCompra.setCantidad(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,5).toString()));
                 detalleCompra.setDescuento(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,6).toString()));
+                detalleCompra.setUnidadMedida(String.valueOf(tblConsultaDetalleCompra.getModel().getValueAt(i,7).toString()));
                 detalleCompra.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM
-                        , tblConsultaDetalleCompra.getModel().getValueAt(i,7).toString()));
+                        , tblConsultaDetalleCompra.getModel().getValueAt(i,8).toString()));
                 resultWS.add(detalleCompra);
             }
         }

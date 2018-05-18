@@ -11,6 +11,52 @@ public class ComprasBean {
     private int idUsuario;
     private String factura;
     private int idSucursal;
+    
+    private double subtotal;
+    private double iva;
+    private double total;
+    private String tipocompra;
+    private int cancelada;
+
+    public double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public double getIva() {
+        return iva;
+    }
+
+    public void setIva(double iva) {
+        this.iva = iva;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public String getTipocompra() {
+        return tipocompra;
+    }
+
+    public void setTipocompra(String tipocompra) {
+        this.tipocompra = tipocompra;
+    }
+
+    public int getCancelada() {
+        return cancelada;
+    }
+
+    public void setCancelada(int cancelada) {
+        this.cancelada = cancelada;
+    }
 
     public int getIdCompra() {
         return idCompra;

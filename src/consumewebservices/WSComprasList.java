@@ -97,6 +97,18 @@ public class WSComprasList {
                                 .getString("observaciones"));
                         compra.setFactura(comprasJSON.getJSONObject(i)
                                 .getString("factura"));
+                        
+                        compra.setSubtotal(comprasJSON.getJSONObject(i)
+                                .getDouble("subtotal"));
+                        compra.setIva(comprasJSON.getJSONObject(i)
+                                .getDouble("iva"));
+                        compra.setTotal(comprasJSON.getJSONObject(i)
+                                .getDouble("total"));
+                        compra.setTipocompra(comprasJSON.getJSONObject(i)
+                                .getString("tipocompra"));
+                        compra.setCancelada(comprasJSON.getJSONObject(i)
+                                .getInt("cancelada"));
+                        
                         compras.add(compra);
                     }
                 }
@@ -202,6 +214,18 @@ public class WSComprasList {
                                 .getString("observaciones"));
                         compra.setFactura(comprasJSON.getJSONObject(i)
                                 .getString("factura"));
+
+                        compra.setSubtotal(comprasJSON.getJSONObject(i)
+                                .getDouble("subtotal"));
+                        compra.setIva(comprasJSON.getJSONObject(i)
+                                .getDouble("iva"));
+                        compra.setTotal(comprasJSON.getJSONObject(i)
+                                .getDouble("total"));
+                        compra.setTipocompra(comprasJSON.getJSONObject(i)
+                                .getString("tipocompra"));
+                        compra.setCancelada(comprasJSON.getJSONObject(i)
+                                .getInt("cancelada"));
+                        
                         compras.add(compra);
                     }
                 }

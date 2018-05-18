@@ -188,7 +188,8 @@ public class FrmInventario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void inicio() {
-        this.setVisible(false);
+        //this.setVisible(false);
+        this.dispose();
         Principal principal = new Principal();
         principal.setExtendedState(Principal.MAXIMIZED_BOTH);
         principal.setVisible(true);        

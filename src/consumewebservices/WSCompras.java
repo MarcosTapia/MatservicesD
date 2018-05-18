@@ -36,6 +36,11 @@ public class WSCompras {
     String factura;
     String idSucursal;    
     String idCompra;
+    String subtotal;
+    String iva;
+    String total;
+    String tipocompra;
+    String cancelada;
     
     //parametros con valores de compra
     URL url = null; // Url de donde queremos obtener información
@@ -55,6 +60,11 @@ public class WSCompras {
                 factura = params[5];
                 idSucursal = params[6];
                 fecha = params[7]; 
+                subtotal = params[8]; 
+                iva = params[9];
+                total = params[10]; 
+                tipocompra = params[11]; 
+                cancelada = params[12]; 
                 compraObj = guardaCompraWS(); break;
         }
         return compraObj;
@@ -152,6 +162,12 @@ public class WSCompras {
             jsonParam.put("idUsuario", idUsuario);
             jsonParam.put("factura", factura);
             jsonParam.put("idSucursal", idSucursal);
+            
+            jsonParam.put("subtotal", subtotal);
+            jsonParam.put("iva", iva);
+            jsonParam.put("total", total);
+            jsonParam.put("tipocompra", tipocompra);
+            jsonParam.put("cancelada", cancelada);
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
