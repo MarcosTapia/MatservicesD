@@ -44,6 +44,7 @@ public class FrmOperaciones extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         btnVentas = new javax.swing.JButton();
         btnCompras = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -89,6 +90,18 @@ public class FrmOperaciones extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(btnCompras);
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/compras.png"))); // NOI18N
+        jButton1.setText("CAJA");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton1);
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
         jButton5.setText("INICIO");
@@ -214,6 +227,11 @@ public class FrmOperaciones extends javax.swing.JFrame {
         frmCompra.setVisible(true);
     }//GEN-LAST:event_btnComprasActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        FrmCajaChica frmCajaChica = new FrmCajaChica();
+        frmCajaChica.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -312,6 +330,7 @@ public class FrmOperaciones extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCompras;
     private javax.swing.JButton btnVentas;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel2;
