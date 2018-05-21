@@ -3,12 +3,15 @@ package vistas;
 import beans.ClienteBean;
 import ComponenteConsulta.JDListaClientes;
 import ComponenteConsulta.JDListaSucursales;
+import beans.CajaChicaBean;
 import beans.DatosEmpresaBean;
 import beans.EdoMunBean;
 import beans.ProductoBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
 import constantes.ConstantesProperties;
+import consumewebservices.WSCajaChica;
+import consumewebservices.WSCajaChicaList;
 import consumewebservices.WSClientes;
 import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
@@ -23,8 +26,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +48,8 @@ public class FrmCajaChica extends javax.swing.JFrame {
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
     //WSUsuarios
-    WSSucursalesList hiloSucursalesList;
-    WSSucursales hiloSucursales;
+    WSCajaChicaList hiloCajaChicaList;
+    WSCajaChica hiloCajaChica;
     //Fin WSUsuarios
     
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
@@ -67,6 +72,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
         DatosEmpresaBean configuracionBean = hiloEmpresa.
                 ejecutaWebService(rutaWS,"1");
         actualizarBusqueda();
+        buscaUltimoRegistro();
         activarBotones(true);
 
         lblUsuario.setText("Usuario : " 
@@ -76,16 +82,16 @@ public class FrmCajaChica extends javax.swing.JFrame {
         this.setTitle(configuracionBean.getNombreEmpresa());
         this.setLocationRelativeTo(null);
         
-        btnNuevoCli.setEnabled(true);
-        btnGuardarCli.setEnabled(false);
+        btnNuevoMov.setEnabled(true);
+        btnGuardarMov.setEnabled(false);
         //btnEliminarCli.setEnabled(true);
         //btnModificarCli.setEnabled(false);
-        btnCancelarCli.setEnabled(true);
-        lblIdSucursal.setText("");
+        btnCancelarMov.setEnabled(true);
+        lblIdMov.setText("");
     }
     
     public void limpiarCajatexto() {
-        lblIdSucursal.setText("");
+        lblIdMov.setText("");
         txtMonto.setText("");
         txtReferencia.setText("");
         txtSaldoActual.setText("");
@@ -96,18 +102,17 @@ public class FrmCajaChica extends javax.swing.JFrame {
     public void activarCajatexto(boolean b) {
         txtMonto.setEditable(b);
         txtReferencia.setEditable(b);
-        txtSaldoActual.setEditable(b);
         cboTipoMov.setEnabled(b);
         cboComprobante.setEnabled(b);
-        btnNuevoCli.setEnabled(false);
+        btnNuevoMov.setEnabled(false);
     }
     
     public void activarBotones(boolean b){
-        btnNuevoCli.setEnabled(b);
-        btnGuardarCli.setEnabled(!b);
+        btnNuevoMov.setEnabled(b);
+        btnGuardarMov.setEnabled(!b);
         //btnEliminarCli.setEnabled(b);
         //btnModificarCli.setEnabled(!b);
-        btnCancelarCli.setEnabled(!b);
+        btnCancelarMov.setEnabled(!b);
     }
 
     @SuppressWarnings("unchecked")
@@ -116,7 +121,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        txtBuscarSuc = new javax.swing.JTextField();
+        txtBuscarMov = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         cboParametroSuc = new javax.swing.JComboBox();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -128,15 +133,13 @@ public class FrmCajaChica extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        btnSalirCli = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        btnNuevoCli = new javax.swing.JButton();
-        btnGuardarCli = new javax.swing.JButton();
-        btnModificarCli = new javax.swing.JButton();
-        btnCancelarCli = new javax.swing.JButton();
+        btnNuevoMov = new javax.swing.JButton();
+        btnGuardarMov = new javax.swing.JButton();
+        btnCancelarMov = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        lblIdSucursal = new javax.swing.JLabel();
+        lblIdMov = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         txtMonto = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -147,8 +150,10 @@ public class FrmCajaChica extends javax.swing.JFrame {
         txtReferencia = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtSaldoActual = new javax.swing.JTextField();
-        btnEliminarCli = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
+        txtSaldoAnterior = new javax.swing.JTextField();
         lblUsuario = new javax.swing.JLabel();
+        btnSalirCli = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -157,16 +162,16 @@ public class FrmCajaChica extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(247, 254, 255));
 
-        txtBuscarSuc.setForeground(new java.awt.Color(255, 0, 0));
-        txtBuscarSuc.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtBuscarSuc.addMouseListener(new java.awt.event.MouseAdapter() {
+        txtBuscarMov.setForeground(new java.awt.Color(255, 0, 0));
+        txtBuscarMov.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtBuscarMov.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txtBuscarSucMouseClicked(evt);
+                txtBuscarMovMouseClicked(evt);
             }
         });
-        txtBuscarSuc.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtBuscarMov.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtBuscarSucKeyReleased(evt);
+                txtBuscarMovKeyReleased(evt);
             }
         });
 
@@ -248,16 +253,6 @@ public class FrmCajaChica extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel11.setText("OPERACIÓN:");
 
-        btnSalirCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        btnSalirCli.setText("SALIR");
-        btnSalirCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnSalirCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnSalirCli.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalirCliActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -265,6 +260,9 @@ public class FrmCajaChica extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -275,19 +273,16 @@ public class FrmCajaChica extends javax.swing.JFrame {
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addComponent(jLabel10)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtBuscarSuc, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtBuscarMov, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(cboParametroSuc, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jLabel11))
-                                .addGap(18, 18, 18)
-                                .addComponent(btnSalirCli, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                                 .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -312,15 +307,12 @@ public class FrmCajaChica extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(19, 19, 19)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtBuscarSuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cboParametroSuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel10))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel11))
-                    .addComponent(btnSalirCli))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBuscarMov, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboParametroSuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
@@ -331,43 +323,33 @@ public class FrmCajaChica extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Garamond", 1, 20)); // NOI18N
         jLabel4.setText("REGISTRAR OPERACIÓN");
 
-        btnNuevoCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/New document_1.png"))); // NOI18N
-        btnNuevoCli.setText("NUEVO");
-        btnNuevoCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnNuevoCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNuevoCli.addActionListener(new java.awt.event.ActionListener() {
+        btnNuevoMov.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/New document_1.png"))); // NOI18N
+        btnNuevoMov.setText("NUEVO");
+        btnNuevoMov.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNuevoMov.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNuevoMov.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevoCliActionPerformed(evt);
+                btnNuevoMovActionPerformed(evt);
             }
         });
 
-        btnGuardarCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
-        btnGuardarCli.setText("GUARDAR");
-        btnGuardarCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnGuardarCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnGuardarCli.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardarMov.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
+        btnGuardarMov.setText("GUARDAR");
+        btnGuardarMov.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnGuardarMov.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGuardarMov.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarCliActionPerformed(evt);
+                btnGuardarMovActionPerformed(evt);
             }
         });
 
-        btnModificarCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Modify.png"))); // NOI18N
-        btnModificarCli.setText("MODIFICAR");
-        btnModificarCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnModificarCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnModificarCli.addActionListener(new java.awt.event.ActionListener() {
+        btnCancelarMov.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
+        btnCancelarMov.setText("CANCELAR");
+        btnCancelarMov.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCancelarMov.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCancelarMov.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarCliActionPerformed(evt);
-            }
-        });
-
-        btnCancelarCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
-        btnCancelarCli.setText("CANCELAR");
-        btnCancelarCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnCancelarCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnCancelarCli.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarCliActionPerformed(evt);
+                btnCancelarMovActionPerformed(evt);
             }
         });
 
@@ -377,22 +359,51 @@ public class FrmCajaChica extends javax.swing.JFrame {
         jLabel1.setText("Monto $ ;");
 
         txtMonto.setEditable(false);
+        txtMonto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMontoActionPerformed(evt);
+            }
+        });
+        txtMonto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtMontoKeyTyped(evt);
+            }
+        });
 
         jLabel2.setText("Tipo Movimiento :");
 
         cboTipoMov.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar...", "Gasto", "Ingreso" }));
+        cboTipoMov.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboTipoMovActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Comprobante :");
 
-        cboComprobante.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar...", "Nota Remisión", "Factura", "Otro (Especifica en referencia)" }));
+        cboComprobante.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar...", "Nota Remisión", "Factura", "Recibo", "Otro (Especifica en referencia)" }));
+        cboComprobante.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboComprobanteActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Referencia :");
 
         txtReferencia.setEditable(false);
+        txtReferencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtReferenciaActionPerformed(evt);
+            }
+        });
 
-        jLabel7.setText("Saldo Actual :");
+        jLabel7.setText("Saldo Anterior :");
 
         txtSaldoActual.setEditable(false);
+
+        jLabel12.setText("Saldo Actual :");
+
+        txtSaldoAnterior.setEditable(false);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -400,7 +411,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(lblIdSucursal)
+                .addComponent(lblIdMov)
                 .addGap(230, 230, 230))
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
@@ -422,11 +433,16 @@ public class FrmCajaChica extends javax.swing.JFrame {
                             .addComponent(jLabel6)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(txtReferencia)))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSaldoActual, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(433, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                            .addComponent(jLabel7)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtSaldoAnterior))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                            .addComponent(jLabel12)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtSaldoActual, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -451,24 +467,28 @@ public class FrmCajaChica extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
+                    .addComponent(txtSaldoAnterior, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
                     .addComponent(txtSaldoActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
-                .addComponent(lblIdSucursal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(lblIdMov)
                 .addContainerGap())
         );
 
-        btnEliminarCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Cancel.png"))); // NOI18N
-        btnEliminarCli.setText("ELIMINAR");
-        btnEliminarCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnEliminarCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnEliminarCli.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarCliActionPerformed(evt);
-            }
-        });
-
         lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblUsuario.setText("Usuario:");
+
+        btnSalirCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
+        btnSalirCli.setText("SALIR");
+        btnSalirCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalirCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalirCli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirCliActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -477,43 +497,43 @@ public class FrmCajaChica extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jLabel4)
-                        .addGap(69, 69, 69)
-                        .addComponent(lblUsuario))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(btnNuevoCli, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGuardarCli, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEliminarCli, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnModificarCli, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancelarCli)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addComponent(jLabel4))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(btnNuevoMov, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnGuardarMov, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnCancelarMov)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSalirCli, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 7, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblUsuario)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(lblUsuario))
+                .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnCancelarCli, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnModificarCli, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnEliminarCli, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGuardarCli, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnNuevoCli, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addComponent(lblUsuario)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnNuevoMov, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnGuardarMov, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnCancelarMov, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnSalirCli, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -522,10 +542,10 @@ public class FrmCajaChica extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 481, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -553,124 +573,159 @@ public class FrmCajaChica extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtBuscarSucMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBuscarSucMouseClicked
-    }//GEN-LAST:event_txtBuscarSucMouseClicked
+    private void buscaUltimoRegistro() {
+        ArrayList<CajaChicaBean> resultWS = null;
+        hiloCajaChicaList = new WSCajaChicaList();
+        String rutaWS = constantes.getProperty("IP") + constantes.
+                getProperty("GETULTIMOCAJACHICA");
+        resultWS = hiloCajaChicaList.ejecutaWebService(rutaWS,"2");
+        CajaChicaBean cajaChicaBean = resultWS.get(0);
+        txtSaldoAnterior.setText("" + cajaChicaBean.getSaldoAnterior());
+        txtSaldoActual.setText("" + cajaChicaBean.getSaldoActual());
+        //JOptionPane.showMessageDialog(null, "Saldo Anterior: " + cajaChicaBean.getSaldoAnterior() + " -- Saldo Aactual: " + cajaChicaBean.getSaldoActual());
+    }
+    
+    private void txtBuscarMovMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBuscarMovMouseClicked
+    }//GEN-LAST:event_txtBuscarMovMouseClicked
 
     private void btnSalirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCliActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnSalirCliActionPerformed
 
-    private void txtBuscarSucKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarSucKeyReleased
+    private void txtBuscarMovKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarMovKeyReleased
         actualizarBusqueda();
-    }//GEN-LAST:event_txtBuscarSucKeyReleased
+    }//GEN-LAST:event_txtBuscarMovKeyReleased
 
     private void cboParametroSucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboParametroSucActionPerformed
         // TODO add your handling code here:
         actualizarBusqueda();
     }//GEN-LAST:event_cboParametroSucActionPerformed
 
-    private void btnNuevoCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoCliActionPerformed
+    private void btnNuevoMovActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoMovActionPerformed
         limpiarCajatexto();
         activarCajatexto(true);
         activarBotones(false);
         accion = "Guardar";
+        buscaUltimoRegistro();
         txtMonto.requestFocus();
-    }//GEN-LAST:event_btnNuevoCliActionPerformed
+    }//GEN-LAST:event_btnNuevoMovActionPerformed
 
-    private void btnCancelarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCliActionPerformed
+    private void btnCancelarMovActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarMovActionPerformed
         limpiarCajatexto();
         activarCajatexto(false);
         activarBotones(true);
-        btnCancelarCli.setEnabled(true);
-    }//GEN-LAST:event_btnCancelarCliActionPerformed
+        buscaUltimoRegistro();
+        btnCancelarMov.setEnabled(true);
+    }//GEN-LAST:event_btnCancelarMovActionPerformed
 
-    private void btnGuardarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCliActionPerformed
+    private void btnGuardarMovActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarMovActionPerformed
         if (accion.equalsIgnoreCase("Guardar")) {
-            if (txtMonto.getText().compareTo("") != 0 ) {
-                    SucursalBean suc = new SucursalBean();
-                    suc.setDescripcionSucursal(txtMonto.getText());
-                    //guardar sucursal
-                    hiloSucursales = new WSSucursales();
-                    String rutaWS = constantes.getProperty("IP") 
-                            + constantes.getProperty("GUARDASUCURSAL");
-                    SucursalBean sucursalInsertada = hiloSucursales.ejecutaWebService(rutaWS,"1"
-                            ,suc.getDescripcionSucursal()
-                            );
-                    if (sucursalInsertada != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
-                        actualizarBusqueda();
-                        limpiarCajatexto();
-                        activarCajatexto(false);
-                        activarBotones(true);
-                    } else {
-                        JOptionPane.showMessageDialog(null, 
-                                "Error al guardar el registro");
-                    }    
-            } else {
-                JOptionPane.showMessageDialog(null, 
-                        "Llena los campos requeridos!!");
-            }    
-        }  
-        if (accion.equalsIgnoreCase("Actualizar")) {
-            if (txtMonto.getText().compareTo("") != 0 
-                    && lblIdSucursal.getText().compareTo("") != 0
-                        ) {
-                    SucursalBean suc = new SucursalBean();
-                    suc.setIdSucursal(Integer.parseInt(lblIdSucursal.getText()));
-                    suc.setDescripcionSucursal(txtMonto.getText());
-                    //huardar producto
-                    hiloSucursales = new WSSucursales();
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICASUCURSAL");
-                    SucursalBean sucursalActualizada = hiloSucursales.ejecutaWebService(rutaWS,"2"
-                            ,String.valueOf(suc.getIdSucursal())
-                            ,suc.getDescripcionSucursal()
-                            );
-                    if (sucursalActualizada != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Actualizados ]");
-                        actualizarBusqueda();
-                        limpiarCajatexto();
-                        activarCajatexto(false);
-                        activarBotones(true);
-                        jtSucursal.setEnabled(true);
-                    } else {
-                        JOptionPane.showMessageDialog(null, 
-                                "Error al actualizar el registro");
-                    }    
-            } else {
-                JOptionPane.showMessageDialog(null, 
-                        "Llena los campos requeridos!!");
-            }    
-        }  
-        btnNuevoCli.setEnabled(true);
-    }//GEN-LAST:event_btnGuardarCliActionPerformed
+            if ((txtMonto.getText().compareTo("") != 0 ) 
+                && !cboTipoMov.getSelectedItem().toString().
+                equalsIgnoreCase("Seleccionar...")
+                && !cboComprobante.getSelectedItem().toString().
+                equalsIgnoreCase("Seleccionar...")
+                && (txtReferencia.getText().compareTo("") != 0 )   
+                )
+            {
+                CajaChicaBean cajaChica = new CajaChicaBean();
+                cajaChica.setFecha(new Date());
+                cajaChica.setMonto(Double.parseDouble(txtMonto.getText()));
+                cajaChica.setTipoMov(cboTipoMov.getSelectedItem().toString());
+                cajaChica.setTipoComprobante(cboComprobante.getSelectedItem().toString());
+                cajaChica.setReferencia(txtReferencia.getText());
+                cajaChica.setIdUsuario(Ingreso.usuario.getIdUsuario());
+                cajaChica.setIdSucursal(Ingreso.usuario.getIdSucursal());
+                buscaUltimoRegistro();
+                if ((cboTipoMov.getSelectedItem().toString()
+                        .equalsIgnoreCase("Gasto") 
+                        && (Double.parseDouble(txtSaldoActual.getText()) 
+                        < Double.parseDouble(txtMonto.getText()))
+                        )) {
+                    JOptionPane.showMessageDialog(null, "La cantidad excede "
+                            + "al Saldo disponible ");
+                    txtMonto.requestFocus(true);
+                    return;
+                }
 
-    private void btnModificarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarCliActionPerformed
-        if (lblIdSucursal.getText().equalsIgnoreCase("")) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar un registro");
-            return;
-        }
-        jtSucursal.setEnabled(false);
-        accion = "Actualizar";
-        activarCajatexto(true);
-        btnNuevoCli.setEnabled(false);
-        btnGuardarCli.setEnabled(true);
-//        btnModificarCli.setEnabled(false);
-//        btnCancelarCli.setEnabled(true);
-//        btnMostrarCli.setEnabled(false);
-    }//GEN-LAST:event_btnModificarCliActionPerformed
+                cajaChica.setSaldoAnterior(Double.parseDouble(txtSaldoActual.getText()));
+                double saldoActual = 0;
+                //verifica si es gasto
+                if (cboTipoMov.getSelectedItem().toString()
+                        .equalsIgnoreCase("Gasto")) {
+                    saldoActual = Double.parseDouble(txtSaldoActual.getText())
+                            - Double.parseDouble(txtMonto.getText());
+                }
+//                //verifica si es Devolución Gasto
+//                if (cboTipoMov.getSelectedItem().toString()
+//                        .equalsIgnoreCase("Devolución Gasto")) {
+//                    saldoActual = Double.parseDouble(txtSaldoActual.getText())
+//                            + Double.parseDouble(txtMonto.getText());
+//                }
+                //verifica si es ingreso
+                if (cboTipoMov.getSelectedItem().toString()
+                        .equalsIgnoreCase("Ingreso")) {
+                    saldoActual = Double.parseDouble(txtSaldoActual.getText())
+                            + Double.parseDouble(txtMonto.getText());
+                }
+//                //verifica si es Devolución Ingreso
+//                if (cboTipoMov.getSelectedItem().toString()
+//                        .equalsIgnoreCase("Devolución Ingreso")) {
+//                    saldoActual = Double.parseDouble(txtSaldoActual.getText())
+//                            - Double.parseDouble(txtMonto.getText());
+//                }
+                cajaChica.setSaldoActual(saldoActual);
+                //guardar sucursal
+                hiloCajaChica = new WSCajaChica();
+                String rutaWS = constantes.getProperty("IP") 
+                        + constantes.getProperty("GUARDAMOVCAJACHICA");
+                CajaChicaBean movCajaInsertada = hiloCajaChica.ejecutaWebService(rutaWS,"1"
+                    , cajaChica.getFecha().toLocaleString()
+                    , "" + cajaChica.getMonto()
+                    , cajaChica.getTipoMov()
+                    , cajaChica.getTipoComprobante()
+                    , cajaChica.getReferencia()
+                    , "" + cajaChica.getIdUsuario()
+                    , "" + cajaChica.getIdSucursal()
+                    , "" + cajaChica.getSaldoAnterior()
+                    , "" + cajaChica.getSaldoActual()
+                        );
+                if (movCajaInsertada != null) {
+                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                    actualizarBusqueda();
+                    limpiarCajatexto();
+                    activarCajatexto(false);
+                    activarBotones(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, 
+                            "Error al guardar el registro");
+                }    
+            } else {
+                JOptionPane.showMessageDialog(null, 
+                        "Llena los campos requeridos!!");
+            }    
+        }  
+        btnNuevoMov.setEnabled(true);
+    }//GEN-LAST:event_btnGuardarMovActionPerformed
 
     private void buscaSucursalFromJTable() {
-        lblIdSucursal.setText(jtSucursal.getModel().getValueAt(
+        lblIdMov.setText(jtSucursal.getModel().getValueAt(
             jtSucursal.getSelectedRow(),0).toString());
-        ArrayList<SucursalBean> resultWS = null;
-        hiloSucursalesList = new WSSucursalesList();
+        ArrayList<CajaChicaBean> resultWS = null;
+        hiloCajaChicaList = new WSCajaChicaList();
         String rutaWS = constantes.getProperty("IP") 
-                + constantes.getProperty("GETSUCURSALPORID")
-                + String.valueOf(jtSucursal.getModel().getValueAt
-                (jtSucursal.getSelectedRow(), 0)).trim();
-        resultWS = hiloSucursalesList.ejecutaWebService(rutaWS,"2");
-        SucursalBean suc = resultWS.get(0);
-        txtMonto.setText(suc.getDescripcionSucursal());
+                + constantes.getProperty("GETCAJACHICAPORID")
+                + String.valueOf(jtSucursal.getModel().getValueAt(
+                        jtSucursal.getSelectedRow(), 0)).trim();
+        resultWS = hiloCajaChicaList.ejecutaWebService(rutaWS,"3");
+        CajaChicaBean cajaChica = resultWS.get(0);
+        txtMonto.setText("" + cajaChica.getMonto());
+        cboTipoMov.setSelectedItem(cajaChica.getTipoMov());
+        cboComprobante.setSelectedItem(cajaChica.getTipoComprobante());
+        txtReferencia.setText(cajaChica.getReferencia());
+        txtSaldoAnterior.setText("" + cajaChica.getSaldoAnterior());
+        txtSaldoActual.setText("" + cajaChica.getSaldoActual());
+        
         jtSucursal.requestFocus(true);
     }
     
@@ -681,43 +736,6 @@ public class FrmCajaChica extends javax.swing.JFrame {
     private void jtSucursalMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtSucursalMouseEntered
         // TODO add your handling code here:
     }//GEN-LAST:event_jtSucursalMouseEntered
-
-    private void eliminarSucursal() {
-        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
-        if(dialogResult == JOptionPane.YES_OPTION){
-            if (lblIdSucursal.getText().compareTo("") != 0) {
-                hiloSucursales = new WSSucursales();
-                String rutaWS = constantes.getProperty("IP") 
-                        + constantes.getProperty("ELIMINASUCURSAL");
-                SucursalBean sucursalEliminar = hiloSucursales.ejecutaWebService(rutaWS,"3"
-                        ,lblIdSucursal.getText().trim());
-                if (sucursalEliminar != null) {
-                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
-                    //Carga productos
-                    actualizarBusqueda();
-                    limpiarCajatexto();
-                    activarCajatexto(false);
-                    activarBotones(true);
-                } else {
-                    JOptionPane optionPane = new JOptionPane("No es posible "
-                            + "eliminar la "
-                            + "sucursal existen movimientos que lo relacionan"
-                            , JOptionPane.ERROR_MESSAGE);    
-                    JDialog dialog = optionPane.createDialog("Error");
-                    dialog.setAlwaysOnTop(true);
-                    dialog.setVisible(true);                    
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, 
-                        "No hay sucursal seleccionada");
-            }
-            btnCancelarCli.setEnabled(true);
-        }
-    }
-    
-    private void btnEliminarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarCliActionPerformed
-        eliminarSucursal();
-    }//GEN-LAST:event_btnEliminarCliActionPerformed
 
     private void jtSucursalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtSucursalKeyReleased
         if (evt.getKeyCode()==KeyEvent.VK_DOWN || evt.getKeyCode()==KeyEvent.VK_UP) {
@@ -760,69 +778,102 @@ public class FrmCajaChica extends javax.swing.JFrame {
 //        recargarTablePedidos(pedidosPorFechas);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void txtMontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoKeyTyped
+        //valida solo numeros
+        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtMontoKeyTyped
+
+    private void txtMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMontoActionPerformed
+        cboTipoMov.requestFocus(true);
+    }//GEN-LAST:event_txtMontoActionPerformed
+
+    private void cboTipoMovActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTipoMovActionPerformed
+        cboComprobante.requestFocus();
+    }//GEN-LAST:event_cboTipoMovActionPerformed
+
+    private void cboComprobanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboComprobanteActionPerformed
+        txtReferencia.requestFocus(true);
+    }//GEN-LAST:event_cboComprobanteActionPerformed
+
+    private void txtReferenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtReferenciaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtReferenciaActionPerformed
+
     private void actualizarBusqueda() {
-        ArrayList<SucursalBean> resultWS = null;
+        ArrayList<CajaChicaBean> resultWS = null;
         String rutaWS = "";
         if (String.valueOf(cboParametroSuc.getSelectedItem()).
                 equalsIgnoreCase("Nombre")) {
-            if (txtBuscarSuc.getText().equalsIgnoreCase("")) {
-                hiloSucursalesList = new WSSucursalesList();
+            if (txtBuscarMov.getText().equalsIgnoreCase("")) {
+                hiloCajaChicaList = new WSCajaChicaList();
                 rutaWS = constantes.getProperty("IP") + constantes.
-                        getProperty("GETSUCURSALES");
-                resultWS = hiloSucursalesList.ejecutaWebService(rutaWS,"1");
+                        getProperty("GETCAJACHICAS");
+                resultWS = hiloCajaChicaList.ejecutaWebService(rutaWS,"1");
             } else {
-                hiloSucursalesList = new WSSucursalesList();
-                rutaWS = constantes.getProperty("IP") + constantes.
-                        getProperty("GETSUCURSALBUSQUEDANOMBRE")
-                    + txtBuscarSuc.getText().trim();
-                resultWS = hiloSucursalesList.ejecutaWebService(rutaWS,"4");
+//                hiloSucursalesList = new WSSucursalesList();
+//                rutaWS = constantes.getProperty("IP") + constantes.
+//                        getProperty("GETSUCURSALBUSQUEDANOMBRE")
+//                    + txtBuscarSuc.getText().trim();
+//                resultWS = hiloSucursalesList.ejecutaWebService(rutaWS,"4");
             }
         } else {
             if (String.valueOf(cboParametroSuc.getSelectedItem()).
                     equalsIgnoreCase("Id")) {
-                if (txtBuscarSuc.getText().equalsIgnoreCase("")) {
-                    hiloSucursalesList = new WSSucursalesList();
+                if (txtBuscarMov.getText().equalsIgnoreCase("")) {
+                    hiloCajaChicaList = new WSCajaChicaList();
                     rutaWS = constantes.getProperty("IP") + constantes.
-                            getProperty("GETSUCURSALES");
-                    resultWS = hiloSucursalesList.ejecutaWebService(rutaWS,"1");
+                            getProperty("GETCAJACHICAS");
+                    resultWS = hiloCajaChicaList.ejecutaWebService(rutaWS,"1");
                 } else {
-                    hiloSucursalesList = new WSSucursalesList();
-                    rutaWS = constantes.getProperty("IP") 
-                            + constantes.getProperty("GETSUCURSALBUSQUEDAID") 
-                            + txtBuscarSuc.getText().trim();
-                    resultWS = hiloSucursalesList.ejecutaWebService(rutaWS,"3");
+//                    hiloSucursalesList = new WSSucursalesList();
+//                    rutaWS = constantes.getProperty("IP") 
+//                            + constantes.getProperty("GETSUCURSALBUSQUEDAID") 
+//                            + txtBuscarSuc.getText().trim();
+//                    resultWS = hiloSucursalesList.ejecutaWebService(rutaWS,"3");
                 }
             }
         }        
         recargarTable(resultWS);
     }
 
-    public void recargarTable(ArrayList<SucursalBean> list) {
-        Object[][] datos = new Object[list.size()][2];
+    public void recargarTable(ArrayList<CajaChicaBean> list) {
+        Object[][] datos = new Object[list.size()][10];
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
         int i = 0;
-        for (SucursalBean p : list) {
-            datos[i][0] = p.getIdSucursal();
-            datos[i][1] = p.getDescripcionSucursal();
+        for (CajaChicaBean p : list) {
+            datos[i][0] = p.getIdMov();
+            datos[i][1] = dateFormat.format(p.getFecha());
+            datos[i][2] = p.getMonto();
+            datos[i][3] = p.getTipoMov();
+            datos[i][4] = p.getTipoComprobante();
+            datos[i][5] = p.getReferencia();
+            datos[i][6] = util.buscaIdUsuario(Principal.usuariosHM, "" + p.getIdUsuario());
+            String suc = util.buscaDescFromIdSuc(Principal.sucursalesHM
+                    , "" + p.getIdSucursal());
+            datos[i][7] = suc;
+            datos[i][8] = p.getSaldoAnterior();
+            datos[i][9] = p.getSaldoActual();
             i++;
         }
         jtSucursal.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
-                    "ID SUCURSAL", "SUCURSAL"
+                    "idMov","Fecha","Monto","TipoMov","Comprobante","Referencia","Usuario","Sucursal","$ Anterior","$ Actual"                
                 }) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return true;
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancelarCli;
-    private javax.swing.JButton btnEliminarCli;
-    private javax.swing.JButton btnGuardarCli;
-    private javax.swing.JButton btnModificarCli;
-    private javax.swing.JButton btnNuevoCli;
+    private javax.swing.JButton btnCancelarMov;
+    private javax.swing.JButton btnGuardarMov;
+    private javax.swing.JButton btnNuevoMov;
     private javax.swing.JButton btnSalirCli;
     private javax.swing.JComboBox cboComprobante;
     private javax.swing.JComboBox cboParametroSuc;
@@ -833,6 +884,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -847,11 +899,12 @@ public class FrmCajaChica extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jtSucursal;
-    private javax.swing.JLabel lblIdSucursal;
+    private javax.swing.JLabel lblIdMov;
     private javax.swing.JLabel lblUsuario;
-    private javax.swing.JTextField txtBuscarSuc;
+    private javax.swing.JTextField txtBuscarMov;
     private javax.swing.JTextField txtMonto;
     private javax.swing.JTextField txtReferencia;
     private javax.swing.JTextField txtSaldoActual;
+    private javax.swing.JTextField txtSaldoAnterior;
     // End of variables declaration//GEN-END:variables
 }

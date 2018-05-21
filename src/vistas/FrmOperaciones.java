@@ -91,7 +91,7 @@ public class FrmOperaciones extends javax.swing.JFrame {
         });
         jToolBar1.add(btnCompras);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/compras.png"))); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cajachica2.png"))); // NOI18N
         jButton1.setText("CAJA");
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

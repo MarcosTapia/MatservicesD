@@ -2,16 +2,25 @@ package beans;
 
 import java.util.Date;
 
-public class CajaChica {
-    private int idmov;
+public class CajaChicaBean {
+    private int idMov;
     private Date fecha;
     private Double monto;
-    private String tipomov;
+    private String tipoMov;
     private String tipoComprobante;
     private String referencia;
     private int idUsuario;
     private int idSucursal;
     private Double saldoActual;
+    private Double saldoAnterior;
+
+    public Double getSaldoAnterior() {
+        return saldoAnterior;
+    }
+
+    public void setSaldoAnterior(Double saldoAnterior) {
+        this.saldoAnterior = saldoAnterior;
+    }
 
     public String getReferencia() {
         return referencia;
@@ -21,12 +30,12 @@ public class CajaChica {
         this.referencia = referencia;
     }
 
-    public int getIdmov() {
-        return idmov;
+    public int getIdMov() {
+        return idMov;
     }
 
-    public void setIdmov(int idmov) {
-        this.idmov = idmov;
+    public void setIdMov(int idMov) {
+        this.idMov = idMov;
     }
 
     public Date getFecha() {
@@ -45,12 +54,12 @@ public class CajaChica {
         this.monto = monto;
     }
 
-    public String getTipomov() {
-        return tipomov;
+    public String getTipoMov() {
+        return tipoMov;
     }
 
-    public void setTipomov(String tipomov) {
-        this.tipomov = tipomov;
+    public void setTipoMov(String tipoMov) {
+        this.tipoMov = tipoMov;
     }
 
     public String getTipoComprobante() {
