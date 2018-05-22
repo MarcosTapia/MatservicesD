@@ -126,7 +126,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     public void recargarTableVentas(ArrayList<VentasBean> list) {
         Object[][] datos = new Object[list.size()][8];
         int i = 0;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 //System.out.println(dateFormat.format(new Date()));        
         for (VentasBean p : list) {

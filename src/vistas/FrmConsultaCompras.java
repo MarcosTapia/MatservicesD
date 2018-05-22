@@ -122,7 +122,8 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
     public void recargarTableCompras(ArrayList<ComprasBean> list) {
         Object[][] datos = new Object[list.size()][9];
         int i = 0;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 //System.out.println(dateFormat.format(new Date()));        
         for (ComprasBean p : list) {

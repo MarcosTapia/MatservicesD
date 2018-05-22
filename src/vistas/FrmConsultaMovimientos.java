@@ -111,7 +111,8 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
     public void recargarTableMovimientos(ArrayList<MovimientosBean> list) {
         Object[][] datos = new Object[list.size()][7];
         int i = 0;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 //System.out.println(dateFormat.format(new Date()));        
         for (MovimientosBean p : list) {

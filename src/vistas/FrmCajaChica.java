@@ -9,6 +9,7 @@ import beans.EdoMunBean;
 import beans.ProductoBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
+import beans.VentasBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCajaChica;
 import consumewebservices.WSCajaChicaList;
@@ -51,6 +52,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
     WSCajaChicaList hiloCajaChicaList;
     WSCajaChica hiloCajaChica;
     //Fin WSUsuarios
+    ArrayList<CajaChicaBean> movsGlobal = null;
     
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
 
@@ -71,7 +73,16 @@ public class FrmCajaChica extends javax.swing.JFrame {
                 + "GETDATOSEMPRESA");
         DatosEmpresaBean configuracionBean = hiloEmpresa.
                 ejecutaWebService(rutaWS,"1");
-        actualizarBusqueda();
+        
+        rutaWS = "";
+        hiloCajaChicaList = new WSCajaChicaList();
+        rutaWS = constantes.getProperty("IP") + constantes.
+                getProperty("GETCAJACHICAS");
+        movsGlobal = hiloCajaChicaList.ejecutaWebService(rutaWS,"1");
+        recargarTable(movsGlobal);
+        
+        
+        //actualizarBusqueda();
         buscaUltimoRegistro();
         activarBotones(true);
 
@@ -125,7 +136,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         cboParametroSuc = new javax.swing.JComboBox();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jtSucursal = new javax.swing.JTable();
+        jtMovimientosCajaChica = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
         jCalFechaIni = new com.toedter.calendar.JDateChooser();
         jLabel9 = new javax.swing.JLabel();
@@ -162,7 +173,6 @@ public class FrmCajaChica extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(247, 254, 255));
 
-        txtBuscarMov.setForeground(new java.awt.Color(255, 0, 0));
         txtBuscarMov.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtBuscarMov.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -178,14 +188,14 @@ public class FrmCajaChica extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Garamond", 1, 14)); // NOI18N
         jLabel3.setText("BUSCAR OPERACIÓN");
 
-        cboParametroSuc.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Id", "Nombre" }));
+        cboParametroSuc.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "IdMov", "Monto", "TipoMov", "Comprobante", "Referencia", "Usuario", "Sucursal" }));
         cboParametroSuc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboParametroSucActionPerformed(evt);
             }
         });
 
-        jtSucursal.setModel(new javax.swing.table.DefaultTableModel(
+        jtMovimientosCajaChica.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -215,20 +225,20 @@ public class FrmCajaChica extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jtSucursal.addMouseListener(new java.awt.event.MouseAdapter() {
+        jtMovimientosCajaChica.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jtSucursalMouseClicked(evt);
+                jtMovimientosCajaChicaMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jtSucursalMouseEntered(evt);
+                jtMovimientosCajaChicaMouseEntered(evt);
             }
         });
-        jtSucursal.addKeyListener(new java.awt.event.KeyAdapter() {
+        jtMovimientosCajaChica.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                jtSucursalKeyReleased(evt);
+                jtMovimientosCajaChicaKeyReleased(evt);
             }
         });
-        jScrollPane2.setViewportView(jtSucursal);
+        jScrollPane2.setViewportView(jtMovimientosCajaChica);
 
         jLabel8.setText("Fecha Inicio :");
 
@@ -696,6 +706,14 @@ public class FrmCajaChica extends javax.swing.JFrame {
                     limpiarCajatexto();
                     activarCajatexto(false);
                     activarBotones(true);
+                    
+                    rutaWS = "";
+                    hiloCajaChicaList = new WSCajaChicaList();
+                    rutaWS = constantes.getProperty("IP") + constantes.
+                            getProperty("GETCAJACHICAS");
+                    movsGlobal = hiloCajaChicaList.ejecutaWebService(rutaWS,"1");
+                    recargarTable(movsGlobal);
+                    
                 } else {
                     JOptionPane.showMessageDialog(null, 
                             "Error al guardar el registro");
@@ -709,14 +727,14 @@ public class FrmCajaChica extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGuardarMovActionPerformed
 
     private void buscaSucursalFromJTable() {
-        lblIdMov.setText(jtSucursal.getModel().getValueAt(
-            jtSucursal.getSelectedRow(),0).toString());
+        lblIdMov.setText(jtMovimientosCajaChica.getModel().getValueAt(
+            jtMovimientosCajaChica.getSelectedRow(),0).toString());
         ArrayList<CajaChicaBean> resultWS = null;
         hiloCajaChicaList = new WSCajaChicaList();
         String rutaWS = constantes.getProperty("IP") 
                 + constantes.getProperty("GETCAJACHICAPORID")
-                + String.valueOf(jtSucursal.getModel().getValueAt(
-                        jtSucursal.getSelectedRow(), 0)).trim();
+                + String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(
+                        jtMovimientosCajaChica.getSelectedRow(), 0)).trim();
         resultWS = hiloCajaChicaList.ejecutaWebService(rutaWS,"3");
         CajaChicaBean cajaChica = resultWS.get(0);
         txtMonto.setText("" + cajaChica.getMonto());
@@ -726,56 +744,57 @@ public class FrmCajaChica extends javax.swing.JFrame {
         txtSaldoAnterior.setText("" + cajaChica.getSaldoAnterior());
         txtSaldoActual.setText("" + cajaChica.getSaldoActual());
         
-        jtSucursal.requestFocus(true);
+        jtMovimientosCajaChica.requestFocus(true);
     }
     
-    private void jtSucursalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtSucursalMouseClicked
+    private void jtMovimientosCajaChicaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtMovimientosCajaChicaMouseClicked
         buscaSucursalFromJTable();
-    }//GEN-LAST:event_jtSucursalMouseClicked
+    }//GEN-LAST:event_jtMovimientosCajaChicaMouseClicked
 
-    private void jtSucursalMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtSucursalMouseEntered
+    private void jtMovimientosCajaChicaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtMovimientosCajaChicaMouseEntered
         // TODO add your handling code here:
-    }//GEN-LAST:event_jtSucursalMouseEntered
+    }//GEN-LAST:event_jtMovimientosCajaChicaMouseEntered
 
-    private void jtSucursalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtSucursalKeyReleased
+    private void jtMovimientosCajaChicaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtMovimientosCajaChicaKeyReleased
         if (evt.getKeyCode()==KeyEvent.VK_DOWN || evt.getKeyCode()==KeyEvent.VK_UP) {
              buscaSucursalFromJTable();
         }
-    }//GEN-LAST:event_jtSucursalKeyReleased
+    }//GEN-LAST:event_jtMovimientosCajaChicaKeyReleased
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-//        limpiaTblDetallePedido();
-//        String fechaIni = "";
-//        String fechaFin = "";
-//        //Tomamos las dos fechas y las convierto a java.sql.date
-//        java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
-//        java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();
-//        java.sql.Date fechaSqlDateIni;
-//        java.sql.Date fechaSqlDateFin;
-//        try {
-//            fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
-//            return;
-//        }
-//        try {
-//            fechaSqlDateFin = new java.sql.Date(fechaUtilDateFin.getTime());
-//        } catch (Exception e) {
-//            fechaSqlDateFin = fechaSqlDateIni;
-//        }
-//        fechaIni = fechaSqlDateIni.toString();
-//        fechaFin = fechaSqlDateFin.toString();
-//        if (fechaSqlDateIni.getTime() > fechaSqlDateFin.getTime()) {
-//            JOptionPane.showMessageDialog(null, "Fechas Incorrectas");
-//            return;
-//        }
-//        // Actualizas tbl Ventas
-//        ArrayList<PedidoBean> pedidosPorFechas = null;
-//        hiloPedidosList = new WSPedidosList();
-//        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETPEDIDOSPORFECHASFINI") + fechaIni +
-//        constantes.getProperty("GETPEDIDOSPORFECHASFFIN") + fechaFin;
-//        pedidosPorFechas = hiloPedidosList.ejecutaWebService(rutaWS,"2");
-//        recargarTablePedidos(pedidosPorFechas);
+        String fechaIni = "";
+        String fechaFin = "";
+        //Tomamos las dos fechas y las convierto a java.sql.date
+        java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
+        java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();
+        java.sql.Date fechaSqlDateIni;
+        java.sql.Date fechaSqlDateFin;
+        try {
+            fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            return;
+        }
+        try {
+            fechaSqlDateFin = new java.sql.Date(fechaUtilDateFin.getTime());
+        } catch (Exception e) {
+            fechaSqlDateFin = fechaSqlDateIni;
+        }
+        fechaIni = fechaSqlDateIni.toString();
+        fechaFin = fechaSqlDateFin.toString();
+        if (fechaSqlDateIni.getTime() > fechaSqlDateFin.getTime()) {
+            JOptionPane.showMessageDialog(null, "Fechas Incorrectas");
+            return;
+        }
+        // Actualizas tbl Ventas
+        ArrayList<CajaChicaBean> movsCajaChicaPorFechas = null;
+        hiloCajaChicaList = new WSCajaChicaList();
+        String rutaWS = constantes.getProperty("IP") + constantes.
+                getProperty("GETMOVSCAJACHICAPORFECHASFINI") + fechaIni +
+                constantes.getProperty("GETMOVSCAJACHICAPORFECHASFFIN") 
+                + fechaFin;
+        movsCajaChicaPorFechas = hiloCajaChicaList.ejecutaWebService(rutaWS,"4");
+        recargarTable(movsCajaChicaPorFechas);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void txtMontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoKeyTyped
@@ -804,44 +823,152 @@ public class FrmCajaChica extends javax.swing.JFrame {
 
     private void actualizarBusqueda() {
         ArrayList<CajaChicaBean> resultWS = null;
-        String rutaWS = "";
+        ProductoBean producto = null;
+        //IdMov,Monto, TipoMov, Comprobante, Referencia, Usuario, Sucursal
+        //IdMov
         if (String.valueOf(cboParametroSuc.getSelectedItem()).
-                equalsIgnoreCase("Nombre")) {
+                equalsIgnoreCase("IdMov")) {
             if (txtBuscarMov.getText().equalsIgnoreCase("")) {
-                hiloCajaChicaList = new WSCajaChicaList();
-                rutaWS = constantes.getProperty("IP") + constantes.
-                        getProperty("GETCAJACHICAS");
-                resultWS = hiloCajaChicaList.ejecutaWebService(rutaWS,"1");
+                resultWS = movsGlobal;
             } else {
-//                hiloSucursalesList = new WSSucursalesList();
-//                rutaWS = constantes.getProperty("IP") + constantes.
-//                        getProperty("GETSUCURSALBUSQUEDANOMBRE")
-//                    + txtBuscarSuc.getText().trim();
-//                resultWS = hiloSucursalesList.ejecutaWebService(rutaWS,"4");
+                resultWS = llenaTablaMovs(
+                        txtBuscarMov.getText().trim(),0);
             }
-        } else {
-            if (String.valueOf(cboParametroSuc.getSelectedItem()).
-                    equalsIgnoreCase("Id")) {
-                if (txtBuscarMov.getText().equalsIgnoreCase("")) {
-                    hiloCajaChicaList = new WSCajaChicaList();
-                    rutaWS = constantes.getProperty("IP") + constantes.
-                            getProperty("GETCAJACHICAS");
-                    resultWS = hiloCajaChicaList.ejecutaWebService(rutaWS,"1");
-                } else {
-//                    hiloSucursalesList = new WSSucursalesList();
-//                    rutaWS = constantes.getProperty("IP") 
-//                            + constantes.getProperty("GETSUCURSALBUSQUEDAID") 
-//                            + txtBuscarSuc.getText().trim();
-//                    resultWS = hiloSucursalesList.ejecutaWebService(rutaWS,"3");
-                }
+        }
+        //Monto
+        if (String.valueOf(cboParametroSuc.getSelectedItem()).
+                equalsIgnoreCase("Monto")) {
+            if (txtBuscarMov.getText().equalsIgnoreCase("")) {
+                resultWS = movsGlobal;
+            } else {
+                resultWS = llenaTablaMovs(
+                        txtBuscarMov.getText().trim(),1);
             }
-        }        
+        } 
+        //TipoMov
+        if (String.valueOf(cboParametroSuc.getSelectedItem()).
+                equalsIgnoreCase("TipoMov")) {
+            if (txtBuscarMov.getText().equalsIgnoreCase("")) {
+                resultWS = movsGlobal;
+            } else {
+                resultWS = llenaTablaMovs(
+                        txtBuscarMov.getText().trim(),2);
+            }
+        } 
+        //Comprobante
+        if (String.valueOf(cboParametroSuc.getSelectedItem()).
+                equalsIgnoreCase("Comprobante")) {
+            if (txtBuscarMov.getText().equalsIgnoreCase("")) {
+                resultWS = movsGlobal;
+            } else {
+                resultWS = llenaTablaMovs(
+                        txtBuscarMov.getText().trim(),3);
+            }
+        } 
+        //Referencia
+        if (String.valueOf(cboParametroSuc.getSelectedItem()).
+                equalsIgnoreCase("Referencia")) {
+            if (txtBuscarMov.getText().equalsIgnoreCase("")) {
+                resultWS = movsGlobal;
+            } else {
+                resultWS = llenaTablaMovs(
+                        txtBuscarMov.getText().trim(),4);
+            }
+        } 
+        //Usuario
+        if (String.valueOf(cboParametroSuc.getSelectedItem()).
+                equalsIgnoreCase("Usuario")) {
+            if (txtBuscarMov.getText().equalsIgnoreCase("")) {
+                resultWS = movsGlobal;
+            } else {
+                resultWS = llenaTablaMovs(
+                        txtBuscarMov.getText().trim(),5);
+            }
+        } 
+        //Sucursal
+        if (String.valueOf(cboParametroSuc.getSelectedItem()).
+                equalsIgnoreCase("Sucursal")) {
+            if (txtBuscarMov.getText().equalsIgnoreCase("")) {
+                resultWS = movsGlobal;
+            } else {
+                resultWS = llenaTablaMovs(
+                        txtBuscarMov.getText().trim(),6);
+            }
+        } 
         recargarTable(resultWS);
+        //IdMov,Monto, TipoMov, Comprobante, Referencia, Usuario, Sucursal
+    }
+    
+    private ArrayList<CajaChicaBean> llenaTablaMovs(String buscar, int tipoBusq) {
+        ArrayList<CajaChicaBean> resultWS = new ArrayList<CajaChicaBean>();
+        CajaChicaBean movCajaChica = null;
+        for (int i=0; i<jtMovimientosCajaChica.getModel().getRowCount(); i++) {
+            String campoBusq = "";
+            switch (tipoBusq) {
+                case 0 : campoBusq = jtMovimientosCajaChica.getModel().getValueAt(
+                    i,0).toString();
+                    break;
+                case 1 : campoBusq = jtMovimientosCajaChica.getModel().getValueAt(
+                    i,2).toString();
+                    break;
+                case 2 : campoBusq = jtMovimientosCajaChica.getModel().getValueAt(
+                    i,3).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
+                case 3 : campoBusq = jtMovimientosCajaChica.getModel().getValueAt(
+                    i,4).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
+                case 4 : campoBusq = jtMovimientosCajaChica.getModel().getValueAt(
+                    i,5).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
+                case 5 : campoBusq = jtMovimientosCajaChica.getModel().getValueAt(
+                    i,6).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
+                case 6 : campoBusq = jtMovimientosCajaChica.getModel().getValueAt(
+                    i,7).toString().toLowerCase();
+                    buscar = buscar.toLowerCase();
+                    break;
+            }
+            if (campoBusq.indexOf(buscar)>=0) {
+                movCajaChica = new CajaChicaBean();
+/*                
+idMov
+Fecha
+Monto
+TipoMov
+Comprobante
+Referencia
+Usuario
+Sucursal
+saldoAnterior
+saldoActual                
+*/                
+                movCajaChica.setIdMov(Integer.parseInt(jtMovimientosCajaChica.getModel().getValueAt(i,0).toString()));
+                String fecha = String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,1));
+                movCajaChica.setFecha(util.stringToDate(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,1))));
+                movCajaChica.setMonto(Double.parseDouble(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,2))));
+                movCajaChica.setTipoMov(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,3)));
+                movCajaChica.setTipoComprobante(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,4)));
+                movCajaChica.setReferencia(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,5)));
+                int idUsu = util.buscaIdUsuario(Principal.usuariosHM, String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,6)));
+                movCajaChica.setIdUsuario(idUsu);
+                int idSuc = util.buscaIdSuc(Principal.sucursalesHM, String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,7)));
+                movCajaChica.setIdSucursal(idSuc);
+                movCajaChica.setSaldoAnterior(Double.parseDouble(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,8))));
+                movCajaChica.setSaldoActual(Double.parseDouble(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,9))));
+                resultWS.add(movCajaChica);
+            }
+        }
+        return resultWS;
     }
 
     public void recargarTable(ArrayList<CajaChicaBean> list) {
         Object[][] datos = new Object[list.size()][10];
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
         int i = 0;
         for (CajaChicaBean p : list) {
             datos[i][0] = p.getIdMov();
@@ -850,7 +977,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
             datos[i][3] = p.getTipoMov();
             datos[i][4] = p.getTipoComprobante();
             datos[i][5] = p.getReferencia();
-            datos[i][6] = util.buscaIdUsuario(Principal.usuariosHM, "" + p.getIdUsuario());
+            datos[i][6] = util.buscaDescFromIdUsu(Principal.usuariosHM, "" + p.getIdUsuario());
             String suc = util.buscaDescFromIdSuc(Principal.sucursalesHM
                     , "" + p.getIdSucursal());
             datos[i][7] = suc;
@@ -858,7 +985,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
             datos[i][9] = p.getSaldoActual();
             i++;
         }
-        jtSucursal.setModel(new javax.swing.table.DefaultTableModel(
+        jtMovimientosCajaChica.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
                     "idMov","Fecha","Monto","TipoMov","Comprobante","Referencia","Usuario","Sucursal","$ Anterior","$ Actual"                
@@ -898,7 +1025,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jtSucursal;
+    private javax.swing.JTable jtMovimientosCajaChica;
     private javax.swing.JLabel lblIdMov;
     private javax.swing.JLabel lblUsuario;
     private javax.swing.JTextField txtBuscarMov;
