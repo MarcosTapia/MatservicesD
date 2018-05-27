@@ -1,15 +1,27 @@
 package vistas;
 
+import beans.DetalleVentaBean;
+import beans.MensajeBean;
+import beans.ProductoBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
+import beans.VentasBean;
 import com.sun.awt.AWTUtilities;
 import constantes.ConstantesProperties;
+import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSDetalleVentasList;
+import consumewebservices.WSMensajes;
+import consumewebservices.WSMensajesList;
 import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
+import consumewebservices.WSVentas;
+import consumewebservices.WSVentasList;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,8 +37,24 @@ public class Ingreso extends javax.swing.JFrame {
     WSUsuarios hiloUsuarios;
 //    WSSucursalesList hiloSucursalesList;
 //    static Map<String,String> sucursalesHM = new HashMap();
+    
+    //WS
+//    Util util = new Util();
+//    WSDatosEmpresa hiloEmpresa;
+//    WSMensajes hiloMensajes;
+    WSMensajesList hiloMensajesList;
+//    WSDetalleVentasList hiloDetalleVentasList;
+    //Fin WS
+    DateFormat fecha = DateFormat.getDateInstance();
+//    String accion = "";
+//    ArrayList<VentasBean> ventasGlobal = null;
+//    ArrayList<DetalleVentaBean> detalleVentasGlobal = null;
+//    ArrayList<ProductoBean> inventario = null;
+    
     //Fin WS
     
+    String mensaje = "";
+            
     public static UsuarioBean usuario;
 
     int x,y;
@@ -36,12 +64,12 @@ public class Ingreso extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         AWTUtilities.setWindowOpaque(this, false);
         
-        //Checa si existe archivo licencia
-        File f = new File("C:\\Windows\\addins\\w4mdp.ecf");
-        if (!(f.exists())) { 
-            JOptionPane.showMessageDialog(null, "Copia Ilegal");
-            System.exit(1);
-        }
+//        //Checa si existe archivo licencia
+//        File f = new File("C:\\Windows\\addins\\w4mdp.ecf");
+//        if (!(f.exists())) { 
+//            JOptionPane.showMessageDialog(null, "Copia Ilegal");
+//            System.exit(1);
+//        }
     }
 
     @SuppressWarnings("unchecked")
@@ -209,6 +237,54 @@ public class Ingreso extends javax.swing.JFrame {
         UsuarioBean resultadoWS = hiloUsuarios.ejecutaWebService(rutaWS,"1");
     }
 
+    public void obtieneMensajes() {
+        String fechaIni = "";
+        String fechaFin = "";
+        //Tomamos las dos fechas y las convierto a java.sql.date
+        java.util.Date fechaUtilDateIni = new Date();
+        java.util.Date fechaUtilDateFin = new Date();
+        java.sql.Date fechaSqlDateIni;
+        java.sql.Date fechaSqlDateFin;
+        try {
+            fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            return;
+        }
+        try {
+            fechaSqlDateFin = new java.sql.Date(fechaUtilDateFin.getTime());
+        } catch (Exception e) {
+            fechaSqlDateFin = fechaSqlDateIni;
+        }
+        fechaIni = fechaSqlDateIni.toString();
+        fechaFin = fechaSqlDateFin.toString();
+        if (fechaSqlDateIni.getTime() > fechaSqlDateFin.getTime()) {
+            JOptionPane.showMessageDialog(null, "Fechas Incorrectas");
+            return;
+        }
+        // Actualizas tbl Ventas
+        ArrayList<MensajeBean> mensajesPorFechas = null;
+        hiloMensajesList = new WSMensajesList();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETMENSAJESPORFECHASFINI") + fechaIni +
+                constantes.getProperty("GETMENSAJESPORFECHASFFIN") + fechaFin;
+        mensajesPorFechas = hiloMensajesList.ejecutaWebService(rutaWS,"2");
+//            String mensaje = "<html><body>Por este conducto se indica que los "
+//                    + "cortes de caja se realizarán en punto de las 6 p.m. "
+//                    + "Por su atención mil gracias. Atte. La gerencia."
+//                    + "</body></html>";
+        if (mensajesPorFechas.size() > 0) {
+            mensaje = "<html><body><ul>";
+            for (MensajeBean msg : mensajesPorFechas) {
+                mensaje = mensaje + "<li>"+ msg.getMensaje() +"</li>";
+            }            
+            mensaje = mensaje + "</ul></body></html>";
+        } else {
+            mensaje = "";
+        }
+//        recargarTableVentas(mensajesPorFechas);
+    }
+    
     public void verificaUsuarioWS() {
         hiloUsuarios = new WSUsuarios();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty("VERIFICA_USUARIOUSER") + txtUser.getText() +
@@ -218,10 +294,17 @@ public class Ingreso extends javax.swing.JFrame {
 //        if (!"".equalsIgnoreCase(resultadoWS)) {
         if (usuario != null) {
             this.dispose();
-            vistas.Principal principal = new vistas.Principal();
-            principal.setExtendedState(principal.MAXIMIZED_BOTH);
-            principal.setDefaultCloseOperation(principal.EXIT_ON_CLOSE);
-            principal.setVisible(true);    
+            obtieneMensajes();
+            if (mensaje.equalsIgnoreCase("")) { //si no hay mensajes
+                vistas.Principal principal = new vistas.Principal();
+                principal.setExtendedState(principal.MAXIMIZED_BOTH);
+                principal.setDefaultCloseOperation(principal.EXIT_ON_CLOSE);
+                principal.setVisible(true);    
+            } else { //si hay mensajes
+                FrmMensaje frmMensaje = new FrmMensaje();
+                frmMensaje.setMensaje(mensaje);
+                frmMensaje.setVisible(true);
+            }
         } else {
             JOptionPane.showMessageDialog(null, "ERROR: Usuario o clave erróneos");            
             borrar();

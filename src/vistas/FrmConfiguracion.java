@@ -64,6 +64,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         btnCategorias = new javax.swing.JButton();
         btnSucursales = new javax.swing.JButton();
         btnSistema = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -157,6 +158,19 @@ public class FrmConfiguracion extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(btnSistema);
+
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mensajea.png"))); // NOI18N
+        jButton7.setText("Mensajes");
+        jButton7.setToolTipText("");
+        jButton7.setFocusable(false);
+        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton7);
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
         jButton5.setText("Inicio");
@@ -303,6 +317,11 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         frmSistema.setVisible(true);
     }//GEN-LAST:event_btnSistemaActionPerformed
 
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        FrmConfiguraMensajes frmConfiguraMensajes = new FrmConfiguraMensajes();
+        frmConfiguraMensajes.setVisible(true);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -375,6 +394,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
     private javax.swing.JButton btnUsuarios;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JToolBar jToolBar1;
