@@ -2,12 +2,15 @@ package vistas;
 
 import beans.UsuarioBean;
 import ComponenteConsulta.JDListaUsuario;
+import beans.CajaChicaBean;
 import beans.DatosEmpresaBean;
 import beans.MensajeBean;
+import beans.ProductoBean;
 import beans.SucursalBean;
 import beans.VentasBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSInventarios;
 import consumewebservices.WSMensajes;
 import consumewebservices.WSMensajesList;
 import consumewebservices.WSSucursalesList;
@@ -16,6 +19,7 @@ import consumewebservices.WSUsuariosList;
 import consumewebservices.WSVentas;
 import consumewebservices.WSVentasList;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -26,6 +30,8 @@ import javax.swing.UIManager;
 import static vistas.Ingreso.usuario;
 
 import java.security.MessageDigest;
+import java.util.Date;
+import javax.swing.JDialog;
 import util.Util;
 import static vistas.Principal.productos;
 
@@ -54,6 +60,9 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
+        jCalFechaFin.setVisible(false);
+        jCalFechaIni.setDate(new Date());
+        jCalFechaIni.setEnabled(false);
         lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
         hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
@@ -62,7 +71,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                 ejecutaWebService(rutaWS,"1");
         this.setTitle(resultadoWS.getNombreEmpresa());
         
-        // Actualizas tbl Ventas
+        // Actualizas tbl Mensajes
         hiloMensajesList = new WSMensajesList();
         rutaWS = constantes.getProperty("IP") 
                 + constantes.getProperty("GETMENSAJES");
@@ -70,13 +79,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         
         //se ocultan porque quedan incluidas en inventario
         actualizarBusqueda();
-        activarBotones(true);
-        //carga sucursales
-        Iterator it = Principal.sucursalesHM.keySet().iterator();
-        while(it.hasNext()){
-          Object key = it.next();
-          //cboSucursal.addItem(Principal.sucursalesHM.get(key));
-        }        
+//        activarBotones(true);
     }
     
     public static String getMD5(String input) {
@@ -96,11 +99,11 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
     
 
     public void activarBotones(boolean b) {
-        btnNuevoPer.setEnabled(b);
-        btnGuardarPer.setEnabled(!b);
-        btnModificarPer.setEnabled(b);
-        //btnCancelarUsuario.setEnabled(!b);
-        btnMostrarPer.setEnabled(b);
+        btnNuevoMensaje.setEnabled(b);
+        btnGuardarMensaje.setEnabled(!b);
+        txtAreaMensaje.setEditable(true);
+        txtAreaMensaje.requestFocus(true);
+        jCalFechaIni.setEnabled(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -110,20 +113,24 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtBuscarUsuario = new javax.swing.JTextField();
+        txtBuscarMsg = new javax.swing.JTextField();
         cboParametroUsuario = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblUsuarios = new javax.swing.JTable();
+        tblMensajes = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        btnNuevoPer = new javax.swing.JButton();
-        btnGuardarPer = new javax.swing.JButton();
-        btnModificarPer = new javax.swing.JButton();
-        btnCancelarUsuario = new javax.swing.JButton();
-        btnMostrarPer = new javax.swing.JButton();
-        btnSalirPer = new javax.swing.JButton();
-        btnEliminarUsuario = new javax.swing.JButton();
+        btnNuevoMensaje = new javax.swing.JButton();
+        btnGuardarMensaje = new javax.swing.JButton();
+        btnEliminarMensaje = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtAreaMensaje = new javax.swing.JTextArea();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jCalFechaIni = new com.toedter.calendar.JDateChooser();
+        jCalFechaFin = new com.toedter.calendar.JDateChooser();
+        btnSalir = new javax.swing.JButton();
+        lblIdMensaje = new javax.swing.JLabel();
+        btnCancelarMensaje = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -134,20 +141,20 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
 
         jLabel1.setText("BUSCAR MENSAJE :");
 
-        txtBuscarUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtBuscarMsg.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtBuscarUsuarioKeyReleased(evt);
+                txtBuscarMsgKeyReleased(evt);
             }
         });
 
-        cboParametroUsuario.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Id", "Nombre" }));
+        cboParametroUsuario.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Id", "Mensaje" }));
         cboParametroUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboParametroUsuarioActionPerformed(evt);
             }
         });
 
-        tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
+        tblMensajes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -174,12 +181,17 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                 "Id", "Nombre"
             }
         ));
-        tblUsuarios.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblMensajes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblUsuariosMouseClicked(evt);
+                tblMensajesMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tblUsuarios);
+        tblMensajes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tblMensajesKeyReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblMensajes);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -188,12 +200,14 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(txtBuscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(txtBuscarMsg)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboParametroUsuario, 0, 82, Short.MAX_VALUE))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addComponent(cboParametroUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -203,7 +217,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtBuscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtBuscarMsg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboParametroUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -212,127 +226,140 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(247, 254, 255));
 
-        jLabel2.setFont(new java.awt.Font("Garamond", 1, 20)); // NOI18N
-        jLabel2.setText("MENSAJE(S) DE HOY:");
-
-        btnNuevoPer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/New document.png"))); // NOI18N
-        btnNuevoPer.setText("NUEVO");
-        btnNuevoPer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnNuevoPer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNuevoPer.addActionListener(new java.awt.event.ActionListener() {
+        btnNuevoMensaje.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/New document.png"))); // NOI18N
+        btnNuevoMensaje.setText("NUEVO");
+        btnNuevoMensaje.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNuevoMensaje.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNuevoMensaje.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevoPerActionPerformed(evt);
+                btnNuevoMensajeActionPerformed(evt);
             }
         });
 
-        btnGuardarPer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
-        btnGuardarPer.setText("GUARDAR");
-        btnGuardarPer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnGuardarPer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnGuardarPer.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardarMensaje.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
+        btnGuardarMensaje.setText("GUARDAR");
+        btnGuardarMensaje.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnGuardarMensaje.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGuardarMensaje.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarPerActionPerformed(evt);
+                btnGuardarMensajeActionPerformed(evt);
             }
         });
 
-        btnModificarPer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Modify.png"))); // NOI18N
-        btnModificarPer.setText("MODIFICAR");
-        btnModificarPer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnModificarPer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnModificarPer.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminarMensaje.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Cancel.png"))); // NOI18N
+        btnEliminarMensaje.setText("ELIMINAR");
+        btnEliminarMensaje.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnEliminarMensaje.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEliminarMensaje.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarPerActionPerformed(evt);
-            }
-        });
-
-        btnCancelarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
-        btnCancelarUsuario.setText("CANCELAR");
-        btnCancelarUsuario.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnCancelarUsuario.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnCancelarUsuario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarUsuarioActionPerformed(evt);
-            }
-        });
-
-        btnMostrarPer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
-        btnMostrarPer.setText("MOSTRAR");
-        btnMostrarPer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnMostrarPer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnMostrarPer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMostrarPerActionPerformed(evt);
-            }
-        });
-
-        btnSalirPer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        btnSalirPer.setText("SALIR");
-        btnSalirPer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnSalirPer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnSalirPer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalirPerActionPerformed(evt);
-            }
-        });
-
-        btnEliminarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Cancel.png"))); // NOI18N
-        btnEliminarUsuario.setText("ELIMINAR");
-        btnEliminarUsuario.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnEliminarUsuario.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnEliminarUsuario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarUsuarioActionPerformed(evt);
+                btnEliminarMensajeActionPerformed(evt);
             }
         });
 
         lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblUsuario.setText("Usuario:");
 
+        txtAreaMensaje.setEditable(false);
+        txtAreaMensaje.setColumns(20);
+        txtAreaMensaje.setRows(5);
+        jScrollPane2.setViewportView(txtAreaMensaje);
+
+        jLabel3.setText("Mensaje :");
+
+        jLabel8.setText("Fecha :");
+
+        jCalFechaIni.setDateFormatString("yyyy-MM-d");
+
+        jCalFechaFin.setDateFormatString("yyyy-MM-d");
+
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
+        btnSalir.setText("SALIR");
+        btnSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
+
+        btnCancelarMensaje.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
+        btnCancelarMensaje.setText("CANCELAR");
+        btnCancelarMensaje.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCancelarMensaje.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCancelarMensaje.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarMensajeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(107, 107, 107)
-                        .addComponent(lblUsuario)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnNuevoPer, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnNuevoMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGuardarPer)
+                        .addComponent(btnGuardarMensaje)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEliminarUsuario)
+                        .addComponent(btnEliminarMensaje)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnModificarPer)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancelarUsuario)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnMostrarPer)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSalirPer, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)))
-                .addGap(27, 27, 27))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(lblIdMensaje)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(btnCancelarMensaje)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(9, 9, 9)
+                                .addComponent(lblUsuario)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(91, 91, 91))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(32, 32, 32)
+                .addComponent(lblUsuario)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3)
+                    .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(lblUsuario))
-                .addGap(383, 383, 383)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jCalFechaIni, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(lblIdMensaje)
+                .addGap(29, 29, 29)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnGuardarPer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnEliminarUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnModificarPer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCancelarUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnMostrarPer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSalirPer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnNuevoPer, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnCancelarMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnNuevoMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
+                    .addComponent(btnGuardarMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+                    .addComponent(btnEliminarMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -341,9 +368,9 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -360,9 +387,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -372,88 +397,197 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSalirPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPerActionPerformed
-        //Carga productos
-        Principal principal = new Principal();
-        principal.cargaUsuarios();
-        this.dispose();
-        FrmConfiguracion operaciones = new FrmConfiguracion();
-    }//GEN-LAST:event_btnSalirPerActionPerformed
-
-    private void btnNuevoPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoPerActionPerformed
-//        obtenerUltimoId();
+    private void btnNuevoMensajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoMensajeActionPerformed
         accion = "Guardar";
         activarBotones(false);
-    }//GEN-LAST:event_btnNuevoPerActionPerformed
-
-    private void btnModificarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPerActionPerformed
-        accion = "Actualizar";
-        btnNuevoPer.setEnabled(false);
-        btnGuardarPer.setEnabled(true);
-        btnModificarPer.setEnabled(false);
-        btnCancelarUsuario.setEnabled(true);
-        btnMostrarPer.setEnabled(false);
-    }//GEN-LAST:event_btnModificarPerActionPerformed
-
-    private void btnCancelarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarUsuarioActionPerformed
-        activarBotones(true);
-    }//GEN-LAST:event_btnCancelarUsuarioActionPerformed
+        limpiarCajaTexto();
+    }//GEN-LAST:event_btnNuevoMensajeActionPerformed
 
     private void guardar() {
+        if (accion.equalsIgnoreCase("Guardar")) {
+            if ((txtAreaMensaje.getText().compareTo("") != 0)
+                && (jCalFechaIni.getDate() != null)
+            ) {
+                MensajeBean p = new MensajeBean();
+                p.setMensaje(txtAreaMensaje.getText());
+                p.setFecha(jCalFechaIni.getDate());
+                //guardar mensaje
+                hiloMensajes = new WSMensajes();
+                String rutaWS = constantes.getProperty("IP") + constantes
+                        .getProperty("GUARDAMENSAJE");
+                MensajeBean mensajeInsertado = hiloMensajes.ejecutaWebService(rutaWS,"1"
+                        ,p.getMensaje()
+                        ,p.getFecha().toLocaleString()
+                );
+                if (mensajeInsertado != null) {
+                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                    activarBotones(true);
+                    limpiarCajaTexto();
+                    
+                    // Actualizas tbl Mensajes
+                    hiloMensajesList = new WSMensajesList();
+                    rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GETMENSAJES");
+                    mensajesGlobal = hiloMensajesList.ejecutaWebService(rutaWS,"1");                    
+                    actualizarBusqueda();
+                    txtAreaMensaje.setEditable(false);
+                    jCalFechaIni.setEnabled(false);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
+            }
+        }
     }
     
-    private void btnGuardarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPerActionPerformed
+    private void limpiarCajaTexto() {
+        lblIdMensaje.setText("");
+        txtAreaMensaje.setText("");
+        jCalFechaIni.setDate(new Date());
+    }    
+    
+    private void btnGuardarMensajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarMensajeActionPerformed
         guardar();
-    }//GEN-LAST:event_btnGuardarPerActionPerformed
+    }//GEN-LAST:event_btnGuardarMensajeActionPerformed
 
     private void cboParametroUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboParametroUsuarioActionPerformed
         actualizarBusqueda();
     }//GEN-LAST:event_cboParametroUsuarioActionPerformed
 
-    private void txtBuscarUsuarioKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarUsuarioKeyReleased
+    private void txtBuscarMsgKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarMsgKeyReleased
         actualizarBusqueda();
-    }//GEN-LAST:event_txtBuscarUsuarioKeyReleased
+    }//GEN-LAST:event_txtBuscarMsgKeyReleased
 
-    private void tblUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUsuariosMouseClicked
-    }//GEN-LAST:event_tblUsuariosMouseClicked
+    private void buscaMensajeFromJTable() {
+        lblIdMensaje.setText(tblMensajes.getModel().getValueAt(
+            tblMensajes.getSelectedRow(),0).toString());
+        ArrayList<MensajeBean> resultWS = null;
+        hiloMensajesList = new WSMensajesList();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETMENSAJESPORID")
+                + String.valueOf(tblMensajes.getModel().getValueAt
+                (tblMensajes.getSelectedRow(), 0)).trim();
+        resultWS = hiloMensajesList.ejecutaWebService(rutaWS,"3");
+        MensajeBean msg = resultWS.get(0);
+        txtAreaMensaje.setText(msg.getMensaje());
+        jCalFechaIni.setDate(null);
+        jCalFechaIni.setDate(msg.getFecha());        
+        tblMensajes.requestFocus(true);
+    }
+    
+    private void tblMensajesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMensajesMouseClicked
+        buscaMensajeFromJTable();
+    }//GEN-LAST:event_tblMensajesMouseClicked
 
-    private void btnMostrarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarPerActionPerformed
-        JDListaUsuario jdListaP = new JDListaUsuario(this, true,Principal.sucursalesHM);
-        jdListaP.setVisible(true);
-    }//GEN-LAST:event_btnMostrarPerActionPerformed
+    private void eliminarMensaje() {
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
+        if(dialogResult == JOptionPane.YES_OPTION){
+            if (lblIdMensaje.getText().compareTo("") != 0) {
+                hiloMensajes = new WSMensajes();
+                String rutaWS = constantes.getProperty("IP") + constantes
+                        .getProperty("ELIMINAMENSAJE");
+                MensajeBean mensajeEliminar = hiloMensajes.ejecutaWebService(rutaWS,"2"
+                        ,lblIdMensaje.getText().trim());
+                if (mensajeEliminar != null) {
+                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+                    limpiarCajaTexto();
+                    // Actualizas tbl Mensajes
+                    hiloMensajesList = new WSMensajesList();
+                    rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GETMENSAJES");
+                    mensajesGlobal = hiloMensajesList.ejecutaWebService(rutaWS,"1");                    
+                    actualizarBusqueda();
+                    activarBotones(true);
+                } else {
+                    JOptionPane optionPane = new JOptionPane("No es posible eliminar el "
+                            + "mensaje existen movimientos que lo relacionan", JOptionPane.ERROR_MESSAGE);    
+                    JDialog dialog = optionPane.createDialog("Error");
+                    dialog.setAlwaysOnTop(true);
+                    dialog.setVisible(true);                    
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "No hay mensaje para eliminar");
+            }
+        }
+    }
+    
+    private void btnEliminarMensajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarMensajeActionPerformed
+        eliminarMensaje();
+    }//GEN-LAST:event_btnEliminarMensajeActionPerformed
 
-    private void btnEliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarUsuarioActionPerformed
-    }//GEN-LAST:event_btnEliminarUsuarioActionPerformed
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        this.dispose();
+        FrmInventario inventario = new FrmInventario();
+        //        inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
+        //        inventario.setVisible(true);
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void tblMensajesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblMensajesKeyReleased
+        if (evt.getKeyCode()==KeyEvent.VK_DOWN || evt.getKeyCode()==KeyEvent.VK_UP) {
+             buscaMensajeFromJTable();
+        }
+    }//GEN-LAST:event_tblMensajesKeyReleased
+
+    private void btnCancelarMensajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarMensajeActionPerformed
+        limpiarCajaTexto();
+        txtAreaMensaje.setEnabled(false);
+        jCalFechaIni.setEnabled(false);
+        btnNuevoMensaje.setEnabled(true);
+        btnGuardarMensaje.setEnabled(false);
+//        btnCancelarCli.setEnabled(true);
+    }//GEN-LAST:event_btnCancelarMensajeActionPerformed
 
     private void actualizarBusqueda() {
         ArrayList<MensajeBean> resultWS = null;
         if (String.valueOf(cboParametroUsuario.getSelectedItem()).
-                equalsIgnoreCase("Nombre")) {
-            if (txtBuscarUsuario.getText().equalsIgnoreCase("")) {
+                equalsIgnoreCase("Id")) {
+            if (txtBuscarMsg.getText().equalsIgnoreCase("")) {
                 resultWS = mensajesGlobal;
             } else {
-//                hiloUsuariosList = new WSUsuariosList();
-//                String rutaWS = constantes.getProperty("IP") + constantes.
-//                        getProperty("GETUSUARIOBUSQUEDANOMBRE")
-//                    + txtBuscarUsuario.getText().trim();
-//                resultWS = hiloUsuariosList.ejecutaWebService(rutaWS,"3");
+                resultWS = llenaTablaMovs(
+                        txtBuscarMsg.getText().trim().toLowerCase(),0);
             }
-        } else {
-            if (String.valueOf(cboParametroUsuario.getSelectedItem()).
-                    equalsIgnoreCase("Id")) {
-                if (txtBuscarUsuario.getText().equalsIgnoreCase("")) {
-                    resultWS = mensajesGlobal;
-                } else {
-//                    hiloUsuariosList = new WSUsuariosList();
-//                    String rutaWS = constantes.getProperty("IP") 
-//                            + constantes.getProperty("GETUSUARIOBUSQUEDAID") 
-//                            + txtBuscarUsuario.getText().trim();
-//                    resultWS = hiloUsuariosList.ejecutaWebService(rutaWS,"2");
-                }
+        }
+        //Monto
+        if (String.valueOf(cboParametroUsuario.getSelectedItem()).
+                equalsIgnoreCase("Mensaje")) {
+            if (txtBuscarMsg.getText().equalsIgnoreCase("")) {
+                resultWS = mensajesGlobal;
+            } else {
+                resultWS = llenaTablaMovs(
+                        txtBuscarMsg.getText().trim().toLowerCase(),1);
             }
-        }        
+        } 
         recargarTable(resultWS);
+        //IdMov,Monto, TipoMov, Comprobante, Referencia, Usuario, Sucursal
     }
+    
+    private ArrayList<MensajeBean> llenaTablaMovs(String buscar, int tipoBusq) {
+        ArrayList<MensajeBean> resultWS = new ArrayList<MensajeBean>();
+        MensajeBean mensaje = null;
+        for (int i=0; i<tblMensajes.getModel().getRowCount(); i++) {
+            String campoBusq = "";
+            switch (tipoBusq) {
+                case 0 : campoBusq = tblMensajes.getModel().getValueAt(
+                    i,0).toString();
+                    campoBusq = campoBusq.toLowerCase();
+                    break;
+                case 1 : campoBusq = tblMensajes.getModel().getValueAt(
+                    i,1).toString();
+                    campoBusq = campoBusq.toLowerCase();
+                    break;
+            }
+            if (campoBusq.indexOf(buscar)>=0) {
+                mensaje = new MensajeBean();
+                mensaje.setIdMensaje(Integer.parseInt(tblMensajes.getModel().getValueAt(i,0).toString()));
+                mensaje.setMensaje(String.valueOf(tblMensajes.getModel().getValueAt(i,1)));
+                String fecha = String.valueOf(tblMensajes.getModel().getValueAt(i,1));
+                mensaje.setFecha(util.stringToDate(String.valueOf(tblMensajes.getModel().getValueAt(i,2))));
+                resultWS.add(mensaje);
+            }
+        }
+        return resultWS;
+    }
+
 
     public void recargarTable(ArrayList<MensajeBean> list) {
         Object[][] datos = new Object[list.size()][3];
@@ -464,14 +598,14 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
             datos[i][2] = p.getFecha();
             i++;
         }
-        tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
+        tblMensajes.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
-                    "ID USUARIO", "MENSAJE", "FECHA"
+                    "ID MENSAJE", "MENSAJE", "FECHA"
                 }) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return true;
             }
         });
     }
@@ -543,22 +677,27 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancelarUsuario;
-    private javax.swing.JButton btnEliminarUsuario;
-    private javax.swing.JButton btnGuardarPer;
-    private javax.swing.JButton btnModificarPer;
-    private javax.swing.JButton btnMostrarPer;
-    private javax.swing.JButton btnNuevoPer;
-    private javax.swing.JButton btnSalirPer;
+    private javax.swing.JButton btnCancelarCli;
+    private javax.swing.JButton btnCancelarMensaje;
+    private javax.swing.JButton btnEliminarMensaje;
+    private javax.swing.JButton btnGuardarMensaje;
+    private javax.swing.JButton btnNuevoMensaje;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox cboParametroUsuario;
+    private com.toedter.calendar.JDateChooser jCalFechaFin;
+    private com.toedter.calendar.JDateChooser jCalFechaIni;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblIdMensaje;
     private javax.swing.JLabel lblUsuario;
-    private javax.swing.JTable tblUsuarios;
-    private javax.swing.JTextField txtBuscarUsuario;
+    private javax.swing.JTable tblMensajes;
+    private javax.swing.JTextArea txtAreaMensaje;
+    private javax.swing.JTextField txtBuscarMsg;
     // End of variables declaration//GEN-END:variables
 }

@@ -299,7 +299,7 @@
                               </Group>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="jPanel5" min="-2" pref="396" max="-2" attributes="0"/>
+                          <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -444,7 +444,7 @@
                                       <Component id="cboSucursal" min="-2" pref="109" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="22" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -516,7 +516,7 @@
                         </Component>
                         <Component class="javax.swing.JCheckBox" name="chkConsultaVentas">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Consulta Ventas"/>
+                            <Property name="text" type="java.lang.String" value="Consultas"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -538,7 +538,7 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="chkVentas" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="chkCompras" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="chkAlertas" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="chkCaja" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace pref="81" max="32767" attributes="0"/>
                               </Group>
@@ -552,7 +552,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="chkCompras" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="chkAlertas" min="-2" max="-2" attributes="0"/>
+                                  <Component id="chkCaja" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -569,9 +569,9 @@
                             <Property name="text" type="java.lang.String" value="Compras"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="chkAlertas">
+                        <Component class="javax.swing.JCheckBox" name="chkCaja">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Alertas"/>
+                            <Property name="text" type="java.lang.String" value="Caja"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -591,14 +591,20 @@
                               <Group type="102" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="chkProveedores" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="chkCodigoBarras" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Component id="chkUsuarios" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="chkClientes" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="chkCategorias" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="chkProveedores" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="chkUsuarios" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="chkClientes" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="chkMensajes" min="-2" max="-2" attributes="0"/>
+                                              <Component id="chkSistema" min="-2" max="-2" attributes="0"/>
+                                              <Component id="chkSucursales" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
                                   </Group>
                                   <EmptySpace max="32767" attributes="0"/>
                               </Group>
@@ -610,12 +616,18 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="chkProveedores" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="chkCodigoBarras" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="chkSucursales" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="chkUsuarios" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="chkUsuarios" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="chkSistema" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="chkClientes" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="chkClientes" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="chkMensajes" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="chkCategorias" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
@@ -644,9 +656,19 @@
                             <Property name="text" type="java.lang.String" value="Categor&#xed;as"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="chkCodigoBarras">
+                        <Component class="javax.swing.JCheckBox" name="chkSucursales">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="C&#xf3;digo Barras"/>
+                            <Property name="text" type="java.lang.String" value="Sucursales"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JCheckBox" name="chkSistema">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Sistema"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JCheckBox" name="chkMensajes">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Mensajes"/>
                           </Properties>
                         </Component>
                       </SubComponents>

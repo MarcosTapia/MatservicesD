@@ -55,8 +55,8 @@ public class FrmUsuarios extends javax.swing.JFrame {
         this.setTitle(resultadoWS.getNombreEmpresa());
         
         //se ocultan porque quedan incluidas en inventario
-        chkAlertas.setVisible(false);
-        chkCodigoBarras.setVisible(false);
+        chkCaja.setVisible(false);
+        chkSucursales.setVisible(false);
         actualizarBusqueda();
         activarBotones(true);
         //carga sucursales
@@ -97,12 +97,12 @@ public class FrmUsuarios extends javax.swing.JFrame {
         chkConsultaVentas.setSelected(false);
         chkVentas.setSelected(false);
         chkCompras.setSelected(false);
-        chkAlertas.setSelected(false);
+        chkCaja.setSelected(false);
         chkProveedores.setSelected(false);
         chkUsuarios.setSelected(false);
         chkClientes.setSelected(false);
         chkCategorias.setSelected(false);
-        chkCodigoBarras.setSelected(false);
+        chkSucursales.setSelected(false);
         cboSucursal.setSelectedItem("");
     }
 
@@ -153,13 +153,15 @@ public class FrmUsuarios extends javax.swing.JFrame {
         jPanel7 = new javax.swing.JPanel();
         chkVentas = new javax.swing.JCheckBox();
         chkCompras = new javax.swing.JCheckBox();
-        chkAlertas = new javax.swing.JCheckBox();
+        chkCaja = new javax.swing.JCheckBox();
         jPanel9 = new javax.swing.JPanel();
         chkProveedores = new javax.swing.JCheckBox();
         chkUsuarios = new javax.swing.JCheckBox();
         chkClientes = new javax.swing.JCheckBox();
         chkCategorias = new javax.swing.JCheckBox();
-        chkCodigoBarras = new javax.swing.JCheckBox();
+        chkSucursales = new javax.swing.JCheckBox();
+        chkSistema = new javax.swing.JCheckBox();
+        chkMensajes = new javax.swing.JCheckBox();
         jLabel10 = new javax.swing.JLabel();
         cboSucursal = new javax.swing.JComboBox();
         jLabel7 = new javax.swing.JLabel();
@@ -317,7 +319,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
         chkProductos.setText("Productos");
 
-        chkConsultaVentas.setText("Consulta Ventas");
+        chkConsultaVentas.setText("Consultas");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -346,7 +348,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
         chkCompras.setText("Compras");
 
-        chkAlertas.setText("Alertas");
+        chkCaja.setText("Caja");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -357,7 +359,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(chkVentas)
                     .addComponent(chkCompras)
-                    .addComponent(chkAlertas))
+                    .addComponent(chkCaja))
                 .addContainerGap(81, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
@@ -368,7 +370,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkCompras)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(chkAlertas)
+                .addComponent(chkCaja)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -382,7 +384,11 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
         chkCategorias.setText("Categorías");
 
-        chkCodigoBarras.setText("Código Barras");
+        chkSucursales.setText("Sucursales");
+
+        chkSistema.setText("Sistema");
+
+        chkMensajes.setText("Mensajes");
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -391,13 +397,17 @@ public class FrmUsuarios extends javax.swing.JFrame {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkCategorias)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(chkProveedores)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkProveedores)
+                            .addComponent(chkUsuarios)
+                            .addComponent(chkClientes))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(chkCodigoBarras))
-                    .addComponent(chkUsuarios)
-                    .addComponent(chkClientes)
-                    .addComponent(chkCategorias))
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkMensajes)
+                            .addComponent(chkSistema)
+                            .addComponent(chkSucursales))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
@@ -406,11 +416,15 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkProveedores)
-                    .addComponent(chkCodigoBarras))
+                    .addComponent(chkSucursales))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkUsuarios)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkUsuarios)
+                    .addComponent(chkSistema))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(chkClientes)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkClientes)
+                    .addComponent(chkMensajes))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(chkCategorias)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -441,7 +455,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cboSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -513,7 +527,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                             .addComponent(txtTelCasa)
                             .addComponent(txtNombre))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(19, 19, 19))
         );
         jPanel4Layout.setVerticalGroup(
@@ -973,11 +987,11 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
         if (permisos.charAt(0)=='1') {
             chkProductos.setSelected(true);
-            chkAlertas.setSelected(true);
-            chkCodigoBarras.setSelected(true);
+            chkCaja.setSelected(true);
+            chkSucursales.setSelected(true);
         } else {
-            chkAlertas.setSelected(false);
-            chkCodigoBarras.setSelected(false);
+            chkCaja.setSelected(false);
+            chkSucursales.setSelected(false);
         }
         if (permisos.charAt(1)=='1') {
             chkVentas.setSelected(true);
@@ -1154,14 +1168,16 @@ public class FrmUsuarios extends javax.swing.JFrame {
     private javax.swing.JButton btnSalirPer;
     private javax.swing.JComboBox cboParametroUsuario;
     private javax.swing.JComboBox cboSucursal;
-    private javax.swing.JCheckBox chkAlertas;
+    private javax.swing.JCheckBox chkCaja;
     private javax.swing.JCheckBox chkCategorias;
     private javax.swing.JCheckBox chkClientes;
-    private javax.swing.JCheckBox chkCodigoBarras;
     private javax.swing.JCheckBox chkCompras;
     private javax.swing.JCheckBox chkConsultaVentas;
+    private javax.swing.JCheckBox chkMensajes;
     private javax.swing.JCheckBox chkProductos;
     private javax.swing.JCheckBox chkProveedores;
+    private javax.swing.JCheckBox chkSistema;
+    private javax.swing.JCheckBox chkSucursales;
     private javax.swing.JCheckBox chkUsuarios;
     private javax.swing.JCheckBox chkVentas;
     private javax.swing.JLabel jLabel1;

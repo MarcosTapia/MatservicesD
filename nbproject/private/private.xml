@@ -3,13 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/vistas/FrmConsultaVentas.java</file>
             <file>file:/C:/MatservicesDeskGH/MatservicesD/src/constantes/Constantes.properties</file>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/consumewebservices/WSMensajesList.java</file>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/vistas/FrmConfiguracion.java</file>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/consumewebservices/WSMensajes.java</file>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/vistas/FrmConfiguraMensajes.java</file>
-            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/util/Util.java</file>
+            <file>file:/C:/MatservicesDeskGH/MatservicesD/src/vistas/FrmUsuarios.java</file>
         </group>
     </open-files>
 </project-private>
