@@ -1288,6 +1288,7 @@ public class FrmProducto extends javax.swing.JFrame {
                     actualizarBusquedaProducto();
                     activarBotones(true);
                     limpiarCajaTexto();
+                    activarCajaTexto(false);
                     cboSucursal.requestFocus(true);
                 }
             } else {

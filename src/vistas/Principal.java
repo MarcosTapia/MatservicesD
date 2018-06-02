@@ -139,18 +139,21 @@ public class Principal extends javax.swing.JFrame {
     public void muestraPanel(int panel) {
         switch (panel) {
             case 1: 
+                this.setVisible(false);
                 this.dispose();
                 FrmInventario inventario = new FrmInventario();
                 inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
                 inventario.setVisible(true);
                 break;
             case 2: 
+                this.setVisible(false);
                 this.dispose();
                 FrmOperaciones ventas = new FrmOperaciones();
                 ventas.setExtendedState(ventas.MAXIMIZED_BOTH);
                 ventas.setVisible(true);
                 break;
             case 3: 
+                this.setVisible(false);
                 this.dispose();
                 FrmConfiguracion operaciones = new FrmConfiguracion();
                 operaciones.setExtendedState(operaciones.MAXIMIZED_BOTH);

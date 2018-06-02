@@ -19,28 +19,35 @@ public class FrmConsultas extends javax.swing.JFrame {
         lblUsuario.setText("Usuario: " + Ingreso.usuario.getNombre()
             + " " + Ingreso.usuario.getApellido_paterno()
             + " " + Ingreso.usuario.getApellido_materno());
+        
         //verifica permisos de usuario
         permisos = Ingreso.usuario.getClase();
-        if (permisos.charAt(0)=='0') {
-            btnConsultaVentas111.setVisible(false);
+        //verifica permiso de modulo alertas
+        if (permisos.charAt(1)=='0') {
+            btnAlertas.setVisible(false);
         }
+        //fin verifica permiso de modulo alertas
+        //verifica permiso de modulo consulta de ventas
+        if (permisos.charAt(2)=='0') {
+            btnConsultaVentas.setVisible(false);
+        }
+        //fin verifica permiso de modulo consulta de ventas
+        //verifica permiso de modulo consulta de compras
         if (permisos.charAt(3)=='0') {
             btnConsultaCompras.setVisible(false);
         }
-        
-            //equivalencias de sistemas
-            //Inventario pos 0  --> inventario->productos pos 0, 
-            //            operaciones->alertas pos 0,
-            //            configuracion->codigo de barras pos 0
-            //Ventas pos 1   --> operaciones->ventas pos 1
-            //Compras pos 2 --> operaciones->compras pos 2
-            //Consultas pos 3 --> inventario->consultaventas pos 3
-            //Proveedores pos 4 --> configuracion->proveedores pos 4
-            //Clientes pos 5 --> configuracion->clientes pos 5
-            //Empleados pos 6 --> configuracion->usuarios pos 6
-            //Configuración pos 7 --> configuracion->categorias pos 7
-        
-        
+        //fin verifica permiso de modulo consulta de compras
+        //verifica permiso de modulo consulta de movimientos
+        if (permisos.charAt(4)=='0') {
+            btnConsultaMovimientos.setVisible(false);
+        }
+        //fin verifica permiso de modulo consulta de movimientos
+        //verifica permiso de modulo consulta de pedidos
+        if (permisos.charAt(5)=='0') {
+            btnConsultaPedidos.setVisible(false);
+        }
+        //fin verifica permiso de modulo consulta de pedidos
+        //Fin verifica permisos de usuario
         
         //Fin verifica permisos de usuario
         this.setIcon();
@@ -61,7 +68,7 @@ public class FrmConsultas extends javax.swing.JFrame {
         lblUsuario = new javax.swing.JLabel();
         jToolBar2 = new javax.swing.JToolBar();
         btnAlertas = new javax.swing.JButton();
-        btnConsultaVentas111 = new javax.swing.JButton();
+        btnConsultaVentas = new javax.swing.JButton();
         btnConsultaCompras = new javax.swing.JButton();
         btnConsultaMovimientos = new javax.swing.JButton();
         btnConsultaPedidos = new javax.swing.JButton();
@@ -149,18 +156,18 @@ public class FrmConsultas extends javax.swing.JFrame {
         });
         jToolBar2.add(btnAlertas);
 
-        btnConsultaVentas111.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/report2.png"))); // NOI18N
-        btnConsultaVentas111.setText("Ventas");
-        btnConsultaVentas111.setToolTipText("");
-        btnConsultaVentas111.setFocusable(false);
-        btnConsultaVentas111.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnConsultaVentas111.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnConsultaVentas111.addActionListener(new java.awt.event.ActionListener() {
+        btnConsultaVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/report2.png"))); // NOI18N
+        btnConsultaVentas.setText("Ventas");
+        btnConsultaVentas.setToolTipText("");
+        btnConsultaVentas.setFocusable(false);
+        btnConsultaVentas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnConsultaVentas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnConsultaVentas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConsultaVentas111ActionPerformed(evt);
+                btnConsultaVentasActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnConsultaVentas111);
+        jToolBar2.add(btnConsultaVentas);
 
         btnConsultaCompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pedidos.png"))); // NOI18N
         btnConsultaCompras.setText("Compras");
@@ -230,6 +237,7 @@ public class FrmConsultas extends javax.swing.JFrame {
 
     private void inicio() {
         this.setVisible(false);
+        this.dispose();
         Principal principal = new Principal();
         principal.setExtendedState(Principal.MAXIMIZED_BOTH);
         principal.setVisible(true);        
@@ -248,11 +256,11 @@ public class FrmConsultas extends javax.swing.JFrame {
         System.exit(1);
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void btnConsultaVentas111ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaVentas111ActionPerformed
+    private void btnConsultaVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaVentasActionPerformed
 //        this.dispose();
         FrmConsultaVentas frmConsultaVentas = new FrmConsultaVentas();
         frmConsultaVentas.setVisible(true);   
-    }//GEN-LAST:event_btnConsultaVentas111ActionPerformed
+    }//GEN-LAST:event_btnConsultaVentasActionPerformed
 
     private void btnConsultaComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaComprasActionPerformed
 //        this.dispose();
@@ -327,7 +335,7 @@ public class FrmConsultas extends javax.swing.JFrame {
     private javax.swing.JButton btnConsultaCompras;
     private javax.swing.JButton btnConsultaMovimientos;
     private javax.swing.JButton btnConsultaPedidos;
-    private javax.swing.JButton btnConsultaVentas111;
+    private javax.swing.JButton btnConsultaVentas;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel2;

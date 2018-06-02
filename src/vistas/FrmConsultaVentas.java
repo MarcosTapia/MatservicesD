@@ -3,6 +3,7 @@ package vistas;
 import ComponenteConsulta.JDListaCorteDia;
 import beans.ProveedorBean;
 import ComponenteConsulta.JDListaProveedor;
+import beans.CajaChicaBean;
 import beans.ComprasBean;
 import beans.DatosEmpresaBean;
 import beans.DetallePedidoBean;
@@ -11,9 +12,12 @@ import beans.FechaServidorBean;
 import beans.MovimientosBean;
 import beans.PedidoBean;
 import beans.ProductoBean;
+import beans.SucursalBean;
 import beans.UsuarioBean;
 import beans.VentasBean;
 import constantes.ConstantesProperties;
+import consumewebservices.WSCajaChica;
+import consumewebservices.WSCajaChicaList;
 import consumewebservices.WSComprasList;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSDetalleVentas;
@@ -23,6 +27,7 @@ import consumewebservices.WSInventariosList;
 import consumewebservices.WSMovimientos;
 import consumewebservices.WSPedidos;
 import consumewebservices.WSPedidosList;
+import consumewebservices.WSSucursales;
 import consumewebservices.WSVentas;
 import consumewebservices.WSVentasList;
 import java.awt.Toolkit;
@@ -56,6 +61,11 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     WSVentas hiloVentas;
     WSVentasList hiloVentasList;
     WSDetalleVentasList hiloDetalleVentasList;
+    WSInventarios hiloInventarios;
+    WSInventariosList hiloInventariosList;
+    WSMovimientos hiloMovimientos;
+    WSCajaChicaList hiloCajaChicaList;
+    WSCajaChica hiloCajaChica;
     //Fin WS
     DateFormat fecha = DateFormat.getDateInstance();
     String accion = "";
@@ -70,6 +80,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
+        btnFacturar.setEnabled(false);
         // Actualizas tbl Ventas
         hiloVentasList = new WSVentasList();
         String rutaWS = constantes.getProperty("IP") 
@@ -227,13 +238,14 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         jCalFechaIni = new com.toedter.calendar.JDateChooser();
         jCalFechaFin = new com.toedter.calendar.JDateChooser();
         jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnFacturar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblConsultaVentas = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
+        btnCancelarVenta = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -331,13 +343,13 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/report2.png"))); // NOI18N
-        jButton4.setText("FACTURAR");
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/report2.png"))); // NOI18N
+        btnFacturar.setText("FACTURAR");
+        btnFacturar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnFacturar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnFacturar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnFacturarActionPerformed(evt);
             }
         });
 
@@ -353,7 +365,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnFacturar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -382,7 +394,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(btnFacturar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         tblConsultaVentas.setModel(new javax.swing.table.DefaultTableModel(
@@ -442,6 +454,14 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblUsuario.setText("Usuario:");
 
+        btnCancelarVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/regresar.png"))); // NOI18N
+        btnCancelarVenta.setText("CANCELAR VENTA");
+        btnCancelarVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarVentaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -449,14 +469,16 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(60, 60, 60)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(txtBuscarVenta)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cboParametroVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(56, 56, 56)))
+                        .addGap(56, 56, 56))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnCancelarVenta)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -472,8 +494,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblUsuario)
-                            .addComponent(jLabel4))
+                            .addComponent(jLabel4)
+                            .addComponent(lblUsuario))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
@@ -484,24 +506,28 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addGap(15, 15, 15)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtBuscarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cboParametroVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jButton1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(lblUsuario))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel4))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jButton1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(lblUsuario))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel4)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(15, 15, 15)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtBuscarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cboParametroVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(19, 19, 19)
+                        .addComponent(btnCancelarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
@@ -808,14 +834,200 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 //        }
     }    
     
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
         if (tblConsultaVentas.getSelectedRow() < 0) {
             JOptionPane.showMessageDialog(null, "Debes seleccionar una venta");
             return;
         }
         procesarFactura();
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnFacturarActionPerformed
 
+    private void btnCancelarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarVentaActionPerformed
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas cancelar la venta?");
+        if(dialogResult == JOptionPane.YES_OPTION){
+            JOptionPane.showMessageDialog(null, "Se sugiere guardes un documento "
+                    + "que sirva de evidencia de ésta operación");
+            // Verifica que este seleccionada una venta
+            String numV;
+            int numVenta;
+            try {
+                numV = tblConsultaVentas.getValueAt(
+                        tblConsultaVentas.getSelectedRow(), 0).toString();
+                numVenta = Integer.parseInt(numV);
+            } catch(Exception e) {
+                numVenta = Integer.parseInt(JOptionPane.showInputDialog("Ingresa"
+                        + " el número de Venta"));
+            }
+            // Fin Verifica que este seleccionada una venta
+
+            VentasBean venta = buscaVenta(numVenta);
+            if (venta == null) {
+                JOptionPane.showMessageDialog(null, "No existe esa venta");
+                return;
+            } else {
+                //verifica que no este regresada
+                if (venta.getCancelada()==1) {
+                    JOptionPane.showMessageDialog(null, "Esta venta ya está cancelada");
+                    return;
+                }
+                //fin verifica que no este regresada
+
+                ArrayList<DetalleVentaBean> resultWS = buscaDetaleVenta(numVenta);
+                if (resultWS.size() == 0) {
+                    JOptionPane.showMessageDialog(null, "No existe detalle en esa venta");
+                    return;
+                } else {
+                    //actualiza venta
+                    hiloVentas = new WSVentas();
+                    String rutaWS = constantes.getProperty("IP") + constantes
+                            .getProperty("MODIFICAVENTA");
+                    //p.getFechaIngreso().toLocaleString()
+                    VentasBean ventaActualizada = hiloVentas.ejecutaWebService(rutaWS,"3"
+                                ,"" + venta.getIdVenta()
+                                ,"" + venta.getFecha()
+                                ,"" + venta.getIdCliente()
+                                ,venta.getObservaciones()
+                                ,"" + venta.getIdUsuario()
+                                ,"" + venta.getIdSucursal()
+                                ,"" + venta.getSubtotal()
+                                ,"" + venta.getIva()
+                                ,"" + venta.getTotal()
+                                ,"" + venta.getTipovta()
+                                ,"1"
+                                ,"" + venta.getFacturada()
+                                ,"" + venta.getIdFactura()
+                            );
+                    //si ya se actualizo la venta
+                    if (ventaActualizada != null) {
+                        //Consulta detalle venta
+                        String idVenta = "" + venta.getIdVenta();
+                        resultWS = llenaTablaDetalleVentas(idVenta.trim(),0);
+                        //recorre el detalle de la venta
+                        for (DetalleVentaBean detalle : resultWS) {
+                            //regresa producto a inventario
+                            //Dismimuye inventario
+                                //obtiene articulo para saber su cantidad original
+                            double cantidadVendida = detalle.getCantidad();
+                            ArrayList<ProductoBean> resultWSProd = null;
+                            hiloInventariosList = new WSInventariosList();
+                            rutaWS = constantes.getProperty("IP") 
+                                    + constantes.getProperty("OBTIENEPRODUCTOPORID") 
+                                    + String.valueOf(detalle.getIdArticulo());
+                            resultWSProd = hiloInventariosList.ejecutaWebService(rutaWS,"5");
+                            ProductoBean p = resultWSProd.get(0);
+                                //fin obtiene articulo para saber su cantidad original
+
+                                //disminuye iinventario en cifras no en bd
+                            double cantidadOriginal = p.getExistencia();
+                            double cantidadFinal = cantidadOriginal 
+                                    + cantidadVendida;
+                                //fin disminuye iinventario en cifras no en bd
+
+                                //realiza ajuste inventario 
+                            hiloInventarios = new WSInventarios();
+                            rutaWS = constantes.getProperty("IP") 
+                                    + constantes.getProperty("AJUSTAINVENTARIOVENTA");
+                            ProductoBean ajuste = hiloInventarios
+                                    .ejecutaWebService(rutaWS,"5"
+                                    ,String.valueOf(detalle.getIdArticulo())
+                                    ,"" + cantidadFinal);
+                        //fin regresa producto a inventario
+
+                            //registra movimiento
+                            if (ajuste != null) {
+                                    //Guarda movimiento
+                                String fecha = util.dateToDateTimeAsString(new java.util.Date());
+                                MovimientosBean mov = new MovimientosBean();
+                                hiloMovimientos = new WSMovimientos();
+                                rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAMOVIMIENTO");
+                                MovimientosBean movimientoInsertado = hiloMovimientos.ejecutaWebService(rutaWS,"1"
+                                    ,"" + p.getIdArticulo()
+                                    ,"" + Ingreso.usuario.getIdUsuario()
+                                    ,"Venta Cancelada"
+                                    ,"" + cantidadVendida
+                                    ,fecha
+                                    ,"" + Ingreso.usuario.getIdSucursal());
+                                    //Fin Guarda movimiento
+                                if (movimientoInsertado!=null) {
+                                    //registra el dinero regresado como movimiento de caja chica
+                                    CajaChicaBean cajaChica = new CajaChicaBean();
+                                    cajaChica.setFecha(new Date());
+                                    cajaChica.setMonto(venta.getTotal());
+                                    cajaChica.setTipoMov("Gasto");
+                                    cajaChica.setTipoComprobante("Ticket");
+                                    cajaChica.setReferencia("" + venta.getIdVenta());
+                                    cajaChica.setIdUsuario(Ingreso.usuario.getIdUsuario());
+                                    cajaChica.setIdSucursal(Ingreso.usuario.getIdSucursal());
+                                    //busca ultimo registro
+                                    ArrayList<CajaChicaBean> resultWSCajaChica = null;
+                                    hiloCajaChicaList = new WSCajaChicaList();
+                                    rutaWS = constantes.getProperty("IP") + constantes.
+                                            getProperty("GETULTIMOCAJACHICA");
+                                    resultWSCajaChica = hiloCajaChicaList.ejecutaWebService(rutaWS,"2");
+                                    CajaChicaBean cajaChicaBean = resultWSCajaChica.get(0);
+                                    String saldoAnterior = "" + cajaChicaBean.getSaldoAnterior();
+                                    String saldoActualA = "" + cajaChicaBean.getSaldoActual();
+                                    cajaChica.setSaldoAnterior(Double.parseDouble(saldoActualA));
+                                    double saldoActual = 0;
+                                    saldoActual = Double.parseDouble(saldoActualA)
+                                            - venta.getTotal();
+                                    cajaChica.setSaldoActual(saldoActual);
+                                    hiloCajaChica = new WSCajaChica();
+                                    rutaWS = constantes.getProperty("IP") 
+                                            + constantes.getProperty("GUARDAMOVCAJACHICA");
+                                    CajaChicaBean movCajaInsertada = hiloCajaChica.ejecutaWebService(rutaWS,"1"
+                                        , cajaChica.getFecha().toLocaleString()
+                                        , "" + cajaChica.getMonto()
+                                        , cajaChica.getTipoMov()
+                                        , cajaChica.getTipoComprobante()
+                                        , cajaChica.getReferencia()
+                                        , "" + cajaChica.getIdUsuario()
+                                        , "" + cajaChica.getIdSucursal()
+                                        , "" + cajaChica.getSaldoAnterior()
+                                        , "" + cajaChica.getSaldoActual()
+                                            );
+                                    if (movCajaInsertada != null) {
+                                        JOptionPane.showMessageDialog(null, "Regreso de venta exitoso");
+                                    }                                     
+                                    //fin registra el dinero regresado como movimiento de caja chica
+                                }
+                            }
+                            //fin registra movimiento
+                        }
+                        //recorre el detalle de la venta
+                    }
+                    //fin actualiza venta
+
+                }
+                //comprueba si hay detalle regresa a inventario y guarda movimiento
+            }
+        }    
+    }//GEN-LAST:event_btnCancelarVentaActionPerformed
+
+    private VentasBean buscaVenta(int numVenta) {
+        ArrayList<VentasBean> ventas = null;
+        VentasBean venta = null;
+        hiloVentasList = new WSVentasList();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETVENTAPORID") 
+                + numVenta;
+        ventas = hiloVentasList.ejecutaWebService(rutaWS,"3");
+        //verifica si encontro venta al ser la lista de ventas mayor que 0
+        if (ventas.size() > 0) {
+            venta = ventas.get(0);
+        } 
+        return venta;
+    }
+    
+    private ArrayList<DetalleVentaBean> buscaDetaleVenta(int numVenta) {
+        ArrayList<DetalleVentaBean> resultWS = null;
+        ProductoBean producto = null;
+        String idVenta = tblConsultaVentas.getModel()
+                .getValueAt(tblConsultaVentas.getSelectedRow(),0).toString();
+        resultWS = llenaTablaDetalleVentas(idVenta.trim(),0);
+        return resultWS;
+    }
+    
     public void actualizarBusquedaVenta() {
         ArrayList<VentasBean> resultWS = null;
         ProductoBean producto = null;
@@ -918,7 +1130,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     public void actualizarBusquedaDetalleVenta() {
         recargarTableDetalleVentas(detalleVentasGlobal);
         ArrayList<DetalleVentaBean> resultWS = null;
-        ProductoBean producto = null;
+        //ProductoBean producto = null;
         String idVenta = tblConsultaVentas.getModel()
                 .getValueAt(tblConsultaVentas.getSelectedRow(),0).toString();
         resultWS = llenaTablaDetalleVentas(idVenta.trim(),0);
@@ -958,11 +1170,12 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelarVenta;
+    private javax.swing.JButton btnFacturar;
     private javax.swing.JComboBox cboParametroVentas;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private com.toedter.calendar.JDateChooser jCalFechaFin;
     private com.toedter.calendar.JDateChooser jCalFechaIni;
     private javax.swing.JLabel jLabel1;

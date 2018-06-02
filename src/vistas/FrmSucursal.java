@@ -499,7 +499,7 @@ public class FrmSucursal extends javax.swing.JFrame {
                     SucursalBean suc = new SucursalBean();
                     suc.setIdSucursal(Integer.parseInt(lblIdSucursal.getText()));
                     suc.setDescripcionSucursal(txtSucursal.getText());
-                    //huardar producto
+                    //modifica sucursal
                     hiloSucursales = new WSSucursales();
                     String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICASUCURSAL");
                     SucursalBean sucursalActualizada = hiloSucursales.ejecutaWebService(rutaWS,"2"

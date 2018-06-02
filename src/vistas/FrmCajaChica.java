@@ -391,7 +391,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
 
         jLabel5.setText("Comprobante :");
 
-        cboComprobante.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar...", "Nota Remisión", "Factura", "Recibo", "Otro (Especifica en referencia)" }));
+        cboComprobante.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar...", "Nota Remisión", "Factura", "Recibo", "Ticket", "Otro (Especifica en referencia)" }));
         cboComprobante.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboComprobanteActionPerformed(evt);

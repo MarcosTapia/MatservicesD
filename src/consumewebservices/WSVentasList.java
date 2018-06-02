@@ -50,7 +50,7 @@ idVenta	int(11)
             case "1" : ventas = obtenerVentasWS(); break;
             case "2" : 
                 ventas = busquedaVentasPorFechasWS(); break;
-//            case "2" : ventas = buscaCategoriaIdWS(cadena); break;
+            case "3" : ventas = buscaVentaIdWS(cadena); break;
 //            case "3" : ventas = busquedaVentasPorFechasWS(cadena); break;
 //            case "4" : ventas = busquedaCategoriasPorNombreWS(cadena); break;
         }
@@ -174,7 +174,7 @@ idVenta	int(11)
         
     public ArrayList<VentasBean> busquedaVentasPorFechasWS(String... params) {
         ArrayList<VentasBean> ventas = new ArrayList();
-//        VentasBean usuario = null;
+//        VentasBean venta = null;
         //cadena = params[0];
         url = null; // Url de donde queremos obtener información
         try {
@@ -246,45 +246,62 @@ idVenta	int(11)
         return ventas;
     }
 
-//    public ArrayList<CategoriaBean> buscaCategoriaIdWS(String rutaWS) {
-//        ArrayList<CategoriaBean> ventas = new ArrayList();
-//        try {
-//            url = new URL(cadena);
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
-//            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
-//                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
-//            //connection.setHeader("content-type", "application/json");
-//            int respuesta = connection.getResponseCode();
-//            StringBuilder result = new StringBuilder();
-//            if (respuesta == HttpURLConnection.HTTP_OK){
-//                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
-//                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
-//                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
-//                // StringBuilder.
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//                    result.append(line);        // Paso toda la entrada al StringBuilder
-//                }
-//                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
-//                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
-//                //Accedemos al vector de resultados
-//                int resultJSON = respuestaJSON.getInt("estado");
-//                if (resultJSON == 1) {
-//                    CategoriaBean cat = new CategoriaBean();
-//                    cat.setIdCategoria(respuestaJSON.getJSONObject("categoria").getInt("idCategoria"));
-//                    cat.setDescripcionCategoria(respuestaJSON.getJSONObject("categoria").getString("descripcionCategoria"));
-//                    ventas.add(cat);
-//                }
-//            }
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        return ventas;
-//    }
+    public ArrayList<VentasBean> buscaVentaIdWS(String rutaWS) {
+        ArrayList<VentasBean> ventas = new ArrayList<VentasBean>();
+        VentasBean venta = null;
+        //cadena = params[0];
+        url = null; // Url de donde queremos obtener información
+        try {
+            url = new URL(cadena);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+            //connection.setHeader("content-type", "application/json");
+            int respuesta = connection.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK){
+                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                // StringBuilder.
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);        // Paso toda la entrada al StringBuilder
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
+                if (resultJSON == 1){
+                    venta = new VentasBean();
+                    venta.setIdVenta(respuestaJSON.getJSONObject("venta").getInt("idVenta"));
+                    String fechaS = respuestaJSON.getJSONObject("venta").get("fecha").toString();
+                    Util util = new Util();
+                    venta.setFecha(util.stringToDateTime(fechaS));
+                    venta.setIdCliente(respuestaJSON.getJSONObject("venta").getInt("idCliente"));
+                    venta.setObservaciones(respuestaJSON.getJSONObject("venta").getString("observaciones"));
+                    venta.setIdUsuario(respuestaJSON.getJSONObject("venta").getInt("idUsuario"));
+                    venta.setIdSucursal(respuestaJSON.getJSONObject("venta").getInt("idSucursal"));
+                    venta.setSubtotal(respuestaJSON.getJSONObject("venta").getDouble("subtotal"));
+                    venta.setIva(respuestaJSON.getJSONObject("venta").getDouble("iva"));
+                    venta.setTotal(respuestaJSON.getJSONObject("venta").getDouble("total"));
+                    venta.setTipovta(respuestaJSON.getJSONObject("venta").getString("tipovta"));
+                    venta.setCancelada(respuestaJSON.getJSONObject("venta").getInt("cancelada"));
+                    venta.setFacturada(respuestaJSON.getJSONObject("venta").getInt("facturada"));
+                    venta.setIdFactura(respuestaJSON.getJSONObject("venta").getInt("idFactura"));
+                    ventas.add(venta);
+               }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            //e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "No hay conexión al servidor");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return ventas;
+    }
     
 }

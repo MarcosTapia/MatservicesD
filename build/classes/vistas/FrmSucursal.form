@@ -321,9 +321,6 @@
                   </Border>
                 </Property>
               </Properties>
-              <AccessibilityProperties>
-                <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Ingresar los datos de la Sucursal"/>
-              </AccessibilityProperties>
 
               <Layout>
                 <DimensionLayout dim="0">

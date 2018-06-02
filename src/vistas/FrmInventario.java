@@ -17,30 +17,16 @@ public class FrmInventario extends javax.swing.JFrame {
         lblUsuario.setText("Usuario: " + Ingreso.usuario.getNombre()
             + " " + Ingreso.usuario.getApellido_paterno()
             + " " + Ingreso.usuario.getApellido_materno());
+
         //verifica permisos de usuario
         permisos = Ingreso.usuario.getClase();
+        //verifica permiso de inventario
         if (permisos.charAt(0)=='0') {
             btnProductos.setVisible(false);
         }
-        if (permisos.charAt(3)=='0') {
-            btnConsultaVentas.setVisible(false);
-        }
-        
-            //equivalencias de sistemas
-            //Inventario pos 0  --> inventario->productos pos 0, 
-            //            operaciones->alertas pos 0,
-            //            configuracion->codigo de barras pos 0
-            //Ventas pos 1   --> operaciones->ventas pos 1
-            //Compras pos 2 --> operaciones->compras pos 2
-            //Consultas pos 3 --> inventario->consultaventas pos 3
-            //Proveedores pos 4 --> configuracion->proveedores pos 4
-            //Clientes pos 5 --> configuracion->clientes pos 5
-            //Empleados pos 6 --> configuracion->usuarios pos 6
-            //Configuración pos 7 --> configuracion->categorias pos 7
-        
-        
-        
+        //fin verifica permiso de inventario
         //Fin verifica permisos de usuario
+        
         this.setIcon();
     }
 
@@ -133,7 +119,7 @@ public class FrmInventario extends javax.swing.JFrame {
         jToolBar2.setRollover(true);
 
         btnProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/add.png"))); // NOI18N
-        btnProductos.setText("Inventarios");
+        btnProductos.setText("Inventario");
         btnProductos.setToolTipText("");
         btnProductos.setFocusable(false);
         btnProductos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -189,6 +175,7 @@ public class FrmInventario extends javax.swing.JFrame {
 
     private void inicio() {
         //this.setVisible(false);
+        this.setVisible(false);
         this.dispose();
         Principal principal = new Principal();
         principal.setExtendedState(Principal.MAXIMIZED_BOTH);
@@ -216,7 +203,8 @@ public class FrmInventario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProductosActionPerformed
 
     private void btnConsultaVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaVentasActionPerformed
-//        this.dispose();
+        this.setVisible(false);
+        this.dispose();
         FrmConsultas frmConsultas = new FrmConsultas();
         frmConsultas.setExtendedState(frmConsultas.MAXIMIZED_BOTH);
         frmConsultas.setVisible(true);   

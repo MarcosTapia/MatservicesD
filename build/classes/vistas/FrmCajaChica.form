@@ -530,12 +530,13 @@
                 <Component class="javax.swing.JComboBox" name="cboComprobante">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="5">
+                      <StringArray count="6">
                         <StringItem index="0" value="Seleccionar..."/>
                         <StringItem index="1" value="Nota Remisi&#xf3;n"/>
                         <StringItem index="2" value="Factura"/>
                         <StringItem index="3" value="Recibo"/>
-                        <StringItem index="4" value="Otro (Especifica en referencia)"/>
+                        <StringItem index="4" value="Ticket"/>
+                        <StringItem index="5" value="Otro (Especifica en referencia)"/>
                       </StringArray>
                     </Property>
                   </Properties>

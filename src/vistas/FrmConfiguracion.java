@@ -18,34 +18,46 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         lblUsuario.setText("Usuario: " + Ingreso.usuario.getNombre()
             + " " + Ingreso.usuario.getApellido_paterno()
             + " " + Ingreso.usuario.getApellido_materno());
+
         //verifica permisos de usuario
         permisos = Ingreso.usuario.getClase();
-
-            //equivalencias de sistemas
-            //Inventario pos 0  --> inventario->productos pos 0, 
-            //            operaciones->alertas pos 0,
-            //            configuracion->codigo de barras pos 0
-            //Ventas pos 1   --> operaciones->ventas pos 1
-            //Compras pos 2 --> operaciones->compras pos 2
-            //Consultas pos 3 --> inventario->consultaventas pos 3
-            //Proveedores pos 4 --> configuracion->proveedores pos 4
-            //Clientes pos 5 --> configuracion->clientes pos 5
-            //Empleados pos 6 --> configuracion->usuarios pos 6
-            //Configuración pos 7 --> configuracion->categorias pos 7
-        
-        if (permisos.charAt(4)=='0') {
+        //verifica permiso de modulo proveedores
+        if (permisos.charAt(6)=='0') {
             btnProveedores.setVisible(false);
         }
-        if (permisos.charAt(5)=='0') {
+        //fin verifica permiso de modulo proveedores
+        //verifica permiso de modulo usuarios
+        if (permisos.charAt(7)=='0') {
             btnUsuarios.setVisible(false);
         }
-        if (permisos.charAt(6)=='0') {
+        //fin verifica permiso de modulo usuarios
+        //verifica permiso de modulo clientes
+        if (permisos.charAt(8)=='0') {
             btnClientes.setVisible(false);
         }
-        if (permisos.charAt(7)=='0') {
+        //fin verifica permiso de modulo clientes
+        //verifica permiso de modulo categorias
+        if (permisos.charAt(9)=='0') {
             btnCategorias.setVisible(false);
         }
+        //fin verifica permiso de modulo categorias
+        //verifica permiso de modulo sucursales
+        if (permisos.charAt(10)=='0') {
+            btnSucursales.setVisible(false);
+        }
+        //fin verifica permiso de modulo sucursales
+        //verifica permiso de modulo sistema
+        if (permisos.charAt(11)=='0') {
+            btnSistema.setVisible(false);
+        }
+        //fin verifica permiso de modulo sistema
+        //verifica permiso de modulo mensajes
+        if (permisos.charAt(12)=='0') {
+            btnMensajes.setVisible(false);
+        }
+        //fin verifica permiso de modulo mensajes
         //Fin verifica permisos de usuario
+        
         this.setIcon();
     }
 
@@ -64,7 +76,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         btnCategorias = new javax.swing.JButton();
         btnSucursales = new javax.swing.JButton();
         btnSistema = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        btnMensajes = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -159,18 +171,18 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         });
         jToolBar1.add(btnSistema);
 
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mensajea.png"))); // NOI18N
-        jButton7.setText("Mensajes");
-        jButton7.setToolTipText("");
-        jButton7.setFocusable(false);
-        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        btnMensajes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mensajea.png"))); // NOI18N
+        btnMensajes.setText("Mensajes");
+        btnMensajes.setToolTipText("");
+        btnMensajes.setFocusable(false);
+        btnMensajes.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnMensajes.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnMensajes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                btnMensajesActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton7);
+        jToolBar1.add(btnMensajes);
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
         jButton5.setText("Inicio");
@@ -317,10 +329,10 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         frmSistema.setVisible(true);
     }//GEN-LAST:event_btnSistemaActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void btnMensajesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMensajesActionPerformed
         FrmConfiguraMensajes frmConfiguraMensajes = new FrmConfiguraMensajes();
         frmConfiguraMensajes.setVisible(true);
-    }//GEN-LAST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_btnMensajesActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -388,13 +400,13 @@ public class FrmConfiguracion extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorias;
     private javax.swing.JButton btnClientes;
+    private javax.swing.JButton btnMensajes;
     private javax.swing.JButton btnProveedores;
     private javax.swing.JButton btnSistema;
     private javax.swing.JButton btnSucursales;
     private javax.swing.JButton btnUsuarios;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JToolBar jToolBar1;

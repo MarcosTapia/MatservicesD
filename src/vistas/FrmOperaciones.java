@@ -20,15 +20,21 @@ public class FrmOperaciones extends javax.swing.JFrame {
             + " " + Ingreso.usuario.getApellido_materno());
         //verifica permisos de usuario
         permisos = Ingreso.usuario.getClase();
-        if (permisos.charAt(2)=='0') {
+        //verifica permiso de modulo ventas
+        if (permisos.charAt(13)=='0') {
             btnVentas.setVisible(false);
         }
-        if (permisos.charAt(3)=='0') {
+        //fin verifica permiso de modulo ventas
+        //verifica permiso de modulo compras
+        if (permisos.charAt(14)=='0') {
             btnCompras.setVisible(false);
         }
-//        if (permisos.charAt(0)=='0') {
-//            btnAlertas.setVisible(false);
-//        }
+        //fin verifica permiso de modulo compras
+        //verifica permiso de modulo caja
+        if (permisos.charAt(15)=='0') {
+            btnCaja.setVisible(false);
+        }
+        //fin verifica permiso de modulo caja
         //Fin verifica permisos de usuario
         this.setIcon();
     }
@@ -44,7 +50,7 @@ public class FrmOperaciones extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         btnVentas = new javax.swing.JButton();
         btnCompras = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnCaja = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -91,17 +97,17 @@ public class FrmOperaciones extends javax.swing.JFrame {
         });
         jToolBar1.add(btnCompras);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cajachica2.png"))); // NOI18N
-        jButton1.setText("CAJA");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cajachica2.png"))); // NOI18N
+        btnCaja.setText("CAJA");
+        btnCaja.setFocusable(false);
+        btnCaja.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCaja.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnCajaActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton1);
+        jToolBar1.add(btnCaja);
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
         jButton5.setText("INICIO");
@@ -227,10 +233,10 @@ public class FrmOperaciones extends javax.swing.JFrame {
         frmCompra.setVisible(true);
     }//GEN-LAST:event_btnComprasActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCajaActionPerformed
         FrmCajaChica frmCajaChica = new FrmCajaChica();
         frmCajaChica.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnCajaActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -328,9 +334,9 @@ public class FrmOperaciones extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCaja;
     private javax.swing.JButton btnCompras;
     private javax.swing.JButton btnVentas;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel2;

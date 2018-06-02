@@ -23,6 +23,26 @@ import java.security.MessageDigest;
 import util.Util;
 import static vistas.Principal.productos;
 
+/* Datos de permisos sobre los que se rige el sistema en permisos 
+   de usuario a modulos
+
+1.- Inventario
+2.- Alertas
+3.- CVentas
+4.- CCompras
+5.- CMovimientos
+6.- CPedidos
+7.- Proveedores
+8.- Usuarios
+9.- Clientes
+10.- Categorias
+11.- Sucursales
+12.- Sistema
+13.- Mensajes
+14.- Ventas
+15.- Compras
+16.- Caja
+*/
 
 public class FrmUsuarios extends javax.swing.JFrame {
     //WSUsuarios
@@ -33,7 +53,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
     WSUsuariosList hiloUsuariosList;
     WSUsuarios hiloUsuarios;
     //Fin WSUsuarios
-    
     
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
 
@@ -55,8 +74,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
         this.setTitle(resultadoWS.getNombreEmpresa());
         
         //se ocultan porque quedan incluidas en inventario
-        chkCaja.setVisible(false);
-        chkSucursales.setVisible(false);
         actualizarBusqueda();
         activarBotones(true);
         //carga sucursales
@@ -92,17 +109,26 @@ public class FrmUsuarios extends javax.swing.JFrame {
         txtApellidoPaterno.setText("");
         txtTelCasa.setText("");
         txtTelCel.setText("");
+
         //limpia checkboxs
-        chkProductos.setSelected(false);
+        chkInventario.setSelected(false);
+        chkConsultaAlertas.setSelected(false);
         chkConsultaVentas.setSelected(false);
-        chkVentas.setSelected(false);
-        chkCompras.setSelected(false);
-        chkCaja.setSelected(false);
+        chkConsultaCompras.setSelected(false);
+        chkConsultaMovimientos.setSelected(false);
+        chkConsultaPedidos.setSelected(false);
         chkProveedores.setSelected(false);
         chkUsuarios.setSelected(false);
         chkClientes.setSelected(false);
         chkCategorias.setSelected(false);
         chkSucursales.setSelected(false);
+        chkSistema.setSelected(false);
+        chkMensajes.setSelected(false);
+        chkVentas.setSelected(false);
+        chkCompras.setSelected(false);
+        chkCaja.setSelected(false);
+        //fin limpia checkboxs
+
         cboSucursal.setSelectedItem("");
     }
 
@@ -148,8 +174,13 @@ public class FrmUsuarios extends javax.swing.JFrame {
         txtNombre = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
-        chkProductos = new javax.swing.JCheckBox();
+        chkInventario = new javax.swing.JCheckBox();
+        jPanel8 = new javax.swing.JPanel();
+        chkConsultaAlertas = new javax.swing.JCheckBox();
         chkConsultaVentas = new javax.swing.JCheckBox();
+        chkConsultaCompras = new javax.swing.JCheckBox();
+        chkConsultaMovimientos = new javax.swing.JCheckBox();
+        chkConsultaPedidos = new javax.swing.JCheckBox();
         jPanel7 = new javax.swing.JPanel();
         chkVentas = new javax.swing.JCheckBox();
         chkCompras = new javax.swing.JCheckBox();
@@ -162,8 +193,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
         chkSucursales = new javax.swing.JCheckBox();
         chkSistema = new javax.swing.JCheckBox();
         chkMensajes = new javax.swing.JCheckBox();
-        jLabel10 = new javax.swing.JLabel();
-        cboSucursal = new javax.swing.JComboBox();
         jLabel7 = new javax.swing.JLabel();
         txtApellidoPaterno = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
@@ -172,6 +201,8 @@ public class FrmUsuarios extends javax.swing.JFrame {
         txtTelCasa = new javax.swing.JTextField();
         jTextField1 = new javax.swing.JTextField();
         txtTelCel = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        cboSucursal = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         btnNuevoPer = new javax.swing.JButton();
         btnGuardarPer = new javax.swing.JButton();
@@ -235,6 +266,9 @@ public class FrmUsuarios extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblUsuariosMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                tblUsuariosMouseEntered(evt);
+            }
         });
         jScrollPane1.setViewportView(tblUsuarios);
 
@@ -249,7 +283,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(txtBuscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboParametroUsuario, 0, 82, Short.MAX_VALUE))
+                        .addComponent(cboParametroUsuario, 0, 72, Short.MAX_VALUE))
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
@@ -263,7 +297,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                     .addComponent(txtBuscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboParametroUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -317,9 +351,44 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Inventario"));
 
-        chkProductos.setText("Productos");
+        chkInventario.setText("Inventario");
 
-        chkConsultaVentas.setText("Consultas");
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Consultas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(102, 102, 102)));
+
+        chkConsultaAlertas.setText("Alertas");
+
+        chkConsultaVentas.setText("Ventas");
+
+        chkConsultaCompras.setText("Compras");
+
+        chkConsultaMovimientos.setText("Movimientos");
+
+        chkConsultaPedidos.setText("Pedidos");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(chkConsultaAlertas)
+            .addComponent(chkConsultaVentas)
+            .addComponent(chkConsultaCompras)
+            .addComponent(chkConsultaMovimientos)
+            .addComponent(chkConsultaPedidos)
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(chkConsultaAlertas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkConsultaVentas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chkConsultaCompras)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chkConsultaMovimientos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkConsultaPedidos)
+                .addGap(0, 73, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -328,18 +397,18 @@ public class FrmUsuarios extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chkProductos)
-                    .addComponent(chkConsultaVentas))
-                .addContainerGap(45, Short.MAX_VALUE))
+                    .addComponent(chkInventario)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(chkProductos)
+                .addComponent(chkInventario)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(chkConsultaVentas)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Operaciones"));
@@ -360,7 +429,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                     .addComponent(chkVentas)
                     .addComponent(chkCompras)
                     .addComponent(chkCaja))
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -430,49 +499,30 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel10.setText("Sucursal (*):");
-
-        cboSucursal.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cboSucursalMouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel10)
-                            .addComponent(cboSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jLabel7.setText("Ap. Pat.:");
@@ -491,14 +541,22 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
         txtTelCel.setEditable(false);
 
+        jLabel10.setText("Sucursal (*):");
+
+        cboSucursal.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cboSucursalMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
                             .addComponent(jLabel4))
@@ -506,22 +564,24 @@ public class FrmUsuarios extends javax.swing.JFrame {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtClave)
                             .addComponent(txtUser)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(22, 22, 22)
-                        .addComponent(txtCodigoUsuario))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(txtCodigoUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(18, 18, 18)
                         .addComponent(txtApellidoPaterno))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel9)
                             .addComponent(jLabel8)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cboSucursal, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtTelCel)
                             .addComponent(txtApellidoMaterno)
                             .addComponent(txtTelCasa)
@@ -533,43 +593,47 @@ public class FrmUsuarios extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtCodigoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtApellidoPaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtApellidoMaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtTelCasa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTelCel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(19, 19, 19)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(cboSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(txtCodigoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(txtUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(txtApellidoPaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(txtApellidoMaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(txtTelCasa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTelCel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(1, 1, 1))
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 45, Short.MAX_VALUE))
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jLabel2.setFont(new java.awt.Font("Garamond", 1, 20)); // NOI18N
@@ -674,7 +738,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnMostrarPer)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSalirPer, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)))
+                        .addComponent(btnSalirPer, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)))
                 .addGap(27, 27, 27))
         );
         jPanel3Layout.setVerticalGroup(
@@ -784,47 +848,120 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
                 //Reune permisos de usuario para guardarlos
                 String permisos = "";
-                if (chkProductos.isSelected()) {
+                //Modulo Inventario
+                if (chkInventario.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
-                if (chkVentas.isSelected()) {
+                //Fin Modulo Inventario
+                //Modulo Consulta Alertas
+                if (chkConsultaAlertas.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
-                if (chkCompras.isSelected()) {
-                    permisos = permisos + "1";
-                } else {
-                    permisos = permisos + "0";
-                }
+                //Fin Modulo Consulta Alertas
+                //Modulo Consulta Ventas
                 if (chkConsultaVentas.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
+                //Fin Modulo Consulta Ventas
+                //Modulo Consulta Compras
+                if (chkConsultaCompras.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Consulta Compras
+                //Modulo Consulta Movimientos
+                if (chkConsultaMovimientos.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Consulta Movimientos
+                //Modulo Consulta Pedidos
+                if (chkConsultaPedidos.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Consulta Pedidos
+                //Modulo Proveedores
                 if (chkProveedores.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
-                if (chkClientes.isSelected()) {
-                    permisos = permisos + "1";
-                } else {
-                    permisos = permisos + "0";
-                }
+                //Fin Modulo Proveedores
+                //Modulo Usuarios
                 if (chkUsuarios.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
+                //Fin Modulo Usuarios
+                //Modulo Clientes
+                if (chkClientes.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Clientes
+                //Modulo Categorias
                 if (chkCategorias.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
+                //Fin Modulo Categorias
+                //Modulo Sucursales
+                if (chkSucursales.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Sucursales
+                //Modulo Sistema
+                if (chkSistema.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Sistema
+                //Modulo Mensajes
+                if (chkMensajes.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Mensajes
+                //Modulo Ventas
+                if (chkVentas.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Ventas
+                //Modulo Compras
+                if (chkCompras.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Compras
+                //Modulo Caja Chica
+                if (chkCaja.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Caja Chica
                 //Fin Reune permisos de usuario para guardarlos
+                
                 p.setClase(permisos);
                 p.setPermisos(permisos);
                 p.setNombre(txtNombre.getText());
@@ -854,13 +991,19 @@ public class FrmUsuarios extends javax.swing.JFrame {
         if (accion.equalsIgnoreCase("Actualizar")) {
             if (txtCodigoUsuario.getText().compareTo("") != 0
                     && (txtUser.getText().compareTo("") != 0 
-                    && txtClave.getText().compareTo("") != 0
                     && txtNombre.getText().compareTo("") != 0
                     && cboSucursal.getSelectedIndex() != 0)) {
                 UsuarioBean p = new UsuarioBean();
                 p.setIdUsuario(Integer.parseInt(txtCodigoUsuario.getText()));
                 p.setUsuario(txtUser.getText());
-                p.setPassword(getMD5(txtClave.getText()));
+                //verifica si clave fue modificada
+                if (txtClave.getText().equalsIgnoreCase("")) {                    
+                    p.setPassword("");
+                } else {
+                    p.setPassword(getMD5(txtClave.getText()));
+                }
+                //verifica si clave fue modificada
+                
                 p.setApellido_paterno(txtApellidoPaterno.getText());
                 p.setApellido_materno(txtApellidoMaterno.getText());
                 p.setNombre(txtNombre.getText());
@@ -869,46 +1012,118 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
                 //Reune permisos de usuario para guardarlos
                 String permisos = "";
-                if (chkProductos.isSelected()) {
+                //Modulo Inventario
+                if (chkInventario.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
-                if (chkVentas.isSelected()) {
+                //Fin Modulo Inventario
+                //Modulo Consulta Alertas
+                if (chkConsultaAlertas.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
-                if (chkCompras.isSelected()) {
-                    permisos = permisos + "1";
-                } else {
-                    permisos = permisos + "0";
-                }
+                //Fin Modulo Consulta Alertas
+                //Modulo Consulta Ventas
                 if (chkConsultaVentas.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
+                //Fin Modulo Consulta Ventas
+                //Modulo Consulta Compras
+                if (chkConsultaCompras.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Consulta Compras
+                //Modulo Consulta Movimientos
+                if (chkConsultaMovimientos.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Consulta Movimientos
+                //Modulo Consulta Pedidos
+                if (chkConsultaPedidos.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Consulta Pedidos
+                //Modulo Proveedores
                 if (chkProveedores.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
-                if (chkClientes.isSelected()) {
-                    permisos = permisos + "1";
-                } else {
-                    permisos = permisos + "0";
-                }
+                //Fin Modulo Proveedores
+                //Modulo Usuarios
                 if (chkUsuarios.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
+                //Fin Modulo Usuarios
+                //Modulo Clientes
+                if (chkClientes.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Clientes
+                //Modulo Categorias
                 if (chkCategorias.isSelected()) {
                     permisos = permisos + "1";
                 } else {
                     permisos = permisos + "0";
                 }
+                //Fin Modulo Categorias
+                //Modulo Sucursales
+                if (chkSucursales.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Sucursales
+                //Modulo Sistema
+                if (chkSistema.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Sistema
+                //Modulo Mensajes
+                if (chkMensajes.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Mensajes
+                //Modulo Ventas
+                if (chkVentas.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Ventas
+                //Modulo Compras
+                if (chkCompras.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Compras
+                //Modulo Caja Chica
+                if (chkCaja.isSelected()) {
+                    permisos = permisos + "1";
+                } else {
+                    permisos = permisos + "0";
+                }
+                //Fin Modulo Caja Chica
                 //Fin Reune permisos de usuario para guardarlos
                 p.setClase(permisos);
                 p.setPermisos(permisos);
@@ -962,8 +1177,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
         UsuarioBean p = resultWS.get(0);
         txtCodigoUsuario.setText(""+p.getIdUsuario());
         txtUser.setText(p.getUsuario());
-//            txtClave.setText(p.getPassword());
-        txtClave.setText(p.getPassword());
+        //txtClave.setText(p.getPassword());
         txtNombre.setText(p.getNombre());
         txtApellidoMaterno.setText(p.getApellido_materno());
         txtApellidoPaterno.setText(p.getApellido_paterno());
@@ -972,49 +1186,120 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
         //verifica permisos de usuario
         String permisos = p.getPermisos();
-
-        //equivalencias de sistemas
-        //Inventario pos 0  --> inventario->productos pos 0, 
-        //            operaciones->alertas pos 0,
-        //            configuracion->codigo de barras pos 0
-        //Ventas pos 1   --> operaciones->ventas pos 1
-        //Compras pos 2 --> operaciones->compras pos 2
-        //Consultas pos 3 --> inventario->consultaventas pos 3
-        //Proveedores pos 4 --> configuracion->proveedores pos 4
-        //Clientes pos 5 --> configuracion->clientes pos 5
-        //Empleados pos 6 --> configuracion->usuarios pos 6
-        //Configuración pos 7 --> configuracion->categorias pos 7
-
+        //verifica permiso de modulo inventario
         if (permisos.charAt(0)=='1') {
-            chkProductos.setSelected(true);
-            chkCaja.setSelected(true);
+            chkInventario.setSelected(true);
+        } else {
+            chkInventario.setSelected(false);
+        }
+        //fin verifica permiso de modulo inventario
+        //verifica permiso de modulo consulta alertas
+        if (permisos.charAt(1)=='1') {
+            chkConsultaAlertas.setSelected(true);
+        } else {
+            chkConsultaAlertas.setSelected(false);
+        }
+        //fin verifica permiso de consulta alertas
+        //verifica permiso de modulo consulta ventas
+        if (permisos.charAt(2)=='1') {
+            chkConsultaVentas.setSelected(true);
+        } else {
+            chkConsultaVentas.setSelected(false);
+        }
+        //fin verifica permiso de consulta ventas
+        //verifica permiso de modulo consulta compras
+        if (permisos.charAt(3)=='1') {
+            chkConsultaCompras.setSelected(true);
+        } else {
+            chkConsultaCompras.setSelected(false);
+        }
+        //fin verifica permiso de consulta compras
+        //verifica permiso de modulo consulta movimientos
+        if (permisos.charAt(4)=='1') {
+            chkConsultaMovimientos.setSelected(true);
+        } else {
+            chkConsultaMovimientos.setSelected(false);
+        }
+        //fin verifica permiso de modulo consulta movimientos
+        //verifica permiso de modulo consulta pedidos
+        if (permisos.charAt(5)=='1') {
+            chkConsultaPedidos.setSelected(true);
+        } else {
+            chkConsultaPedidos.setSelected(false);
+        }
+        //fin verifica permiso de consulta pedidos
+        //verifica permiso de modulo proveedores
+        if (permisos.charAt(6)=='1') {
+            chkProveedores.setSelected(true);
+        } else {
+            chkProveedores.setSelected(false);
+        }
+        //fin verifica permiso de proveedores
+        //verifica permiso de modulo usuarios
+        if (permisos.charAt(7)=='1') {
+            chkUsuarios.setSelected(true);
+        } else {
+            chkUsuarios.setSelected(false);
+        }
+        //fin verifica permiso de usuarios
+        //verifica permiso de modulo clientes
+        if (permisos.charAt(8)=='1') {
+            chkClientes.setSelected(true);
+        } else {
+            chkClientes.setSelected(false);
+        }
+        //fin verifica permiso de clientes
+        //verifica permiso de modulo categorias
+        if (permisos.charAt(9)=='1') {
+            chkCategorias.setSelected(true);
+        } else {
+            chkCategorias.setSelected(false);
+        }
+        //fin verifica permiso de categorias
+        //verifica permiso de modulo sucursales
+        if (permisos.charAt(10)=='1') {
             chkSucursales.setSelected(true);
         } else {
-            chkCaja.setSelected(false);
             chkSucursales.setSelected(false);
         }
-        if (permisos.charAt(1)=='1') {
+        //fin verifica permiso de modulo sucursales
+        //verifica permiso de modulo sistema
+        if (permisos.charAt(11)=='1') {
+            chkSistema.setSelected(true);
+        } else {
+            chkSistema.setSelected(false);
+        }
+        //fin verifica permiso de modulo sistema
+        //verifica permiso de modulo mensajes
+        if (permisos.charAt(12)=='1') {
+            chkMensajes.setSelected(true);
+        } else {
+            chkMensajes.setSelected(false);
+        }
+        //fin verifica permiso de modulo mensajes
+        //verifica permiso de modulo ventas
+        if (permisos.charAt(13)=='1') {
             chkVentas.setSelected(true);
+        } else {
+            chkVentas.setSelected(false);
         }
-        if (permisos.charAt(2)=='1') {
+        //fin verifica permiso de modulo ventas
+        //verifica permiso de modulo compras
+        if (permisos.charAt(14)=='1') {
             chkCompras.setSelected(true);
+        } else {
+            chkCompras.setSelected(false);
         }
-        if (permisos.charAt(3)=='1') {
-            chkConsultaVentas.setSelected(true);
+        //fin verifica permiso de modulo compras
+        //verifica permiso de modulo caja chica
+        if (permisos.charAt(15)=='1') {
+            chkCaja.setSelected(true);
+        } else {
+            chkCaja.setSelected(false);
         }
-        if (permisos.charAt(4)=='1') {
-            chkProveedores.setSelected(true);
-        }
-        if (permisos.charAt(5)=='1') {
-            chkClientes.setSelected(true);
-        }
-        if (permisos.charAt(6)=='1') {
-            chkUsuarios.setSelected(true);
-        }
-        if (permisos.charAt(7)=='1') {
-            chkCategorias.setSelected(true);
-        }
+        //fin verifica permiso de modulo caja chica
         //fin verifica permisos de usuario
+        
         cboSucursal.setSelectedItem(util.buscaDescFromIdSuc(Principal.sucursalesHM, "" + p.getIdSucursal()));
     }//GEN-LAST:event_tblUsuariosMouseClicked
 
@@ -1064,6 +1349,10 @@ public class FrmUsuarios extends javax.swing.JFrame {
 
     private void cboSucursalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboSucursalMouseClicked
     }//GEN-LAST:event_cboSucursalMouseClicked
+
+    private void tblUsuariosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUsuariosMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblUsuariosMouseEntered
 
     private void actualizarBusqueda() {
         ArrayList<UsuarioBean> resultWS = null;
@@ -1172,9 +1461,13 @@ public class FrmUsuarios extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkCategorias;
     private javax.swing.JCheckBox chkClientes;
     private javax.swing.JCheckBox chkCompras;
+    private javax.swing.JCheckBox chkConsultaAlertas;
+    private javax.swing.JCheckBox chkConsultaCompras;
+    private javax.swing.JCheckBox chkConsultaMovimientos;
+    private javax.swing.JCheckBox chkConsultaPedidos;
     private javax.swing.JCheckBox chkConsultaVentas;
+    private javax.swing.JCheckBox chkInventario;
     private javax.swing.JCheckBox chkMensajes;
-    private javax.swing.JCheckBox chkProductos;
     private javax.swing.JCheckBox chkProveedores;
     private javax.swing.JCheckBox chkSistema;
     private javax.swing.JCheckBox chkSucursales;
@@ -1197,6 +1490,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
