@@ -80,7 +80,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
-        btnFacturar.setEnabled(false);
+        btnFacturar.setVisible(false);
         // Actualizas tbl Ventas
         hiloVentasList = new WSVentasList();
         String rutaWS = constantes.getProperty("IP") 
@@ -936,7 +936,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                             //registra movimiento
                             if (ajuste != null) {
                                     //Guarda movimiento
-                                String fecha = util.dateToDateTimeAsString(new java.util.Date());
+                                String fecha = util.dateToDateTimeAsString(util.obtieneFechaServidor());
                                 MovimientosBean mov = new MovimientosBean();
                                 hiloMovimientos = new WSMovimientos();
                                 rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAMOVIMIENTO");
@@ -951,7 +951,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                                 if (movimientoInsertado!=null) {
                                     //registra el dinero regresado como movimiento de caja chica
                                     CajaChicaBean cajaChica = new CajaChicaBean();
-                                    cajaChica.setFecha(new Date());
+                                    cajaChica.setFecha(util.obtieneFechaServidor());
                                     cajaChica.setMonto(venta.getTotal());
                                     cajaChica.setTipoMov("Gasto");
                                     cajaChica.setTipoComprobante("Ticket");

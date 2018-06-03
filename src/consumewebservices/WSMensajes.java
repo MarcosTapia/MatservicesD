@@ -76,8 +76,19 @@ public class WSMensajes {
 //            new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //        String currentTime = sdf.format(dt);
             jsonParam.put("mensaje", mensaje);
-            String fecha = util.dateToDateTimeAsString(new java.util.Date());
-            jsonParam.put("fecha", fecha);
+            //String fecha = util.dateToDateTimeAsString(new java.util.Date());
+            
+            if (fecha.length()==21) {
+                // agrega 0 inicial si falta
+                fecha = "0" + fecha;
+            }
+            fecha = fecha.substring(0, 19);
+            fecha = util.cambiaFormatoFecha(fecha);
+            Date a = util.stringToDateTime(fecha);
+            String b = util.dateToDateTimeAsString(a);
+//            Date fechaT = util.stringToDateTime(fecha);
+//            String fecha = util.dateToDateTimeAsString(fechaT);
+            jsonParam.put("fecha", b);
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(

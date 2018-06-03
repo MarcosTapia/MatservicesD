@@ -5,6 +5,7 @@ import beans.ClienteBean;
 import beans.ComprasBean;
 import beans.EdoMunBean;
 import beans.EstadoBean;
+import beans.MensajeBean;
 import beans.MunicipioBean;
 import beans.ProductoBean;
 import beans.ProveedorBean;
@@ -16,6 +17,7 @@ import consumewebservices.WSCategoriasList;
 import consumewebservices.WSClientesList;
 import consumewebservices.WSEstadosList;
 import consumewebservices.WSInventariosList;
+import consumewebservices.WSMensajesList;
 import consumewebservices.WSProveedoresList;
 import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
@@ -768,6 +770,21 @@ public class Util {
 //        return ventas;
 //    }
     //********* FIN COMPRAS
+    
+    //********* OBTIENE FECHA DEL SERVIDOR
+    public Date obtieneFechaServidor() {
+        ArrayList<MensajeBean> fechaServidorArray = null;
+        MensajeBean fechaServidorObj = null;
+        Properties constantes = new ConstantesProperties().getProperties();
+        WSMensajesList hiloMensajesList;
+        hiloMensajesList = new WSMensajesList();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("OBTIENEFECHASERVIDOR");
+        fechaServidorArray = hiloMensajesList.ejecutaWebService(rutaWS,"4");
+        fechaServidorObj = fechaServidorArray.get(0);
+        return fechaServidorObj.getFecha();
+    }
+    //********* FIN OBTIENE FECHA DEL SERVIDOR
     
     public Map<String, String> getSucursalesHM() {
         return sucursalesHM;

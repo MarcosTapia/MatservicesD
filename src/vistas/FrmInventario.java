@@ -1,17 +1,29 @@
 package vistas;
 
 import beans.DatosEmpresaBean;
+import beans.MensajeBean;
 import beans.UsuarioBean;
+import constantes.ConstantesProperties;
+import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSMensajes;
+import consumewebservices.WSMensajesList;
+import consumewebservices.WSUsuarios;
+import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
+import util.Util;
 
 public class FrmInventario extends javax.swing.JFrame {
     String permisos = "";
+    Util util = new Util();
     
     public FrmInventario() {
         initComponents();
-        java.util.Date fecha = new Date();
+        
+        java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
         lblFecha.setText("Fecha: " + a);
         lblUsuario.setText("Usuario: " + Ingreso.usuario.getNombre()

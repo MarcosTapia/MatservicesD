@@ -6,13 +6,15 @@ import java.awt.Toolkit;
 import java.text.DateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import util.Util;
 
 public class FrmConfiguracion extends javax.swing.JFrame {
     String permisos = "";
+    Util util = new Util();
 
     public FrmConfiguracion() {
         initComponents();
-        java.util.Date fecha = new Date();
+        java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
         lblFecha.setText("Fecha: " + a);
         lblUsuario.setText("Usuario: " + Ingreso.usuario.getNombre()

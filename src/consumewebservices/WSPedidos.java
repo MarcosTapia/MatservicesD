@@ -152,7 +152,7 @@ public class WSPedidos {
 //        java.text.SimpleDateFormat sdf = 
 //            new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //        String currentTime = sdf.format(dt);
-            String fecha = util.dateToDateTimeAsString(new java.util.Date());
+            String fecha = util.dateToDateTimeAsString(util.obtieneFechaServidor());
             jsonParam.put("fecha", fecha);
             jsonParam.put("codigoCliente", idCliente);
             jsonParam.put("observaciones", observaciones);

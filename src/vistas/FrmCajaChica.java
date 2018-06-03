@@ -1,47 +1,20 @@
 package vistas;
 
-import beans.ClienteBean;
-import ComponenteConsulta.JDListaClientes;
-import ComponenteConsulta.JDListaSucursales;
 import beans.CajaChicaBean;
 import beans.DatosEmpresaBean;
-import beans.EdoMunBean;
 import beans.ProductoBean;
-import beans.SucursalBean;
-import beans.UsuarioBean;
-import beans.VentasBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCajaChica;
 import consumewebservices.WSCajaChicaList;
-import consumewebservices.WSClientes;
-import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSInventarios;
-import consumewebservices.WSSucursales;
-import consumewebservices.WSSucursalesList;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
-import static vistas.Principal.estadosMun;
-import static vistas.Principal.productos;
 
 public class FrmCajaChica extends javax.swing.JFrame {
     //WSUsuarios
@@ -53,9 +26,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
     WSCajaChica hiloCajaChica;
     //Fin WSUsuarios
     ArrayList<CajaChicaBean> movsGlobal = null;
-    
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-
     String accion = "";
     
     public FrmCajaChica() {
@@ -65,7 +36,6 @@ public class FrmCajaChica extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
-        
         cboTipoMov.setEnabled(false);
         cboComprobante.setEnabled(false);
         hiloEmpresa = new WSDatosEmpresa();
@@ -81,7 +51,6 @@ public class FrmCajaChica extends javax.swing.JFrame {
         movsGlobal = hiloCajaChicaList.ejecutaWebService(rutaWS,"1");
         recargarTable(movsGlobal);
         
-        
         //actualizarBusqueda();
         buscaUltimoRegistro();
         activarBotones(true);
@@ -95,8 +64,6 @@ public class FrmCajaChica extends javax.swing.JFrame {
         
         btnNuevoMov.setEnabled(true);
         btnGuardarMov.setEnabled(false);
-        //btnEliminarCli.setEnabled(true);
-        //btnModificarCli.setEnabled(false);
         btnCancelarMov.setEnabled(true);
         lblIdMov.setText("");
     }
@@ -482,7 +449,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(txtSaldoActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
                 .addComponent(lblIdMov)
                 .addContainerGap())
         );
@@ -577,7 +544,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -639,7 +606,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
                 )
             {
                 CajaChicaBean cajaChica = new CajaChicaBean();
-                cajaChica.setFecha(new Date());
+                cajaChica.setFecha(util.obtieneFechaServidor());
                 cajaChica.setMonto(Double.parseDouble(txtMonto.getText()));
                 cajaChica.setTipoMov(cboTipoMov.getSelectedItem().toString());
                 cajaChica.setTipoComprobante(cboComprobante.getSelectedItem().toString());
@@ -666,24 +633,12 @@ public class FrmCajaChica extends javax.swing.JFrame {
                     saldoActual = Double.parseDouble(txtSaldoActual.getText())
                             - Double.parseDouble(txtMonto.getText());
                 }
-//                //verifica si es Devolución Gasto
-//                if (cboTipoMov.getSelectedItem().toString()
-//                        .equalsIgnoreCase("Devolución Gasto")) {
-//                    saldoActual = Double.parseDouble(txtSaldoActual.getText())
-//                            + Double.parseDouble(txtMonto.getText());
-//                }
                 //verifica si es ingreso
                 if (cboTipoMov.getSelectedItem().toString()
                         .equalsIgnoreCase("Ingreso")) {
                     saldoActual = Double.parseDouble(txtSaldoActual.getText())
                             + Double.parseDouble(txtMonto.getText());
                 }
-//                //verifica si es Devolución Ingreso
-//                if (cboTipoMov.getSelectedItem().toString()
-//                        .equalsIgnoreCase("Devolución Ingreso")) {
-//                    saldoActual = Double.parseDouble(txtSaldoActual.getText())
-//                            - Double.parseDouble(txtMonto.getText());
-//                }
                 cajaChica.setSaldoActual(saldoActual);
                 //guardar sucursal
                 hiloCajaChica = new WSCajaChica();

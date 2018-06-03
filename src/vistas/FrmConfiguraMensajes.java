@@ -1,33 +1,20 @@
 package vistas;
 
-import beans.UsuarioBean;
-import ComponenteConsulta.JDListaUsuario;
-import beans.CajaChicaBean;
 import beans.DatosEmpresaBean;
 import beans.MensajeBean;
-import beans.ProductoBean;
-import beans.SucursalBean;
-import beans.VentasBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSInventarios;
 import consumewebservices.WSMensajes;
 import consumewebservices.WSMensajesList;
-import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
-import consumewebservices.WSVentas;
-import consumewebservices.WSVentasList;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import static vistas.Ingreso.usuario;
 
 import java.security.MessageDigest;
 import java.util.Date;
@@ -61,7 +48,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         }
         initComponents();
         jCalFechaFin.setVisible(false);
-        jCalFechaIni.setDate(new Date());
+        jCalFechaIni.setDate(util.obtieneFechaServidor());
         jCalFechaIni.setEnabled(false);
         lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
         hiloEmpresa = new WSDatosEmpresa();
@@ -82,22 +69,6 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
 //        activarBotones(true);
     }
     
-    public static String getMD5(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes());
-            BigInteger number = new BigInteger(1, messageDigest);
-            String hashtext = number.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            return hashtext;
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
-
     public void activarBotones(boolean b) {
         btnNuevoMensaje.setEnabled(b);
         btnGuardarMensaje.setEnabled(!b);
@@ -268,7 +239,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
 
         jLabel8.setText("Fecha :");
 
-        jCalFechaIni.setDateFormatString("yyyy-MM-d");
+        jCalFechaIni.setDateFormatString("dd/MM/yyyy");
 
         jCalFechaFin.setDateFormatString("yyyy-MM-d");
 
@@ -300,9 +271,6 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2)
-                        .addContainerGap())
-                    .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(btnNuevoMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnGuardarMensaje)
@@ -315,9 +283,14 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addComponent(btnCancelarMensaje)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap())
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(91, 91, 91))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -326,13 +299,9 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                                 .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(9, 9, 9)
-                                .addComponent(lblUsuario)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(91, 91, 91))))
+                                .addComponent(lblUsuario))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -354,9 +323,8 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnCancelarMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnNuevoMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
+                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnNuevoMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
                     .addComponent(btnGuardarMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
                     .addComponent(btnEliminarMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
                 .addContainerGap(14, Short.MAX_VALUE))
@@ -370,8 +338,8 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -387,7 +355,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -442,11 +410,11 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
     private void limpiarCajaTexto() {
         lblIdMensaje.setText("");
         txtAreaMensaje.setText("");
-        jCalFechaIni.setDate(new Date());
     }    
     
     private void btnGuardarMensajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarMensajeActionPerformed
         guardar();
+        jCalFechaIni.setDate(util.obtieneFechaServidor());
     }//GEN-LAST:event_btnGuardarMensajeActionPerformed
 
     private void cboParametroUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboParametroUsuarioActionPerformed
@@ -533,7 +501,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         jCalFechaIni.setEnabled(false);
         btnNuevoMensaje.setEnabled(true);
         btnGuardarMensaje.setEnabled(false);
-//        btnCancelarCli.setEnabled(true);
+        jCalFechaIni.setDate(util.obtieneFechaServidor());
     }//GEN-LAST:event_btnCancelarMensajeActionPerformed
 
     private void actualizarBusqueda() {
@@ -677,7 +645,6 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancelarCli;
     private javax.swing.JButton btnCancelarMensaje;
     private javax.swing.JButton btnEliminarMensaje;
     private javax.swing.JButton btnGuardarMensaje;

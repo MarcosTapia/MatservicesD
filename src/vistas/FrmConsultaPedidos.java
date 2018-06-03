@@ -341,7 +341,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                                         ,"" + cantidadFinal);
                                 if (ajuste != null) {
                                         //Guarda movimiento
-                                    String fecha = util.dateToDateTimeAsString(new java.util.Date());
+                                    String fecha = util.dateToDateTimeAsString(util.obtieneFechaServidor());
                                     MovimientosBean mov = new MovimientosBean();
                                     hiloMovimientos = new WSMovimientos();
                                     rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAMOVIMIENTO");

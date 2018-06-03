@@ -103,10 +103,10 @@ public class FrmCompras extends javax.swing.JFrame {
         resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
         recargarTableProductos(resultWS);
         
-        java.util.Date fecha = new Date();
+        java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
 //        txtFecha.setText("Fecha: " + a);
-//        cargaClientes();
+        cargaProveedores();
         lblUsuario.setText(Principal.datosEmpresaBean.getNombreEmpresa()
                 + " Sucursal: " 
                 + util.buscaDescFromIdSuc(Principal.sucursalesHM, "" 
@@ -134,7 +134,7 @@ public class FrmCompras extends javax.swing.JFrame {
           }
           indiceSucursales++;
         }        
-        jDateChooserFechaCompra.setDate(new Date());
+        jDateChooserFechaCompra.setDate(util.obtieneFechaServidor());
         
         txtNoCompra.setText("" + obtenerUltimoId());
         //        
@@ -142,6 +142,21 @@ public class FrmCompras extends javax.swing.JFrame {
 
     public void setIcon() {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+    }
+    
+    public void cargaProveedores() {
+        cboProveedor.removeAllItems();
+        int indiceProveedor = 0;
+        //CARGA CLIENTES Y ESTABLECE CLIENTE POR DEFECTO
+        Iterator it = Principal.proveedoresHM.keySet().iterator();
+        while(it.hasNext()){
+          Object key = it.next();
+          cboProveedor.addItem(Principal.proveedoresHM.get(key));
+          if (key.toString().equalsIgnoreCase("1")) {
+              cboProveedor.setSelectedIndex(indiceProveedor);
+          }
+          indiceProveedor++;
+        }
     }
     
     public void muestraUtilidad() {
@@ -170,6 +185,7 @@ public class FrmCompras extends javax.swing.JFrame {
         txtFacturaPro.setText(factura);
         txtNoCompra.setText(noCompra);
         cboProveedor.setSelectedIndex(indice);
+        //jDateChooserFechaCompra.setDate(util.obtieneFechaServidor());
         lblIdProd.setText("");
     }
 
@@ -479,6 +495,8 @@ public class FrmCompras extends javax.swing.JFrame {
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jDateChooserFechaCompra, org.jdesktop.beansbinding.ObjectProperty.create(), jLabel4, org.jdesktop.beansbinding.BeanProperty.create("labelFor"));
         bindingGroup.addBinding(binding);
+
+        jDateChooserFechaCompra.setDateFormatString("dd/MM/yyyy");
 
         btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/addVenta.png"))); // NOI18N
         btnAgregar.setText("AGREGAR");
@@ -826,6 +844,8 @@ public class FrmCompras extends javax.swing.JFrame {
                 .addGap(46, 46, 46))
         );
 
+        jDateChooserFechaCompra.getAccessibleContext().setAccessibleName("");
+
         jLabel11.setFont(new java.awt.Font("Garamond", 1, 18)); // NOI18N
         jLabel11.setText("REGISTRAR COMPRA");
 
@@ -929,14 +949,14 @@ public class FrmCompras extends javax.swing.JFrame {
         //lleno el objeto compra
         ComprasBean compra = new ComprasBean();
         compra.setFactura(txtFacturaPro.getText());
-        compra.setFecha(jDateChooserFechaCompra.getDate());
+        //compra.setFecha(jDateChooserFechaCompra.getDate());
         compra.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM, 
                 cboProveedor.getSelectedItem().toString()));
         compra.setIdSucursal(Ingreso.usuario.getIdSucursal());
         compra.setIdUsuario(Ingreso.usuario.getIdUsuario());
         compra.setObservaciones(txtObservacionesPro.getText());
+        //JOptionPane.showMessageDialog(null, jDateChooserFechaCompra.getDate());
         compra.setFecha(jDateChooserFechaCompra.getDate());
-        
         compra.setSubtotal(Double.parseDouble(txtSubTotal.getText()));
         compra.setIva(Double.parseDouble(txtIvaPago.getText()));
         compra.setTotal(Double.parseDouble(txtMontoApagar.getText()));
@@ -1022,7 +1042,7 @@ public class FrmCompras extends javax.swing.JFrame {
                                     ,"" + detalleCompra.getPrecioPublico());
                             if (ajuste != null) {
                                     //Guarda movimiento
-                                String fecha = util.dateToDateTimeAsString(new java.util.Date());
+                                String fecha = util.dateToDateTimeAsString(util.obtieneFechaServidor());
                                 MovimientosBean mov = new MovimientosBean();
                                 hiloMovimientos = new WSMovimientos();
                                 rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAMOVIMIENTO");
@@ -1151,7 +1171,16 @@ public class FrmCompras extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPrecioCompraProActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-//         lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
+        if (Ingreso.usuario == null) {
+            JOptionPane.showMessageDialog(null, "Error en el sistema vuelve a iniciar");
+            this.dispose();
+        } else {
+            Principal p = new Principal();
+            p.cargaProveedores();
+            cargaProveedores();
+            
+            // refresca inventario
+        //         lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
             // refresca inventario
             ArrayList<ProductoBean> resultWS = null;
             hiloInventariosList = new WSInventariosList();
@@ -1163,6 +1192,7 @@ public class FrmCompras extends javax.swing.JFrame {
             productos = util.getMapProductos();
             util.llenaMapProductos(productos);
             // fin refresca inventario
+        }
     }//GEN-LAST:event_formWindowActivated
 
     private void txtPrecioVentaProKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioVentaProKeyTyped
@@ -1420,7 +1450,8 @@ public class FrmCompras extends javax.swing.JFrame {
     }//GEN-LAST:event_txtIvaActionPerformed
 
     private void btnSalirPro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPro1ActionPerformed
-        // TODO add your handling code here:
+        FrmProveedor frmProveedor = new FrmProveedor(1);
+        frmProveedor.setVisible(true);
     }//GEN-LAST:event_btnSalirPro1ActionPerformed
 
     private void txtIvaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtIvaFocusGained

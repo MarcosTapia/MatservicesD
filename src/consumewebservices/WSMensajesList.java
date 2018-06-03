@@ -54,6 +54,8 @@ idVenta	int(11)
                 mensajes = busquedaMensajesPorFechasWS(); break;
             case "3" : 
                 mensajes = buscaMensajeIdWS(cadena); break;
+            case "4" : 
+                mensajes = obtenerFechaServidorWS(); break;
 //            case "2" : mensajesJSON = buscaCategoriaIdWS(cadena); break;
 //            case "3" : mensajesJSON = busquedaMensajesPorFechasWS(cadena); break;
 //            case "4" : mensajes = busquedaCategoriasPorNombreWS(cadena); break;//            case "2" : mensajes = buscaCategoriaIdWS(cadena); break;
@@ -243,6 +245,52 @@ idVenta	int(11)
                     Util util = new Util();
                     mensaje.setFecha(util.stringToDateTime(fechaS));
                     mensajes.add(mensaje);
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return mensajes;
+    }
+
+    public ArrayList<MensajeBean> obtenerFechaServidorWS() {
+        ArrayList<MensajeBean> mensajes = new ArrayList();
+        try {
+            url = new URL(cadena);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+            //connection.setHeader("content-type", "application/json");
+            int respuesta = connection.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK){
+                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                // StringBuilder.
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);        // Paso toda la entrada al StringBuilder
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");
+                if (resultJSON == 1) {
+                    JSONArray mensajesJSON = respuestaJSON.getJSONArray("fechaServidor");   // estado es el nombre del campo en el JSON
+                    for(int i=0;i<mensajesJSON.length();i++){
+                        MensajeBean mensaje = new MensajeBean();
+                        //convierte fecha String a Date
+                        String fechaS = mensajesJSON.getJSONObject(i).get("SYSDATE()").toString();
+                        Util util = new Util();
+                        mensaje.setFecha(util.stringToDateTime(fechaS));
+                        mensajes.add(mensaje);
+                    }
                 }
             }
         } catch (MalformedURLException e) {

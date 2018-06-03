@@ -103,7 +103,7 @@ public class FrmVenta extends javax.swing.JFrame {
         resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
         recargarTableProductos(resultWS);
         
-        java.util.Date fecha = new Date();
+        java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
         txtFecha.setText("Fecha: " + a);
         cargaClientes();
@@ -1212,7 +1212,7 @@ public class FrmVenta extends javax.swing.JFrame {
                                                 ,"" + cantidadFinal);
                                         if (ajuste != null) {
                                                 //Guarda movimiento
-                                            String fecha = util.dateToDateTimeAsString(new java.util.Date());
+                                            String fecha = util.dateToDateTimeAsString(util.obtieneFechaServidor());
                                             MovimientosBean mov = new MovimientosBean();
                                             hiloMovimientos = new WSMovimientos();
                                             rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAMOVIMIENTO");

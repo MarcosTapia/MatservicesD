@@ -637,6 +637,12 @@
                   </BindingProperties>
                 </Component>
                 <Component class="com.toedter.calendar.JDateChooser" name="jDateChooserFechaCompra">
+                  <Properties>
+                    <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
+                  </Properties>
+                  <AccessibilityProperties>
+                    <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
+                  </AccessibilityProperties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnAgregar">
                   <Properties>

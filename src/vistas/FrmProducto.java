@@ -124,8 +124,7 @@ public class FrmProducto extends javax.swing.JFrame {
         cboCategoriaPro.setEnabled(false);
 
         //cambia formato de fecha a tipo datetime xq asi esta en bd remota
-        jCalFechaIngresoProd.setDate(new Date());
-//        jCalFechaIngresoProd.setDateFormatString("yyyy-MM-dd HH:mm:ss");
+        jCalFechaIngresoProd.setDate(util.obtieneFechaServidor());
         
         txtIdArticulo.setVisible(false);
         btnGuardarPro.setEnabled(false);
@@ -178,7 +177,7 @@ public class FrmProducto extends javax.swing.JFrame {
         txtPrecioPublico.setText("");
         txtUtilidad.setText("");
         panTipoOperacion.setVisible(false);
-        java.util.Date fechaLocal = new Date();
+        java.util.Date fechaLocal = util.obtieneFechaServidor();
         jCalFechaIngresoProd.setDate(fechaLocal);
         jCalFechaCaducidadProd.setDate(fechaLocal);
         
@@ -1039,6 +1038,7 @@ public class FrmProducto extends javax.swing.JFrame {
         activarBotones(true);
         actualizarBusquedaProveedor();
         cantGlobal = 0;
+        jCalFechaIngresoProd.setDate(util.obtieneFechaServidor());
         txtIva.setText("" + Principal.datosSistemaBean.getIvaEmpresa());
     }
     

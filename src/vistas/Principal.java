@@ -78,6 +78,13 @@ public class Principal extends javax.swing.JFrame {
         clientesHM = util.getClientesHM();
     }
     
+    public void cargaProveedores() {
+        //Carga proveedores
+        proveedores = util.getMapProveedores();
+        util.llenaMapProveedores(proveedores);
+        proveedoresHM = util.getProveedoresHM();
+    }
+    
     public Principal() {
         initComponents();
         
@@ -125,6 +132,12 @@ public class Principal extends javax.swing.JFrame {
         clientes = util.getMapClientes();
         util.llenaMapClientes(clientes);
         clientesHM = util.getClientesHM();
+
+        //Carga proveedores
+        cargaProveedores();
+        proveedores = util.getMapProveedores();
+        util.llenaMapProveedores(proveedores);
+        proveedoresHM = util.getProveedoresHM();
         
         this.setIcon();
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre()
@@ -175,12 +188,12 @@ public class Principal extends javax.swing.JFrame {
 
         panelOpciones = new javax.swing.JPanel();
         panelMenuPrincipal = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         lblSalir = new javax.swing.JLabel();
         lblTituloNegocio = new javax.swing.JLabel();
         lblCerrarSesion = new javax.swing.JLabel();
@@ -201,35 +214,27 @@ public class Principal extends javax.swing.JFrame {
         panelMenuPrincipal.setBackground(new java.awt.Color(102, 102, 102));
         panelMenuPrincipal.setLayout(null);
 
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/inventory.jpg"))); // NOI18N
-        jLabel7.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel7MouseClicked(evt);
-            }
-        });
-        panelMenuPrincipal.add(jLabel7);
-        jLabel7.setBounds(30, 20, 230, 190);
-
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ventas.jpg"))); // NOI18N
-        jLabel9.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jLabel9.setBorder(javax.swing.BorderFactory.createMatteBorder(3, 3, 3, 3, new java.awt.Color(102, 102, 102)));
+        jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        jLabel9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jLabel9.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel9MouseClicked(evt);
             }
         });
         panelMenuPrincipal.add(jLabel9);
-        jLabel9.setBounds(290, 20, 230, 190);
+        jLabel9.setBounds(290, 10, 250, 210);
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/operations.jpg"))); // NOI18N
-        jLabel11.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jLabel11.setBorder(javax.swing.BorderFactory.createMatteBorder(3, 3, 3, 3, new java.awt.Color(102, 102, 102)));
         jLabel11.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel11MouseClicked(evt);
             }
         });
         panelMenuPrincipal.add(jLabel11);
-        jLabel11.setBounds(550, 20, 230, 190);
+        jLabel11.setBounds(550, 10, 230, 210);
 
         jLabel12.setFont(new java.awt.Font("Baskerville Old Face", 2, 24)); // NOI18N
         jLabel12.setText("CONFIGURACIÓN");
@@ -246,8 +251,21 @@ public class Principal extends javax.swing.JFrame {
         panelMenuPrincipal.add(jLabel8);
         jLabel8.setBounds(40, 230, 180, 30);
 
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/inventory.jpg"))); // NOI18N
+        jLabel1.setText("jLabel1");
+        jLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jLabel1.setBorder(javax.swing.BorderFactory.createMatteBorder(3, 3, 3, 3, new java.awt.Color(102, 102, 102)));
+        jLabel1.setOpaque(true);
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
+        panelMenuPrincipal.add(jLabel1);
+        jLabel1.setBounds(30, 10, 240, 210);
+
         panelOpciones.add(panelMenuPrincipal);
-        panelMenuPrincipal.setBounds(960, 150, 810, 280);
+        panelMenuPrincipal.setBounds(960, 140, 810, 290);
 
         lblSalir.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         lblSalir.setForeground(new java.awt.Color(102, 102, 255));
@@ -296,10 +314,6 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-        muestraPanel(1);
-    }//GEN-LAST:event_jLabel7MouseClicked
-
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // Carga datos de la empresa
         hiloEmpresa = new WSDatosEmpresa();
@@ -339,6 +353,10 @@ public class Principal extends javax.swing.JFrame {
         ingreso.setVisible(true); 
     }//GEN-LAST:event_lblCerrarSesionMouseClicked
 
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        muestraPanel(1);
+    }//GEN-LAST:event_jLabel1MouseClicked
+
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -371,10 +389,10 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel lblCerrarSesion;

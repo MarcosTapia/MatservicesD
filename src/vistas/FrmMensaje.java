@@ -45,13 +45,6 @@ public class FrmMensaje extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         AWTUtilities.setWindowOpaque(this, false);
-        
-//        //Checa si existe archivo licencia
-//        File f = new File("C:\\Windows\\addins\\w4mdp.ecf");
-//        if (!(f.exists())) { 
-//            JOptionPane.showMessageDialog(null, "Copia Ilegal");
-//            System.exit(1);
-//        }
     }
 
     @SuppressWarnings("unchecked")
@@ -158,24 +151,7 @@ public class FrmMensaje extends javax.swing.JFrame {
     }
 
     public void verificaUsuarioWS() {
-//        hiloUsuarios = new WSUsuarios();
-//        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("VERIFICA_USUARIOUSER") + txtUser.getText() +
-//                constantes.getProperty("VERIFICA_USUARIOCVE") + txtPassword.getText();
-//        //String resultadoWS = hiloUsuarios.ejecutaWebService(rutaWS,"2");
-//        usuario = hiloUsuarios.verificaUsuarioWS(rutaWS);
-////        if (!"".equalsIgnoreCase(resultadoWS)) {
-//        if (usuario != null) {
-//            this.dispose();
-//            vistas.Principal principal = new vistas.Principal();
-//            principal.setExtendedState(principal.MAXIMIZED_BOTH);
-//            principal.setDefaultCloseOperation(principal.EXIT_ON_CLOSE);
-//            principal.setVisible(true);    
-//        } else {
-//            JOptionPane.showMessageDialog(null, "ERROR: Usuario o clave erróneos");            
-//            borrar();
-//        }
     }
-    //Fin para WS
     
     
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
