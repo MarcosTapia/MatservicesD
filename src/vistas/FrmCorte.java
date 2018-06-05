@@ -9,8 +9,10 @@ import beans.DatosEmpresaBean;
 import beans.SucursalBean;
 import beans.VentasBean;
 import constantes.ConstantesProperties;
+import consumewebservices.WSCajaChica;
 import consumewebservices.WSCajaChicaList;
 import consumewebservices.WSComprasList;
+import consumewebservices.WSCorteCaja;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
@@ -43,6 +45,7 @@ public class FrmCorte extends javax.swing.JFrame {
     WSVentasList hiloVentasList;
     WSComprasList hiloComprasList;
     WSCajaChicaList hiloCajaChicaList;
+    WSCorteCaja hiloCorteCaja;
     //Fin WSUsuarios
     
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
@@ -73,6 +76,10 @@ public class FrmCorte extends javax.swing.JFrame {
         cargaVentasHoy();
         cargaComprasHoy();
         cargaMovsCajaChicaHoy();
+        
+        //verifica que no se haya hecho ya corte 
+        
+        
         recargarTable(corteCajaHoy);
         txtTotal.setText("" + String.format("%.2f", obtieneTotal()));
     }
@@ -459,9 +466,24 @@ public class FrmCorte extends javax.swing.JFrame {
     }
     
     private void btnGuardarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPerActionPerformed
+        hiloCorteCaja = new WSCorteCaja();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GUARDAMOVCORTECAJA");
+
         for(CorteCajaBean corteCajaBean : corteCajaHoy) {
-            JOptionPane.showMessageDialog(null, "" + corteCajaBean.getTotal());
+            CorteCajaBean movCorteCajaInsertado = null;
+            while (movCorteCajaInsertado == null) {
+                movCorteCajaInsertado = hiloCorteCaja
+                        .ejecutaWebService(rutaWS,"1"
+                , corteCajaBean.getFecha().toLocaleString()
+                , "" + corteCajaBean.getIdUsuario()
+                , "" + corteCajaBean.getIdSucursal()
+                , "" + corteCajaBean.getTotal()
+                , corteCajaBean.getTipoMov()
+                    );
+            }
         }
+        JOptionPane.showMessageDialog(null, "CORTE DE CAJA PROCESADO");
     }//GEN-LAST:event_btnGuardarPerActionPerformed
 
     private void tblUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUsuariosMouseClicked

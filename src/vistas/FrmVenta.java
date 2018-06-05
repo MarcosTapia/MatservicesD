@@ -1431,7 +1431,7 @@ public class FrmVenta extends javax.swing.JFrame {
 //                //verifica que el minimo del cuadro de texto sea el minimo del objeto a vender
 //                if (Double.parseDouble(txtStockPro.getText()) == prodParcial.getExistenciaMinima()) {
                     //verifica que haya existencia es decir que no rebase al minimo
-                    if (Double.parseDouble(txtCantidadPro.getText()) <= prodParcial.getExistenciaMinima()) {
+                    if (Double.parseDouble(txtCantidadPro.getText()) <= prodParcial.getExistencia()) {
                         //Verifica que el producto no este ya agregado en la lista de compras
                         if (buscarEnCarrito(prodParcial.getIdArticulo())) {
                             JOptionPane.showMessageDialog(null, "YA ESTA AGREGADO EL PRODUCTO");
