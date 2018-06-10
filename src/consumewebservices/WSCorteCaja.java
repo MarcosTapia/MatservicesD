@@ -6,6 +6,7 @@ import beans.ClienteBean;
 import beans.CorteCajaBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
+import beans.VentasBean;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,6 +20,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
@@ -36,6 +38,7 @@ public class WSCorteCaja {
     String idSucursal;
     String total;
     String tipoMov;
+    String entregado;
     String idMov;
     
     //parametros con valores de usuario
@@ -49,15 +52,33 @@ public class WSCorteCaja {
         CorteCajaBean corteCajaBean = null;
         switch (params[1]) { 
             case "1" : 
-                fecha = params[2];
-                idUsuario = params[3];
-                idSucursal = params[4];
-                total = params[5];
-                tipoMov = params[6];
+                idMov = params[2];
+                fecha = params[3];
+                idUsuario = params[4];
+                idSucursal = params[5];
+                total = params[6];
+                tipoMov = params[7];
+                entregado = params[8];
                 corteCajaBean = insertaMovCorteCajaWS(); break;
         }
         return corteCajaBean;
     }
+    
+    public ArrayList<CorteCajaBean> ejecutaWebServiceObtieneCortes(String... params) {
+        cadena = params[0];
+        url = null; // Url de donde queremos obtener información
+        devuelve ="";
+        ArrayList<CorteCajaBean> cortesCaja = null;
+        switch (params[1]) { 
+            case "1" : 
+                cortesCaja = obtieneCortesCajaWS(cadena); break;
+            case "2" : 
+                cortesCaja = obtieneCortesCajaPorFechasWS(cadena); break;
+        }
+        return cortesCaja;
+    }
+    
+    
  
     public CorteCajaBean insertaMovCorteCajaWS(String... params) {
         CorteCajaBean inserta = null;
@@ -75,6 +96,7 @@ public class WSCorteCaja {
             urlConn.connect();
             //Creo el Objeto JSON
             JSONObject jsonParam = new JSONObject();
+            jsonParam.put("idMov",idMov);
             if (fecha.length()==21) {
                 // agrega 0 inicial si falta
                 fecha = "0" + fecha;
@@ -124,6 +146,128 @@ public class WSCorteCaja {
             e.printStackTrace();
         }
         return inserta;
+    }
+    
+    public ArrayList<CorteCajaBean> obtieneCortesCajaWS(String rutaWS) {
+        ArrayList<CorteCajaBean> cortesCaja = new ArrayList();
+        try {
+            url = new URL(cadena);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+            //connection.setHeader("content-type", "application/json");
+            int respuesta = connection.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK){
+                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                // StringBuilder.
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);        // Paso toda la entrada al StringBuilder
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");
+                if (resultJSON == 1) {
+                    JSONArray cortesCajaJSON = respuestaJSON.getJSONArray("cortesCaja");   // estado es el nombre del campo en el JSON
+                    for(int i=0;i<cortesCajaJSON.length();i++){
+                        CorteCajaBean corteCaja = new CorteCajaBean();
+                        //convierte fecha String a Date
+                        String fechaS = cortesCajaJSON.getJSONObject(i).get("fecha").toString();
+                        Util util = new Util();
+                        corteCaja.setFecha(util.stringToDateTime(fechaS));
+                        
+                        corteCaja.setIdCorte(cortesCajaJSON.getJSONObject(i)
+                                .getInt("idCorte"));
+                        corteCaja.setIdMov(cortesCajaJSON.getJSONObject(i)
+                                .getInt("idMov"));
+                        corteCaja.setIdSucursal(cortesCajaJSON.getJSONObject(i)
+                                .getInt("idSucursal"));
+                        corteCaja.setIdUsuario(cortesCajaJSON.getJSONObject(i)
+                                .getInt("idUsuario"));
+                        corteCaja.setTotal(cortesCajaJSON.getJSONObject(i)
+                                .getDouble("total"));
+                        corteCaja.setTipoMov(cortesCajaJSON.getJSONObject(i)
+                                .getString("tipoMov"));
+                        corteCaja.setEntregado(cortesCajaJSON.getJSONObject(i)
+                                .getInt("entregado"));
+                        cortesCaja.add(corteCaja);
+                    }
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return cortesCaja;
+    }
+    
+    public ArrayList<CorteCajaBean> obtieneCortesCajaPorFechasWS(String rutaWS) {
+        ArrayList<CorteCajaBean> cortesCaja = new ArrayList();
+        try {
+            url = new URL(cadena);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+            //connection.setHeader("content-type", "application/json");
+            int respuesta = connection.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK){
+                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                // StringBuilder.
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);        // Paso toda la entrada al StringBuilder
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");
+                if (resultJSON == 1) {
+                    JSONArray cortesCajaJSON = respuestaJSON.getJSONArray("cortesCaja");   // estado es el nombre del campo en el JSON
+                    for(int i=0;i<cortesCajaJSON.length();i++){
+                        CorteCajaBean corteCaja = new CorteCajaBean();
+                        //convierte fecha String a Date
+                        String fechaS = cortesCajaJSON.getJSONObject(i).get("fecha").toString();
+                        Util util = new Util();
+                        corteCaja.setFecha(util.stringToDateTime(fechaS));
+                        
+                        corteCaja.setIdCorte(cortesCajaJSON.getJSONObject(i)
+                                .getInt("idCorte"));
+                        corteCaja.setIdMov(cortesCajaJSON.getJSONObject(i)
+                                .getInt("idMov"));
+                        corteCaja.setIdSucursal(cortesCajaJSON.getJSONObject(i)
+                                .getInt("idSucursal"));
+                        corteCaja.setIdUsuario(cortesCajaJSON.getJSONObject(i)
+                                .getInt("idUsuario"));
+                        corteCaja.setTotal(cortesCajaJSON.getJSONObject(i)
+                                .getDouble("total"));
+                        corteCaja.setTipoMov(cortesCajaJSON.getJSONObject(i)
+                                .getString("tipoMov"));
+                        corteCaja.setEntregado(cortesCajaJSON.getJSONObject(i)
+                                .getInt("entregado"));
+                        cortesCaja.add(corteCaja);
+                    }
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return cortesCaja;
     }
 
 }

@@ -751,7 +751,7 @@ public class FrmVenta extends javax.swing.JFrame {
             }
         });
 
-        cboTipoVenta.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Normal" }));
+        cboTipoVenta.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "NORMAL" }));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -1154,7 +1154,7 @@ public class FrmVenta extends javax.swing.JFrame {
                                 , "" + ventasBean.getSubtotal()
                                 , "" + ventasBean.getIva()
                                 , "" + ventasBean.getTotal()
-                                , "" + ventasBean.getTipovta()
+                                , "VENTA " + ventasBean.getTipovta()
                                 , "" + ventasBean.getCancelada()
                                 , "" + ventasBean.getFacturada()
                                 , "" + ventasBean.getIdFactura()
@@ -1219,7 +1219,7 @@ public class FrmVenta extends javax.swing.JFrame {
                                             MovimientosBean movimientoInsertado = hiloMovimientos.ejecutaWebService(rutaWS,"1"
                                                 ,"" + p.getIdArticulo()
                                                 ,"" + Ingreso.usuario.getIdUsuario()
-                                                ,"Venta"
+                                                ,"VENTA NORMAL"
                                                 ,"" + cantidadVendida
                                                 ,fecha
                                                 ,"" + Ingreso.usuario.getIdSucursal());
@@ -1601,7 +1601,7 @@ public class FrmVenta extends javax.swing.JFrame {
                             , "" + ventasBean.getSubtotal()
                             , "" + ventasBean.getIva()
                             , "" + ventasBean.getTotal()
-                            , "" + ventasBean.getTipovta()
+                            , "VENTA " + ventasBean.getTipovta()
                             , "" + ventasBean.getCancelada()
                             , "" + ventasBean.getFacturada()
                             , "" + ventasBean.getIdFactura()

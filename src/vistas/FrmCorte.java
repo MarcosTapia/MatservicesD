@@ -29,6 +29,8 @@ import javax.swing.UIManager;
 import static vistas.Ingreso.usuario;
 
 import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import util.Util;
 import static vistas.Principal.productos;
@@ -52,6 +54,7 @@ public class FrmCorte extends javax.swing.JFrame {
     CorteCajaBean corteCaja = null;
     ArrayList<CorteCajaBean> corteCajaHoy = new ArrayList<>();
     Date fechaServidor = null;
+    ArrayList<CorteCajaBean> cortePorFechasRegistradoHoy = null;
 
     String accion = "";
 
@@ -62,26 +65,31 @@ public class FrmCorte extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
-        lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
+        lblUsuario.setText("Usuario : " + Ingreso.usuario.getNombre() + " "
+            + Ingreso.usuario.getApellido_paterno() + " " 
+            + Ingreso.usuario.getApellido_materno());
         hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
                 + "GETDATOSEMPRESA");
-        DatosEmpresaBean resultadoWS = hiloEmpresa.
+        DatosEmpresaBean configuracionBean = hiloEmpresa.
                 ejecutaWebService(rutaWS,"1");
-        this.setTitle(resultadoWS.getNombreEmpresa());
+        this.setTitle(configuracionBean.getNombreEmpresa());
+        
+        java.util.Date fecha = util.obtieneFechaServidor();
+        String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
+        txtFecha.setText("Fecha: " + a);
+        
+        
         jCalFechaIni.setVisible(false);
         jCalFechaFin.setVisible(false);
         fechaServidor = util.obtieneFechaServidor();
-
+        
+        cargaCorteHoy();
         cargaVentasHoy();
         cargaComprasHoy();
         cargaMovsCajaChicaHoy();
-        
-        //verifica que no se haya hecho ya corte 
-        
-        
         recargarTable(corteCajaHoy);
-        txtTotal.setText("" + String.format("%.2f", obtieneTotal()));
+        obtieneTotal();
     }
     
     @SuppressWarnings("unchecked")
@@ -98,20 +106,33 @@ public class FrmCorte extends javax.swing.JFrame {
         tblUsuarios = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        txtTotal = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
         jCalFechaIni = new com.toedter.calendar.JDateChooser();
         jCalFechaFin = new com.toedter.calendar.JDateChooser();
+        jLabel5 = new javax.swing.JLabel();
+        txtTotalVentas = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtTotalCompras = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtTotalIngresos = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtTotalGastos = new javax.swing.JTextField();
+        txtTotal = new javax.swing.JTextField();
+        txtFecha = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(70, 99, 138));
 
         jPanel3.setBackground(new java.awt.Color(247, 254, 255));
 
         jLabel2.setFont(new java.awt.Font("Garamond", 1, 20)); // NOI18N
-        jLabel2.setText("CORTE DE CAJA :");
+        jLabel2.setText("CORTE DEL DÍA");
 
         btnGuardarPer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Save.png"))); // NOI18N
         btnGuardarPer.setText("PROCESAR CORTE");
@@ -171,51 +192,96 @@ public class FrmCorte extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tblUsuarios);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setText("MOVIMIENTOS :");
+        jLabel3.setText("MOVIMIENTOS NO ENTREGADOS :");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel1.setText("TOTAL :");
-
-        jLabel4.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("<HTML><BODY>GRACIAS POR TU COLABORACIÓN. <P>QUE TENGAS BUEN DÍA.</BODY></HTML>");
+        jLabel1.setText("VENTAS :");
 
         jCalFechaIni.setDateFormatString("yyyy-MM-d");
 
         jCalFechaFin.setDateFormatString("yyyy-MM-d");
 
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel5.setText("TOTAL :");
+
+        txtTotalVentas.setEditable(false);
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel6.setText("COMPRAS :");
+
+        txtTotalCompras.setEditable(false);
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel7.setText("INGRESOS :");
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel8.setText("GASTOS :");
+
+        txtTotalGastos.setEditable(false);
+
+        txtTotal.setEditable(false);
+        txtTotal.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        txtTotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtTotal.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtTotalFocusGained(evt);
+            }
+        });
+
+        txtFecha.setEditable(false);
+        txtFecha.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        txtFecha.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFecha.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+        txtFecha.setBorder(null);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel2)
-                        .addGap(118, 118, 118)
-                        .addComponent(lblUsuario))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jLabel3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(608, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(447, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(144, 144, 144))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtTotalGastos)
+                            .addComponent(txtTotalIngresos)
+                            .addComponent(txtTotalCompras)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnSalirPer, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnGuardarPer))))
+                                .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtTotalVentas)
+                            .addComponent(txtTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel5))))
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addGap(10, 10, 10)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel6)
+                                .addComponent(jLabel7)
+                                .addComponent(jLabel8)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnSalirPer, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGuardarPer))
                 .addGap(54, 54, 54))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(274, 274, 274)
+                        .addComponent(jLabel2))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblUsuario)
+                            .addComponent(jLabel3))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addGap(13, 13, 13)
@@ -225,29 +291,45 @@ public class FrmCorte extends javax.swing.JFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(lblUsuario))
-                .addGap(29, 29, 29)
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addGap(9, 9, 9)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblUsuario)
+                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel3)
-                .addGap(33, 33, 33)
+                .addGap(7, 7, 7)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCalFechaIni, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCalFechaFin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(btnGuardarPer, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnSalirPer, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCalFechaIni, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jCalFechaFin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(41, 41, 41)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(109, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTotalVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTotalCompras, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTotalIngresos, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtTotalGastos, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(76, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addGap(98, 98, 98)
@@ -289,11 +371,7 @@ public class FrmCorte extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPerActionPerformed
-        //Carga productos
-        Principal principal = new Principal();
-        principal.cargaUsuarios();
         this.dispose();
-        FrmConfiguracion operaciones = new FrmConfiguracion();
     }//GEN-LAST:event_btnSalirPerActionPerformed
 
     private void cargaVentasHoy() {
@@ -333,43 +411,99 @@ public class FrmCorte extends javax.swing.JFrame {
         
         //iguala beans venta y cortecaja
         for (VentasBean vta : ventasPorFechas) {
-            corteCaja = new CorteCajaBean();
-            corteCaja.setIdMov(vta.getIdVenta());
-            corteCaja.setFecha(vta.getFecha());
-            corteCaja.setIdUsuario(vta.getIdUsuario());
-            corteCaja.setIdSucursal(vta.getIdSucursal());
-            corteCaja.setTotal(vta.getTotal());
-            corteCaja.setTipoMov("VENTA " + vta.getTipovta());
-            corteCajaHoy.add(corteCaja);
+            if (!verificaRegistroEnCorte(vta.getIdVenta())) {
+                corteCaja = new CorteCajaBean();
+                corteCaja.setIdMov(vta.getIdVenta());
+                corteCaja.setFecha(vta.getFecha());
+                corteCaja.setIdUsuario(vta.getIdUsuario());
+                corteCaja.setIdSucursal(vta.getIdSucursal());
+                corteCaja.setTotal(vta.getTotal());
+                corteCaja.setTipoMov(vta.getTipovta());
+                corteCajaHoy.add(corteCaja);
+            }
         }
     }
     
-    private double obtieneTotal(){
+    public boolean verificaRegistroEnCorte(int idMovVtaCpaCaja) {
+        boolean existe = false;
+        for (CorteCajaBean corte : cortePorFechasRegistradoHoy) {
+            if (corte.getIdMov() == idMovVtaCpaCaja) {
+                existe = true;
+                break;
+            }
+        }
+        return existe;
+    }
+    
+    private void cargaCorteHoy() {
+        jCalFechaIni.setDate(fechaServidor);
+        jCalFechaFin.setDate(fechaServidor);
+        String fechaIni = "";
+        String fechaFin = "";
+        //Tomamos las dos fechas y las convierto a java.sql.date
+        java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
+        java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();
+        java.sql.Date fechaSqlDateIni;
+        java.sql.Date fechaSqlDateFin;
+        try {
+            fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            return;
+        }
+        try {
+            fechaSqlDateFin = new java.sql.Date(fechaUtilDateFin.getTime());
+        } catch (Exception e) {
+            fechaSqlDateFin = fechaSqlDateIni;
+        }
+        fechaIni = fechaSqlDateIni.toString();
+        fechaFin = fechaSqlDateFin.toString();
+        if (fechaSqlDateIni.getTime() > fechaSqlDateFin.getTime()) {
+            JOptionPane.showMessageDialog(null, "Fechas Incorrectas");
+            return;
+        }
+        // Actualizas tbl Ventas
+        hiloCorteCaja = new WSCorteCaja();
+        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCORTEPORFECHASFINI") + fechaIni +
+                constantes.getProperty("GETCORTEPORFECHASFFIN") + fechaFin;
+        cortePorFechasRegistradoHoy = hiloCorteCaja.ejecutaWebServiceObtieneCortes(rutaWS,"2");
+    }
+    
+    private void obtieneTotal(){
+        double totalVentas = 0;
+        double totalCompras = 0;
+        double totalIngresos = 0;
+        double totalGastos = 0;
         double total = 0;
+        
         for (int i=0;i<tblUsuarios.getRowCount();i++) {
             if (tblUsuarios.getValueAt(i, 5).toString()
                     .equalsIgnoreCase("VENTA NORMAL")) {
-                total = total + Double.parseDouble(tblUsuarios
+                totalVentas = totalVentas + Double.parseDouble(tblUsuarios
                         .getValueAt(i, 4).toString());
             }
             if (tblUsuarios.getValueAt(i, 5).toString()
                     .equalsIgnoreCase("COMPRA NORMAL")) {
-                total = total - Double.parseDouble(tblUsuarios
+                totalCompras = totalCompras + Double.parseDouble(tblUsuarios
                         .getValueAt(i, 4).toString());
             }
             if (tblUsuarios.getValueAt(i, 5).toString()
                     .equalsIgnoreCase("INGRESO")) {
-                total = total + Double.parseDouble(tblUsuarios
+                totalIngresos = totalIngresos + Double.parseDouble(tblUsuarios
                         .getValueAt(i, 4).toString());
             }
             if (tblUsuarios.getValueAt(i, 5).toString()
                     .equalsIgnoreCase("GASTO")) {
-                total = total - Double.parseDouble(tblUsuarios
+                totalGastos = totalGastos + Double.parseDouble(tblUsuarios
                         .getValueAt(i, 4).toString());
             }
-            //total = total + tblUsuarios
         }
-        return total;
+        total = total + totalVentas - totalCompras + totalIngresos - totalGastos;
+        txtTotal.setText(String.format("%.2f",total));
+        txtTotalVentas.setText(String.format("%.2f", totalVentas));
+        txtTotalCompras.setText(String.format("%.2f", totalCompras));
+        txtTotalIngresos.setText(String.format("%.2f", totalIngresos));
+        txtTotalGastos.setText(String.format("%.2f", totalGastos));
     }
     
     private void cargaComprasHoy() {
@@ -407,14 +541,16 @@ public class FrmCorte extends javax.swing.JFrame {
         comprasPorFechas = hiloComprasList.ejecutaWebService(rutaWS,"2");
         //iguala beans venta y cortecaja
         for (ComprasBean compra : comprasPorFechas) {
-            corteCaja = new CorteCajaBean();
-            corteCaja.setIdMov(compra.getIdCompra());
-            corteCaja.setFecha(compra.getFecha());
-            corteCaja.setIdUsuario(compra.getIdUsuario());
-            corteCaja.setIdSucursal(compra.getIdSucursal());
-            corteCaja.setTotal(compra.getTotal());
-            corteCaja.setTipoMov("COMPRA " + compra.getTipocompra());
-            corteCajaHoy.add(corteCaja);
+            if (!verificaRegistroEnCorte(compra.getIdCompra())) {
+                corteCaja = new CorteCajaBean();
+                corteCaja.setIdMov(compra.getIdCompra());
+                corteCaja.setFecha(compra.getFecha());
+                corteCaja.setIdUsuario(compra.getIdUsuario());
+                corteCaja.setIdSucursal(compra.getIdSucursal());
+                corteCaja.setTotal(compra.getTotal());
+                corteCaja.setTipoMov(compra.getTipocompra());
+                corteCajaHoy.add(corteCaja);
+            }
         }
     }
     
@@ -454,40 +590,106 @@ public class FrmCorte extends javax.swing.JFrame {
         movsCajaChicaPorFechas = hiloCajaChicaList.ejecutaWebService(rutaWS,"4");
         //iguala beans venta y cortecaja
         for (CajaChicaBean movCajaChica : movsCajaChicaPorFechas) {
-            corteCaja = new CorteCajaBean();
-            corteCaja.setIdMov(movCajaChica.getIdMov());
-            corteCaja.setFecha(movCajaChica.getFecha());
-            corteCaja.setIdUsuario(movCajaChica.getIdUsuario());
-            corteCaja.setIdSucursal(movCajaChica.getIdSucursal());
-            corteCaja.setTotal(movCajaChica.getMonto());
-            corteCaja.setTipoMov(movCajaChica.getTipoMov());
-            corteCajaHoy.add(corteCaja);
+            if (!verificaRegistroEnCorte(movCajaChica.getIdMov())) {
+                corteCaja = new CorteCajaBean();
+                corteCaja.setIdMov(movCajaChica.getIdMov());
+                corteCaja.setFecha(movCajaChica.getFecha());
+                corteCaja.setIdUsuario(movCajaChica.getIdUsuario());
+                corteCaja.setIdSucursal(movCajaChica.getIdSucursal());
+                corteCaja.setTotal(movCajaChica.getMonto());
+                corteCaja.setTipoMov(movCajaChica.getTipoMov());
+                corteCajaHoy.add(corteCaja);
+            }
         }
     }
     
     private void btnGuardarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPerActionPerformed
-        hiloCorteCaja = new WSCorteCaja();
-        String rutaWS = constantes.getProperty("IP") 
-                + constantes.getProperty("GUARDAMOVCORTECAJA");
+        if (corteCajaHoy.size() > 0) {
+            hiloCorteCaja = new WSCorteCaja();
+            String rutaWS = constantes.getProperty("IP") 
+                    + constantes.getProperty("GUARDAMOVCORTECAJA");
 
-        for(CorteCajaBean corteCajaBean : corteCajaHoy) {
-            CorteCajaBean movCorteCajaInsertado = null;
-            while (movCorteCajaInsertado == null) {
-                movCorteCajaInsertado = hiloCorteCaja
-                        .ejecutaWebService(rutaWS,"1"
-                , corteCajaBean.getFecha().toLocaleString()
-                , "" + corteCajaBean.getIdUsuario()
-                , "" + corteCajaBean.getIdSucursal()
-                , "" + corteCajaBean.getTotal()
-                , corteCajaBean.getTipoMov()
-                    );
+            for(CorteCajaBean corteCajaBean : corteCajaHoy) {
+                CorteCajaBean movCorteCajaInsertado = null;
+                while (movCorteCajaInsertado == null) {
+                    movCorteCajaInsertado = hiloCorteCaja
+                            .ejecutaWebService(rutaWS,"1"
+                    , "" + corteCajaBean.getIdMov()
+                    , corteCajaBean.getFecha().toLocaleString()
+                    , "" + corteCajaBean.getIdUsuario()
+                    , "" + corteCajaBean.getIdSucursal()
+                    , "" + corteCajaBean.getTotal()
+                    , corteCajaBean.getTipoMov()
+                    , "1"
+                        );
+                }
             }
+            //Arma correo
+                //fecha
+            java.util.Date fecha = util.obtieneFechaServidor();
+            String fechaS = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
+
+                //arma mensaje
+            String encabezadoMensaje = "<html><body><b><p>Fecha : "
+                    + fechaS + "</p></b><br>";
+            String cuerpoMensaje = "<b><p>Empresa : " + this.getTitle() 
+                    + " Sucursal : " + util.buscaDescFromIdSuc
+                    (Principal.sucursalesHM, 
+                     String.valueOf(Ingreso.usuario.getIdSucursal())) 
+                    + "</p></b><br><br>";
+            cuerpoMensaje = cuerpoMensaje + "<p>Totsl : " + txtTotal.getText()
+                    + "Ventas : " + txtTotalVentas.getText()
+                    + "Compras : " + txtTotalVentas.getText()
+                    + "Ingresos Varios : " + txtTotalIngresos.getText()
+                    + "Gastos Varios : " + txtTotalGastos.getText()
+                    + "</p><br>";
+            String finMensaje = "</body></html>";
+            String mensaje = encabezadoMensaje + cuerpoMensaje + finMensaje;
+                //fin arma mensaje
+            
+                //remitente
+            String remitente = "matservices07@gmail.com";
+                //fin remitente
+            
+                //destinatario
+            String destinatario = configuracionBean.getEmailEmpresa();
+                //fin destinatario
+            
+                //titulo
+            String titulo = "Corte de Caja Sucursal : " + util.buscaDescFromIdSuc
+                    (Principal.sucursalesHM, 
+                     String.valueOf(Ingreso.usuario.getIdSucursal()));
+                //fin titulo
+                    
+                //negocio
+            String negocio = this.getTitle() + " " 
+                    + util.buscaDescFromIdSuc
+                    (Principal.sucursalesHM, 
+                     String.valueOf(Ingreso.usuario.getIdSucursal()));
+                //fin negocio
+            boolean enviado = util.enviaCorreo(mensaje,remitente,destinatario
+                ,titulo,negocio);
+            //fin envia correo
+            JOptionPane.showMessageDialog(null, "CORTE DE CAJA PROCESADO");
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "DEBES TENER OPERACIONES PARA "
+                    + "REGISTRAR EL CORTE");
+            this.setVisible(false);
+            this.dispose();
         }
-        JOptionPane.showMessageDialog(null, "CORTE DE CAJA PROCESADO");
     }//GEN-LAST:event_btnGuardarPerActionPerformed
 
     private void tblUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUsuariosMouseClicked
     }//GEN-LAST:event_tblUsuariosMouseClicked
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        
+    }//GEN-LAST:event_formWindowActivated
+
+    private void txtTotalFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTotalFocusGained
+    }//GEN-LAST:event_txtTotalFocusGained
 
     public void recargarTable(ArrayList<CorteCajaBean> list) {
         Object[][] datos = new Object[list.size()][6];
@@ -559,12 +761,20 @@ public class FrmCorte extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblUsuario;
     private javax.swing.JTable tblUsuarios;
+    private javax.swing.JTextField txtFecha;
     private javax.swing.JTextField txtTotal;
+    private javax.swing.JTextField txtTotalCompras;
+    private javax.swing.JTextField txtTotalGastos;
+    private javax.swing.JTextField txtTotalIngresos;
+    private javax.swing.JTextField txtTotalVentas;
     // End of variables declaration//GEN-END:variables
 }

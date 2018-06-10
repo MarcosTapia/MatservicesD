@@ -960,7 +960,7 @@ public class FrmCompras extends javax.swing.JFrame {
         compra.setSubtotal(Double.parseDouble(txtSubTotal.getText()));
         compra.setIva(Double.parseDouble(txtIvaPago.getText()));
         compra.setTotal(Double.parseDouble(txtMontoApagar.getText()));
-        compra.setTipocompra("Normal");
+        compra.setTipocompra("COMPRA NORMAL");
         compra.setCancelada(0);
         
         while (compra != null) {
@@ -1049,7 +1049,7 @@ public class FrmCompras extends javax.swing.JFrame {
                                 MovimientosBean movimientoInsertado = hiloMovimientos.ejecutaWebService(rutaWS,"1"
                                     ,"" + p.getIdArticulo()
                                     ,"" + Ingreso.usuario.getIdUsuario()
-                                    ,"Compra"
+                                    ,"COMPRA NORMAL"
                                     ,"" + cantidadComprada
                                     ,fecha
                                     ,"" + Ingreso.usuario.getIdSucursal());

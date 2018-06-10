@@ -3,12 +3,30 @@ package beans;
 import java.util.Date;
 
 public class CorteCajaBean {
+    private int idCorte;
     private int idMov; //idCompra, idMov
     private Date fecha;   
     private int idUsuario;
     private int idSucursal;
     private double total; //monto
-    private String tipoMov;//(VENTA,COMPRA NORMAL/CREDITO), INGRESO7GASTO    
+    private String tipoMov;//(VENTA,COMPRA NORMAL/CREDITO), INGRESO7GASTO
+    private int entregado;
+
+    public int getIdCorte() {
+        return idCorte;
+    }
+
+    public void setIdCorte(int idCorte) {
+        this.idCorte = idCorte;
+    }
+
+    public int getEntregado() {
+        return entregado;
+    }
+
+    public void setEntregado(int entregado) {
+        this.entregado = entregado;
+    }
 
     public int getIdMov() {
         return idMov;

@@ -72,6 +72,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
         lblIdMov.setText("");
         txtMonto.setText("");
         txtReferencia.setText("");
+        txtSaldoAnterior.setText("");
         txtSaldoActual.setText("");
         cboTipoMov.setSelectedIndex(0);
         cboComprobante.setSelectedIndex(0);        
@@ -349,7 +350,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
 
         jLabel2.setText("Tipo Movimiento :");
 
-        cboTipoMov.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar...", "Gasto", "Ingreso" }));
+        cboTipoMov.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar...", "GASTO", "INGRESO" }));
         cboTipoMov.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboTipoMovActionPerformed(evt);
@@ -668,7 +669,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
                             getProperty("GETCAJACHICAS");
                     movsGlobal = hiloCajaChicaList.ejecutaWebService(rutaWS,"1");
                     recargarTable(movsGlobal);
-                    
+                    buscaUltimoRegistro();
                 } else {
                     JOptionPane.showMessageDialog(null, 
                             "Error al guardar el registro");

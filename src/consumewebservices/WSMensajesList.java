@@ -64,6 +64,19 @@ idVenta	int(11)
         }
         return mensajes;
     }
+    
+    public boolean ejecutaWebServiceEnviaCorreo(String... params) {
+        cadena = params[0];
+        url = null; // Url de donde queremos obtener información
+        devuelve ="";
+        boolean enviado = false;
+        switch (params[1]) { 
+            case "1" : 
+                enviado = enviaCorreoWS(); break;
+        }
+        return enviado;
+    }
+    
  
     public ArrayList<MensajeBean> obtenerMensajesWS() {
         ArrayList<MensajeBean> mensajes = new ArrayList();
@@ -301,6 +314,44 @@ idVenta	int(11)
             e.printStackTrace();
         }
         return mensajes;
+    }
+
+    public boolean enviaCorreoWS() {
+        boolean enviado = false;
+        try {
+            url = new URL(cadena);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
+                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
+            //connection.setHeader("content-type", "application/json");
+            int respuesta = connection.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK){
+                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
+                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
+                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
+                // StringBuilder.
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);        // Paso toda la entrada al StringBuilder
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");
+                if (resultJSON == 1) {
+                    enviado = true;
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return enviado;
     }
     
 }

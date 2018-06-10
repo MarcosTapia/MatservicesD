@@ -786,6 +786,38 @@ public class Util {
     }
     //********* FIN OBTIENE FECHA DEL SERVIDOR
     
+    //********* ENVIA CORREO
+    
+    //ENVIACORREOMENSAJE = util/envia_correo.php?mensaje=
+//ENVIACORREOREMITENTE = &remitente=
+//ENVIACORREODESTINATARIO = &destinatario=
+//ENVIACORREOTITULO = &titulo=
+//ENVIACORREONEGOCIO = &negocio=            
+
+    
+    public boolean enviaCorreo(String mensaje, String remitente, String destinatario
+        , String titulo, String negocio) {
+        boolean enviado = false;
+        Properties constantes = new ConstantesProperties().getProperties();        
+        WSMensajesList hiloMensajesList;
+        hiloMensajesList = new WSMensajesList();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("ENVIACORREOMENSAJE")
+                + mensaje 
+                + constantes.getProperty("ENVIACORREOREMITENTE")
+                + remitente 
+                + constantes.getProperty("ENVIACORREODESTINATARIO")
+                + destinatario 
+                + constantes.getProperty("ENVIACORREOTITULO")
+                + titulo 
+                + constantes.getProperty("ENVIACORREONEGOCIO")
+                + negocio 
+                ;
+        enviado = hiloMensajesList.ejecutaWebServiceEnviaCorreo(rutaWS,"1");
+        return enviado;
+    }
+    //********* FIN ENVIA CORREO
+    
     public Map<String, String> getSucursalesHM() {
         return sucursalesHM;
     }
