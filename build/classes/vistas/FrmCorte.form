@@ -115,7 +115,6 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="btnSalirPer" min="-2" pref="123" max="-2" attributes="0"/>
                           <Component id="btnGuardarPer" min="-2" max="-2" attributes="0"/>

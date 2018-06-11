@@ -2,6 +2,7 @@ package vistas;
 
 import beans.ProductoBean;
 import ComponenteConsulta.JDListaProducto;
+import Ticket.Ticket;
 import beans.CategoriaBean;
 import beans.ComprasBean;
 import beans.DatosEmpresaBean;
@@ -15,6 +16,7 @@ import beans.ProductosProveedoresCostosBean;
 import beans.ProveedorBean;
 import beans.UsuarioBean;
 import beans.VentasBean;
+import static componenteUtil.NumberToLetterConverter.convertNumberToLetter;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCompras;
 import consumewebservices.WSDatosEmpresa;
@@ -36,6 +38,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,6 +46,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -945,6 +949,133 @@ public class FrmCompras extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnCancelarProActionPerformed
 
+    public void imprimeCompra(){
+        try {
+            //Primera parte
+//            Date date=new Date();
+//            SimpleDateFormat fecha=new SimpleDateFormat("dd/MM/yyyy");
+//            SimpleDateFormat hora=new SimpleDateFormat("hh:mm:ss aa");
+            Ticket ticket = new Ticket();
+            ticket.AddCabecera("" + Principal.datosEmpresaBean.getNombreEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera("Sucursal: " + util.buscaDescFromIdSuc(Principal.sucursalesHM, 
+                    "" + Ingreso.usuario.getIdSucursal()));
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera(Principal.datosEmpresaBean.getDireccionEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera(Principal.datosEmpresaBean.getCiudadEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera(Principal.datosEmpresaBean.getTelEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            
+//            ticket.AddCabecera("     tlf: 222222  r.u.c: 22222222222");
+//            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera(ticket.DibujarLinea(40));
+
+            //Segunda parte
+            ticket.AddSubCabecera(ticket.DarEspacio());
+//            SimpleDateFormat fecha=new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
+//            String fechaImpresion = fecha.format(ventaTitulos.getcVenFecha());
+            java.util.Date fecha = util.obtieneFechaServidor();
+            String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
+            String fechaImpresion = a;
+            ticket.AddSubCabecera("Compra No: " + 
+                    txtNoCompra.getText() + "   " +
+                    fechaImpresion);
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera("Compró: " + Ingreso.usuario.getNombre()
+                + " " + Ingreso.usuario.getApellido_paterno() 
+                + Ingreso.usuario.getApellido_materno());
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera(ticket.DibujarLinea(40));
+            
+            //tercera parte
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera("CANT   DESCRIPCION         P.U   IMPORTE");
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera(ticket.DibujarLinea(40));
+            
+            //cuarta parte detalle detalleVentaProducto
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            for(DetalleCompraBean detalleCompraBean : detalleCompraTotal) {
+               //cantidad de decimales
+               NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH);
+               DecimalFormat form = (DecimalFormat)nf;
+               form.applyPattern("#,###.00");
+               //cantidad
+               String cantidad = "" + detalleCompraBean.getCantidad();
+               if(cantidad.length()<4){
+                   int cant = 4 - cantidad.length();
+                   String can = "";
+                   for(int f=0;f<cant;f++){
+                       can+=" ";
+                   }
+                   cantidad+=can;
+               }
+                
+                //descripcion
+               String item = util.buscaDescFromIdProd(Principal.productosHM
+                       , "" + detalleCompraBean.getIdArticulo());
+               if(item.length()>17) {
+                   item=item.substring(0,16)+".";
+               } else {
+                    int c=17-item.length();String comple="";
+                    for(int y1=0;y1<c;y1++) {
+                        comple+=" ";
+                    }
+                    item+=comple;
+               }
+                
+                //precio unitario
+               String precio=""+detalleCompraBean.getPrecioCosto();
+               double pre1=Double.parseDouble(precio);
+               precio=form.format(pre1);
+               if(precio.length()<8){
+                    int p=8-precio.length();String pre="";
+                    for(int y1=0;y1<p;y1++){
+                        pre+=" ";
+                    }
+                    precio=pre+precio;
+               }
+                
+                //total
+                String total1 = "" + detalleCompraBean.getCantidad()
+                        * detalleCompraBean.getPrecioCosto();
+                total1 = form.format(Double.parseDouble(total1));
+                if (total1.length()<8) {
+                    int t=8-total1.length();String tota="";
+                    for(int y1=0;y1<t;y1++){
+                        tota+=" ";
+                    }
+                    total1=tota+total1;
+                }
+                //agrego los items al detalle
+                ticket.AddItem(cantidad,item,precio,total1);
+                //ticket.AddItem("","","",ticket.DarEspacio());
+            }
+            ticket.AddItem(ticket.DibujarLinea(40),"","","");
+            
+            //Quinta parte totales
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("SUBTOTAL                ",txtSubTotal.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("IVA                     ",txtIva.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("TOTAL                   ",txtMontoApagar.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("",ticket.DarEspacio());
+            
+            //para cantidad con letra
+            String numEnLetra = convertNumberToLetter(txtMontoApagar.getText());
+            ticket.AddTotal("",numEnLetra.trim());
+            ticket.AddPieLinea(ticket.DarEspacio());     
+//            ticket.ImprimirDocumento("LPT1",true);
+            ticket.ImprimirDocumento("usb002",true);
+        } catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Error " + e.getMessage());
+        }     
+    }    
+    
     private void btnGuardarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProActionPerformed
         //lleno el objeto compra
         ComprasBean compra = new ComprasBean();
@@ -1075,15 +1206,14 @@ public class FrmCompras extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, 
                         "COMPRA GUARDADA CORRRECTAMENTE");
                 //detalleCompraTotal.remove(detalleCompra);
-                compra = null;
                 int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
                         + "Imprimir la Compra?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
                 if (resultado == JOptionPane.YES_OPTION) {
                     //imprime ticket
-//                                                    imprimir(ventasBean);
-//                            JOptionPane.showMessageDialog(null, "Se imprime el ticket");                             
+                    imprimeCompra();
                     //fin imprime ticket
                 }
+                compra = null;
                 //fin guarda detalle venta
             }                        
             //fin guarda compra

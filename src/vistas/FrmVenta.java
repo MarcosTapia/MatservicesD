@@ -132,129 +132,143 @@ public class FrmVenta extends javax.swing.JFrame {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
     }
     
-    public void imprimir(VentasBean ventaTitulos){
-//        try{
-//            //Primera parte
-////            Date date=new Date();
-////            SimpleDateFormat fecha=new SimpleDateFormat("dd/MM/yyyy");
-////            SimpleDateFormat hora=new SimpleDateFormat("hh:mm:ss aa");
-//            Ticket ticket = new Ticket();
-//            ticket.AddCabecera("" + Principal.datosEmpresaBean.getNombreEmpresa());
-////            ticket.AddCabecera(ticket.DarEspacio());
-////            ticket.AddCabecera("         GUSTAVO PARAMO FIGUEROA");
+    public void imprimeVenta(String tipoTicket){
+        try {
+            //Primera parte
+//            Date date=new Date();
+//            SimpleDateFormat fecha=new SimpleDateFormat("dd/MM/yyyy");
+//            SimpleDateFormat hora=new SimpleDateFormat("hh:mm:ss aa");
+            Ticket ticket = new Ticket();
+            ticket.AddCabecera("" + Principal.datosEmpresaBean.getNombreEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera("Sucursal: " + util.buscaDescFromIdSuc(Principal.sucursalesHM, 
+                    "" + Ingreso.usuario.getIdSucursal()));
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera(Principal.datosEmpresaBean.getDireccionEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera(Principal.datosEmpresaBean.getCiudadEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera(Principal.datosEmpresaBean.getTelEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            
+//            ticket.AddCabecera("     tlf: 222222  r.u.c: 22222222222");
 //            ticket.AddCabecera(ticket.DarEspacio());
-//            ticket.AddCabecera("CALLE DEL NEGOCIO");
-//            ticket.AddCabecera(ticket.DarEspacio());
-//            ticket.AddCabecera("COL. DEL NEGOCIO");
-//            ticket.AddCabecera(ticket.DarEspacio());
-//            ticket.AddCabecera("RFC DEL NEGOCIO");
-//            ticket.AddCabecera(ticket.DarEspacio());
-//            ticket.AddCabecera("TEL. DEL NEGOCIO");
-//            ticket.AddCabecera(ticket.DarEspacio());
-//            
-////            ticket.AddCabecera("     tlf: 222222  r.u.c: 22222222222");
-////            ticket.AddCabecera(ticket.DarEspacio());
-//            ticket.AddSubCabecera(ticket.DibujarLinea(40));
-//
-//            //Segunda parte
-//            ticket.AddSubCabecera(ticket.DarEspacio());
-////            SimpleDateFormat fecha=new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
-////            String fechaImpresion = fecha.format(ventaTitulos.getcVenFecha());
-//            String fechaImpresion = ventaTitulos.getcVenFecha();
-//            ticket.AddSubCabecera("Venta No:'" + 
-//                    ventaTitulos.getnVenCodigo()+"'   " +
-//                    fechaImpresion);
-//            ticket.AddSubCabecera(ticket.DarEspacio());
-//            ticket.AddSubCabecera(ticket.DibujarLinea(40));
-//            
-//            //tercera parte
-//            ticket.AddSubCabecera(ticket.DarEspacio());
-//            ticket.AddSubCabecera("CANT   DESCRIPCION         P.U   IMPORTE");
-//            ticket.AddSubCabecera(ticket.DarEspacio());
-//            ticket.AddSubCabecera(ticket.DibujarLinea(40));
-//            
-//            //cuarta parte detalle detalleVentaProducto
-//            ticket.AddSubCabecera(ticket.DarEspacio());
-//            for(DetalleVentaBean detalleVentaProdBean :  detalleVentaProducto) {
-//               //cantidad de decimales
-//               NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH);
-//               DecimalFormat form = (DecimalFormat)nf;
-//               form.applyPattern("#,###.00");
-//               //cantidad
-//               String cantidad = ""+detalleVentaProdBean.getCantidad();
-//               if(cantidad.length()<4){
-//                   int cant=4-cantidad.length();
-//                   String can="";
-//                   for(int f=0;f<cant;f++){
-//                       can+=" ";
-//                   }
-//                   cantidad+=can;
-//               }
-//                
-//                //descripcion
-//                String item = NombreProducto.get(detalleVentaProdBean.getCodigo());
-//                if(item.length()>17) {
-//                    item=item.substring(0,16)+".";
-//                } else {
-//                    int c=17-item.length();String comple="";
-//                    for(int y1=0;y1<c;y1++) {
-//                        comple+=" ";
-//                    }
-//                    item+=comple;
-//                }
-//                
-//                //precio unitario
-//                String precio=""+detalleVentaProdBean.getPrecioUnitario();
-//                double pre1=Double.parseDouble(precio);
-//                precio=form.format(pre1);
-//                if(precio.length()<8){
-//                    int p=8-precio.length();String pre="";
-//                    for(int y1=0;y1<p;y1++){
-//                        pre+=" ";
-//                    }
-//                    precio=pre+precio;
-//                }
-//                
-//                //total
-//                String total1 = "" + detalleVentaProdBean.getSubTotalParcial();
-//                total1 = form.format(Double.parseDouble(total1));
-//                if (total1.length()<8) {
-//                    int t=8-total1.length();String tota="";
-//                    for(int y1=0;y1<t;y1++){
-//                        tota+=" ";
-//                    }
-//                    total1=tota+total1;
-//                }
-//                //agrego los items al detalle
-//                ticket.AddItem(cantidad,item,precio,total1);
-//                //ticket.AddItem("","","",ticket.DarEspacio());
-//            }
-//            ticket.AddItem(ticket.DibujarLinea(40),"","","");
-//            
-//            //Quinta parte totales
-//            ticket.AddTotal("",ticket.DarEspacio());
-//            ticket.AddTotal("SUBTOTAL                ",txtSubTotal.getText());
-//            ticket.AddTotal("",ticket.DarEspacio());
-//            ticket.AddTotal("IVA                     ",txtIva.getText());
-//            ticket.AddTotal("",ticket.DarEspacio());
-//            ticket.AddTotal("TOTAL                   ",txtMontoApagar.getText());
-//            ticket.AddTotal("",ticket.DarEspacio());
-//            ticket.AddTotal("SU PAGO                 ",txtImporte.getText());
-//            ticket.AddTotal("",ticket.DarEspacio());
-//            ticket.AddTotal("SU CAMBIO               ",txtVuelto.getText());
-//            ticket.AddTotal("",ticket.DarEspacio());
-//            ticket.AddTotal("",ticket.DarEspacio());
-//            
-//            //para cantidad con letra
-//            String numEnLetra = convertNumberToLetter(txtMontoApagar.getText());
-//            ticket.AddTotal("",numEnLetra.trim());
-//            ticket.AddPieLinea(ticket.DarEspacio());     
-//            ticket.AddPieLinea("                 GRACIAS!");
-////            ticket.ImprimirDocumento("LPT1",true);
-//            ticket.ImprimirDocumento("usb002",true);
-//        }catch(Exception e){
-//            JOptionPane.showMessageDialog(null, "\nerror "+e.getMessage());
-//        }     
+            ticket.AddSubCabecera(ticket.DibujarLinea(40));
+
+            //Segunda parte
+            ticket.AddSubCabecera(ticket.DarEspacio());
+//            SimpleDateFormat fecha=new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
+//            String fechaImpresion = fecha.format(ventaTitulos.getcVenFecha());
+            java.util.Date fecha = util.obtieneFechaServidor();
+            String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
+            String fechaImpresion = a;
+            if (tipoTicket.equalsIgnoreCase("Venta")) {
+                ticket.AddSubCabecera("Venta No: " + 
+                        txtNroVenta.getText() + "   " +
+                        fechaImpresion);
+            } else {
+                ticket.AddSubCabecera("Ticket de Pedido: " + fechaImpresion);
+            }
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera("Le atendió: " + Ingreso.usuario.getNombre()
+                + " " + Ingreso.usuario.getApellido_paterno() 
+                + Ingreso.usuario.getApellido_materno());
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera(ticket.DibujarLinea(40));
+            
+            //tercera parte
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera("CANT   DESCRIPCION         P.U   IMPORTE");
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera(ticket.DibujarLinea(40));
+            
+            //cuarta parte detalle detalleVentaProducto
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            for(DetalleVentaBean detalleVentaProdBean :  detalleVentaProducto) {
+               //cantidad de decimales
+               NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH);
+               DecimalFormat form = (DecimalFormat)nf;
+               form.applyPattern("#,###.00");
+               //cantidad
+               String cantidad = "" + detalleVentaProdBean.getCantidad();
+               if(cantidad.length()<4){
+                   int cant = 4 - cantidad.length();
+                   String can = "";
+                   for(int f=0;f<cant;f++){
+                       can+=" ";
+                   }
+                   cantidad+=can;
+               }
+                
+                //descripcion
+               String item = util.buscaDescFromIdProd(Principal.productosHM
+                       , "" + detalleVentaProdBean.getIdArticulo());
+               if(item.length()>17) {
+                   item=item.substring(0,16)+".";
+               } else {
+                    int c=17-item.length();String comple="";
+                    for(int y1=0;y1<c;y1++) {
+                        comple+=" ";
+                    }
+                    item+=comple;
+               }
+                
+                //precio unitario
+               String precio=""+detalleVentaProdBean.getPrecio();
+               double pre1=Double.parseDouble(precio);
+               precio=form.format(pre1);
+               if(precio.length()<8){
+                    int p=8-precio.length();String pre="";
+                    for(int y1=0;y1<p;y1++){
+                        pre+=" ";
+                    }
+                    precio=pre+precio;
+               }
+                
+                //total
+                String total1 = "" + detalleVentaProdBean.getCantidad()
+                        * detalleVentaProdBean.getPrecio();
+                total1 = form.format(Double.parseDouble(total1));
+                if (total1.length()<8) {
+                    int t=8-total1.length();String tota="";
+                    for(int y1=0;y1<t;y1++){
+                        tota+=" ";
+                    }
+                    total1=tota+total1;
+                }
+                //agrego los items al detalle
+                ticket.AddItem(cantidad,item,precio,total1);
+                //ticket.AddItem("","","",ticket.DarEspacio());
+            }
+            ticket.AddItem(ticket.DibujarLinea(40),"","","");
+            
+            //Quinta parte totales
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("SUBTOTAL                ",txtSubTotal.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("IVA                     ",txtIva.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("TOTAL                   ",txtMontoApagar.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("SU PAGO                 ",txtImporte.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("SU CAMBIO               ",txtVuelto.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("",ticket.DarEspacio());
+            
+            //para cantidad con letra
+            String numEnLetra = convertNumberToLetter(txtMontoApagar.getText());
+            ticket.AddTotal("",numEnLetra.trim());
+            ticket.AddPieLinea(ticket.DarEspacio());     
+            ticket.AddPieLinea("DEVOLUCIÓN SOLO CON TICKET");
+            ticket.AddPieLinea(ticket.DarEspacio());     
+            ticket.AddPieLinea("                 GRACIAS!");
+//            ticket.ImprimirDocumento("LPT1",true);
+            ticket.ImprimirDocumento("usb002",true);
+        } catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Error " + e.getMessage());
+            return;
+        }     
     }    
     
     public int obtenerUltimoId() {
@@ -1242,19 +1256,18 @@ public class FrmVenta extends javax.swing.JFrame {
                             util.llenaMapProductos(productos);
                             //fin carga productos actualizados
                             
-                            borrar();
                             JOptionPane.showMessageDialog(null, 
                                     "VENTA GUARDADA CORRRECTAMENTE");
 //                            detalleVentaProducto.remove(detVentBeanADisminuir);
-                            ventasBean = null;
                             int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
                                     + "Imprimir la Venta?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
                             if (resultado == JOptionPane.YES_OPTION) {
                                 //imprime ticket
-//                                                    imprimir(ventasBean);
-    //                            JOptionPane.showMessageDialog(null, "Se imprime el ticket");                             
+                                imprimeVenta("Venta");
                                 //fin imprime ticket
                             }
+                            borrar();
+                            ventasBean = null;
                             //fin guarda detalle venta
                         }                        
                         //fin guarda venta
@@ -1625,19 +1638,18 @@ public class FrmVenta extends javax.swing.JFrame {
                                     );
                         }
                         //fin guarda detalle pedido
-                        borrar();
                         JOptionPane.showMessageDialog(null, 
                                 "PEDIDO GUARDADO CORRRECTAMENTE");
 //                            detalleVentaProducto.remove(detVentBeanADisminuir);
-                        ventasBean = null;
                         int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
                                 + "Imprimir el Pedido?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
                         if (resultado == JOptionPane.YES_OPTION) {
                             //imprime ticket
-//                                                    imprimir(ventasBean);
-//                            JOptionPane.showMessageDialog(null, "Se imprime el ticket");                             
+                            imprimeVenta("Pedido");
                             //fin imprime ticket
                         }
+                        borrar();
+                        ventasBean = null;
                     } //fin guarda pedido
                 }                        
                 //fin guarda venta

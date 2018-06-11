@@ -2,12 +2,15 @@ package vistas;
 
 import beans.UsuarioBean;
 import ComponenteConsulta.JDListaUsuario;
+import Ticket.Ticket;
 import beans.CajaChicaBean;
 import beans.ComprasBean;
 import beans.CorteCajaBean;
 import beans.DatosEmpresaBean;
+import beans.DetalleCompraBean;
 import beans.SucursalBean;
 import beans.VentasBean;
+import static componenteUtil.NumberToLetterConverter.convertNumberToLetter;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCajaChica;
 import consumewebservices.WSCajaChicaList;
@@ -30,8 +33,11 @@ import static vistas.Ingreso.usuario;
 
 import java.security.MessageDigest;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import util.Util;
 import static vistas.Principal.productos;
 
@@ -602,6 +608,100 @@ public class FrmCorte extends javax.swing.JFrame {
             }
         }
     }
+
+    public void imprimeCorte(){
+        try {
+            //Primera parte
+//            Date date=new Date();
+//            SimpleDateFormat fecha=new SimpleDateFormat("dd/MM/yyyy");
+//            SimpleDateFormat hora=new SimpleDateFormat("hh:mm:ss aa");
+            Ticket ticket = new Ticket();
+            ticket.AddCabecera("" + Principal.datosEmpresaBean.getNombreEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera("Sucursal: " + util.buscaDescFromIdSuc(Principal.sucursalesHM, 
+                    "" + Ingreso.usuario.getIdSucursal()));
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera(Principal.datosEmpresaBean.getDireccionEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera(Principal.datosEmpresaBean.getCiudadEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddCabecera(Principal.datosEmpresaBean.getTelEmpresa());
+            ticket.AddCabecera(ticket.DarEspacio());
+            
+//            ticket.AddCabecera("     tlf: 222222  r.u.c: 22222222222");
+//            ticket.AddCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera(ticket.DibujarLinea(40));
+
+            //Segunda parte
+            ticket.AddSubCabecera(ticket.DarEspacio());
+//            SimpleDateFormat fecha=new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
+//            String fechaImpresion = fecha.format(ventaTitulos.getcVenFecha());
+            java.util.Date fecha = util.obtieneFechaServidor();
+            String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
+            String fechaImpresion = a;
+            ticket.AddSubCabecera("Corte del Día : " +
+                    fechaImpresion);
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera("Corte de: " + Ingreso.usuario.getNombre()
+                + " " + Ingreso.usuario.getApellido_paterno() 
+                + Ingreso.usuario.getApellido_materno());
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera(ticket.DibujarLinea(40));
+            
+            //tercera parte
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera("CANT   DESCRIPCION         P.U   IMPORTE");
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            ticket.AddSubCabecera(ticket.DibujarLinea(40));
+            
+            //cuarta parte detalle detalleVentaProducto
+            ticket.AddSubCabecera(ticket.DarEspacio());
+            for(CorteCajaBean detalleVentaProdBean : corteCajaHoy) {
+               //cantidad de decimales
+               NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH);
+               DecimalFormat form = (DecimalFormat)nf;
+               form.applyPattern("#,###.00");
+               //idMov
+               String idMov = "" + detalleVentaProdBean.getIdMov()+ " ";
+                
+                //total
+               String totalMov = "" + detalleVentaProdBean.getTotal() + " ";
+                
+                //tipo mov
+               String tipoMov = detalleVentaProdBean.getTipoMov();
+                
+                //total
+                String extra = "";
+                //agrego los items al detalle
+                ticket.AddItem(idMov,totalMov,tipoMov,extra);
+                //ticket.AddItem("","","",ticket.DarEspacio());
+            }
+            ticket.AddItem(ticket.DibujarLinea(40),"","","");
+            
+            //Quinta parte totales
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("TOTAL                ",txtTotal.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("VENTAS               ",txtTotalVentas.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("COMPRAS              ",txtTotalCompras.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("INGRESOS             ",txtTotalIngresos.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("GASTOS              ",txtTotalGastos.getText());
+            ticket.AddTotal("",ticket.DarEspacio());
+            ticket.AddTotal("",ticket.DarEspacio());
+            
+            //para idMov con letra
+            String numEnLetra = convertNumberToLetter(txtTotal.getText());
+            ticket.AddTotal("",numEnLetra.trim());
+            ticket.AddPieLinea(ticket.DarEspacio());     
+//            ticket.ImprimirDocumento("LPT1",true);
+            ticket.ImprimirDocumento("usb002",true);
+        } catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Error " + e.getMessage());
+        }     
+    }    
     
     private void btnGuardarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPerActionPerformed
         if (corteCajaHoy.size() > 0) {
@@ -669,7 +769,16 @@ public class FrmCorte extends javax.swing.JFrame {
                 //fin negocio
             boolean enviado = util.enviaCorreo(mensaje,remitente,destinatario
                 ,titulo,negocio);
+            int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
+                    + "Imprimir el Corte?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
+            if (resultado == JOptionPane.YES_OPTION) {
+                //imprime ticket
+                imprimeCorte();
+                //fin imprime ticket
+            }
             //fin envia correo
+            corteCajaHoy.clear();
+            recargarTable(corteCajaHoy);
             JOptionPane.showMessageDialog(null, "CORTE DE CAJA PROCESADO");
             this.setVisible(false);
             this.dispose();
