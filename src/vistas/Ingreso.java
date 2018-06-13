@@ -1,69 +1,37 @@
 package vistas;
 
-import beans.DetalleVentaBean;
 import beans.MensajeBean;
-import beans.ProductoBean;
-import beans.SucursalBean;
 import beans.UsuarioBean;
-import beans.VentasBean;
 import com.sun.awt.AWTUtilities;
 import constantes.ConstantesProperties;
-import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSDetalleVentasList;
-import consumewebservices.WSMensajes;
 import consumewebservices.WSMensajesList;
-import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
-import consumewebservices.WSVentas;
-import consumewebservices.WSVentasList;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import util.Util;
-//import static vistas.Ingresoa.usuario;
 
 public class Ingreso extends javax.swing.JFrame {
+
     Properties constantes = new ConstantesProperties().getProperties();
     //WS
     WSUsuarios hiloUsuarios;
-//    WSSucursalesList hiloSucursalesList;
-//    static Map<String,String> sucursalesHM = new HashMap();
-    
-    //WS
-//    Util util = new Util();
-//    WSDatosEmpresa hiloEmpresa;
-//    WSMensajes hiloMensajes;
     WSMensajesList hiloMensajesList;
-//    WSDetalleVentasList hiloDetalleVentasList;
     //Fin WS
     DateFormat fecha = DateFormat.getDateInstance();
-//    String accion = "";
-//    ArrayList<VentasBean> ventasGlobal = null;
-//    ArrayList<DetalleVentaBean> detalleVentasGlobal = null;
-//    ArrayList<ProductoBean> inventario = null;
-    
-    //Fin WS
-    
     String mensaje = "";
-            
+
     public static UsuarioBean usuario;
 
-    int x,y;
-    
+    int x, y;
+
     public Ingreso() {
         initComponents();
         this.setLocationRelativeTo(null);
         AWTUtilities.setWindowOpaque(this, false);
-        
+
 //        //Checa si existe archivo licencia
 //        File f = new File("C:\\Windows\\addins\\w4mdp.ecf");
 //        if (!(f.exists())) { 
@@ -234,12 +202,12 @@ public class Ingreso extends javax.swing.JFrame {
     public void consultaUsuariosWS() {
         hiloUsuarios = new WSUsuarios();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETUSUARIOS");
-        UsuarioBean resultadoWS = hiloUsuarios.ejecutaWebService(rutaWS,"1");
+        UsuarioBean resultadoWS = hiloUsuarios.ejecutaWebService(rutaWS, "1");
     }
 
     public void obtieneMensajes() {
-        String fechaIni = "";
-        String fechaFin = "";
+        String fechaIni;
+        String fechaFin;
         //Tomamos las dos fechas y las convierto a java.sql.date
         java.util.Date fechaUtilDateIni = new Date();
         java.util.Date fechaUtilDateFin = new Date();
@@ -248,7 +216,8 @@ public class Ingreso extends javax.swing.JFrame {
         try {
             fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo "
+                    + "menos la fecha de Inicio");
             return;
         }
         try {
@@ -266,32 +235,28 @@ public class Ingreso extends javax.swing.JFrame {
         ArrayList<MensajeBean> mensajesPorFechas = null;
         hiloMensajesList = new WSMensajesList();
         String rutaWS = constantes.getProperty("IP") + constantes
-                .getProperty("GETMENSAJESPORFECHASFINI") + fechaIni +
-                constantes.getProperty("GETMENSAJESPORFECHASFFIN") + fechaFin;
-        mensajesPorFechas = hiloMensajesList.ejecutaWebService(rutaWS,"2");
-//            String mensaje = "<html><body>Por este conducto se indica que los "
-//                    + "cortes de caja se realizarán en punto de las 6 p.m. "
-//                    + "Por su atención mil gracias. Atte. La gerencia."
-//                    + "</body></html>";
+                .getProperty("GETMENSAJESPORFECHASFINI") + fechaIni
+                + constantes.getProperty("GETMENSAJESPORFECHASFFIN") + fechaFin;
+        mensajesPorFechas = hiloMensajesList.ejecutaWebService(rutaWS, "2");
         if (mensajesPorFechas.size() > 0) {
             mensaje = "<html><body><ul>";
             for (MensajeBean msg : mensajesPorFechas) {
-                mensaje = mensaje + "<li>"+ msg.getMensaje() +"</li>";
-            }            
+                mensaje = mensaje + "<li>" + msg.getMensaje() + "</li>";
+            }
             mensaje = mensaje + "</ul></body></html>";
         } else {
             mensaje = "";
         }
-//        recargarTableVentas(mensajesPorFechas);
     }
-    
+
     public void verificaUsuarioWS() {
         hiloUsuarios = new WSUsuarios();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("VERIFICA_USUARIOUSER") + txtUser.getText() +
-                constantes.getProperty("VERIFICA_USUARIOCVE") + txtPassword.getText();
-        //String resultadoWS = hiloUsuarios.ejecutaWebService(rutaWS,"2");
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("VERIFICA_USUARIOUSER") 
+                + txtUser.getText()
+                + constantes.getProperty("VERIFICA_USUARIOCVE") 
+                + txtPassword.getText();
         usuario = hiloUsuarios.verificaUsuarioWS(rutaWS);
-//        if (!"".equalsIgnoreCase(resultadoWS)) {
         if (usuario != null) {
             this.dispose();
             obtieneMensajes();
@@ -299,20 +264,21 @@ public class Ingreso extends javax.swing.JFrame {
                 vistas.Principal principal = new vistas.Principal();
                 principal.setExtendedState(principal.MAXIMIZED_BOTH);
                 principal.setDefaultCloseOperation(principal.EXIT_ON_CLOSE);
-                principal.setVisible(true);    
+                principal.setVisible(true);
             } else { //si hay mensajes
                 FrmMensaje frmMensaje = new FrmMensaje();
                 frmMensaje.setMensaje(mensaje);
                 frmMensaje.setVisible(true);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "ERROR: Usuario o clave erróneos");            
+            JOptionPane.showMessageDialog(null, "ERROR: Usuario o clave "
+                    + "erróneos");
             borrar();
         }
     }
     //Fin para WS
-    
-    
+
+
     private void jLabel8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel8MouseClicked
         System.exit(0);
     }//GEN-LAST:event_jLabel8MouseClicked
@@ -323,7 +289,8 @@ public class Ingreso extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel2MousePressed
 
     private void jLabel2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseDragged
-        this.setLocation(this.getLocation().x + evt.getX() - x, this.getLocation().y + evt.getY() - y);
+        this.setLocation(this.getLocation().x + evt.getX() 
+                - x, this.getLocation().y + evt.getY() - y);
     }//GEN-LAST:event_jLabel2MouseDragged
 
     public void borrar() {
@@ -331,7 +298,7 @@ public class Ingreso extends javax.swing.JFrame {
         txtPassword.setText(null);
         txtUser.requestFocus();
     }
-    
+
     private void btnIngresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresoActionPerformed
         verificaUsuarioWS();
     }//GEN-LAST:event_btnIngresoActionPerformed
@@ -341,14 +308,6 @@ public class Ingreso extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-//        if (txtUser.getText().equalsIgnoreCase("admin") && txtPassword.getText().equalsIgnoreCase("12345")) {
-//            this.dispose();
-//            ConfiguracionOculta configuracion = new ConfiguracionOculta();
-//            Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
-//            configuracion.setSize(550,400);		
-//            configuracion.setLocationRelativeTo(null);        
-//            configuracion.setVisible(true);            
-//        } 
     }//GEN-LAST:event_jLabel7MouseClicked
 
     private void txtUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUserActionPerformed
@@ -360,7 +319,6 @@ public class Ingreso extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPasswordActionPerformed
 
     private void btnIngresoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnIngresoKeyPressed
-//        verificaUsuario();
         verificaUsuarioWS();
     }//GEN-LAST:event_btnIngresoKeyPressed
 

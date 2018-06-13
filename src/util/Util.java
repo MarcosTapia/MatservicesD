@@ -70,7 +70,7 @@ public class Util {
     private Map<String,String> productosHMID = new HashMap();
     private Map<String,String> usuariosHM = new HashMap();
     private Map<String,String> clientesHM = new HashMap();
-
+    
     /**
      * Metodo para convertir a numero
      */
@@ -801,19 +801,26 @@ public class Util {
         Properties constantes = new ConstantesProperties().getProperties();        
         WSMensajesList hiloMensajesList;
         hiloMensajesList = new WSMensajesList();
+//        String rutaWS = constantes.getProperty("IP") 
+//                + constantes.getProperty("ENVIACORREOMENSAJE")
+//                + mensaje 
+//                + constantes.getProperty("ENVIACORREOREMITENTE")
+//                + remitente 
+//                + constantes.getProperty("ENVIACORREODESTINATARIO")
+//                + destinatario 
+//                + constantes.getProperty("ENVIACORREOTITULO")
+//                + titulo 
+//                + constantes.getProperty("ENVIACORREONEGOCIO")
+//                + negocio 
+//                ;
         String rutaWS = constantes.getProperty("IP") 
-                + constantes.getProperty("ENVIACORREOMENSAJE")
-                + mensaje 
-                + constantes.getProperty("ENVIACORREOREMITENTE")
-                + remitente 
-                + constantes.getProperty("ENVIACORREODESTINATARIO")
-                + destinatario 
-                + constantes.getProperty("ENVIACORREOTITULO")
-                + titulo 
-                + constantes.getProperty("ENVIACORREONEGOCIO")
-                + negocio 
-                ;
-        enviado = hiloMensajesList.ejecutaWebServiceEnviaCorreo(rutaWS,"1");
+                + constantes.getProperty("ENVIACORREOMENSAJE");
+        enviado = hiloMensajesList.ejecutaWebServiceEnviaCorreo(rutaWS,"1"
+            , mensaje
+            , remitente
+            , destinatario
+            , titulo
+            , negocio);
         return enviado;
     }
     //********* FIN ENVIA CORREO

@@ -2,6 +2,7 @@ package consumewebservices;
 
 import beans.CategoriaBean;
 import beans.ClienteBean;
+import beans.CorteCajaBean;
 import beans.MensajeBean;
 import beans.SucursalBean;
 import beans.UsuarioBean;
@@ -20,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +44,14 @@ idVenta	int(11)
     idUsuario	int(11)
     idSucursal    
 */
+
+    String mensaje;
+    String remitente;
+    String destinatario;
+    String titulo;
+    String negocio;
+    
+    
     public ArrayList<MensajeBean> ejecutaWebService(String... params) {
         cadena = params[0];
         url = null; // Url de donde queremos obtener información
@@ -72,6 +82,11 @@ idVenta	int(11)
         boolean enviado = false;
         switch (params[1]) { 
             case "1" : 
+                mensaje = params[2];
+                remitente = params[3];
+                destinatario = params[4];
+                titulo = params[5];
+                negocio = params[6];
                 enviado = enviaCorreoWS(); break;
         }
         return enviado;
@@ -319,30 +334,51 @@ idVenta	int(11)
     public boolean enviaCorreoWS() {
         boolean enviado = false;
         try {
+            HttpURLConnection urlConn;
+            DataOutputStream printout;
+            DataInputStream input;
             url = new URL(cadena);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Abrir la conexión
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0" +
-                    " (Linux; Android 1.5; es-ES) Ejemplo HTTP");
-            //connection.setHeader("content-type", "application/json");
-            int respuesta = connection.getResponseCode();
+            urlConn = (HttpURLConnection) url.openConnection();
+            urlConn.setDoInput(true);
+            urlConn.setDoOutput(true);
+            urlConn.setUseCaches(false);
+            urlConn.setRequestProperty("Content-Type", "application/json");
+            urlConn.setRequestProperty("Accept", "application/json");
+            urlConn.connect();
+            //Creo el Objeto JSON
+            JSONObject jsonParam = new JSONObject();
+            jsonParam.put("mensaje",mensaje);
+            jsonParam.put("remitente",remitente);
+            jsonParam.put("destinatario",destinatario);
+            jsonParam.put("titulo",titulo);
+            jsonParam.put("negocio",negocio);
+            // Envio los parámetros post.
+            OutputStream os = urlConn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(jsonParam.toString());
+            writer.flush();
+            writer.close();
+            int respuesta = urlConn.getResponseCode();
             StringBuilder result = new StringBuilder();
-            if (respuesta == HttpURLConnection.HTTP_OK){
-                InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));  // la introduzco en un BufferedReader
-                // El siguiente proceso lo hago porque el JSONOBject necesita un String y tengo
-                // que tranformar el BufferedReader a String. Esto lo hago a traves de un
-                // StringBuilder.
+            if (respuesta == HttpURLConnection.HTTP_OK) {
                 String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);        // Paso toda la entrada al StringBuilder
+                BufferedReader br=new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+                while ((line=br.readLine()) != null) {
+                    result.append(line);
+                    //response+=line;
                 }
                 //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
                 JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
                 //Accedemos al vector de resultados
-                int resultJSON = respuestaJSON.getInt("estado");
-                if (resultJSON == 1) {
+                int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
+                if (resultJSON == 1) {      // hay sucursal que mostrar
                     enviado = true;
+                } else if (resultJSON == 2) {
+                    enviado = false;
                 }
+            } else {
+                enviado = false;
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -353,5 +389,6 @@ idVenta	int(11)
         }
         return enviado;
     }
+    
     
 }

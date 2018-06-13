@@ -1,32 +1,19 @@
 package vistas;
 
-import beans.SucursalBean;
 import beans.UsuarioBean;
 import com.sun.awt.AWTUtilities;
 import constantes.ConstantesProperties;
-import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import util.Util;
-//import static vistas.Ingresoa.usuario;
 
 public class FrmMensaje extends javax.swing.JFrame {
+
     Properties constantes = new ConstantesProperties().getProperties();
     //WS
     WSUsuarios hiloUsuarios;
-//    WSSucursalesList hiloSucursalesList;
-//    static Map<String,String> sucursalesHM = new HashMap();
     //Fin WS
-    
+
     private String mensaje;
 
     public String getMensaje() {
@@ -36,11 +23,11 @@ public class FrmMensaje extends javax.swing.JFrame {
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
     }
-    
+
     public static UsuarioBean usuario;
 
-    int x,y;
-    
+    int x, y;
+
     public FrmMensaje() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -62,6 +49,9 @@ public class FrmMensaje extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(525, 535));
         setUndecorated(true);
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
@@ -143,23 +133,12 @@ public class FrmMensaje extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    //ParaWS
-    public void consultaUsuariosWS() {
-        hiloUsuarios = new WSUsuarios();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETUSUARIOS");
-        UsuarioBean resultadoWS = hiloUsuarios.ejecutaWebService(rutaWS,"1");
-    }
-
-    public void verificaUsuarioWS() {
-    }
-    
-    
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
         this.dispose();
         vistas.Principal principal = new vistas.Principal();
         principal.setExtendedState(principal.MAXIMIZED_BOTH);
         principal.setDefaultCloseOperation(principal.EXIT_ON_CLOSE);
-        principal.setVisible(true);    
+        principal.setVisible(true);
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -167,11 +146,9 @@ public class FrmMensaje extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void lblMensajeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMensajeMousePressed
-        // TODO add your handling code here:
     }//GEN-LAST:event_lblMensajeMousePressed
 
     private void lblMensajeMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMensajeMouseDragged
-        // TODO add your handling code here:
     }//GEN-LAST:event_lblMensajeMouseDragged
 
     private void jLabel2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MousePressed
@@ -180,8 +157,12 @@ public class FrmMensaje extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel2MousePressed
 
     private void jLabel2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseDragged
-        this.setLocation(this.getLocation().x + evt.getX() - x, this.getLocation().y + evt.getY() - y);
+        this.setLocation(this.getLocation().x + evt.getX()
+                - x, this.getLocation().y + evt.getY() - y);
     }//GEN-LAST:event_jLabel2MouseDragged
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments
@@ -221,7 +202,8 @@ public class FrmMensaje extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    UIManager.setLookAndFeel(UIManager
+                            .getSystemLookAndFeelClassName());
                 } catch (Exception e) {
                 }
                 new FrmMensaje().setVisible(true);

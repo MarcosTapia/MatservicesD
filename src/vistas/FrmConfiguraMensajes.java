@@ -66,6 +66,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         
         //se ocultan porque quedan incluidas en inventario
         actualizarBusqueda();
+        btnGuardarMensaje.setEnabled(false);
 //        activarBotones(true);
     }
     
@@ -497,6 +498,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
 
     private void btnCancelarMensajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarMensajeActionPerformed
         limpiarCajaTexto();
+        actualizarBusqueda();
         txtAreaMensaje.setEnabled(false);
         jCalFechaIni.setEnabled(false);
         btnNuevoMensaje.setEnabled(true);

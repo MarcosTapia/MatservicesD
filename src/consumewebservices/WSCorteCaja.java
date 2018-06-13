@@ -78,8 +78,6 @@ public class WSCorteCaja {
         return cortesCaja;
     }
     
-    
- 
     public CorteCajaBean insertaMovCorteCajaWS(String... params) {
         CorteCajaBean inserta = null;
         try {
@@ -112,6 +110,7 @@ public class WSCorteCaja {
             jsonParam.put("idSucursal",idSucursal);
             jsonParam.put("total",total);
             jsonParam.put("tipoMov",tipoMov);
+            jsonParam.put("entregado",entregado);
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
@@ -137,6 +136,8 @@ public class WSCorteCaja {
                 } else if (resultJSON == 2) {
 //                    inserta = false;
                 }
+            } else {
+                inserta = null;
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();

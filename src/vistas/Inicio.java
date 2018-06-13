@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import vistas.Ingreso;
 
-public class MatServicesPointOfSale {
+public class Inicio {
 
     public static void main(String[] args) {
         Ingreso ingreso = new Ingreso();

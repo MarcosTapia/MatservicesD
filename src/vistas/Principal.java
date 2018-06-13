@@ -20,23 +20,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import javax.swing.JOptionPane;
 import util.Util;
 
 public class Principal extends javax.swing.JFrame {
+
     public static DatosEmpresaBean datosEmpresaBean;
     public static SistemaBean datosSistemaBean;
-    static Map<String,String> municipiosHM = new HashMap();
-    static Map<String,String> estadosMunHM = new HashMap();
-    static Map<String,String> estadosHM = new HashMap();
-    static Map<String,String> sucursalesHM = new HashMap();
-    static Map<String,String> categoriasHM = new HashMap();
-    static Map<String,String> usuariosHM = new HashMap();
-    static Map<String,String> proveedoresHM = new HashMap();
-    static Map<String,String> productosHM = new HashMap();
-    static Map<String,String> productosHMID = new HashMap();
-    static Map<String,String> clientesHM = new HashMap();
-    
+    static Map<String, String> municipiosHM = new HashMap();
+    static Map<String, String> estadosMunHM = new HashMap();
+    static Map<String, String> estadosHM = new HashMap();
+    static Map<String, String> sucursalesHM = new HashMap();
+    static Map<String, String> categoriasHM = new HashMap();
+    static Map<String, String> usuariosHM = new HashMap();
+    static Map<String, String> proveedoresHM = new HashMap();
+    static Map<String, String> productosHM = new HashMap();
+    static Map<String, String> productosHMID = new HashMap();
+    static Map<String, String> clientesHM = new HashMap();
+
     //Globales 
     static ArrayList<MunicipioBean> municipios = new ArrayList();
     static ArrayList<EdoMunBean> estadosMun = new ArrayList();
@@ -47,9 +47,9 @@ public class Principal extends javax.swing.JFrame {
     static ArrayList<ProveedorBean> proveedores = new ArrayList();
     static ArrayList<ProductoBean> productos = new ArrayList();
     static ArrayList<ClienteBean> clientes = new ArrayList();
-    
+
     Util util = new Util();
-    
+
     //WS
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
@@ -63,7 +63,7 @@ public class Principal extends javax.swing.JFrame {
         productosHM = util.getProductosHM();
         productosHMID = util.getProductosHMID();
     }
-    
+
     public void cargaUsuarios() {
         //Carga usuarios
         usuarios = util.getMapUsuarios();
@@ -77,56 +77,56 @@ public class Principal extends javax.swing.JFrame {
         util.llenaMapClientes(clientes);
         clientesHM = util.getClientesHM();
     }
-    
+
     public void cargaProveedores() {
         //Carga proveedores
         proveedores = util.getMapProveedores();
         util.llenaMapProveedores(proveedores);
         proveedoresHM = util.getProveedoresHM();
     }
-    
+
     public Principal() {
         initComponents();
-        
+
         //Carga estados
         municipios = util.getMapMunicipios();
         util.llenaMapMunicipios(municipios);
         municipiosHM = util.getMunicipiosHM();
-        
+
         //Carga estados y municipios(claves)
         estadosMun = util.getMapEstadosMun();
-        
+
         //Carga estados
         estados = util.getMapEstados();
         util.llenaMapEstados(estados);
         estadosHM = util.getEstadosHM();
-        
+
         //Carga sucursales
         sucursales = util.getMapSucursales();
         util.llenaMapSucursales(sucursales);
         sucursalesHM = util.getSucursalesHM();
-        
+
         //Carga categorias
         categorias = util.getMapCategorias();
         util.llenaMapCategorias(categorias);
         categoriasHM = util.getCategoriasHM();
-        
+
         //Carga usuarios
         usuarios = util.getMapUsuarios();
         util.llenaMapUsuarios(usuarios);
         usuariosHM = util.getUsuariosHM();
-        
+
         //Carga proveedores
         proveedores = util.getMapProveedores();
         util.llenaMapProveedores(proveedores);
         proveedoresHM = util.getProveedoresHM();
-        
+
         //Carga productos
         productos = util.getMapProductos();
         util.llenaMapProductos(productos);
         productosHM = util.getProductosHM();
         productosHMID = util.getProductosHMID();
-        
+
         //Carga clientes
         cargaClientes();
         clientes = util.getMapClientes();
@@ -138,41 +138,42 @@ public class Principal extends javax.swing.JFrame {
         proveedores = util.getMapProveedores();
         util.llenaMapProveedores(proveedores);
         proveedoresHM = util.getProveedoresHM();
-        
+
         this.setIcon();
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre()
-            + " " + Ingreso.usuario.getApellido_paterno()
-            + " " + Ingreso.usuario.getApellido_materno());
+                + " " + Ingreso.usuario.getApellido_paterno()
+                + " " + Ingreso.usuario.getApellido_materno());
     }
-    
+
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
-    
+
     public void muestraPanel(int panel) {
         switch (panel) {
-            case 1: 
+            case 1:
                 this.setVisible(false);
                 this.dispose();
                 FrmInventario inventario = new FrmInventario();
                 inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
                 inventario.setVisible(true);
                 break;
-            case 2: 
+            case 2:
                 this.setVisible(false);
                 this.dispose();
                 FrmOperaciones ventas = new FrmOperaciones();
                 ventas.setExtendedState(ventas.MAXIMIZED_BOTH);
                 ventas.setVisible(true);
                 break;
-            case 3: 
+            case 3:
                 this.setVisible(false);
                 this.dispose();
                 FrmConfiguracion operaciones = new FrmConfiguracion();
                 operaciones.setExtendedState(operaciones.MAXIMIZED_BOTH);
                 operaciones.setVisible(true);
                 break;
-            case 4: 
+            case 4:
                 //no muestra frame solo acomoda menu principal
                 lblTituloNegocio.setLocation(200, 100);
                 panelMenuPrincipal.setBounds(200, 180, 810, 280);
@@ -317,19 +318,21 @@ public class Principal extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // Carga datos de la empresa
         hiloEmpresa = new WSDatosEmpresa();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSEMPRESA");
-        datosEmpresaBean = hiloEmpresa.ejecutaWebService(rutaWS,"1");
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETDATOSEMPRESA");
+        datosEmpresaBean = hiloEmpresa.ejecutaWebService(rutaWS, "1");
         // Fin Carga datos de la empresa
-        
+
         // Carga datos de la empresa
         hiloSistema = new WSSistema();
-        rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSSISTEMA");
-        datosSistemaBean = hiloSistema.ejecutaWebService(rutaWS,"1");
+        rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETDATOSSISTEMA");
+        datosSistemaBean = hiloSistema.ejecutaWebService(rutaWS, "1");
         // Fin Carga datos de la empresa
-        
+
         this.setTitle(datosEmpresaBean.getNombreEmpresa());
         lblTituloNegocio.setText(datosEmpresaBean.getNombreEmpresa());
-        muestraPanel(4);        
+        muestraPanel(4);
     }//GEN-LAST:event_formWindowOpened
 
     private void lblSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSalirMouseClicked
@@ -348,9 +351,9 @@ public class Principal extends javax.swing.JFrame {
         this.dispose();
         Ingreso ingreso = new Ingreso();
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
-        ingreso.setSize(525,378);		
-        ingreso.setLocationRelativeTo(null);        
-        ingreso.setVisible(true); 
+        ingreso.setSize(525, 378);
+        ingreso.setLocationRelativeTo(null);
+        ingreso.setVisible(true);
     }//GEN-LAST:event_lblCerrarSesionMouseClicked
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked

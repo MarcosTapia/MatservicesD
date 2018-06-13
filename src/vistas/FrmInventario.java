@@ -1,44 +1,33 @@
 package vistas;
 
-import beans.DatosEmpresaBean;
-import beans.MensajeBean;
-import beans.UsuarioBean;
-import constantes.ConstantesProperties;
-import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSMensajes;
-import consumewebservices.WSMensajesList;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Properties;
 import util.Util;
 
 public class FrmInventario extends javax.swing.JFrame {
+
     String permisos = "";
     Util util = new Util();
-    
+
     public FrmInventario() {
         initComponents();
-        
+
         java.util.Date fecha = util.obtieneFechaServidor();
-        String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
+        String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);
         lblFecha.setText("Fecha: " + a);
         lblUsuario.setText("Usuario: " + Ingreso.usuario.getNombre()
-            + " " + Ingreso.usuario.getApellido_paterno()
-            + " " + Ingreso.usuario.getApellido_materno());
+                + " " + Ingreso.usuario.getApellido_paterno()
+                + " " + Ingreso.usuario.getApellido_materno());
 
         //verifica permisos de usuario
         permisos = Ingreso.usuario.getClase();
         //verifica permiso de inventario
-        if (permisos.charAt(0)=='0') {
+        if (permisos.charAt(0) == '0') {
             btnProductos.setVisible(false);
         }
         //fin verifica permiso de inventario
         //Fin verifica permisos de usuario
-        
+
         this.setIcon();
     }
 
@@ -186,14 +175,13 @@ public class FrmInventario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void inicio() {
-        //this.setVisible(false);
         this.setVisible(false);
         this.dispose();
         Principal principal = new Principal();
         principal.setExtendedState(Principal.MAXIMIZED_BOTH);
-        principal.setVisible(true);        
+        principal.setVisible(true);
     }
-    
+
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         inicio();
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -208,7 +196,8 @@ public class FrmInventario extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductosActionPerformed
-//        this.dispose();
+        this.setVisible(false);
+        this.dispose();
         FrmProducto frmP = new FrmProducto(0);
         frmP.setExtendedState(frmP.MAXIMIZED_BOTH);
         frmP.setVisible(true);
@@ -219,7 +208,7 @@ public class FrmInventario extends javax.swing.JFrame {
         this.dispose();
         FrmConsultas frmConsultas = new FrmConsultas();
         frmConsultas.setExtendedState(frmConsultas.MAXIMIZED_BOTH);
-        frmConsultas.setVisible(true);   
+        frmConsultas.setVisible(true);
     }//GEN-LAST:event_btnConsultaVentasActionPerformed
 
     /**

@@ -77,7 +77,7 @@ public class FrmCorte extends javax.swing.JFrame {
         hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
                 + "GETDATOSEMPRESA");
-        DatosEmpresaBean configuracionBean = hiloEmpresa.
+        configuracionBean = hiloEmpresa.
                 ejecutaWebService(rutaWS,"1");
         this.setTitle(configuracionBean.getNombreEmpresa());
         
@@ -417,15 +417,17 @@ public class FrmCorte extends javax.swing.JFrame {
         
         //iguala beans venta y cortecaja
         for (VentasBean vta : ventasPorFechas) {
-            if (!verificaRegistroEnCorte(vta.getIdVenta())) {
-                corteCaja = new CorteCajaBean();
-                corteCaja.setIdMov(vta.getIdVenta());
-                corteCaja.setFecha(vta.getFecha());
-                corteCaja.setIdUsuario(vta.getIdUsuario());
-                corteCaja.setIdSucursal(vta.getIdSucursal());
-                corteCaja.setTotal(vta.getTotal());
-                corteCaja.setTipoMov(vta.getTipovta());
-                corteCajaHoy.add(corteCaja);
+            if (vta.getIdUsuario() == Ingreso.usuario.getIdUsuario()) {
+                if (!verificaRegistroEnCorte(vta.getIdVenta())) {
+                    corteCaja = new CorteCajaBean();
+                    corteCaja.setIdMov(vta.getIdVenta());
+                    corteCaja.setFecha(vta.getFecha());
+                    corteCaja.setIdUsuario(vta.getIdUsuario());
+                    corteCaja.setIdSucursal(vta.getIdSucursal());
+                    corteCaja.setTotal(vta.getTotal());
+                    corteCaja.setTipoMov(vta.getTipovta());
+                    corteCajaHoy.add(corteCaja);
+                }
             }
         }
     }
@@ -547,15 +549,17 @@ public class FrmCorte extends javax.swing.JFrame {
         comprasPorFechas = hiloComprasList.ejecutaWebService(rutaWS,"2");
         //iguala beans venta y cortecaja
         for (ComprasBean compra : comprasPorFechas) {
-            if (!verificaRegistroEnCorte(compra.getIdCompra())) {
-                corteCaja = new CorteCajaBean();
-                corteCaja.setIdMov(compra.getIdCompra());
-                corteCaja.setFecha(compra.getFecha());
-                corteCaja.setIdUsuario(compra.getIdUsuario());
-                corteCaja.setIdSucursal(compra.getIdSucursal());
-                corteCaja.setTotal(compra.getTotal());
-                corteCaja.setTipoMov(compra.getTipocompra());
-                corteCajaHoy.add(corteCaja);
+            if (compra.getIdUsuario() == Ingreso.usuario.getIdUsuario()) {
+                if (!verificaRegistroEnCorte(compra.getIdCompra())) {
+                    corteCaja = new CorteCajaBean();
+                    corteCaja.setIdMov(compra.getIdCompra());
+                    corteCaja.setFecha(compra.getFecha());
+                    corteCaja.setIdUsuario(compra.getIdUsuario());
+                    corteCaja.setIdSucursal(compra.getIdSucursal());
+                    corteCaja.setTotal(compra.getTotal());
+                    corteCaja.setTipoMov(compra.getTipocompra());
+                    corteCajaHoy.add(corteCaja);
+                }
             }
         }
     }
@@ -596,15 +600,17 @@ public class FrmCorte extends javax.swing.JFrame {
         movsCajaChicaPorFechas = hiloCajaChicaList.ejecutaWebService(rutaWS,"4");
         //iguala beans venta y cortecaja
         for (CajaChicaBean movCajaChica : movsCajaChicaPorFechas) {
-            if (!verificaRegistroEnCorte(movCajaChica.getIdMov())) {
-                corteCaja = new CorteCajaBean();
-                corteCaja.setIdMov(movCajaChica.getIdMov());
-                corteCaja.setFecha(movCajaChica.getFecha());
-                corteCaja.setIdUsuario(movCajaChica.getIdUsuario());
-                corteCaja.setIdSucursal(movCajaChica.getIdSucursal());
-                corteCaja.setTotal(movCajaChica.getMonto());
-                corteCaja.setTipoMov(movCajaChica.getTipoMov());
-                corteCajaHoy.add(corteCaja);
+            if (movCajaChica.getIdUsuario() == Ingreso.usuario.getIdUsuario()) {
+                if (!verificaRegistroEnCorte(movCajaChica.getIdMov())) {
+                    corteCaja = new CorteCajaBean();
+                    corteCaja.setIdMov(movCajaChica.getIdMov());
+                    corteCaja.setFecha(movCajaChica.getFecha());
+                    corteCaja.setIdUsuario(movCajaChica.getIdUsuario());
+                    corteCaja.setIdSucursal(movCajaChica.getIdSucursal());
+                    corteCaja.setTotal(movCajaChica.getMonto());
+                    corteCaja.setTipoMov(movCajaChica.getTipoMov());
+                    corteCajaHoy.add(corteCaja);
+                }
             }
         }
     }
@@ -728,23 +734,57 @@ public class FrmCorte extends javax.swing.JFrame {
                 //fecha
             java.util.Date fecha = util.obtieneFechaServidor();
             String fechaS = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
-
+            String hrs = String.valueOf(fecha.getHours());
+            String min = String.valueOf(fecha.getMinutes());
+            String sec = String.valueOf(fecha.getSeconds());
+            if (hrs.length()==1) {
+                hrs = "0" + hrs;
+            }
+            if (min.length()==1) {
+                min = "0" + min;
+            }
+            if (sec.length()==1) {
+                sec = "0" + sec;
+            }
+            
+            fechaS = fechaS + " Hora : " + hrs
+                    + " : " + min + " : " + sec;
+//            JOptionPane.showMessageDialog(null, fechaS);
                 //arma mensaje
-            String encabezadoMensaje = "<html><body><b><p>Fecha : "
-                    + fechaS + "</p></b><br>";
-            String cuerpoMensaje = "<b><p>Empresa : " + this.getTitle() 
-                    + " Sucursal : " + util.buscaDescFromIdSuc
+            String sucursal = util.buscaDescFromIdSuc
                     (Principal.sucursalesHM, 
-                     String.valueOf(Ingreso.usuario.getIdSucursal())) 
+                     String.valueOf(Ingreso.usuario.getIdSucursal()));
+            sucursal = sucursal.replace("á", "a");
+            sucursal = sucursal.replace("é", "e");
+            sucursal = sucursal.replace("í", "i");
+            sucursal = sucursal.replace("ó", "o");
+            sucursal = sucursal.replace("ú", "u");
+            
+            sucursal = sucursal.replace("Á", "A");
+            sucursal = sucursal.replace("É", "E");
+            sucursal = sucursal.replace("Í", "I");
+            sucursal = sucursal.replace("Ó", "O");
+            sucursal = sucursal.replace("Ú", "U");
+            
+            
+            String encabezadoMensaje = "<html><body><b><p style='font-size:22px;'>Fecha : "
+                    + fechaS + "</p></b><br>";
+            String cuerpoMensaje = "<b><p style='font-size:22px;'>Empresa : " + this.getTitle() 
+                    + " Sucursal : " + sucursal
+                    + "<br> Usuario : " + Ingreso.usuario.getNombre()
+                    + " " + Ingreso.usuario.getApellido_paterno()
+                    + " " + Ingreso.usuario.getApellido_materno()
                     + "</p></b><br><br>";
-            cuerpoMensaje = cuerpoMensaje + "<p>Totsl : " + txtTotal.getText()
-                    + "Ventas : " + txtTotalVentas.getText()
-                    + "Compras : " + txtTotalVentas.getText()
-                    + "Ingresos Varios : " + txtTotalIngresos.getText()
-                    + "Gastos Varios : " + txtTotalGastos.getText()
+            cuerpoMensaje = cuerpoMensaje 
+                    + "<p style='font-size:20px;'>Ventas: " + txtTotalVentas.getText()
+                    + "<br> Compras: " + txtTotalCompras.getText()
+                    + "<br> Ingresos Varios: " + txtTotalIngresos.getText()
+                    + "<br> Gastos Varios: " + txtTotalGastos.getText()
+                    + "<br>Total: " + txtTotal.getText()
                     + "</p><br>";
             String finMensaje = "</body></html>";
             String mensaje = encabezadoMensaje + cuerpoMensaje + finMensaje;
+//            String mensaje = "Hola";
                 //fin arma mensaje
             
                 //remitente
@@ -756,16 +796,12 @@ public class FrmCorte extends javax.swing.JFrame {
                 //fin destinatario
             
                 //titulo
-            String titulo = "Corte de Caja Sucursal : " + util.buscaDescFromIdSuc
-                    (Principal.sucursalesHM, 
-                     String.valueOf(Ingreso.usuario.getIdSucursal()));
+            String titulo = "Corte de Caja Sucursal : " + sucursal;
                 //fin titulo
                     
                 //negocio
             String negocio = this.getTitle() + " " 
-                    + util.buscaDescFromIdSuc
-                    (Principal.sucursalesHM, 
-                     String.valueOf(Ingreso.usuario.getIdSucursal()));
+                    + sucursal;
                 //fin negocio
             boolean enviado = util.enviaCorreo(mensaje,remitente,destinatario
                 ,titulo,negocio);
