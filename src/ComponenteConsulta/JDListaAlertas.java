@@ -1,23 +1,12 @@
 package ComponenteConsulta;
 
-import beans.ProductoBean;
-import beans.CategoriaBean;
 import beans.DatosEmpresaBean;
 import beans.ProductoBean;
-import beans.UsuarioBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSInventarios;
 import consumewebservices.WSInventariosList;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
-import java.awt.print.PrinterException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,21 +16,19 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JRViewer;
 import util.Util;
+import vistas.BarraProgreso;
+import vistas.FrmConsultas;
 import vistas.FrmProducto;
-import vistas.FrmUsuarios;
 import vistas.Ingreso;
-import vistas.Principal;
 
 public class JDListaAlertas extends javax.swing.JDialog {
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
@@ -62,7 +49,9 @@ public class JDListaAlertas extends javax.swing.JDialog {
         super(parent, modal);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
+        } catch (ClassNotFoundException 
+                | InstantiationException | IllegalAccessException 
+                | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
         
@@ -82,15 +71,21 @@ public class JDListaAlertas extends javax.swing.JDialog {
         
         Util util = new Util();
         FrmProducto frmproductos = new FrmProducto(0);
-        String titulos[] = {"ID", "CODIGO", "DESCRIPCIÓN", "$ COSTO", "$ PÚBLICO", "EXIST.", "EXIST. MIN","SUCURSAL", "CATEGORÍA", "PROVEEDOR"};
+        String titulos[] = {"ID", "CODIGO", "DESCRIPCIÓN", "$ COSTO"
+                , "$ PÚBLICO", "EXIST.", "EXIST. MIN","SUCURSAL", "CATEGORÍA"
+                , "PROVEEDOR"};
         LProducto.setColumnIdentifiers(titulos);
         for (ProductoBean p : resultWSArray) {
-            String sucursal = util.buscaDescFromIdSuc(sucursalesHMCons, "" + p.getIdSucursal());
-            String categoria = util.buscaDescFromIdCat(categoriasHMCons, "" + p.getIdCategoria());
-            String proveedor = util.buscaDescFromIdProv(proveedoresHMCons, "" + p.getIdProveedor());
+            String sucursal = util.buscaDescFromIdSuc(sucursalesHMCons, "" 
+                    + p.getIdSucursal());
+            String categoria = util.buscaDescFromIdCat(categoriasHMCons, "" 
+                    + p.getIdCategoria());
+            String proveedor = util.buscaDescFromIdProv(proveedoresHMCons, "" 
+                    + p.getIdProveedor());
             //filtra por sucursal
             if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) 
-                    || (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes.getProperty("SUPERUSUARIO"))) 
+                    || (Ingreso.usuario.getUsuario().equalsIgnoreCase
+                    (constantes.getProperty("SUPERUSUARIO"))) 
                     ) {
                 if ((p.getExistencia() <= p.getExistenciaMinima())) {
                     String Datos[] = {""+p.getIdArticulo()
@@ -109,7 +104,6 @@ public class JDListaAlertas extends javax.swing.JDialog {
         }
         
         initComponents();
-        //btnImprimir.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -122,7 +116,9 @@ public class JDListaAlertas extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblConsultaProductos = new javax.swing.JTable();
         btnImprimir = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnInicio = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
+        btnConsultas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -146,12 +142,30 @@ public class JDListaAlertas extends javax.swing.JDialog {
             }
         });
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        jButton1.setText("SALIR");
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/inicio.png"))); // NOI18N
+        btnInicio.setText("INICIO");
+        btnInicio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnInicioActionPerformed(evt);
+            }
+        });
+
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
+        btnSalir.setText("SALIR");
+        btnSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
+
+        btnConsultas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
+        btnConsultas.setText("CONSULTAS");
+        btnConsultas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnConsultas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultasActionPerformed(evt);
             }
         });
 
@@ -169,9 +183,13 @@ public class JDListaAlertas extends javax.swing.JDialog {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1)
-                        .addGap(53, 53, 53))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnConsultas)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnInicio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSalir)
+                        .addGap(26, 26, 26))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,10 +199,12 @@ public class JDListaAlertas extends javax.swing.JDialog {
                         .addGap(34, 34, 34)
                         .addComponent(jLabel1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(19, 19, 19)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnImprimir, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(btnInicio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSalir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnImprimir, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnConsultas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(35, 35, 35)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
                 .addContainerGap())
@@ -232,15 +252,16 @@ public class JDListaAlertas extends javax.swing.JDialog {
         //recorrer la tabla
         for (fila=0;fila<tblConsultaProductos.getRowCount();fila++) {
             tipo = new ProductoBean();
-            tipo.setDescripcion(String.valueOf(tblConsultaProductos.getValueAt(fila, 2)));
-            tipo.setPrecioCosto(Double.parseDouble(String.valueOf(tblConsultaProductos.getValueAt(fila, 3))));
-            tipo.setExistencia(Double.parseDouble(String.valueOf(tblConsultaProductos.getValueAt(fila, 5))));
-            //tipo.setIdSucursal(Integer.parseInt(String.valueOf(tblConsultaProductos.getValueAt(fila, 7))));
-            
+            tipo.setDescripcion(String.valueOf(tblConsultaProductos
+                    .getValueAt(fila, 2)));
+            tipo.setPrecioCosto(Double.parseDouble(String.valueOf
+                (tblConsultaProductos.getValueAt(fila, 3))));
+            tipo.setExistencia(Double.parseDouble(String.valueOf
+                (tblConsultaProductos.getValueAt(fila, 5))));
             //lo uso para sucursal para mostrarlo como string
-            tipo.setObservaciones(String.valueOf(tblConsultaProductos.getValueAt(fila, 7)));
+            tipo.setObservaciones(String.valueOf(tblConsultaProductos
+                    .getValueAt(fila, 7)));
             Resultados.add(tipo);
-            //util.buscaDescFromIdSuc(sucursalesHMCons, "" + p.getIdSucursal()
         }
         
         Map map = new HashMap();
@@ -265,18 +286,36 @@ public class JDListaAlertas extends javax.swing.JDialog {
             reporte.setVisible(true);
             reporte.requestFocus();
         } catch (JRException ex) {
-            Logger.getLogger(JDListaAlertas.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(JDListaAlertas.class.getName()).log(Level.SEVERE
+                    , null, ex);
         }
     }//GEN-LAST:event_btnImprimirActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
+        this.setVisible(false);
         this.dispose();
-        FrmProducto frmProducto = new FrmProducto(0);
-    }//GEN-LAST:event_jButton1ActionPerformed
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
+    }//GEN-LAST:event_btnInicioActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void btnConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultasActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        FrmConsultas frmConsultas = new FrmConsultas();
+        frmConsultas.setExtendedState(frmConsultas.MAXIMIZED_BOTH);
+        frmConsultas.setVisible(true);
+    }//GEN-LAST:event_btnConsultasActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnConsultas;
     private javax.swing.JButton btnImprimir;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnInicio;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

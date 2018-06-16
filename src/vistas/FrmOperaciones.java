@@ -202,10 +202,11 @@ public class FrmOperaciones extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void inicio() {
+        this.setVisible(false);
         this.dispose();
-        Principal principal = new Principal();
-        principal.setExtendedState(Principal.MAXIMIZED_BOTH);
-        principal.setVisible(true);        
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
     }
     
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -218,20 +219,26 @@ public class FrmOperaciones extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        System.exit(1);
+        System.exit(0);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentasActionPerformed
+        this.setVisible(false);
+        this.dispose();
         FrmVenta frmVventa = new FrmVenta();
         frmVventa.setVisible(true);
     }//GEN-LAST:event_btnVentasActionPerformed
 
     private void btnComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprasActionPerformed
+        this.setVisible(false);
+        this.dispose();
         FrmCompras frmCompra = new FrmCompras();
         frmCompra.setVisible(true);
     }//GEN-LAST:event_btnComprasActionPerformed
 
     private void btnCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCajaActionPerformed
+        this.setVisible(false);
+        this.dispose();
         FrmCajaChica frmCajaChica = new FrmCajaChica();
         frmCajaChica.setVisible(true);
     }//GEN-LAST:event_btnCajaActionPerformed

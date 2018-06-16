@@ -1,9 +1,6 @@
 package vistas;
 
 import ComponenteConsulta.JDListaAlertas;
-import ComponenteConsulta.JDListaProducto;
-import beans.DatosEmpresaBean;
-import beans.UsuarioBean;
 import java.awt.Toolkit;
 import java.text.DateFormat;
 import java.util.Date;
@@ -54,7 +51,8 @@ public class FrmConsultas extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
 
     @SuppressWarnings("unchecked")
@@ -238,9 +236,9 @@ public class FrmConsultas extends javax.swing.JFrame {
     private void inicio() {
         this.setVisible(false);
         this.dispose();
-        Principal principal = new Principal();
-        principal.setExtendedState(Principal.MAXIMIZED_BOTH);
-        principal.setVisible(true);        
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
     }
     
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -253,22 +251,26 @@ public class FrmConsultas extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        System.exit(1);
+        System.exit(0);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnConsultaVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaVentasActionPerformed
-//        this.dispose();
+        this.setVisible(false);
+        this.dispose();
         FrmConsultaVentas frmConsultaVentas = new FrmConsultaVentas();
         frmConsultaVentas.setVisible(true);   
     }//GEN-LAST:event_btnConsultaVentasActionPerformed
 
     private void btnConsultaComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaComprasActionPerformed
-//        this.dispose();
+        this.setVisible(false);
+        this.dispose();
         FrmConsultaCompras frmConsultaCompras = new FrmConsultaCompras();
         frmConsultaCompras.setVisible(true);   
     }//GEN-LAST:event_btnConsultaComprasActionPerformed
 
     private void btnAlertasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlertasActionPerformed
+        this.setVisible(false);
+        this.dispose();
         JDListaAlertas jdListaP = new JDListaAlertas(this,true
                 , Principal.sucursalesHM
                 , Principal.categoriasHM
@@ -277,13 +279,16 @@ public class FrmConsultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAlertasActionPerformed
 
     private void btnConsultaMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaMovimientosActionPerformed
-//        this.dispose();
-        FrmConsultaMovimientos frmConsultaMovimientos = new FrmConsultaMovimientos();
+        this.setVisible(false);
+        this.dispose();
+        FrmConsultaMovimientos frmConsultaMovimientos = 
+                new FrmConsultaMovimientos();
         frmConsultaMovimientos.setVisible(true);   
     }//GEN-LAST:event_btnConsultaMovimientosActionPerformed
 
     private void btnConsultaPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaPedidosActionPerformed
-//        this.dispose();
+        this.setVisible(false);
+        this.dispose();
         FrmConsultaPedidos frmConsultaPedidos = new FrmConsultaPedidos();
         frmConsultaPedidos.setVisible(true);   
     }//GEN-LAST:event_btnConsultaPedidosActionPerformed

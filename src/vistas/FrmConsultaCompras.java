@@ -1,44 +1,18 @@
 package vistas;
 
-import ComponenteConsulta.JDListaCorteDia;
-import beans.ProveedorBean;
-import ComponenteConsulta.JDListaProveedor;
 import beans.ComprasBean;
-import beans.DatosEmpresaBean;
 import beans.DetalleCompraBean;
-import beans.DetalleVentaBean;
-import beans.FechaServidorBean;
 import beans.ProductoBean;
-import beans.UsuarioBean;
-import beans.VentasBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCompras;
 import consumewebservices.WSComprasList;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSDetalleComprasList;
-import consumewebservices.WSDetalleVentasList;
-import consumewebservices.WSInventarios;
-import consumewebservices.WSInventariosList;
-import consumewebservices.WSMovimientos;
-import consumewebservices.WSVentas;
-import consumewebservices.WSVentasList;
 import java.awt.Toolkit;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
@@ -88,34 +62,15 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
             + " " + Ingreso.usuario.getApellido_paterno()
             + " " + Ingreso.usuario.getApellido_materno());
         
-//        //inhabilita combos
-//        cboSucursal.setEnabled(false);
-//        cboProveedor.setEnabled(false);
-//        cboCategoriaPro.setEnabled(false);
-//
-//        //cambia formato de fecha a tipo datetime xq asi esta en bd remota
-//        jCalFechaIngresoProd.setDate(new Date());
-////        jCalFechaIngresoProd.setDateFormatString("yyyy-MM-dd HH:mm:ss");
-//        
-//        txtIdArticulo.setVisible(false);
-//        btnGuardarPro.setEnabled(false);
-        
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
         this.setIcon();
         
-////        if (this.getLlamadoVentaInventario() == 1) {
-////            btnNuevoPro.setVisible(true);
-////            btnGuardarPro.setEnabled(true);
-////            accion = "Guardar";
-////            btnModificarPro.setVisible(false);
-////            btnEliminarPro.setVisible(false);
-////        }
-//        
         limpiaTblDetalleCompra();        
     }
     
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
 
     //Para Tabla Ventas
@@ -123,9 +78,6 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         Object[][] datos = new Object[list.size()][9];
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-//System.out.println(dateFormat.format(new Date()));        
         for (ComprasBean p : list) {
             datos[i][0] = p.getIdCompra();
             datos[i][1] = dateFormat.format(p.getFecha());
@@ -162,35 +114,19 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         Object[][] datos = new Object[list.size()][9];
         int i = 0;
         for (DetalleCompraBean p : list) {
-//            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
-//                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes.getProperty("SUPERUSUARIO")))) {
-                datos[i][0] = p.getIdDetalleCompra();
-                datos[i][1] = p.getIdCompra();
-                datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID, 
-                        "" + p.getIdArticulo());
-                datos[i][3] = p.getPrecioPublico();
-                datos[i][4] = p.getPrecioCosto();
-                datos[i][5] = p.getCantidad();
-                datos[i][6] = p.getDescuento();
-                datos[i][7] = p.getUnidadMedida();
-                datos[i][8] = util.buscaDescFromIdSuc(Principal.sucursalesHM
-                        , "" + p.getIdSucursal());
-                i++;
-//            }
+            datos[i][0] = p.getIdDetalleCompra();
+            datos[i][1] = p.getIdCompra();
+            datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID, 
+                    "" + p.getIdArticulo());
+            datos[i][3] = p.getPrecioPublico();
+            datos[i][4] = p.getPrecioCosto();
+            datos[i][5] = p.getCantidad();
+            datos[i][6] = p.getDescuento();
+            datos[i][7] = p.getUnidadMedida();
+            datos[i][8] = util.buscaDescFromIdSuc(Principal.sucursalesHM
+                    , "" + p.getIdSucursal());
+            i++;
         }
-//        Object[][] datosFinal = new Object[i][7];
-//        //Para filtrar los registros
-//        for (int j=0; j<i; j++) {
-//            if (datos[j][0]!=null) {
-//                datosFinal[j][0] = datos[j][0];
-//                datosFinal[j][1] = datos[j][1];
-//                datosFinal[j][2] = datos[j][2];
-//                datosFinal[j][3] = datos[j][3];
-//                datosFinal[j][4] = datos[j][4];
-//                datosFinal[j][5] = datos[j][5];
-//                datosFinal[j][6] = datos[j][6];
-//            }
-//        }
         //Fin Para filtrar los registros
         tblConsultaDetalleCompra.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
@@ -219,20 +155,21 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         cboParametroVentas = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblConsultaDetalleCompra = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jCalFechaIni = new com.toedter.calendar.JDateChooser();
         jCalFechaFin = new com.toedter.calendar.JDateChooser();
-        jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnMostrar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblConsultaCompras = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
+        btnInicio = new javax.swing.JButton();
+        btnConsultas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -302,13 +239,13 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tblConsultaDetalleCompra);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        jButton1.setText("SALIR");
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
+        btnSalir.setText("SALIR");
+        btnSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSalirActionPerformed(evt);
             }
         });
 
@@ -320,23 +257,22 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
 
         jCalFechaFin.setDateFormatString("yyyy-MM-d");
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
-        jButton2.setText("MOSTRAR");
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnMostrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
+        btnMostrar.setText("MOSTRAR");
+        btnMostrar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnMostrar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnMostrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnMostrarActionPerformed(evt);
             }
         });
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/report2.png"))); // NOI18N
-        jButton4.setText("CORTE CAJA");
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
+        btnCancelar.setText("CANCELAR");
+        btnCancelar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnCancelarActionPerformed(evt);
             }
         });
 
@@ -344,22 +280,25 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                                .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -371,17 +310,14 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton2))
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(btnMostrar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(11, 11, 11)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3)
+                    .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tblConsultaCompras.setModel(new javax.swing.table.DefaultTableModel(
@@ -429,17 +365,26 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
         jLabel5.setText("DETALLE DE LA COMPRA");
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
-        jButton3.setText("CANCELAR");
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblUsuario.setText("Usuario:");
+
+        btnInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/inicio.png"))); // NOI18N
+        btnInicio.setText("INICIO");
+        btnInicio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnInicioActionPerformed(evt);
             }
         });
 
-        lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        lblUsuario.setText("Usuario:");
+        btnConsultas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
+        btnConsultas.setText("CONSULTAS");
+        btnConsultas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnConsultas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultasActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -459,8 +404,9 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnConsultas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(114, 114, 114))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -483,24 +429,28 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addGap(15, 15, 15)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtBuscarCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cboParametroVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jButton1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(lblUsuario))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel4))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addGap(15, 15, 15)
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtBuscarCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cboParametroVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblUsuario))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel4)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnSalir)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnConsultas, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
@@ -558,18 +508,15 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose();
-        FrmInventario inventario = new FrmInventario();
-//        inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
-//        inventario.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnSalirActionPerformed
 
     private void tblConsultaComprasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaComprasMouseClicked
         actualizarBusquedaDetalleCompra();
     }//GEN-LAST:event_tblConsultaComprasMouseClicked
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
         limpiaTblDetalleCompra();        
         String fechaIni = "";
         String fechaFin = "";
@@ -581,7 +528,8 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         try {
             fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos "
+                    + "la fecha de Inicio");
             return;
         }
         try {
@@ -598,11 +546,12 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         // Actualizas tbl Ventas
         ArrayList<ComprasBean> comprasPorFechas = null;
         hiloComprasList = new WSComprasList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCOMPRASPORFECHASFINI") + fechaIni +
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETCOMPRASPORFECHASFINI") + fechaIni +
                 constantes.getProperty("GETCOMPRASPORFECHASFFIN") + fechaFin;
         comprasPorFechas = hiloComprasList.ejecutaWebService(rutaWS,"2");
         recargarTableCompras(comprasPorFechas);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnMostrarActionPerformed
 
     public void limpiaTblDetalleCompra() {
         recargarTableDetalleCompras(detalleComprasGlobal);
@@ -619,43 +568,29 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         jCalFechaFin.setDate(null);           
     }
     
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         borrar();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void tblConsultaComprasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblConsultaComprasKeyReleased
         actualizarBusquedaDetalleCompra();
     }//GEN-LAST:event_tblConsultaComprasKeyReleased
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        limpiaTblDetalleCompra();        
-        //Tomamos las dos fechas y las convierto a java.sql.date
-        java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
-        java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();
-        java.sql.Date fechaSqlDateIni;
-        java.sql.Date fechaSqlDateFin;
-        try {
-            fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
-        } catch (Exception e) {
-            Calendar calendar = Calendar.getInstance();
-            java.util.Date currentDate = calendar.getTime();
-            java.sql.Date date = new java.sql.Date(currentDate.getTime());            
-            fechaSqlDateIni = date;
-        }
-        try {
-            fechaSqlDateFin = new java.sql.Date(fechaUtilDateFin.getTime());
-        } catch (Exception e) {
-            fechaSqlDateFin = fechaSqlDateIni;
-        }
-        
-        if (fechaSqlDateIni.getTime() > fechaSqlDateFin.getTime()) {
-            JOptionPane.showMessageDialog(null, "Fechas Incorrectas");
-            return;
-        }
-        
-        JDListaCorteDia jdListaCorteDia = new JDListaCorteDia(this, true, fechaSqlDateIni, fechaSqlDateFin);
-        jdListaCorteDia.setVisible(true);        
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
+    }//GEN-LAST:event_btnInicioActionPerformed
+
+    private void btnConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultasActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        FrmConsultas frmConsultas = new FrmConsultas();
+        frmConsultas.setExtendedState(frmConsultas.MAXIMIZED_BOTH);
+        frmConsultas.setVisible(true);
+    }//GEN-LAST:event_btnConsultasActionPerformed
 
     public void actualizarBusquedaCompra() {
         ArrayList<ComprasBean> resultWS = null;
@@ -715,8 +650,6 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
             resultWS = comprasGlobal;
             recargarTableDetalleCompras(detalleComprasGlobal);
         } else {
-//                    resultWS = llenaTablaCompras(
-//                            txtBuscarVenta.getText().trim(),3);
         }
         recargarTableCompras(resultWS);
     }
@@ -748,13 +681,17 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
             }
             if (campoBusq.indexOf(buscar)>=0) {
                 compra = new ComprasBean();
-                compra.setIdCompra(Integer.parseInt(tblConsultaCompras.getModel().getValueAt(i,0).toString()));
+                compra.setIdCompra(Integer.parseInt(tblConsultaCompras.getModel()
+                        .getValueAt(i,0).toString()));
                 
-                String fecha = String.valueOf(tblConsultaCompras.getModel().getValueAt(i,1));
+                String fecha = String.valueOf(tblConsultaCompras.getModel()
+                        .getValueAt(i,1));
                 compra.setFecha(util.stringToDate(fecha));
-                compra.setFactura(String.valueOf(tblConsultaCompras.getModel().getValueAt(i,2)));
+                compra.setFactura(String.valueOf(tblConsultaCompras.getModel()
+                        .getValueAt(i,2)));
                 compra.setIdProveedor(util.buscaIdProv(Principal.proveedoresHM
-                        , tblConsultaCompras.getModel().getValueAt(i,3).toString()));
+                        , tblConsultaCompras.getModel().getValueAt(i,3)
+                                .toString()));
                 int idSuc = util.buscaIdSuc(Principal.sucursalesHM
                         , "" + tblConsultaCompras
                                 .getModel().getValueAt(i,4).toString());
@@ -763,9 +700,12 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
                         , "" + tblConsultaCompras
                                 .getModel().getValueAt(i,5).toString()));
 
-                compra.setSubtotal(Double.parseDouble(tblConsultaCompras.getModel().getValueAt(i,6).toString()));
-                compra.setIva(Double.parseDouble(tblConsultaCompras.getModel().getValueAt(i,7).toString()));
-                compra.setTotal(Double.parseDouble(tblConsultaCompras.getModel().getValueAt(i,8).toString()));
+                compra.setSubtotal(Double.parseDouble(tblConsultaCompras
+                        .getModel().getValueAt(i,6).toString()));
+                compra.setIva(Double.parseDouble(tblConsultaCompras.getModel()
+                        .getValueAt(i,7).toString()));
+                compra.setTotal(Double.parseDouble(tblConsultaCompras.getModel()
+                        .getValueAt(i,8).toString()));
                 resultWS.add(compra);
             }
         }
@@ -779,9 +719,6 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         String idCompra = tblConsultaCompras.getModel()
                 .getValueAt(tblConsultaCompras.getSelectedRow(),0).toString();
         resultWS = llenaTablaDetalleCompras(idCompra.trim(),0);
-//        if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-//            resultWS = detalleComprasGlobal;
-//        }
         recargarTableDetalleCompras(resultWS);
     }
     
@@ -791,24 +728,41 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
         for (int i=0; i<tblConsultaDetalleCompra.getModel().getRowCount(); i++) {
             String campoBusq = "";
             switch (tipoBusq) {
-                case 0 : campoBusq = tblConsultaDetalleCompra.getModel().getValueAt(
+                case 0 : campoBusq = tblConsultaDetalleCompra.getModel()
+                        .getValueAt(
                     i,1).toString().toLowerCase();
                     buscar = buscar.toLowerCase();
                     break;
             }
             if (campoBusq.indexOf(buscar)>=0) {
                 detalleCompra = new DetalleCompraBean();
-                detalleCompra.setIdDetalleCompra(Integer.parseInt(tblConsultaDetalleCompra.getModel().getValueAt(i,0).toString()));
-                detalleCompra.setIdCompra(Integer.parseInt(tblConsultaDetalleCompra.getModel().getValueAt(i,1).toString()));
+                detalleCompra.setIdDetalleCompra(Integer.parseInt
+                    (tblConsultaDetalleCompra.getModel().getValueAt(i,0)
+                            .toString()));
+                detalleCompra.setIdCompra(Integer.parseInt
+                    (tblConsultaDetalleCompra.getModel().getValueAt(i,1)
+                            .toString()));
                 detalleCompra.setIdArticulo(util.buscaIdProd(
-                        Principal.productosHM, tblConsultaDetalleCompra.getModel().getValueAt(i,2).toString()));
-                detalleCompra.setPrecioPublico(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,3).toString()));
-                detalleCompra.setPrecioCosto(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,4).toString()));
-                detalleCompra.setCantidad(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,5).toString()));
-                detalleCompra.setDescuento(Double.parseDouble(tblConsultaDetalleCompra.getModel().getValueAt(i,6).toString()));
-                detalleCompra.setUnidadMedida(String.valueOf(tblConsultaDetalleCompra.getModel().getValueAt(i,7).toString()));
+                        Principal.productosHM, tblConsultaDetalleCompra.getModel()
+                                .getValueAt(i,2).toString()));
+                detalleCompra.setPrecioPublico(Double.parseDouble
+                    (tblConsultaDetalleCompra.getModel().getValueAt(i,3)
+                            .toString()));
+                detalleCompra.setPrecioCosto(Double.parseDouble
+                    (tblConsultaDetalleCompra.getModel().getValueAt(i,4)
+                            .toString()));
+                detalleCompra.setCantidad(Double.parseDouble
+                    (tblConsultaDetalleCompra.getModel().getValueAt(i,5)
+                            .toString()));
+                detalleCompra.setDescuento(Double.parseDouble
+                    (tblConsultaDetalleCompra.getModel().getValueAt(i,6)
+                            .toString()));
+                detalleCompra.setUnidadMedida(String.valueOf
+                    (tblConsultaDetalleCompra.getModel().getValueAt(i,7)
+                            .toString()));
                 detalleCompra.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM
-                        , tblConsultaDetalleCompra.getModel().getValueAt(i,8).toString()));
+                        , tblConsultaDetalleCompra.getModel().getValueAt(i,8)
+                                .toString()));
                 resultWS.add(detalleCompra);
             }
         }
@@ -816,11 +770,12 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnConsultas;
+    private javax.swing.JButton btnInicio;
+    private javax.swing.JButton btnMostrar;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox cboParametroVentas;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private com.toedter.calendar.JDateChooser jCalFechaFin;
     private com.toedter.calendar.JDateChooser jCalFechaIni;
     private javax.swing.JLabel jLabel1;

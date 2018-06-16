@@ -1,53 +1,25 @@
 package vistas;
 
-import ComponenteConsulta.JDListaCorteDia;
-import beans.ProveedorBean;
-import ComponenteConsulta.JDListaProveedor;
 import beans.CajaChicaBean;
-import beans.ComprasBean;
-import beans.DatosEmpresaBean;
-import beans.DetallePedidoBean;
 import beans.DetalleVentaBean;
-import beans.FechaServidorBean;
 import beans.MovimientosBean;
-import beans.PedidoBean;
 import beans.ProductoBean;
-import beans.SucursalBean;
-import beans.UsuarioBean;
 import beans.VentasBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCajaChica;
 import consumewebservices.WSCajaChicaList;
-import consumewebservices.WSComprasList;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSDetalleVentas;
 import consumewebservices.WSDetalleVentasList;
 import consumewebservices.WSInventarios;
 import consumewebservices.WSInventariosList;
 import consumewebservices.WSMovimientos;
-import consumewebservices.WSPedidos;
-import consumewebservices.WSPedidosList;
-import consumewebservices.WSSucursales;
 import consumewebservices.WSVentas;
 import consumewebservices.WSVentasList;
 import java.awt.Toolkit;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
@@ -103,34 +75,14 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             + " " + Ingreso.usuario.getApellido_paterno()
             + " " + Ingreso.usuario.getApellido_materno());
         
-//        //inhabilita combos
-//        cboSucursal.setEnabled(false);
-//        cboProveedor.setEnabled(false);
-//        cboCategoriaPro.setEnabled(false);
-//
-//        //cambia formato de fecha a tipo datetime xq asi esta en bd remota
-//        jCalFechaIngresoProd.setDate(new Date());
-////        jCalFechaIngresoProd.setDateFormatString("yyyy-MM-dd HH:mm:ss");
-//        
-//        txtIdArticulo.setVisible(false);
-//        btnGuardarPro.setEnabled(false);
-        
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
         this.setIcon();
-        
-////        if (this.getLlamadoVentaInventario() == 1) {
-////            btnNuevoPro.setVisible(true);
-////            btnGuardarPro.setEnabled(true);
-////            accion = "Guardar";
-////            btnModificarPro.setVisible(false);
-////            btnEliminarPro.setVisible(false);
-////        }
-//        
         limpiaTblDetalleVenta();        
     }
     
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
 
     //Para Tabla Ventas
@@ -138,9 +90,6 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         Object[][] datos = new Object[list.size()][8];
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-//System.out.println(dateFormat.format(new Date()));        
         for (VentasBean p : list) {
             datos[i][0] = p.getIdVenta();
             datos[i][1] = dateFormat.format(p.getFecha());
@@ -175,34 +124,18 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         Object[][] datos = new Object[list.size()][8];
         int i = 0;
         for (DetalleVentaBean p : list) {
-//            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
-//                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes.getProperty("SUPERUSUARIO")))) {
-                datos[i][0] = p.getIdDetalleVenta();
-                datos[i][1] = p.getIdVenta();
-                datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID, 
-                        "" + p.getIdArticulo());
-                datos[i][3] = p.getPrecio();
-                datos[i][4] = p.getCantidad();
-                datos[i][5] = p.getDescuento();
-                datos[i][6] = p.getUnidadMedida();
-                datos[i][7] = util.buscaDescFromIdSuc(Principal.sucursalesHM
-                        , "" + p.getIdSucursal());
-                i++;
-//            }
+            datos[i][0] = p.getIdDetalleVenta();
+            datos[i][1] = p.getIdVenta();
+            datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID, 
+                    "" + p.getIdArticulo());
+            datos[i][3] = p.getPrecio();
+            datos[i][4] = p.getCantidad();
+            datos[i][5] = p.getDescuento();
+            datos[i][6] = p.getUnidadMedida();
+            datos[i][7] = util.buscaDescFromIdSuc(Principal.sucursalesHM
+                    , "" + p.getIdSucursal());
+            i++;
         }
-//        Object[][] datosFinal = new Object[i][7];
-//        //Para filtrar los registros
-//        for (int j=0; j<i; j++) {
-//            if (datos[j][0]!=null) {
-//                datosFinal[j][0] = datos[j][0];
-//                datosFinal[j][1] = datos[j][1];
-//                datosFinal[j][2] = datos[j][2];
-//                datosFinal[j][3] = datos[j][3];
-//                datosFinal[j][4] = datos[j][4];
-//                datosFinal[j][5] = datos[j][5];
-//                datosFinal[j][6] = datos[j][6];
-//            }
-//        }
         //Fin Para filtrar los registros
         tblConsultaDetalleVenta.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
@@ -231,21 +164,23 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         cboParametroVentas = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblConsultaDetalleVenta = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jCalFechaIni = new com.toedter.calendar.JDateChooser();
         jCalFechaFin = new com.toedter.calendar.JDateChooser();
-        jButton2 = new javax.swing.JButton();
+        btnMostrar = new javax.swing.JButton();
         btnFacturar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblConsultaVentas = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
         btnCancelarVenta = new javax.swing.JButton();
+        btnConsultas = new javax.swing.JButton();
+        btnInicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -315,13 +250,13 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tblConsultaDetalleVenta);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        jButton1.setText("SALIR");
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
+        btnSalir.setText("SALIR");
+        btnSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSalirActionPerformed(evt);
             }
         });
 
@@ -333,23 +268,31 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
 
         jCalFechaFin.setDateFormatString("yyyy-MM-d");
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
-        jButton2.setText("MOSTRAR");
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnMostrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
+        btnMostrar.setText("MOSTRAR");
+        btnMostrar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnMostrar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnMostrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnMostrarActionPerformed(evt);
             }
         });
 
-        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/report2.png"))); // NOI18N
+        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/facturar.png"))); // NOI18N
         btnFacturar.setText("FACTURAR");
-        btnFacturar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnFacturar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnFacturar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnFacturarActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
+        btnCancelar.setText("CANCELAR");
+        btnCancelar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
             }
         });
 
@@ -358,21 +301,25 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnFacturar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                                .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnFacturar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -384,17 +331,16 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton2))
+                    .addComponent(btnMostrar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnFacturar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnFacturar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel3)
+                        .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tblConsultaVentas.setModel(new javax.swing.table.DefaultTableModel(
@@ -442,15 +388,6 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
         jLabel5.setText("DETALLE DE LA VENTA");
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
-        jButton3.setText("CANCELAR");
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
         lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblUsuario.setText("Usuario:");
 
@@ -459,6 +396,24 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         btnCancelarVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelarVentaActionPerformed(evt);
+            }
+        });
+
+        btnConsultas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
+        btnConsultas.setText("CONSULTAS");
+        btnConsultas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnConsultas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultasActionPerformed(evt);
+            }
+        });
+
+        btnInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/inicio.png"))); // NOI18N
+        btnInicio.setText("INICIO");
+        btnInicio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInicioActionPerformed(evt);
             }
         });
 
@@ -482,8 +437,9 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnConsultas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(114, 114, 114))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -509,12 +465,16 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(jButton1)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(btnSalir)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnConsultas, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(5, 5, 5))
                             .addComponent(lblUsuario))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -530,7 +490,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                         .addComponent(btnCancelarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
                     .addComponent(jScrollPane2))
                 .addContainerGap())
         );
@@ -585,21 +545,18 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose();
-        FrmInventario inventario = new FrmInventario();
-//        inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
-//        inventario.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnSalirActionPerformed
 
     private void tblConsultaVentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaVentasMouseClicked
         actualizarBusquedaDetalleVenta();
     }//GEN-LAST:event_tblConsultaVentasMouseClicked
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
         limpiaTblDetalleVenta();        
-        String fechaIni = "";
-        String fechaFin = "";
+        String fechaIni;
+        String fechaFin;
         //Tomamos las dos fechas y las convierto a java.sql.date
         java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
         java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();
@@ -608,7 +565,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         try {
             fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo "
+                    + "menos la fecha de Inicio");
             return;
         }
         try {
@@ -625,11 +583,12 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         // Actualizas tbl Ventas
         ArrayList<VentasBean> ventasPorFechas = null;
         hiloVentasList = new WSVentasList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETVENTASPORFECHASFINI") + fechaIni +
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETVENTASPORFECHASFINI") + fechaIni +
                 constantes.getProperty("GETVENTASPORFECHASFFIN") + fechaFin;
         ventasPorFechas = hiloVentasList.ejecutaWebService(rutaWS,"2");
         recargarTableVentas(ventasPorFechas);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnMostrarActionPerformed
 
     public void limpiaTblDetalleVenta() {
         recargarTableDetalleVentas(detalleVentasGlobal);
@@ -646,192 +605,16 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         jCalFechaFin.setDate(null);           
     }
     
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         borrar();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void tblConsultaVentasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblConsultaVentasKeyReleased
         actualizarBusquedaDetalleVenta();
     }//GEN-LAST:event_tblConsultaVentasKeyReleased
 
     public void procesarFactura() {
-//        int idPedido = 0;
-//        List<DetalleVentaBean> detalleVentaProducto = new ArrayList<>();
-//        DetalleVentaBean detalleVentaObj = null;
-//        ArrayList<DetallePedidoBean> detallePedido = null;
-//        //List<DetallePedidoBean> detallePedido = new ArrayList<>();
-//        PedidoBean pedidoBean = null;
-//        int result = JOptionPane.showConfirmDialog(this, "¿Deseas procesar el "
-//                + "Pedido?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
-//        // VERIFICA si realmente se quierte guardar la ventasBean
-//        if (result == JOptionPane.YES_OPTION) {
-//            pedidoBean = new PedidoBean();
-//            //busca pedido
-//                //obtiene pedido para guardarlo como ventasBean
-//            ArrayList<PedidoBean> resultWS = null;
-//            hiloPedidosList = new WSPedidosList();
-//            idPedido = Integer.parseInt(
-//                    tblConsultaVentas
-//                            .getValueAt(tblConsultaVentas.getSelectedRow(), 0).toString()
-//                    );
-//            String rutaWS = constantes.getProperty("IP") 
-//                    + constantes.getProperty("OBTIENEPEDIDOPORID") 
-//                    + String.valueOf(idPedido);
-//            resultWS = hiloPedidosList.ejecutaWebService(rutaWS,"3");
-//            PedidoBean pedido = resultWS.get(0);
-//                //fin obtiene pedido para guardarlo como ventasBean
-//
-//                //convierto pedido a ventasBean para guardarlo como ventasBean
-//            VentasBean ventasBean = new VentasBean();
-//            ventasBean.setFecha(pedido.getFecha());
-//            ventasBean.setIdCliente(pedido.getIdCliente());
-//            ventasBean.setIdSucursal(pedido.getIdSucursal());
-//            ventasBean.setIdUsuario(pedido.getIdUsuario());
-//            int idVenta = obtenerUltimoIdVenta();
-//            ventasBean.setIdVenta(idVenta);
-//            ventasBean.setObservaciones(pedido.getObservaciones());
-//                //fin convierto pedido a ventasBean para guardarlo como ventasBean
-//            
-//                //convierto detallepedido a detalleventa para guardarlo como detalleventa
-//                    //llena tabla para hacer la busqueda de detalle sin usar ws
-//            recargarTableDetallePedidos(detallePedidosGlobal);
-//                    //fin llena tabla para hacer la busqueda de detalle sin usar ws
-//            detallePedido = llenaTablaDetallePedidos(String.valueOf(idPedido).trim(),0);
-//            for (DetallePedidoBean detallePedidoTemp :
-//                    detallePedido) {
-//                detalleVentaObj = new DetalleVentaBean();
-//                detalleVentaObj.setCantidad(detallePedidoTemp.getCantidad());
-//                detalleVentaObj.setDescuento(detallePedidoTemp.getDescuento());
-//                detalleVentaObj.setIdArticulo(detallePedidoTemp.getIdArticulo());
-//                detalleVentaObj.setIdSucursal(detallePedidoTemp.getIdSucursal());
-//                detalleVentaObj.setIdVenta(idVenta);
-//                detalleVentaObj.setPrecio(detallePedidoTemp.getPrecio());
-//                detalleVentaProducto.add(detalleVentaObj);
-//            }
-//                    //regresa tabla originalmente
-//            recargarTableDetallePedidos(detallePedido);
-//                    //fin regresa tabla originalmente
-//                //fin convierto detallepedido a detalleventa para guardarlo como detalleventa
-////            JOptionPane.showMessageDialog(null, "num ventasBean det: " + detalleVentaProducto.get(0).getIdVenta());
-////            JOptionPane.showMessageDialog(null, "Fecha ventasBean: " + ventasBean.getFecha() + "num ventasBean: " + idVenta);
-//            
-//
-//            //ciclo que garantiza que operacion fue hecha con exito
-//            while (ventasBean != null) {
-//                //guarda ventasBean
-//                hiloVentas = new WSVentas();
-//                rutaWS = constantes.getProperty("IP") 
-//                        + constantes.getProperty("GUARDAVENTA");
-//                VentasBean ventaGuardada = hiloVentas
-//                        .ejecutaWebService(rutaWS,"2"
-//                        , "" + ventasBean.getIdCliente()
-//                        , "" + ventasBean.getObservaciones()
-//                        , "" + ventasBean.getIdUsuario()
-//                        , "" + ventasBean.getIdSucursal());
-//                if (ventaGuardada != null) {
-//                    //guarda detalle ventasBean
-//                    for (DetalleVentaBean detVentBeanADisminuir :
-//                            detalleVentaProducto) {
-//                        hiloDetalleVentas = new WSDetalleVentas();
-//                        rutaWS = constantes.getProperty("IP") 
-//                            + constantes.getProperty("GUARDADETALLEVENTA");
-////                                boolean detalleGuardado = false;
-////                                while (!detalleGuardado) {
-//                            // para ajuste inventario                                }
-//                            int idArticuloVendido = detVentBeanADisminuir.getIdArticulo();
-//                            double cantidadVendida = detVentBeanADisminuir.getCantidad();
-//                            // fin para ajuste inventario                                }
-//                            DetalleVentaBean detalleVentaGuardada = 
-//                                    hiloDetalleVentas.
-//                                            ejecutaWebService(rutaWS
-//                                            ,"1"
-//                                    , "" + idVenta
-//                                    , "" + detVentBeanADisminuir.getIdArticulo()
-//                                    , "" + detVentBeanADisminuir.getPrecio()
-//                                    , "" + detVentBeanADisminuir.getCantidad()
-//                                    , "" + detVentBeanADisminuir.getDescuento()
-//                                    , "" + Ingreso.usuario.getIdSucursal());
-//                            if (detalleVentaGuardada != null) {
-//                                //Dismimuye inventario
-//                                    //obtiene articulo para saber su cantidad original
-//                                ArrayList<ProductoBean> resultWSP = null;
-//                                hiloInventariosList = new WSInventariosList();
-//                                rutaWS = constantes.getProperty("IP") 
-//                                        + constantes.getProperty("OBTIENEPRODUCTOPORID") 
-//                                        + String.valueOf(idArticuloVendido);
-//                                resultWSP = hiloInventariosList.ejecutaWebService(rutaWS,"5");
-//                                ProductoBean p = resultWSP.get(0);
-//                                    //fin obtiene articulo para saber su cantidad original
-//
-//                                    //disminuye iinventario en cifras no en bd
-//                                double cantidadOriginal = p.getExistencia();
-//                                double cantidadFinal = cantidadOriginal 
-//                                        - cantidadVendida;
-//                                    //fin disminuye iinventario en cifras no en bd
-//
-//                                    //realiza ajuste inventario 
-//                                hiloInventarios = new WSInventarios();
-//                                rutaWS = constantes.getProperty("IP") 
-//                                        + constantes.getProperty("AJUSTAINVENTARIOVENTA");
-//                                ProductoBean ajuste = hiloInventarios
-//                                        .ejecutaWebService(rutaWS,"5"
-//                                        ,String.valueOf(idArticuloVendido)
-//                                        ,"" + cantidadFinal);
-//                                if (ajuste != null) {
-//                                        //Guarda movimiento
-//                                    String fecha = util.dateToDateTimeAsString(new java.util.Date());
-//                                    MovimientosBean mov = new MovimientosBean();
-//                                    hiloMovimientos = new WSMovimientos();
-//                                    rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAMOVIMIENTO");
-//                                    MovimientosBean movimientoInsertado = hiloMovimientos.ejecutaWebService(rutaWS,"1"
-//                                        ,"" + p.getIdArticulo()
-//                                        ,"" + Ingreso.usuario.getIdUsuario()
-//                                        ,"Venta"
-//                                        ,"" + cantidadVendida
-//                                        ,fecha
-//                                        ,"" + Ingreso.usuario.getIdSucursal());
-//                                        //Fin Guarda movimiento
-////                                            if (movimientoInsertado != null) {
-////                                                detalleGuardado = true;
-//////                                                detalleVentaProducto.remove(detVentBeanADisminuir);
-//////                                            }
-//                                 } // fin realiza pregunta si se ajusto inentario
-////                                    } else {
-////                                        detalleGuardado = false;
-//                            } // pregunta si se guardo un una fila del detalle venta
-//                    }
-//                    //fin guarda detalle ventasBean
-//
-//                    //carga productos actualizados
-//                    productos = util.getMapProductos();
-//                    util.llenaMapProductos(productos);
-//                    //fin carga productos actualizados
-//
-//                    JOptionPane.showMessageDialog(null, 
-//                            "VENTA GUARDADA CORRRECTAMENTE");
-////                            detalleVentaProducto.remove(detVentBeanADisminuir);
-//                    ventasBean = null;
-//                    
-//                    // Borra pedido
-//                    PedidoBean p = new PedidoBean();
-//                    hiloPedidos = new WSPedidos();
-//                    rutaWS = constantes.getProperty("IP") + constantes.getProperty("ELIMINAPEDIDO");
-//                    PedidoBean pedidoEliminar = hiloPedidos.ejecutaWebService(rutaWS,"3"
-//                            , "" + idPedido);
-//                    borrar();
-//                    cargaDatos();
-//                    int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
-//                            + "Imprimir la Venta?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
-//                    if (resultado == JOptionPane.YES_OPTION) {
-//                        //imprime ticket
-////                                                    imprimir(ventasBean);
-////                            JOptionPane.showMessageDialog(null, "Se imprime el ticket");                             
-//                        //fin imprime ticket
-//                    }
-//                } // condicion que verifica que se guardo la venta
-//            }                        
-//            //fin ciclo guarda ventasBean
-//        }
+        // codigo para despues
     }    
     
     private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
@@ -843,7 +626,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnFacturarActionPerformed
 
     private void btnCancelarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarVentaActionPerformed
-        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas cancelar la venta?");
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente "
+                + "deseas cancelar la venta?");
         if(dialogResult == JOptionPane.YES_OPTION){
             JOptionPane.showMessageDialog(null, "Se sugiere guardes un documento "
                     + "que sirva de evidencia de ésta operación");
@@ -867,14 +651,16 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             } else {
                 //verifica que no este regresada
                 if (venta.getCancelada()==1) {
-                    JOptionPane.showMessageDialog(null, "Esta venta ya está cancelada");
+                    JOptionPane.showMessageDialog(null, "Esta venta ya está "
+                            + "cancelada");
                     return;
                 }
                 //fin verifica que no este regresada
 
                 ArrayList<DetalleVentaBean> resultWS = buscaDetaleVenta(numVenta);
                 if (resultWS.size() == 0) {
-                    JOptionPane.showMessageDialog(null, "No existe detalle en esa venta");
+                    JOptionPane.showMessageDialog(null, "No existe detalle en esa "
+                            + "venta");
                     return;
                 } else {
                     //actualiza venta
@@ -882,7 +668,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                     String rutaWS = constantes.getProperty("IP") + constantes
                             .getProperty("MODIFICAVENTA");
                     //p.getFechaIngreso().toLocaleString()
-                    VentasBean ventaActualizada = hiloVentas.ejecutaWebService(rutaWS,"3"
+                    VentasBean ventaActualizada = hiloVentas.ejecutaWebService
+                                (rutaWS,"3"
                                 ,"" + venta.getIdVenta()
                                 ,"" + venta.getFecha()
                                 ,"" + venta.getIdCliente()
@@ -913,7 +700,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                             rutaWS = constantes.getProperty("IP") 
                                     + constantes.getProperty("OBTIENEPRODUCTOPORID") 
                                     + String.valueOf(detalle.getIdArticulo());
-                            resultWSProd = hiloInventariosList.ejecutaWebService(rutaWS,"5");
+                            resultWSProd = hiloInventariosList.ejecutaWebService
+                                    (rutaWS,"5");
                             ProductoBean p = resultWSProd.get(0);
                                 //fin obtiene articulo para saber su cantidad original
 
@@ -926,7 +714,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                                 //realiza ajuste inventario 
                             hiloInventarios = new WSInventarios();
                             rutaWS = constantes.getProperty("IP") 
-                                    + constantes.getProperty("AJUSTAINVENTARIOVENTA");
+                                    + constantes
+                                         .getProperty("AJUSTAINVENTARIOVENTA");
                             ProductoBean ajuste = hiloInventarios
                                     .ejecutaWebService(rutaWS,"5"
                                     ,String.valueOf(detalle.getIdArticulo())
@@ -936,11 +725,15 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                             //registra movimiento
                             if (ajuste != null) {
                                     //Guarda movimiento
-                                String fecha = util.dateToDateTimeAsString(util.obtieneFechaServidor());
+                                String fecha = util.dateToDateTimeAsString(util
+                                        .obtieneFechaServidor());
                                 MovimientosBean mov = new MovimientosBean();
                                 hiloMovimientos = new WSMovimientos();
-                                rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAMOVIMIENTO");
-                                MovimientosBean movimientoInsertado = hiloMovimientos.ejecutaWebService(rutaWS,"1"
+                                rutaWS = constantes.getProperty("IP") 
+                                   + constantes.getProperty("GUARDAMOVIMIENTO");
+                                MovimientosBean movimientoInsertado = 
+                                        hiloMovimientos.ejecutaWebService
+                                        (rutaWS,"1"
                                     ,"" + p.getIdArticulo()
                                     ,"" + Ingreso.usuario.getIdUsuario()
                                     ,"Venta Cancelada"
@@ -949,33 +742,47 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                                     ,"" + Ingreso.usuario.getIdSucursal());
                                     //Fin Guarda movimiento
                                 if (movimientoInsertado!=null) {
-                                    //registra el dinero regresado como movimiento de caja chica
+                                    //registra el dinero regresado como movimiento 
+                                    //de caja chica
                                     CajaChicaBean cajaChica = new CajaChicaBean();
                                     cajaChica.setFecha(util.obtieneFechaServidor());
                                     cajaChica.setMonto(venta.getTotal());
                                     cajaChica.setTipoMov("Gasto");
                                     cajaChica.setTipoComprobante("Ticket");
-                                    cajaChica.setReferencia("" + venta.getIdVenta());
-                                    cajaChica.setIdUsuario(Ingreso.usuario.getIdUsuario());
-                                    cajaChica.setIdSucursal(Ingreso.usuario.getIdSucursal());
+                                    cajaChica.setReferencia("" + venta
+                                            .getIdVenta());
+                                    cajaChica.setIdUsuario(Ingreso.usuario
+                                            .getIdUsuario());
+                                    cajaChica.setIdSucursal(Ingreso.usuario
+                                            .getIdSucursal());
                                     //busca ultimo registro
-                                    ArrayList<CajaChicaBean> resultWSCajaChica = null;
+                                    ArrayList<CajaChicaBean> resultWSCajaChica 
+                                            = null;
                                     hiloCajaChicaList = new WSCajaChicaList();
-                                    rutaWS = constantes.getProperty("IP") + constantes.
+                                    rutaWS = constantes.getProperty("IP") 
+                                            + constantes.
                                             getProperty("GETULTIMOCAJACHICA");
-                                    resultWSCajaChica = hiloCajaChicaList.ejecutaWebService(rutaWS,"2");
-                                    CajaChicaBean cajaChicaBean = resultWSCajaChica.get(0);
-                                    String saldoAnterior = "" + cajaChicaBean.getSaldoAnterior();
-                                    String saldoActualA = "" + cajaChicaBean.getSaldoActual();
-                                    cajaChica.setSaldoAnterior(Double.parseDouble(saldoActualA));
+                                    resultWSCajaChica = hiloCajaChicaList
+                                            .ejecutaWebService(rutaWS,"2");
+                                    CajaChicaBean cajaChicaBean = 
+                                            resultWSCajaChica.get(0);
+                                    String saldoAnterior = "" 
+                                            + cajaChicaBean.getSaldoAnterior();
+                                    String saldoActualA = "" 
+                                            + cajaChicaBean.getSaldoActual();
+                                    cajaChica.setSaldoAnterior(Double
+                                            .parseDouble(saldoActualA));
                                     double saldoActual = 0;
                                     saldoActual = Double.parseDouble(saldoActualA)
                                             - venta.getTotal();
                                     cajaChica.setSaldoActual(saldoActual);
                                     hiloCajaChica = new WSCajaChica();
                                     rutaWS = constantes.getProperty("IP") 
-                                            + constantes.getProperty("GUARDAMOVCAJACHICA");
-                                    CajaChicaBean movCajaInsertada = hiloCajaChica.ejecutaWebService(rutaWS,"1"
+                                            + constantes
+                                             .getProperty("GUARDAMOVCAJACHICA");
+                                    CajaChicaBean movCajaInsertada = 
+                                            hiloCajaChica.ejecutaWebService
+                                            (rutaWS,"1"
                                         , cajaChica.getFecha().toLocaleString()
                                         , "" + cajaChica.getMonto()
                                         , cajaChica.getTipoMov()
@@ -987,7 +794,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                                         , "" + cajaChica.getSaldoActual()
                                             );
                                     if (movCajaInsertada != null) {
-                                        JOptionPane.showMessageDialog(null, "Regreso de venta exitoso");
+                                        JOptionPane.showMessageDialog(null, 
+                                                "Regreso de venta exitoso");
                                     }                                     
                                     //fin registra el dinero regresado como movimiento de caja chica
                                 }
@@ -1003,6 +811,22 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             }
         }    
     }//GEN-LAST:event_btnCancelarVentaActionPerformed
+
+    private void btnConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultasActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        FrmConsultas frmConsultas = new FrmConsultas();
+        frmConsultas.setExtendedState(frmConsultas.MAXIMIZED_BOTH);
+        frmConsultas.setVisible(true);
+    }//GEN-LAST:event_btnConsultasActionPerformed
+
+    private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
+    }//GEN-LAST:event_btnInicioActionPerformed
 
     private VentasBean buscaVenta(int numVenta) {
         ArrayList<VentasBean> ventas = null;
@@ -1105,9 +929,10 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             }
             if (campoBusq.indexOf(buscar)>=0) {
                 venta = new VentasBean();
-                venta.setIdVenta(Integer.parseInt(tblConsultaVentas.getModel().getValueAt(i,0).toString()));
-                
-                String fecha = String.valueOf(tblConsultaVentas.getModel().getValueAt(i,1));
+                venta.setIdVenta(Integer.parseInt(tblConsultaVentas.getModel()
+                        .getValueAt(i,0).toString()));
+                String fecha = String.valueOf(tblConsultaVentas.getModel()
+                        .getValueAt(i,1));
                 venta.setFecha(util.stringToDate(fecha));
                 venta.setIdCliente(util.buscaIdCliente(Principal.clientesHM
                         , tblConsultaVentas.getModel().getValueAt(i,2).toString()));
@@ -1118,9 +943,12 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 venta.setIdUsuario(util.buscaIdUsuario(Principal.usuariosHM
                         , "" + tblConsultaVentas
                                 .getModel().getValueAt(i,4).toString()));
-                venta.setSubtotal(Double.parseDouble(tblConsultaVentas.getModel().getValueAt(i,5).toString()));
-                venta.setIva(Double.parseDouble(tblConsultaVentas.getModel().getValueAt(i,6).toString()));
-                venta.setTotal(Double.parseDouble(tblConsultaVentas.getModel().getValueAt(i,7).toString()));
+                venta.setSubtotal(Double.parseDouble(tblConsultaVentas.getModel()
+                        .getValueAt(i,5).toString()));
+                venta.setIva(Double.parseDouble(tblConsultaVentas.getModel()
+                        .getValueAt(i,6).toString()));
+                venta.setTotal(Double.parseDouble(tblConsultaVentas.getModel()
+                        .getValueAt(i,7).toString()));
                 resultWS.add(venta);
             }
         }
@@ -1146,23 +974,35 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         for (int i=0; i<tblConsultaDetalleVenta.getModel().getRowCount(); i++) {
             String campoBusq = "";
             switch (tipoBusq) {
-                case 0 : campoBusq = tblConsultaDetalleVenta.getModel().getValueAt(
+                case 0 : campoBusq = tblConsultaDetalleVenta.getModel()
+                        .getValueAt(
                     i,1).toString().toLowerCase();
                     buscar = buscar.toLowerCase();
                     break;
             }
             if (campoBusq.indexOf(buscar)>=0) {
                 detalleVenta = new DetalleVentaBean();
-                detalleVenta.setIdDetalleVenta(Integer.parseInt(tblConsultaDetalleVenta.getModel().getValueAt(i,0).toString()));
-                detalleVenta.setIdVenta(Integer.parseInt(tblConsultaDetalleVenta.getModel().getValueAt(i,1).toString()));
+                detalleVenta.setIdDetalleVenta(Integer.parseInt
+                    (tblConsultaDetalleVenta.getModel().getValueAt(i,0)
+                            .toString()));
+                detalleVenta.setIdVenta(Integer.parseInt
+                    (tblConsultaDetalleVenta.getModel().getValueAt(i,1)
+                            .toString()));
                 detalleVenta.setIdArticulo(util.buscaIdProd(
-                        Principal.productosHM, tblConsultaDetalleVenta.getModel().getValueAt(i,2).toString()));
-                detalleVenta.setPrecio(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,3).toString()));
-                detalleVenta.setCantidad(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,4).toString()));
-                detalleVenta.setDescuento(Double.parseDouble(tblConsultaDetalleVenta.getModel().getValueAt(i,5).toString()));
-                detalleVenta.setUnidadMedida(String.valueOf(tblConsultaDetalleVenta.getModel().getValueAt(i,6).toString()));
+                        Principal.productosHM, tblConsultaDetalleVenta
+                                .getModel().getValueAt(i,2).toString()));
+                detalleVenta.setPrecio(Double.parseDouble(tblConsultaDetalleVenta
+                        .getModel().getValueAt(i,3).toString()));
+                detalleVenta.setCantidad(Double.parseDouble(tblConsultaDetalleVenta
+                        .getModel().getValueAt(i,4).toString()));
+                detalleVenta.setDescuento(Double.parseDouble
+                    (tblConsultaDetalleVenta.getModel().getValueAt(i,5)
+                            .toString()));
+                detalleVenta.setUnidadMedida(String.valueOf(tblConsultaDetalleVenta
+                        .getModel().getValueAt(i,6).toString()));
                 detalleVenta.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM
-                        , tblConsultaDetalleVenta.getModel().getValueAt(i,7).toString()));
+                        , tblConsultaDetalleVenta.getModel().getValueAt(i,7)
+                                .toString()));
                 resultWS.add(detalleVenta);
             }
         }
@@ -1170,12 +1010,14 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnCancelarVenta;
+    private javax.swing.JButton btnConsultas;
     private javax.swing.JButton btnFacturar;
+    private javax.swing.JButton btnInicio;
+    private javax.swing.JButton btnMostrar;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox cboParametroVentas;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private com.toedter.calendar.JDateChooser jCalFechaFin;
     private com.toedter.calendar.JDateChooser jCalFechaIni;
     private javax.swing.JLabel jLabel1;

@@ -349,7 +349,10 @@
                                               <Component id="btnInventario" alignment="1" min="-2" pref="94" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="btnSalirPro" min="-2" pref="71" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="btnSalirPro" min="-2" pref="71" max="-2" attributes="0"/>
+                                              <Component id="btnSalirPro2" min="-2" pref="71" max="-2" attributes="0"/>
+                                          </Group>
                                       </Group>
                                   </Group>
                                   <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
@@ -425,7 +428,7 @@
                                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="btnInventario" min="-2" max="-2" attributes="0"/>
-                              <Component id="btnSalirPro" min="-2" max="-2" attributes="1"/>
+                              <Component id="btnSalirPro2" min="-2" max="-2" attributes="1"/>
                           </Group>
                           <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                           <Component id="lblIdProd" min="-2" max="-2" attributes="0"/>
@@ -437,6 +440,7 @@
                               <Component id="btnGuardarPro" min="-2" max="-2" attributes="1"/>
                               <Component id="btnCancelarPro" min="-2" max="-2" attributes="1"/>
                               <Component id="btnSalirPro1" min="-2" max="-2" attributes="1"/>
+                              <Component id="btnSalirPro" min="-2" max="-2" attributes="1"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
@@ -936,6 +940,19 @@
                       </StringArray>
                     </Property>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnSalirPro2">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/imagenes/inicio.png"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="INICIO"/>
+                    <Property name="horizontalTextPosition" type="int" value="0"/>
+                    <Property name="verticalTextPosition" type="int" value="3"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalirPro2ActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

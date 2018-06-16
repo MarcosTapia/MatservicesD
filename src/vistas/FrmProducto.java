@@ -1166,8 +1166,7 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarProActionPerformed
 
     private void btnSalirProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirProActionPerformed
-        this.setLlamadoVentaInventario(0);
-        this.dispose();
+        System.exit(0);
     }//GEN-LAST:event_btnSalirProActionPerformed
 
     private void btnMostrarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarProActionPerformed
@@ -1677,9 +1676,9 @@ public class FrmProducto extends javax.swing.JFrame {
     private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
         this.setVisible(false);
         this.dispose();
-        Principal principal = new Principal();
-        principal.setExtendedState(Principal.MAXIMIZED_BOTH);
-        principal.setVisible(true);
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
     }//GEN-LAST:event_btnInicioActionPerformed
 
     private void actualizarBusquedaProveedor() {

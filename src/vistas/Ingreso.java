@@ -261,10 +261,11 @@ public class Ingreso extends javax.swing.JFrame {
             this.dispose();
             obtieneMensajes();
             if (mensaje.equalsIgnoreCase("")) { //si no hay mensajes
-                vistas.Principal principal = new vistas.Principal();
-                principal.setExtendedState(principal.MAXIMIZED_BOTH);
-                principal.setDefaultCloseOperation(principal.EXIT_ON_CLOSE);
-                principal.setVisible(true);
+                this.setVisible(false);
+                this.dispose();
+                BarraProgreso barraProgreso = new BarraProgreso();
+                barraProgreso.setProceso(1);
+                barraProgreso.setVisible(true);
             } else { //si hay mensajes
                 FrmMensaje frmMensaje = new FrmMensaje();
                 frmMensaje.setMensaje(mensaje);

@@ -46,9 +46,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jPanel2" min="-2" max="-2" attributes="1"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jPanel3" min="-2" pref="666" max="-2" attributes="1"/>
+                  <Component id="jPanel2" min="-2" pref="274" max="-2" attributes="1"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jPanel3" min="-2" pref="683" max="-2" attributes="1"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -80,7 +80,6 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jScrollPane2" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
@@ -90,8 +89,9 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cboParametroSuc" min="-2" pref="94" max="-2" attributes="0"/>
                           </Group>
+                          <Component id="jScrollPane2" alignment="0" min="-2" pref="254" max="-2" attributes="1"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -186,17 +186,19 @@
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="1">
-                              <Component id="btnNuevoCli" min="-2" pref="84" max="-2" attributes="1"/>
+                              <Component id="btnNuevoCli" min="-2" max="-2" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnGuardarCli" min="-2" pref="85" max="-2" attributes="0"/>
+                              <Component id="btnGuardarCli" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnEliminarCli" min="-2" pref="91" max="-2" attributes="1"/>
+                              <Component id="btnEliminarCli" min="-2" max="-2" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnModificarCli" min="-2" pref="91" max="-2" attributes="1"/>
+                              <Component id="btnModificarCli" min="-2" max="-2" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnCancelarCli" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnMostrarCli" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnInicio" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnSalirCli" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -221,15 +223,16 @@
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnSalirCli" pref="77" max="32767" attributes="0"/>
-                          <Component id="btnGuardarCli" alignment="1" pref="77" max="32767" attributes="1"/>
-                          <Component id="btnNuevoCli" alignment="0" pref="77" max="32767" attributes="1"/>
-                          <Component id="btnModificarCli" alignment="0" pref="77" max="32767" attributes="1"/>
-                          <Component id="btnCancelarCli" alignment="0" pref="77" max="32767" attributes="1"/>
-                          <Component id="btnMostrarCli" alignment="0" pref="77" max="32767" attributes="0"/>
-                          <Component id="btnEliminarCli" alignment="1" pref="77" max="32767" attributes="1"/>
+                      <EmptySpace pref="30" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="btnSalirCli" max="32767" attributes="0"/>
+                          <Component id="btnMostrarCli" alignment="1" max="32767" attributes="0"/>
+                          <Component id="btnCancelarCli" alignment="1" max="32767" attributes="1"/>
+                          <Component id="btnModificarCli" alignment="1" max="32767" attributes="1"/>
+                          <Component id="btnEliminarCli" alignment="1" max="32767" attributes="1"/>
+                          <Component id="btnGuardarCli" alignment="1" max="32767" attributes="1"/>
+                          <Component id="btnNuevoCli" alignment="1" max="32767" attributes="1"/>
+                          <Component id="btnInicio" alignment="0" pref="53" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -326,7 +329,7 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace min="0" pref="527" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="lblIdSucursal" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="230" max="-2" attributes="0"/>
                       </Group>
@@ -335,7 +338,7 @@
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="txtSucursal" min="-2" pref="258" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="349" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -402,6 +405,19 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Usuario:"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnInicio">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/inicio.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="INICIO"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInicioActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

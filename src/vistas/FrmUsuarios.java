@@ -83,7 +83,12 @@ public class FrmUsuarios extends javax.swing.JFrame {
           Object key = it.next();
           cboSucursal.addItem(Principal.sucursalesHM.get(key));
         }        
+        this.setIcon();
     }
+
+    public void setIcon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+    }    
     
     public static String getMD5(String input) {
         try {
@@ -212,6 +217,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
         btnSalirPer = new javax.swing.JButton();
         btnEliminarUsuario = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
+        btnInicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -283,7 +289,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(txtBuscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboParametroUsuario, 0, 72, Short.MAX_VALUE))
+                        .addComponent(cboParametroUsuario, 0, 65, Short.MAX_VALUE))
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
@@ -567,7 +573,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(22, 22, 22)
-                        .addComponent(txtCodigoUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE))
+                        .addComponent(txtCodigoUsuario))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(18, 18, 18)
@@ -712,6 +718,16 @@ public class FrmUsuarios extends javax.swing.JFrame {
         lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblUsuario.setText("Usuario:");
 
+        btnInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/inicio.png"))); // NOI18N
+        btnInicio.setText("INICIO");
+        btnInicio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnInicio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInicioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -726,19 +742,21 @@ public class FrmUsuarios extends javax.swing.JFrame {
                         .addComponent(lblUsuario)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnNuevoPer, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnNuevoPer)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGuardarPer)
+                        .addComponent(btnGuardarPer, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEliminarUsuario)
+                        .addComponent(btnEliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnModificarPer)
+                        .addComponent(btnModificarPer, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancelarUsuario)
+                        .addComponent(btnCancelarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnMostrarPer)
+                        .addComponent(btnMostrarPer, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSalirPer, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)))
+                        .addComponent(btnInicio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSalirPer)))
                 .addGap(27, 27, 27))
         );
         jPanel3Layout.setVerticalGroup(
@@ -758,7 +776,8 @@ public class FrmUsuarios extends javax.swing.JFrame {
                     .addComponent(btnCancelarUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnMostrarPer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSalirPer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnNuevoPer, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
+                    .addComponent(btnNuevoPer, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+                    .addComponent(btnInicio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -800,11 +819,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPerActionPerformed
-        //Carga productos
-        Principal principal = new Principal();
-        principal.cargaUsuarios();
-        this.dispose();
-        FrmConfiguracion operaciones = new FrmConfiguracion();
+        System.exit(0);
     }//GEN-LAST:event_btnSalirPerActionPerformed
 
     private void btnNuevoPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoPerActionPerformed
@@ -1354,6 +1369,14 @@ public class FrmUsuarios extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tblUsuariosMouseEntered
 
+    private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
+    }//GEN-LAST:event_btnInicioActionPerformed
+
     private void actualizarBusqueda() {
         ArrayList<UsuarioBean> resultWS = null;
         if (String.valueOf(cboParametroUsuario.getSelectedItem()).
@@ -1451,6 +1474,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelarUsuario;
     private javax.swing.JButton btnEliminarUsuario;
     private javax.swing.JButton btnGuardarPer;
+    private javax.swing.JButton btnInicio;
     private javax.swing.JButton btnModificarPer;
     private javax.swing.JButton btnMostrarPer;
     private javax.swing.JButton btnNuevoPer;

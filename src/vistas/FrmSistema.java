@@ -96,6 +96,11 @@ public class FrmSistema extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         btnGuardarCEmp.setEnabled(false);
         lblIdSucursal.setText("");
+        this.setIcon();
+    }
+
+    public void setIcon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
     }
     
     public void cargaDatosEmpresa(DatosEmpresaBean configuracionBean) {
@@ -205,6 +210,7 @@ public class FrmSistema extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
         btnSalirCli = new javax.swing.JButton();
+        btnInicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -571,6 +577,16 @@ public class FrmSistema extends javax.swing.JFrame {
             }
         });
 
+        btnInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/inicio.png"))); // NOI18N
+        btnInicio.setText("INICIO");
+        btnInicio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnInicio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInicioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -579,6 +595,8 @@ public class FrmSistema extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnInicio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSalirCli, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -589,13 +607,16 @@ public class FrmSistema extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(jLabel4))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(btnSalirCli)))
+                        .addComponent(btnSalirCli, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addComponent(lblUsuario)
                 .addContainerGap())
@@ -639,7 +660,7 @@ public class FrmSistema extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCliActionPerformed
-        this.dispose();
+        System.exit(0);
     }//GEN-LAST:event_btnSalirCliActionPerformed
 
     private void btnMostrarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarCliActionPerformed
@@ -872,6 +893,14 @@ public class FrmSistema extends javax.swing.JFrame {
         btnGuardarDatSist.requestFocus();
     }//GEN-LAST:event_txtIvaGralActionPerformed
 
+    private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
+    }//GEN-LAST:event_btnInicioActionPerformed
+
     private void eliminarSucursal() {
         int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
         if(dialogResult == JOptionPane.YES_OPTION){
@@ -909,6 +938,7 @@ public class FrmSistema extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelarDatSist;
     private javax.swing.JButton btnGuardarCEmp;
     private javax.swing.JButton btnGuardarDatSist;
+    private javax.swing.JButton btnInicio;
     private javax.swing.JButton btnModificarDatEmp;
     private javax.swing.JButton btnModificarDatSist;
     private javax.swing.JButton btnMostrarCli;

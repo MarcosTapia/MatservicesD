@@ -286,6 +286,7 @@ public class FrmCompras extends javax.swing.JFrame {
         txtIvaCompra = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         cboUMedida = new javax.swing.JComboBox();
+        btnSalirPro2 = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
 
@@ -653,6 +654,16 @@ public class FrmCompras extends javax.swing.JFrame {
 
         cboUMedida.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar...", "Pieza", "Elemento (Pieza) unidad de medida Inglesa", "Unidad de servicio", "Kilogramo", "Gramo", "Tarífa", "Metro", "Pulgada", "Pie", "Yarda", "Milla (milla estatal)", "Metro cuadrado", "Centímetro cuadrado", "Metro cúbico", "Litro", "Galón (UK)", "Galón (EUA)", "Hora", "Día", "Año", "Uno", "Batch", "Paquete a granel", "Lote [unidad de adquisición]", "Lote", "Hora de trabajo", "Variedad", "Cabeza", "Personas", "Número de paquetes", "Conjunto", "Mutuamente definido", "Caja", "Kit (Conjunto de piezas)", "Bloque" }));
 
+        btnSalirPro2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/inicio.png"))); // NOI18N
+        btnSalirPro2.setText("INICIO");
+        btnSalirPro2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalirPro2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalirPro2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirPro2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -759,7 +770,9 @@ public class FrmCompras extends javax.swing.JFrame {
                                         .addComponent(btnSalirPro1))
                                     .addComponent(btnInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSalirPro, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnSalirPro, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnSalirPro2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(62, 62, 62))))
         );
         jPanel4Layout.setVerticalGroup(
@@ -815,7 +828,7 @@ public class FrmCompras extends javax.swing.JFrame {
                         .addComponent(txtUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel1))
                     .addComponent(btnInventario)
-                    .addComponent(btnSalirPro))
+                    .addComponent(btnSalirPro2))
                 .addGap(7, 7, 7)
                 .addComponent(lblIdProd)
                 .addGap(17, 17, 17)
@@ -825,7 +838,8 @@ public class FrmCompras extends javax.swing.JFrame {
                     .addComponent(btnBorrarActual)
                     .addComponent(btnGuardarPro)
                     .addComponent(btnCancelarPro)
-                    .addComponent(btnSalirPro1))
+                    .addComponent(btnSalirPro1)
+                    .addComponent(btnSalirPro))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1590,6 +1604,14 @@ public class FrmCompras extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtIvaFocusGained
 
+    private void btnSalirPro2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPro2ActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
+    }//GEN-LAST:event_btnSalirPro2ActionPerformed
+
     private void actualizarBusquedaCompras() {
 //        ArrayList<ComprasBean> result = null;
 //        if ((String.valueOf(cboParametroCompras.getSelectedItem()).equalsIgnoreCase("No. Compra")) 
@@ -1861,6 +1883,7 @@ public class FrmCompras extends javax.swing.JFrame {
     private javax.swing.JButton btnInventario;
     private javax.swing.JButton btnSalirPro;
     private javax.swing.JButton btnSalirPro1;
+    private javax.swing.JButton btnSalirPro2;
     private javax.swing.JComboBox cboParametroPro;
     private javax.swing.JComboBox cboProveedor;
     private javax.swing.JComboBox cboUMedida;

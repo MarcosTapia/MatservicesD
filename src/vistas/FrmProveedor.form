@@ -185,30 +185,37 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="btnNuevoProv" min="-2" pref="78" max="-2" attributes="0"/>
+                              <Component id="btnNuevoProv" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                              <Component id="btnGuardarProv" min="-2" pref="81" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnGuardarProv" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnEliminarProv" min="-2" pref="81" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnEliminarProv" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnModificarProv" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnModificarProv" min="-2" pref="91" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnCancelarProv" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnMostrarProv" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnMostrarProv" min="-2" pref="81" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="btnInicio" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnSalirProv" min="-2" pref="91" max="-2" attributes="0"/>
+                              <Component id="btnSalirProv" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="196" max="-2" attributes="0"/>
-                              <Component id="lblUsuario" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="196" max="-2" attributes="0"/>
+                                      <Component id="lblUsuario" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="jPanel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jPanel4" alignment="0" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="30" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -222,15 +229,16 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnNuevoProv" pref="64" max="32767" attributes="0"/>
-                          <Component id="btnSalirProv" alignment="1" max="32767" attributes="0"/>
-                          <Component id="btnGuardarProv" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnModificarProv" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnCancelarProv" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnMostrarProv" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnEliminarProv" alignment="0" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" pref="19" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="btnSalirProv" pref="51" max="32767" attributes="0"/>
+                          <Component id="btnInicio" alignment="1" pref="51" max="32767" attributes="0"/>
+                          <Component id="btnMostrarProv" alignment="1" max="32767" attributes="0"/>
+                          <Component id="btnCancelarProv" alignment="1" max="32767" attributes="0"/>
+                          <Component id="btnModificarProv" alignment="1" max="32767" attributes="0"/>
+                          <Component id="btnEliminarProv" alignment="1" max="32767" attributes="0"/>
+                          <Component id="btnGuardarProv" alignment="1" max="32767" attributes="0"/>
+                          <Component id="btnNuevoProv" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                   </Group>
@@ -736,6 +744,19 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Usuario:"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnInicio">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/inicio.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="INICIO"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInicioActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

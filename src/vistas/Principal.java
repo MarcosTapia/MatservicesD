@@ -336,7 +336,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void lblSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSalirMouseClicked
-        System.exit(1);
+        System.exit(0);
     }//GEN-LAST:event_lblSalirMouseClicked
 
     private void jLabel11MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel11MouseClicked

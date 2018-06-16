@@ -1,43 +1,16 @@
 package vistas;
 
-import ComponenteConsulta.JDListaCorteDia;
-import beans.ProveedorBean;
-import ComponenteConsulta.JDListaProveedor;
-import beans.ComprasBean;
-import beans.DatosEmpresaBean;
-import beans.DetalleVentaBean;
-import beans.FechaServidorBean;
 import beans.MovimientosBean;
 import beans.ProductoBean;
-import beans.UsuarioBean;
-import beans.VentasBean;
 import constantes.ConstantesProperties;
-import consumewebservices.WSComprasList;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSDetalleVentasList;
-import consumewebservices.WSInventarios;
-import consumewebservices.WSInventariosList;
-import consumewebservices.WSMovimientos;
 import consumewebservices.WSMovimientosList;
 import consumewebservices.WSVentas;
-import consumewebservices.WSVentasList;
 import java.awt.Toolkit;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
@@ -78,33 +51,13 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
             + " " + Ingreso.usuario.getApellido_paterno()
             + " " + Ingreso.usuario.getApellido_materno());
         
-//        //inhabilita combos
-//        cboSucursal.setEnabled(false);
-//        cboProveedor.setEnabled(false);
-//        cboCategoriaPro.setEnabled(false);
-//
-//        //cambia formato de fecha a tipo datetime xq asi esta en bd remota
-//        jCalFechaIngresoProd.setDate(new Date());
-////        jCalFechaIngresoProd.setDateFormatString("yyyy-MM-dd HH:mm:ss");
-//        
-//        txtIdArticulo.setVisible(false);
-//        btnGuardarPro.setEnabled(false);
-        
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
         this.setIcon();
-        
-////        if (this.getLlamadoVentaInventario() == 1) {
-////            btnNuevoPro.setVisible(true);
-////            btnGuardarPro.setEnabled(true);
-////            accion = "Guardar";
-////            btnModificarPro.setVisible(false);
-////            btnEliminarPro.setVisible(false);
-////        }
-//        
     }
     
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
 
     //Para Tabla Ventas
@@ -112,9 +65,6 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         Object[][] datos = new Object[list.size()][7];
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-//System.out.println(dateFormat.format(new Date()));        
         for (MovimientosBean p : list) {
             datos[i][0] = p.getIdMovimiento();
             datos[i][1] = dateFormat.format(p.getFechaOperacion());
@@ -152,19 +102,20 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtBuscarMovimiento = new javax.swing.JTextField();
         cboParametroVentas = new javax.swing.JComboBox();
-        jButton1 = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jCalFechaIni = new com.toedter.calendar.JDateChooser();
         jCalFechaFin = new com.toedter.calendar.JDateChooser();
-        jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnMostrar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblConsultaMovimientos = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
+        btnConsultas = new javax.swing.JButton();
+        btnInicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -200,13 +151,13 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        jButton1.setText("SALIR");
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
+        btnSalir.setText("SALIR");
+        btnSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSalirActionPerformed(evt);
             }
         });
 
@@ -218,23 +169,22 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
 
         jCalFechaFin.setDateFormatString("yyyy-MM-d");
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
-        jButton2.setText("MOSTRAR");
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnMostrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
+        btnMostrar.setText("MOSTRAR");
+        btnMostrar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnMostrar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnMostrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnMostrarActionPerformed(evt);
             }
         });
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/report2.png"))); // NOI18N
-        jButton4.setText("CORTE CAJA");
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
+        btnCancelar.setText("CANCELAR");
+        btnCancelar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnCancelarActionPerformed(evt);
             }
         });
 
@@ -249,15 +199,15 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18)
                         .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnCancelar)
+                            .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -269,17 +219,14 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton2))
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(btnMostrar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3)
+                    .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tblConsultaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
@@ -324,17 +271,26 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
         jLabel4.setText("MOVIMIENTO");
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Erase.png"))); // NOI18N
-        jButton3.setText("CANCELAR");
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblUsuario.setText("Usuario:");
+
+        btnConsultas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
+        btnConsultas.setText("CONSULTAS");
+        btnConsultas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnConsultas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnConsultasActionPerformed(evt);
             }
         });
 
-        lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        lblUsuario.setText("Usuario:");
+        btnInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
+        btnInicio.setText("INICIO");
+        btnInicio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInicioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -365,10 +321,11 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
                                         .addGap(0, 0, Short.MAX_VALUE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(27, 27, 27)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton3)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnConsultas, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                                    .addComponent(btnInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(93, 93, 93))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -376,11 +333,13 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnSalir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnConsultas, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(4, 4, 4)
                         .addComponent(jLabel1)
@@ -444,17 +403,14 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose();
-        FrmInventario inventario = new FrmInventario();
-//        inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
-//        inventario.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnSalirActionPerformed
 
     private void tblConsultaMovimientosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConsultaMovimientosMouseClicked
     }//GEN-LAST:event_tblConsultaMovimientosMouseClicked
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
         String fechaIni = "";
         String fechaFin = "";
         //Tomamos las dos fechas y las convierto a java.sql.date
@@ -465,7 +421,8 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         try {
             fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos "
+                    + "la fecha de Inicio");
             return;
         }
         try {
@@ -482,11 +439,12 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         // Actualizas tbl Ventas
         ArrayList<MovimientosBean> movimientosPorFechas = null;
         hiloMovimientosList = new WSMovimientosList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETMOVIMIENTOSPORFECHASFINI") + fechaIni +
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETMOVIMIENTOSPORFECHASFINI") + fechaIni +
                 constantes.getProperty("GETMOVIMIENTOSPORFECHASFFIN") + fechaFin;
         movimientosPorFechas = hiloMovimientosList.ejecutaWebService(rutaWS,"3");
         recargarTableMovimientos(movimientosPorFechas);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnMostrarActionPerformed
 
     public void borrar() {
         //LIMPIA TXT BUSQUEDA VENTAS
@@ -498,41 +456,28 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         jCalFechaFin.setDate(null);           
     }
     
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         borrar();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void tblConsultaMovimientosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblConsultaMovimientosKeyReleased
     }//GEN-LAST:event_tblConsultaMovimientosKeyReleased
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        //Tomamos las dos fechas y las convierto a java.sql.date
-        java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
-        java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();
-        java.sql.Date fechaSqlDateIni;
-        java.sql.Date fechaSqlDateFin;
-        try {
-            fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
-        } catch (Exception e) {
-            Calendar calendar = Calendar.getInstance();
-            java.util.Date currentDate = calendar.getTime();
-            java.sql.Date date = new java.sql.Date(currentDate.getTime());            
-            fechaSqlDateIni = date;
-        }
-        try {
-            fechaSqlDateFin = new java.sql.Date(fechaUtilDateFin.getTime());
-        } catch (Exception e) {
-            fechaSqlDateFin = fechaSqlDateIni;
-        }
-        
-        if (fechaSqlDateIni.getTime() > fechaSqlDateFin.getTime()) {
-            JOptionPane.showMessageDialog(null, "Fechas Incorrectas");
-            return;
-        }
-        
-        JDListaCorteDia jdListaCorteDia = new JDListaCorteDia(this, true, fechaSqlDateIni, fechaSqlDateFin);
-        jdListaCorteDia.setVisible(true);        
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void btnConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultasActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        FrmConsultas frmConsultas = new FrmConsultas();
+        frmConsultas.setExtendedState(frmConsultas.MAXIMIZED_BOTH);
+        frmConsultas.setVisible(true);
+    }//GEN-LAST:event_btnConsultasActionPerformed
+
+    private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
+    }//GEN-LAST:event_btnInicioActionPerformed
 
     public void actualizarBusquedaMovimiento() {
         ArrayList<MovimientosBean> resultWS = null;
@@ -618,13 +563,17 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
             if (campoBusq.indexOf(buscar)>=0) {
                 movimiento = new MovimientosBean();
                 movimiento.setIdMovimiento(Integer.parseInt(
-                        tblConsultaMovimientos.getModel().getValueAt(i,0).toString()));
-                String fecha = String.valueOf(tblConsultaMovimientos.getModel().getValueAt(i,1));
+                        tblConsultaMovimientos.getModel().getValueAt(i,0)
+                                .toString()));
+                String fecha = String.valueOf(tblConsultaMovimientos.getModel()
+                        .getValueAt(i,1));
                 movimiento.setFechaOperacion(util.stringToDate(fecha));
                 movimiento.setIdArticulo(util.buscaIdProd(Principal.productosHMID
-                        , tblConsultaMovimientos.getModel().getValueAt(i,2).toString()));
+                        , tblConsultaMovimientos.getModel().getValueAt(i,2)
+                                .toString()));
                 movimiento.setCantidad(Double.parseDouble(
-                        tblConsultaMovimientos.getModel().getValueAt(i,3).toString()));
+                        tblConsultaMovimientos.getModel().getValueAt(i,3)
+                                .toString()));
                 int idSuc = util.buscaIdSuc(Principal.sucursalesHM
                         , "" + tblConsultaMovimientos
                                 .getModel().getValueAt(i,4).toString());
@@ -632,7 +581,8 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
                 movimiento.setIdUsuario(util.buscaIdUsuario(Principal.usuariosHM
                         , "" + tblConsultaMovimientos
                                 .getModel().getValueAt(i,5).toString()));
-                movimiento.setTipoOperacion(tblConsultaMovimientos.getModel().getValueAt(i,6).toString());
+                movimiento.setTipoOperacion(tblConsultaMovimientos.getModel()
+                        .getValueAt(i,6).toString());
                 resultWS.add(movimiento);
             }
         }
@@ -640,11 +590,12 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnConsultas;
+    private javax.swing.JButton btnInicio;
+    private javax.swing.JButton btnMostrar;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox cboParametroVentas;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private com.toedter.calendar.JDateChooser jCalFechaFin;
     private com.toedter.calendar.JDateChooser jCalFechaIni;
     private javax.swing.JLabel jLabel1;

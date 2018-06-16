@@ -177,9 +177,9 @@ public class FrmInventario extends javax.swing.JFrame {
     private void inicio() {
         this.setVisible(false);
         this.dispose();
-        Principal principal = new Principal();
-        principal.setExtendedState(Principal.MAXIMIZED_BOTH);
-        principal.setVisible(true);
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
     }
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -192,7 +192,7 @@ public class FrmInventario extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        System.exit(1);
+        System.exit(0);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductosActionPerformed
