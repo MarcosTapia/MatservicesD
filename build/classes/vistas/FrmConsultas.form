@@ -160,7 +160,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/imagenes/clientes.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="ALERTAS"/>
+            <Property name="text" type="java.lang.String" value="Surtir"/>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>

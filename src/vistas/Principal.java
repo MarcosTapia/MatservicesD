@@ -58,7 +58,7 @@ public class Principal extends javax.swing.JFrame {
 
     public void cargaProductos() {
         //Carga productos
-        productos = util.getMapProductos();
+        productos = util.getInventario();
         util.llenaMapProductos(productos);
         productosHM = util.getProductosHM();
         productosHMID = util.getProductosHMID();
@@ -87,6 +87,7 @@ public class Principal extends javax.swing.JFrame {
 
     public Principal() {
         initComponents();
+        this.setExtendedState(Principal.MAXIMIZED_BOTH);
 
         //Carga estados
         municipios = util.getMapMunicipios();
@@ -122,7 +123,7 @@ public class Principal extends javax.swing.JFrame {
         proveedoresHM = util.getProveedoresHM();
 
         //Carga productos
-        productos = util.getMapProductos();
+        productos = util.getInventario();
         util.llenaMapProductos(productos);
         productosHM = util.getProductosHM();
         productosHMID = util.getProductosHMID();
@@ -202,6 +203,9 @@ public class Principal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
@@ -359,6 +363,60 @@ public class Principal extends javax.swing.JFrame {
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         muestraPanel(1);
     }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+//        //Carga estados
+//        municipios = util.getMapMunicipios();
+//        util.llenaMapMunicipios(municipios);
+//        municipiosHM = util.getMunicipiosHM();
+//
+//        //Carga estados y municipios(claves)
+//        estadosMun = util.getMapEstadosMun();
+//
+//        //Carga estados
+//        estados = util.getMapEstados();
+//        util.llenaMapEstados(estados);
+//        estadosHM = util.getEstadosHM();
+//
+//        //Carga sucursales
+//        sucursales = util.getMapSucursales();
+//        util.llenaMapSucursales(sucursales);
+//        sucursalesHM = util.getSucursalesHM();
+//
+//        //Carga categorias
+//        categorias = util.getMapCategorias();
+//        util.llenaMapCategorias(categorias);
+//        categoriasHM = util.getCategoriasHM();
+//
+//        //Carga usuarios
+//        usuarios = util.getMapUsuarios();
+//        util.llenaMapUsuarios(usuarios);
+//        usuariosHM = util.getUsuariosHM();
+//
+//        //Carga proveedores
+//        proveedores = util.getMapProveedores();
+//        util.llenaMapProveedores(proveedores);
+//        proveedoresHM = util.getProveedoresHM();
+//
+//        //Carga productos
+//        productos = util.getInventario();
+//        util.llenaMapProductos(productos);
+//        productosHM = util.getProductosHM();
+//        productosHMID = util.getProductosHMID();
+//
+//        //Carga clientes
+//        cargaClientes();
+//        clientes = util.getMapClientes();
+//        util.llenaMapClientes(clientes);
+//        clientesHM = util.getClientesHM();
+//
+//        //Carga proveedores
+//        cargaProveedores();
+//        proveedores = util.getMapProveedores();
+//        util.llenaMapProveedores(proveedores);
+//        proveedoresHM = util.getProveedoresHM();
+//
+    }//GEN-LAST:event_formWindowActivated
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

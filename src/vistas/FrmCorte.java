@@ -377,15 +377,15 @@ public class FrmCorte extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPerActionPerformed
-        this.dispose();
+        System.exit(0);
     }//GEN-LAST:event_btnSalirPerActionPerformed
 
     private void cargaVentasHoy() {
         hiloVentasList = new WSVentasList();
         jCalFechaIni.setDate(fechaServidor);
         jCalFechaFin.setDate(fechaServidor);
-        String fechaIni = "";
-        String fechaFin = "";
+        String fechaIni;
+        String fechaFin;
         //Tomamos las dos fechas y las convierto a java.sql.date
         java.util.Date fechaUtilDateIni = jCalFechaIni.getDate();
         java.util.Date fechaUtilDateFin = jCalFechaFin.getDate();

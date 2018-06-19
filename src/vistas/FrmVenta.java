@@ -1,10 +1,9 @@
 package vistas;
+
 import beans.VentasBean;
 import beans.ProductoBean;
 import beans.DetalleVentaBean;
 import beans.*;
-import ComponenteConsulta.*;
-//import ComponenteReportes.ReporteGVenta;
 import Ticket.Ticket;
 import static componenteUtil.NumberToLetterConverter.convertNumberToLetter;
 import constantes.ConstantesProperties;
@@ -15,38 +14,24 @@ import consumewebservices.WSInventarios;
 import consumewebservices.WSInventariosList;
 import consumewebservices.WSMovimientos;
 import consumewebservices.WSPedidos;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
 import consumewebservices.WSVentas;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.sql.*;
-import java.text.ParseException;
-import java.util.Scanner;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.*;
 import javax.swing.table.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
-import static vistas.Principal.productos;
 
 public class FrmVenta extends javax.swing.JFrame {
     public int codigopro;
@@ -86,6 +71,10 @@ public class FrmVenta extends javax.swing.JFrame {
     double ivaGral = Principal.datosSistemaBean.getIvaGral();
     ArrayList<ProductoBean> inventario = null;
     String sucursalSistema = "";
+    
+    //para garantizar no cargar siempre datos en el form activated
+    boolean cargaDatos = false;
+    
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public FrmVenta() {
         try {
@@ -96,17 +85,17 @@ public class FrmVenta extends javax.swing.JFrame {
         initComponents();
         
         // Actualizas tbl producto
-        ArrayList<ProductoBean> resultWS = null;
-        hiloInventariosList = new WSInventariosList();
-        String rutaWS = constantes.getProperty("IP") 
-                + constantes.getProperty("GETINVENTARIOS");
-        resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
-        recargarTableProductos(resultWS);
+//        ArrayList<ProductoBean> resultWS = null;
+//        hiloInventariosList = new WSInventariosList();
+//        String rutaWS = constantes.getProperty("IP") 
+//                + constantes.getProperty("GETINVENTARIOS");
+//        resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
+//        recargarTableProductos(resultWS);
         
         java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
         txtFecha.setText("Fecha: " + a);
-        cargaClientes();
+//        cargaClientes();
         lblUsuario.setText(Principal.datosEmpresaBean.getNombreEmpresa()
                 + " Sucursal: " 
                 + util.buscaDescFromIdSuc(Principal.sucursalesHM, "" 
@@ -122,14 +111,18 @@ public class FrmVenta extends javax.swing.JFrame {
         ListaProductoV.setColumnIdentifiers(titulos);
         this.setLocationRelativeTo(null);
         
-        inventario = util.getMapProductos();
-        productos = util.getMapProductos();
-        util.llenaMapProductos(productos);
         txtIvaProd.setText("" + ivaEmpresa);
+        txtCodigoPro.requestFocus(true);
+        txtCodigoPro.setText("Espere...");
+        txtVendedorV.setText("" 
+                + Ingreso.usuario.getNombre()
+                + " " + Ingreso.usuario.getApellido_paterno()
+                + " " + Ingreso.usuario.getApellido_materno());
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
     
     public void imprimeVenta(String tipoTicket){
@@ -141,7 +134,8 @@ public class FrmVenta extends javax.swing.JFrame {
             Ticket ticket = new Ticket();
             ticket.AddCabecera("" + Principal.datosEmpresaBean.getNombreEmpresa());
             ticket.AddCabecera(ticket.DarEspacio());
-            ticket.AddCabecera("Sucursal: " + util.buscaDescFromIdSuc(Principal.sucursalesHM, 
+            ticket.AddCabecera("Sucursal: " + util
+                    .buscaDescFromIdSuc(Principal.sucursalesHM, 
                     "" + Ingreso.usuario.getIdSucursal()));
             ticket.AddCabecera(ticket.DarEspacio());
             ticket.AddCabecera(Principal.datosEmpresaBean.getDireccionEmpresa());
@@ -275,7 +269,8 @@ public class FrmVenta extends javax.swing.JFrame {
         int id = 0;
         VentasBean resultWS = null;
         hiloVentas = new WSVentas();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETULTIMOIDVENTAS");
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETULTIMOIDVENTAS");
         resultWS = hiloVentas.ejecutaWebService(rutaWS,"1");
         id = resultWS.getIdVenta() + 1;
         return id;
@@ -285,7 +280,8 @@ public class FrmVenta extends javax.swing.JFrame {
         int id = 0;
         PedidoBean resultWS = null;
         hiloPedidos = new WSPedidos();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETULTIMOIDPEDIDOS");
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETULTIMOIDPEDIDOS");
         resultWS = hiloPedidos.ejecutaWebService(rutaWS,"1");
         id = resultWS.getIdPedido() + 1;
         return id;
@@ -542,6 +538,17 @@ public class FrmVenta extends javax.swing.JFrame {
 
         jLabel10.setText("PRECIO :");
 
+        txtPrecio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPrecioActionPerformed(evt);
+            }
+        });
+        txtPrecio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrecioKeyTyped(evt);
+            }
+        });
+
         txtProducto.setEditable(false);
         txtProducto.setBackground(new java.awt.Color(255, 153, 102));
         txtProducto.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
@@ -560,6 +567,11 @@ public class FrmVenta extends javax.swing.JFrame {
         txtDescuento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDescuentoActionPerformed(evt);
+            }
+        });
+        txtDescuento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDescuentoKeyTyped(evt);
             }
         });
 
@@ -1101,10 +1113,9 @@ public class FrmVenta extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        this.setVisible(false);
         this.dispose();
-        FrmOperaciones ventas = new FrmOperaciones();
-//        ventas.setExtendedState(ventas.MAXIMIZED_BOTH);
-////        ventas.setVisible(true);
+        System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
      private static boolean isNumeric(String cadena) {
@@ -1130,7 +1141,7 @@ public class FrmVenta extends javax.swing.JFrame {
         }
         return prod;
     }
-
+    
     private void btnAumentarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAumentarActionPerformed
         int temp = Integer.parseInt(txtCantidadPro.getText())+1;        
         txtCantidadPro.setText(""+temp);
@@ -1142,6 +1153,7 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDisminuirActionPerformed
 
     private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
+        txtCodigoPro.setText("Espere...");
         int result = JOptionPane.showConfirmDialog(this, "¿Deseas Ejecutar la "
                 + "Venta?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
         // VERIFICA si realmente se quierte guardar la venta
@@ -1199,14 +1211,17 @@ public class FrmVenta extends javax.swing.JFrame {
 //                                boolean detalleGuardado = false;
 //                                while (!detalleGuardado) {
                                     // para ajuste inventario                                }
-                                    int idArticuloVendido = detVentBeanADisminuir.getIdArticulo();
-                                    double cantidadVendida = detVentBeanADisminuir.getCantidad();
+                                    int idArticuloVendido = detVentBeanADisminuir
+                                            .getIdArticulo();
+                                    double cantidadVendida = detVentBeanADisminuir
+                                            .getCantidad();
                                     // fin para ajuste inventario                                }
                                     DetalleVentaBean detalleVentaGuardada = 
                                             hiloDetalleVentas.
                                                     ejecutaWebService(rutaWS
                                                     ,"1"
-                                            , "" + Integer.parseInt(txtNroVenta.getText().trim())
+                                            , "" + Integer.parseInt(txtNroVenta
+                                                    .getText().trim())
                                             , "" + detVentBeanADisminuir.getIdArticulo()
                                             , "" + detVentBeanADisminuir.getPrecio()
                                             , "" + detVentBeanADisminuir.getCantidad()
@@ -1216,15 +1231,19 @@ public class FrmVenta extends javax.swing.JFrame {
                                                     );
                                     if (detalleVentaGuardada != null) {
                                         //Dismimuye inventario
-                                            //obtiene articulo para saber su cantidad original
+                                            //obtiene articulo para saber su cantidad 
+                                            //original
                                         ArrayList<ProductoBean> resultWS = null;
                                         hiloInventariosList = new WSInventariosList();
                                         rutaWS = constantes.getProperty("IP") 
-                                                + constantes.getProperty("OBTIENEPRODUCTOPORID") 
+                                                + constantes
+                                            .getProperty("OBTIENEPRODUCTOPORID") 
                                                 + String.valueOf(idArticuloVendido);
-                                        resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"5");
+                                        resultWS = hiloInventariosList
+                                                .ejecutaWebService(rutaWS,"5");
                                         ProductoBean p = resultWS.get(0);
-                                            //fin obtiene articulo para saber su cantidad original
+                                            //fin obtiene articulo para saber su 
+                                            //cantidad original
                                         
                                             //disminuye iinventario en cifras no en bd
                                         double cantidadOriginal = p.getExistencia();
@@ -1235,18 +1254,24 @@ public class FrmVenta extends javax.swing.JFrame {
                                             //realiza ajuste inventario 
                                         hiloInventarios = new WSInventarios();
                                         rutaWS = constantes.getProperty("IP") 
-                                                + constantes.getProperty("AJUSTAINVENTARIOVENTA");
+                                                + constantes
+                                          .getProperty("AJUSTAINVENTARIOVENTA");
                                         ProductoBean ajuste = hiloInventarios
                                                 .ejecutaWebService(rutaWS,"5"
                                                 ,String.valueOf(idArticuloVendido)
                                                 ,"" + cantidadFinal);
                                         if (ajuste != null) {
                                                 //Guarda movimiento
-                                            String fecha = util.dateToDateTimeAsString(util.obtieneFechaServidor());
+                                            String fecha = util.dateToDateTimeAsString(util
+                                                    .obtieneFechaServidor());
                                             MovimientosBean mov = new MovimientosBean();
                                             hiloMovimientos = new WSMovimientos();
-                                            rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAMOVIMIENTO");
-                                            MovimientosBean movimientoInsertado = hiloMovimientos.ejecutaWebService(rutaWS,"1"
+                                            rutaWS = constantes.getProperty("IP") 
+                                                    + constantes
+                                                     .getProperty("GUARDAMOVIMIENTO");
+                                            MovimientosBean movimientoInsertado 
+                                                    = hiloMovimientos
+                                                   .ejecutaWebService(rutaWS,"1"
                                                 ,"" + p.getIdArticulo()
                                                 ,"" + Ingreso.usuario.getIdUsuario()
                                                 ,"VENTA NORMAL"
@@ -1254,29 +1279,23 @@ public class FrmVenta extends javax.swing.JFrame {
                                                 ,fecha
                                                 ,"" + Ingreso.usuario.getIdSucursal());
                                                 //Fin Guarda movimiento
-//                                            if (movimientoInsertado != null) {
-//                                                detalleGuardado = true;
-////                                                detalleVentaProducto.remove(detVentBeanADisminuir);
-//                                            }
-//                                        }
-//                                            //fin realiza ajuste inentario
-//                                    } else {
-//                                        detalleGuardado = false;
                                     }
                                 }
                             }
                             //fin guarda detalle venta
                             
                             //carga productos actualizados
-                            productos = util.getMapProductos();
-                            util.llenaMapProductos(productos);
+                            inventario = util.getInventario();
+                            //util.llenaMapProductos(inventario);
                             //fin carga productos actualizados
                             
                             JOptionPane.showMessageDialog(null, 
                                     "VENTA GUARDADA CORRRECTAMENTE");
 //                            detalleVentaProducto.remove(detVentBeanADisminuir);
-                            int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
-                                    + "Imprimir la Venta?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
+                            int resultado = JOptionPane.showConfirmDialog(this, 
+                                    "¿Deseas "
+                                    + "Imprimir la Venta?", "Mensaje..!!"
+                                    , JOptionPane.YES_NO_OPTION);
                             if (resultado == JOptionPane.YES_OPTION) {
                                 //imprime ticket
                                 imprimeVenta("Venta");
@@ -1287,18 +1306,18 @@ public class FrmVenta extends javax.swing.JFrame {
                             //fin guarda detalle venta
                         }                        
                         //fin guarda venta
-                        
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "DEBES COMPLETAR LA VENTA PAGANGO EL "
-                            + "IMPORTE CORRESPONDIENTE");
+                    JOptionPane.showMessageDialog(null, "DEBES COMPLETAR LA VENTA "
+                            + "PAGANGO EL IMPORTE CORRESPONDIENTE");
                     txtImporte.requestFocus(true);
                 }
-            } else {
+        } else {
                 JOptionPane.showMessageDialog(null, "NO HAY PRODUCTOS PARA VENDER");
                 return;
             }
         }
+        txtCodigoPro.setText("");
     }//GEN-LAST:event_btnGenerarVentaActionPerformed
 
     private void tblListaProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListaProductosMouseClicked
@@ -1351,29 +1370,14 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodigoProKeyReleased
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        if (Ingreso.usuario == null) {
-            JOptionPane.showMessageDialog(null, "Error en el sistema vuelve a iniciar");
-            this.dispose();
-        } else {
+        if (!cargaDatos) {
             Principal p = new Principal();
             p.cargaClientes();
             cargaClientes();
-            
-            // refresca inventario
-            ArrayList<ProductoBean> resultWS = null;
-            hiloInventariosList = new WSInventariosList();
-            String rutaWS = constantes.getProperty("IP") 
-                    + constantes.getProperty("GETINVENTARIOS");
-            resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
-            recargarTableProductos(resultWS);
-            inventario = util.getMapProductos();
-            productos = util.getMapProductos();
-            util.llenaMapProductos(productos);
-            
-            txtVendedorV.setText("" 
-                    + Ingreso.usuario.getNombre()
-                    + " " + Ingreso.usuario.getApellido_paterno()
-                    + " " + Ingreso.usuario.getApellido_materno());
+            inventario = util.getInventario();
+            recargarTableProductos(inventario);
+            cargaDatos = true;
+            txtCodigoPro.setText("");
         }
     }//GEN-LAST:event_formWindowActivated
 
@@ -1388,6 +1392,8 @@ public class FrmVenta extends javax.swing.JFrame {
         if (prod == null) {
             JOptionPane.showMessageDialog(null, "No se encontro el producto, "
                     + "debes regidtrarlo primero");
+            txtCodigoPro.setText("");
+            txtCodigoPro.requestFocus(true);
             return;
         }
         prodParcial = prod;
@@ -1403,21 +1409,20 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_jtProductoMouseClicked
 
     private void buscaDetalleProducto() {
-        txtCantidadPro.setText("1");
-        txtDescuento.setText("0");
-        ArrayList<ProductoBean> resultWS = null;
-        hiloInventariosList = new WSInventariosList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("OBTIENEPRODUCTOPORID") 
-                + String.valueOf(jtProducto.getModel().getValueAt(
-                            jtProducto.getSelectedRow(),0));
-        resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"5");
-        prodParcial = resultWS.get(0);
-        txtCodigoPro.setText(prodParcial.getCodigo());
-        txtProducto.setText(prodParcial.getDescripcion());
-        txtStockPro.setText("" + prodParcial.getExistencia());
-        txtPrecio.setText("" + prodParcial.getPrecioUnitario());
-        //jtProducto.requestFocus(true);
-        txtCantidadPro.requestFocus();
+        ProductoBean prod = buscarProdPorCodSuc(inventario
+                , String.valueOf(jtProducto.getModel().getValueAt(
+                            jtProducto.getSelectedRow(),1))
+                , Ingreso.usuario.getIdSucursal());
+        if (prod != null) {
+            prodParcial = prod;
+            txtCodigoPro.setText(prodParcial.getCodigo());
+            txtProducto.setText(prodParcial.getDescripcion());
+            txtStockPro.setText("" + prodParcial.getExistencia());
+            txtPrecio.setText("" + prodParcial.getPrecioUnitario());
+            txtCantidadPro.setText("1");
+            txtDescuento.setText("0");
+            txtCantidadPro.requestFocus(true);
+        }
     }
     
     private boolean buscarEnCarrito(int idArticulo) {
@@ -1464,20 +1469,36 @@ public class FrmVenta extends javax.swing.JFrame {
                         //Verifica que el producto no este ya agregado en la lista de compras
                         if (buscarEnCarrito(prodParcial.getIdArticulo())) {
                             JOptionPane.showMessageDialog(null, "YA ESTA AGREGADO EL PRODUCTO");
-                            //limpiarCajaTexto();
+                            //limpia caja texto relacionados con venta
+                            txtCodigoPro.setText("");
+                            txtPrecio.setText("");
+                            txtDescuento.setText("0");
+                            txtCantidadPro.setText("1");
+                            txtStockPro.setText("");        
+                            txtProducto.setText("");
+                            txtIvaProd.setText("" + ivaEmpresa);
+                            txtCodigoPro.requestFocus(true);
+                            //fin limpia caja texto relacionados con venta
                             return;
                         }
                         detalleVenta = new DetalleVentaBean();
-                        detalleVenta.setCantidad(Double.parseDouble(txtCantidadPro.getText()));
-                        detalleVenta.setDescuento(Double.parseDouble(txtDescuento.getText()));  
+                        detalleVenta.setCantidad(Double.parseDouble(txtCantidadPro
+                                .getText()));
+                        detalleVenta.setDescuento(Double.parseDouble(txtDescuento
+                                .getText()));  
                         detalleVenta.setIdArticulo(prodParcial.getIdArticulo());
                         detalleVenta.setIdSucursal(Ingreso.usuario.getIdSucursal());
-                        detalleVenta.setIdVenta(Integer.parseInt(txtNroVenta.getText()));
-                        if (txtDescuento.getText().equalsIgnoreCase("0")) {
-                            detalleVenta.setPrecio(prodParcial.getPrecioUnitario());  
+                        detalleVenta.setIdVenta(Integer.parseInt(txtNroVenta
+                                .getText()));
+                        
+                        if ((txtDescuento.getText().equalsIgnoreCase("0")) ||
+                                txtDescuento.getText().equalsIgnoreCase("")) {
+                            detalleVenta.setPrecio(Double.parseDouble(txtPrecio
+                                    .getText()));  
                         } else {
-                            detalleVenta.setPrecio(prodParcial.getPrecioUnitario() 
-                                    - Double.parseDouble(txtDescuento.getText()));  
+                            detalleVenta.setPrecio(Double.parseDouble(txtPrecio
+                                    .getText()) - Double.parseDouble(txtDescuento
+                                            .getText()));  
                         }
                         detalleVenta.setUnidadMedida(prodParcial.getUnidadMedida());
                         //agrego producto a vender a lista parcial de venta
@@ -1493,11 +1514,6 @@ public class FrmVenta extends javax.swing.JFrame {
                         limpiarCajaTexto();
                         return;
                     }
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "No es el mismo producto repite la operación");
-//                    limpiarCajaTexto();
-//                    return;
-//                }
                 //limpia caja texto relacionados con venta
                 txtCodigoPro.setText("");
                 txtPrecio.setText("");
@@ -1510,12 +1526,14 @@ public class FrmVenta extends javax.swing.JFrame {
                 
                 prodParcial = null;
             } else {
-                JOptionPane.showMessageDialog(null, "No es el mismo producto que consultaste vuelve ha hacer la operación");
+                JOptionPane.showMessageDialog(null, "No es el mismo producto que"
+                        + " consultaste vuelve ha hacer la operación");
                 prodParcial = null;
                 limpiarCajaTexto();
                 return;
             }            
-            // Fin Verifico que sea el mismo producto que se consulto contra el cuadro de texto codigo
+            // Fin Verifico que sea el mismo producto que se consulto contra el 
+            //  cuadro de texto codigo
         } else {
             JOptionPane.showMessageDialog(null, "Selecciona un producto a vender");
             limpiarCajaTexto();
@@ -1528,7 +1546,6 @@ public class FrmVenta extends javax.swing.JFrame {
         int fila = tblListaProductos.getSelectedRow();        
         if (fila >= 0) {
             int idArt = Integer.parseInt(String.valueOf(tblListaProductos
-                    .getModel()
                     .getValueAt(tblListaProductos.getSelectedRow(),0)));
             if (eliminaProdDeCarrito(idArt)) {
                 try {
@@ -1547,17 +1564,20 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void txtImporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtImporteActionPerformed
+        if (txtImporte.getText().equalsIgnoreCase("")) {
+            txtCodigoPro.requestFocus(true);
+            return;
+        }
         if (Double.parseDouble(txtImporte.getText()) >= 
                 Double.parseDouble(txtMontoApagar.getText())) {
             txtVuelto.setText(""+((Double.parseDouble(txtImporte.getText())-
                     Double.parseDouble(txtMontoApagar.getText()))));   
-            
             DecimalFormat df = new DecimalFormat("#.##");   
             txtVuelto.setText(""+df.format(Double.parseDouble(txtVuelto.getText())));  
-            
             btnGenerarVenta.requestFocus();
         } else {
-            JOptionPane.showMessageDialog(null, "EL PAGO DEBE SER MAYOR O IGUAL AL TOTAL A PAGAR ");
+            JOptionPane.showMessageDialog(null, "EL PAGO DEBE SER MAYOR O "
+                    + "IGUAL AL TOTAL A PAGAR ");
         }
     }//GEN-LAST:event_txtImporteActionPerformed
 
@@ -1579,6 +1599,7 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_jtProductoKeyReleased
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
+        cargaDatos = false;
         FrmCliente frmCliente = new FrmCliente(1);
         frmCliente.setVisible(true);
     }//GEN-LAST:event_btnClientesActionPerformed
@@ -1595,6 +1616,7 @@ public class FrmVenta extends javax.swing.JFrame {
             //VERIFICA SI HAY PRODUCTO A PEDIR
             if (detalleVentaProducto.size()>0) {
                 //obtiene no. de pedido
+                txtCodigoPro.setText("Espere...");
                 int noPedido = obtenerUltimoIdPedido();
                 ventasBean = new VentasBean();
                 ventasBean.setIdUsuario(Ingreso.usuario.getIdUsuario());
@@ -1642,16 +1664,19 @@ public class FrmVenta extends javax.swing.JFrame {
                             hiloDetallePedidos = new WSDetallePedidos();
                             rutaWS = constantes.getProperty("IP") 
                                 + constantes.getProperty("GUARDADETALLEPEDIDO");
-                            DetallePedidoBean detallePedidoGuardado = 
-                                    hiloDetallePedidos.ejecutaWebService(rutaWS,"1"
-                                    , "" + noPedido
-                                    , "" + detVentBeanADisminuir.getIdArticulo()
-                                    , "" + detVentBeanADisminuir.getPrecio()
-                                    , "" + detVentBeanADisminuir.getCantidad()
-                                    , "" + detVentBeanADisminuir.getDescuento()
-                                    , detVentBeanADisminuir.getUnidadMedida()
-                                    , "" + Ingreso.usuario.getIdSucursal()
-                                    );
+                            DetallePedidoBean detallePedidoGuardado = null;
+                            while (detallePedidoGuardado == null) {
+                                detallePedidoGuardado = 
+                                        hiloDetallePedidos.ejecutaWebService(rutaWS,"1"
+                                        , "" + noPedido
+                                        , "" + detVentBeanADisminuir.getIdArticulo()
+                                        , "" + detVentBeanADisminuir.getPrecio()
+                                        , "" + detVentBeanADisminuir.getCantidad()
+                                        , "" + detVentBeanADisminuir.getDescuento()
+                                        , detVentBeanADisminuir.getUnidadMedida()
+                                        , "" + Ingreso.usuario.getIdSucursal()
+                                        );
+                            }
                         }
                         //fin guarda detalle pedido
                         JOptionPane.showMessageDialog(null, 
@@ -1681,6 +1706,7 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodigoProMouseClicked
 
     private void btnClientes1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientes1ActionPerformed
+        cargaDatos = false;
         FrmProducto frmProducto = new FrmProducto(1);
         frmProducto.setVisible(true);
     }//GEN-LAST:event_btnClientes1ActionPerformed
@@ -1694,8 +1720,11 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarMouseEntered
 
     private void btnClientes2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientes2ActionPerformed
+        this.setVisible(false);
+        this.dispose();
         FrmCorte frmCorte = new FrmCorte();
-        frmCorte.setVisible(true);
+        frmCorte.setVisible(true);                    
+        frmCorte.setExtendedState(Principal.MAXIMIZED_BOTH);
     }//GEN-LAST:event_btnClientes2ActionPerformed
 
     private void btnClientesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_btnClientesFocusLost
@@ -1717,6 +1746,36 @@ public class FrmVenta extends javax.swing.JFrame {
         barraProgreso.setVisible(true);
     }//GEN-LAST:event_btnSalir1ActionPerformed
 
+    private void txtPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioActionPerformed
+        //verifica si hubo cambio de precio
+        if (Double.parseDouble(txtPrecio.getText()) != 
+                prodParcial.getPrecioUnitario()) {
+            int dialogResult = JOptionPane.showConfirmDialog(null, 
+                    "¿Realmente deseas cambiar el precio?");
+            if(dialogResult == JOptionPane.YES_OPTION){
+                txtDescuento.requestFocus(true);
+            } else {
+                txtPrecio.setText("" + prodParcial.getPrecioUnitario());
+            }
+        }
+    }//GEN-LAST:event_txtPrecioActionPerformed
+
+    private void txtPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioKeyTyped
+        //valida solo numeros
+        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtPrecioKeyTyped
+
+    private void txtDescuentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyTyped
+        //valida solo numeros
+        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtDescuentoKeyTyped
+
     private ArrayList<ProductoBean> llenaTablaInventario(String buscar, int tipoBusq) {
         ArrayList<ProductoBean> resultWS = new ArrayList<ProductoBean>();
         ProductoBean producto = null;
@@ -1737,7 +1796,8 @@ public class FrmVenta extends javax.swing.JFrame {
             }
             if (campoBusq.indexOf(buscar)>=0) {
                 producto = new ProductoBean();
-                producto.setIdArticulo(Integer.parseInt(jtProducto.getModel().getValueAt(i,0).toString()));
+                producto.setIdArticulo(Integer.parseInt(jtProducto.getModel()
+                        .getValueAt(i,0).toString()));
                 producto.setCodigo(jtProducto.getModel().getValueAt(i,1).toString());
                 producto.setDescripcion(jtProducto.getModel().getValueAt(
                     i,2).toString());
@@ -1789,29 +1849,21 @@ public class FrmVenta extends javax.swing.JFrame {
         for (ProductoBean p : list) {
             //filtra por sucursal
             if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
-                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes.getProperty("SUPERUSUARIO")))) {
+                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes
+                            .getProperty("SUPERUSUARIO")))) {
                 datos[i][0] = p.getIdArticulo();
                 datos[i][1] = p.getCodigo();
                 datos[i][2] = p.getDescripcion();
-//                datos[i][3] = p.getPrecioCosto();
-//                datos[i][4] = p.getPrecioUnitario();
-//                datos[i][5] = p.getExistencia();
-//                datos[i][6] = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" + p.getIdSucursal());
-////                NombreProducto.put(p.getCodigo(), p.getDescripcion());
                 i++;
             }
         }
-        Object[][] datosFinal = new Object[i][7];
+        Object[][] datosFinal = new Object[i][3];
         //Para filtrar los registros
         for (int j=0; j<i; j++) {
             if (datos[j][0]!=null) {
                 datosFinal[j][0] = datos[j][0];
                 datosFinal[j][1] = datos[j][1];
                 datosFinal[j][2] = datos[j][2];
-//                datosFinal[j][3] = datos[j][3];
-//                datosFinal[j][4] = datos[j][4];
-//                datosFinal[j][5] = datos[j][5];
-//                datosFinal[j][6] = datos[j][6];
             }
         }
         //Fin Para filtrar los registros
@@ -1835,29 +1887,28 @@ public class FrmVenta extends javax.swing.JFrame {
     public void recargarTableVentaParcialProductos(List<DetalleVentaBean> list) {
 //        try {
             if (list == null) {
-                DefaultTableModel modelo = (DefaultTableModel) tblListaProductos.getModel();
+                DefaultTableModel modelo = (DefaultTableModel) tblListaProductos
+                        .getModel();
                 while(modelo.getRowCount()>0)
                     modelo.removeRow(0);
             }
-            Object[][] datos = new Object[list.size()][6];
+            Object[][] datos = new Object[list.size()][5];
             int i = 0;
             for (DetalleVentaBean p : list) {
                 datos[i][0] = p.getIdArticulo();
-                datos[i][1] = p.getIdArticulo();
-                datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID,"" 
+                datos[i][1] = util.buscaDescFromIdProd(Principal.productosHMID,"" 
                         + p.getIdArticulo());
-                datos[i][3] = p.getCantidad();            
-                datos[i][4] = p.getPrecio();
-                
+                datos[i][2] = p.getCantidad();
+                datos[i][3] = String.format("%.2f", p.getPrecio());
                 DecimalFormat df = new DecimalFormat("#.##");   
                 String importeParcial = df.format(p.getCantidad() * p.getPrecio());  
-                datos[i][5] = importeParcial;
+                datos[i][4] = importeParcial;
                 i++;
             }
             tblListaProductos.setModel(new javax.swing.table.DefaultTableModel(
                     datos,
                     new String[]{
-                        "ID","CODIGO", "DESCRIPCION", "CANTIDAD", "PRECIO UND.", "IMPORTE"
+                        "id","DESCRIPCION", "CANTIDAD", "PRECIO UND.", "IMPORTE"
                    }) {
 
                 @Override
@@ -1865,8 +1916,8 @@ public class FrmVenta extends javax.swing.JFrame {
                     return false;
                 }
             });
-            jtProducto.getColumnModel().getColumn(0).setPreferredWidth(1);
-            jtProducto.getColumnModel().getColumn(0).setMaxWidth(1);
+            tblListaProductos.getColumnModel().getColumn(0).setPreferredWidth(1);
+            tblListaProductos.getColumnModel().getColumn(0).setMaxWidth(1);
 //        } catch (Exception e) {
 //        }
     } 
@@ -1894,9 +1945,11 @@ public class FrmVenta extends javax.swing.JFrame {
         
         //muestra 2 decimales en porc de descuento
         DecimalFormat df = new DecimalFormat("#.##");   
-        txtSubTotal.setText(""+df.format(Double.parseDouble(txtSubTotal.getText())));  
+        txtSubTotal.setText(""+df.format(Double.parseDouble(txtSubTotal
+                .getText())));  
         txtIva.setText(""+df.format(Double.parseDouble(txtIva.getText())));  
-        txtMontoApagar.setText(""+df.format(Double.parseDouble(txtMontoApagar.getText())));  
+        txtMontoApagar.setText(""+df.format(Double.parseDouble(txtMontoApagar
+                .getText())));  
     } 
     
     /**

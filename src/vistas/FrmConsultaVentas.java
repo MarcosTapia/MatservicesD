@@ -60,8 +60,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         ventasGlobal = hiloVentasList.ejecutaWebService(rutaWS,"1");
         recargarTableVentas(ventasGlobal);
 
-        inventario = util.getMapProductos();
-        productos = util.getMapProductos();
+        inventario = util.getInventario();
+        productos = util.getInventario();
         util.llenaMapProductos(productos);
         
         // Actualizas tbl DetalleVentas

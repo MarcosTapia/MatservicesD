@@ -357,7 +357,7 @@ public class Util {
      * Metodo para cargar proveedores
      * @return Hash proveedores
      */
-    public ArrayList<ProductoBean> getMapProductos() {
+    public ArrayList<ProductoBean> getInventario() {
         ArrayList<ProductoBean> productos = new ArrayList();
         hiloInventariosList = new WSInventariosList();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETINVENTARIOS");
@@ -426,7 +426,7 @@ public class Util {
         return existe;
     }
     
-    public String buscaDescFromIdProd(Map<String,String> productosHM, String idArt) {
+    public String buscaDescFromIdProd(Map<String,String> productosHMID, String idArt) {
         Iterator it = productosHMID.keySet().iterator();
         String descripProd = "";
         while(it.hasNext()){

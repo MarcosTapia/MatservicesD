@@ -786,7 +786,14 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscarCliMouseClicked
 
     private void btnSalirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCliActionPerformed
-        System.exit(0);
+        //si se llamo clientes desde ventas solo se cierra la ventana si no 
+        //se sale de la aplicacion        
+        if (this.getLlamadoVentaClientes() == 1) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            System.exit(0);
+        }
     }//GEN-LAST:event_btnSalirCliActionPerformed
 
     private void btnMostrarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarCliActionPerformed

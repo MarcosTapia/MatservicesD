@@ -143,7 +143,7 @@ public class FrmConsultas extends javax.swing.JFrame {
         jToolBar2.setRollover(true);
 
         btnAlertas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/clientes.png"))); // NOI18N
-        btnAlertas.setText("ALERTAS");
+        btnAlertas.setText("Surtir");
         btnAlertas.setFocusable(false);
         btnAlertas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAlertas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

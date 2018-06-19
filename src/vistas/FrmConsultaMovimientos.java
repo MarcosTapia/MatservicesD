@@ -36,8 +36,8 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
-        inventario = util.getMapProductos();
-        productos = util.getMapProductos();
+        inventario = util.getInventario();
+        productos = util.getInventario();
         util.llenaMapProductos(productos);
         
         // Actualizas tbl Ventas

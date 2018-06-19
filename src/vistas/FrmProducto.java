@@ -1114,7 +1114,7 @@ public class FrmProducto extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null,
                             " [ Registro Eliminado ]");
                     //Carga productos
-                    productos = util.getMapProductos();
+                    productos = util.getInventario();
                     util.llenaMapProductos(productos);
                     limpiarCajaTexto();
                     actualizarBusquedaProducto();
@@ -1139,7 +1139,7 @@ public class FrmProducto extends javax.swing.JFrame {
         lblUsuario.setText("Usuario : " + Ingreso.usuario.getNombre()
                 + " " + Ingreso.usuario.getApellido_paterno()
                 + " " + Ingreso.usuario.getApellido_materno());
-        productos = util.getMapProductos();
+        productos = util.getInventario();
         util.llenaMapProductos(productos);
         Principal.productosHM = util.getProductosHM();
         Principal.productosHMID = util.getProductosHMID();
@@ -1166,7 +1166,12 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarProActionPerformed
 
     private void btnSalirProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirProActionPerformed
-        System.exit(0);
+        if (this.getLlamadoVentaInventario() == 1) {
+           this.setVisible(false);
+           this.dispose();
+        } else {
+           System.exit(0);
+        }
     }//GEN-LAST:event_btnSalirProActionPerformed
 
     private void btnMostrarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarProActionPerformed
@@ -1268,7 +1273,7 @@ public class FrmProducto extends javax.swing.JFrame {
                 if (productoInsertado != null) {
                     JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
                     //Carga productos
-                    productos = util.getMapProductos();
+                    productos = util.getInventario();
                     util.llenaMapProductos(productos);
                     actualizarBusquedaProducto();
                     activarBotones(true);
@@ -1395,7 +1400,7 @@ public class FrmProducto extends javax.swing.JFrame {
 
                     JOptionPane.showMessageDialog(null, "[ Registro Actualizado ]");
                     //Carga productos
-                    productos = util.getMapProductos();
+                    productos = util.getInventario();
                     util.llenaMapProductos(productos);
                     actualizarBusquedaProducto();
                     activarBotones(true);

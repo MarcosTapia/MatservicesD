@@ -123,8 +123,8 @@ public class FrmCompras extends javax.swing.JFrame {
                             "IMPORTE"};
         ListaProductoC.setColumnIdentifiers(titulos);
         this.setLocationRelativeTo(null);
-        inventario = util.getMapProductos();
-        productos = util.getMapProductos();
+        inventario = util.getInventario();
+        productos = util.getInventario();
         util.llenaMapProductos(productos);
         //carga proveedores
         Iterator it = Principal.proveedoresHM.keySet().iterator();
@@ -1213,7 +1213,7 @@ public class FrmCompras extends javax.swing.JFrame {
                 //fin guarda detalle compra
 
                 //carga productos actualizados
-                productos = util.getMapProductos();
+                productos = util.getInventario();
                 util.llenaMapProductos(productos);
                 //fin carga productos actualizados
 
@@ -1332,8 +1332,8 @@ public class FrmCompras extends javax.swing.JFrame {
                     + constantes.getProperty("GETINVENTARIOS");
             resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
             recargarTableProductos(resultWS);
-            inventario = util.getMapProductos();
-            productos = util.getMapProductos();
+            inventario = util.getInventario();
+            productos = util.getInventario();
             util.llenaMapProductos(productos);
             // fin refresca inventario
         }

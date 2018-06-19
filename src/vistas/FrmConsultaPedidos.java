@@ -58,17 +58,12 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
-        inventario = util.getMapProductos();
-        productos = util.getMapProductos();
-        util.llenaMapProductos(productos);
         cargaDatos();
         lblUsuario.setText("Usuario : " + Ingreso.usuario.getNombre()
             + " " + Ingreso.usuario.getApellido_paterno()
             + " " + Ingreso.usuario.getApellido_materno());
-        
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
         this.setIcon();
-        
         limpiaTblDetallePedido();        
     }
     
@@ -96,9 +91,9 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
         PedidosGlobal = hiloPedidosList.ejecutaWebService(rutaWS,"1");
         recargarTablePedidos(PedidosGlobal);
 
-        inventario = util.getMapProductos();
-        productos = util.getMapProductos();
-        util.llenaMapProductos(productos);
+//        inventario = util.getInventario();
+//        productos = util.getInventario();
+//        util.llenaMapProductos(productos);
         
         // Actualizas tbl DetalleVentas
         hiloDetallePedidosList = new WSDetallePedidosList();
@@ -272,8 +267,10 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
 //            ticket.ImprimirDocumento("LPT1",true);
             ticket.ImprimirDocumento("usb002",true);
         } catch(Exception e){
+            ventasBean = null;
+            borrar();
+            cargaDatos();
             JOptionPane.showMessageDialog(null, "Error " + e.getMessage());
-            return;
         }     
     }    
     
@@ -447,8 +444,8 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                     //fin guarda detalle ventasBean
 
                     //carga productos actualizados
-                    productos = util.getMapProductos();
-                    util.llenaMapProductos(productos);
+//                    productos = util.getInventario();
+//                    util.llenaMapProductos(productos);
                     //fin carga productos actualizados
 
                     JOptionPane.showMessageDialog(null, 
@@ -462,7 +459,6 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                     PedidoBean pedidoEliminar = hiloPedidos.ejecutaWebService(
                             rutaWS,"3"
                             , "" + idPedido);
-                    cargaDatos();
                     int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas"
                             + " "
                             + "Imprimir la Venta?", "Mensaje..!!", JOptionPane
@@ -475,6 +471,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                     }
                     ventasBean = null;
                     borrar();
+                    cargaDatos();
                 } // condicion que verifica que se guardo la venta
             }                        
             //fin ciclo guarda ventasBean
@@ -1232,14 +1229,11 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
 
     public void actualizarBusquedaDetalleVenta() {
         recargarTableDetallePedidos(detallePedidosGlobal);
-        ArrayList<DetallePedidoBean> resultWS = null;
-        ProductoBean producto = null;
+        ArrayList<DetallePedidoBean> resultWS;
+        //ProductoBean producto = null;
         String idPedido = tblConsultaPedidos.getModel()
                 .getValueAt(tblConsultaPedidos.getSelectedRow(),0).toString();
         resultWS = llenaTablaDetallePedidos(idPedido.trim(),0);
-//        if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-//            resultWS = detallePedidosGlobal;
-//        }
         recargarTableDetallePedidos(resultWS);
     }
     
