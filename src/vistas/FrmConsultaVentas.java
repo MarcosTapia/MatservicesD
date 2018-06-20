@@ -962,9 +962,6 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         String idVenta = tblConsultaVentas.getModel()
                 .getValueAt(tblConsultaVentas.getSelectedRow(),0).toString();
         resultWS = llenaTablaDetalleVentas(idVenta.trim(),0);
-//        if (txtBuscarVenta.getText().equalsIgnoreCase("")) {
-//            resultWS = detalleVentasGlobal;
-//        }
         recargarTableDetalleVentas(resultWS);
     }
     
@@ -989,7 +986,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                     (tblConsultaDetalleVenta.getModel().getValueAt(i,1)
                             .toString()));
                 detalleVenta.setIdArticulo(util.buscaIdProd(
-                        Principal.productosHM, tblConsultaDetalleVenta
+                        Principal.productosHMID, tblConsultaDetalleVenta
                                 .getModel().getValueAt(i,2).toString()));
                 detalleVenta.setPrecio(Double.parseDouble(tblConsultaDetalleVenta
                         .getModel().getValueAt(i,3).toString()));

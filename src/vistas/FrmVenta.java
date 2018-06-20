@@ -84,18 +84,9 @@ public class FrmVenta extends javax.swing.JFrame {
         }
         initComponents();
         
-        // Actualizas tbl producto
-//        ArrayList<ProductoBean> resultWS = null;
-//        hiloInventariosList = new WSInventariosList();
-//        String rutaWS = constantes.getProperty("IP") 
-//                + constantes.getProperty("GETINVENTARIOS");
-//        resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
-//        recargarTableProductos(resultWS);
-        
         java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
         txtFecha.setText("Fecha: " + a);
-//        cargaClientes();
         lblUsuario.setText(Principal.datosEmpresaBean.getNombreEmpresa()
                 + " Sucursal: " 
                 + util.buscaDescFromIdSuc(Principal.sucursalesHM, "" 
@@ -383,7 +374,7 @@ public class FrmVenta extends javax.swing.JFrame {
         btnAumentar = new javax.swing.JButton();
         btnDisminuir = new javax.swing.JButton();
         btnAgregaProducto = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnElimProdVta = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         txtPrecio = new javax.swing.JTextField();
         txtProducto = new javax.swing.JTextField();
@@ -408,8 +399,8 @@ public class FrmVenta extends javax.swing.JFrame {
         txtVuelto = new javax.swing.JTextField();
         cboClientes = new javax.swing.JComboBox();
         btnClientes = new javax.swing.JButton();
-        btnClientes1 = new javax.swing.JButton();
-        btnClientes2 = new javax.swing.JButton();
+        btnInventario = new javax.swing.JButton();
+        btnCorte = new javax.swing.JButton();
         cboTipoVenta = new javax.swing.JComboBox();
         jPanel7 = new javax.swing.JPanel();
         btnGenerarVenta = new javax.swing.JButton();
@@ -528,11 +519,11 @@ public class FrmVenta extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Remove.png"))); // NOI18N
-        jButton2.setText("Eliminar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnElimProdVta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Remove.png"))); // NOI18N
+        btnElimProdVta.setText("Eliminar");
+        btnElimProdVta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnElimProdVtaActionPerformed(evt);
             }
         });
 
@@ -639,7 +630,7 @@ public class FrmVenta extends javax.swing.JFrame {
                         .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
+                    .addComponent(btnElimProdVta)
                     .addComponent(btnAgregaProducto))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
@@ -669,7 +660,7 @@ public class FrmVenta extends javax.swing.JFrame {
                             .addComponent(btnAgregaProducto))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
+                    .addComponent(btnElimProdVta)
                     .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel4)
                         .addComponent(txtStockPro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -758,23 +749,23 @@ public class FrmVenta extends javax.swing.JFrame {
             }
         });
 
-        btnClientes1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
-        btnClientes1.setText("INVENTARIO");
-        btnClientes1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnClientes1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnClientes1.addActionListener(new java.awt.event.ActionListener() {
+        btnInventario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
+        btnInventario.setText("INVENTARIO");
+        btnInventario.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnInventario.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInventario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClientes1ActionPerformed(evt);
+                btnInventarioActionPerformed(evt);
             }
         });
 
-        btnClientes2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cortecajaf.jpg"))); // NOI18N
-        btnClientes2.setText("CORTE");
-        btnClientes2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnClientes2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnClientes2.addActionListener(new java.awt.event.ActionListener() {
+        btnCorte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cortecajaf.jpg"))); // NOI18N
+        btnCorte.setText("CORTE");
+        btnCorte.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCorte.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCorte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClientes2ActionPerformed(evt);
+                btnCorteActionPerformed(evt);
             }
         });
 
@@ -806,11 +797,11 @@ public class FrmVenta extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(cboClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClientes2)
+                        .addComponent(btnCorte)
                         .addGap(3, 3, 3)
                         .addComponent(btnClientes)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClientes1))
+                        .addComponent(btnInventario))
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel4Layout.createSequentialGroup()
@@ -859,8 +850,8 @@ public class FrmVenta extends javax.swing.JFrame {
                             .addComponent(jLabel13)
                             .addComponent(cboClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(btnClientes)
-                    .addComponent(btnClientes1)
-                    .addComponent(btnClientes2))
+                    .addComponent(btnInventario)
+                    .addComponent(btnCorte))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -1542,7 +1533,7 @@ public class FrmVenta extends javax.swing.JFrame {
         //Fin Verifica que haya producto seleccionado
     }//GEN-LAST:event_btnAgregaProductoActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnElimProdVtaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnElimProdVtaActionPerformed
         int fila = tblListaProductos.getSelectedRow();        
         if (fila >= 0) {
             int idArt = Integer.parseInt(String.valueOf(tblListaProductos
@@ -1561,7 +1552,7 @@ public class FrmVenta extends javax.swing.JFrame {
                     "DEBES SELECCIONAR UN PRODUCTO");
             return;
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnElimProdVtaActionPerformed
 
     private void txtImporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtImporteActionPerformed
         if (txtImporte.getText().equalsIgnoreCase("")) {
@@ -1705,11 +1696,11 @@ public class FrmVenta extends javax.swing.JFrame {
         limpiaCaptura();
     }//GEN-LAST:event_txtCodigoProMouseClicked
 
-    private void btnClientes1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientes1ActionPerformed
+    private void btnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioActionPerformed
         cargaDatos = false;
         FrmProducto frmProducto = new FrmProducto(1);
         frmProducto.setVisible(true);
-    }//GEN-LAST:event_btnClientes1ActionPerformed
+    }//GEN-LAST:event_btnInventarioActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         limpiaCaptura();
@@ -1719,13 +1710,13 @@ public class FrmVenta extends javax.swing.JFrame {
         btnLimpiar.setToolTipText("Limpiar");
     }//GEN-LAST:event_btnLimpiarMouseEntered
 
-    private void btnClientes2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientes2ActionPerformed
+    private void btnCorteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCorteActionPerformed
         this.setVisible(false);
         this.dispose();
         FrmCorte frmCorte = new FrmCorte();
         frmCorte.setVisible(true);                    
         frmCorte.setExtendedState(Principal.MAXIMIZED_BOTH);
-    }//GEN-LAST:event_btnClientes2ActionPerformed
+    }//GEN-LAST:event_btnCorteActionPerformed
 
     private void btnClientesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_btnClientesFocusLost
     }//GEN-LAST:event_btnClientesFocusLost
@@ -1993,18 +1984,18 @@ public class FrmVenta extends javax.swing.JFrame {
     private javax.swing.JButton btnAumentar;
     private javax.swing.JButton btnCancelarV;
     private javax.swing.JButton btnClientes;
-    private javax.swing.JButton btnClientes1;
-    private javax.swing.JButton btnClientes2;
+    private javax.swing.JButton btnCorte;
     private javax.swing.JButton btnDisminuir;
+    private javax.swing.JButton btnElimProdVta;
     private javax.swing.JButton btnGenerarPedido;
     private javax.swing.JButton btnGenerarVenta;
+    private javax.swing.JButton btnInventario;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnSalir1;
     private javax.swing.JComboBox cboClientes;
     private javax.swing.JComboBox cboParametroPro;
     private javax.swing.JComboBox cboTipoVenta;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

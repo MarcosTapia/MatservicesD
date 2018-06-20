@@ -386,7 +386,7 @@ public class Util {
         return codProd;
     }
     
-    public int buscaIdProd(Map<String,String> productosHM, String descripcionProd) {
+    public int buscaIdProd(Map<String,String> productosHMID, String descripcionProd) {
         Iterator it = productosHMID.keySet().iterator();
         int idProd = 0;
         while(it.hasNext()){

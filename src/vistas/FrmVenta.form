@@ -197,11 +197,11 @@
                                           </Group>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="btnClientes2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnCorte" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                                       <Component id="btnClientes" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="btnClientes1" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnInventario" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                                       <Component id="jPanel8" max="32767" attributes="0"/>
@@ -267,8 +267,8 @@
                                       </Group>
                                   </Group>
                                   <Component id="btnClientes" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnClientes1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnClientes2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnInventario" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnCorte" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
@@ -394,7 +394,7 @@
                                   </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnElimProdVta" min="-2" max="-2" attributes="0"/>
                                       <Component id="btnAgregaProducto" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace pref="41" max="32767" attributes="0"/>
@@ -434,7 +434,7 @@
                                   </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnElimProdVta" min="-2" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="3" attributes="0">
                                           <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="txtStockPro" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -541,7 +541,7 @@
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAgregaProductoActionPerformed"/>
                           </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="jButton2">
+                        <Component class="javax.swing.JButton" name="btnElimProdVta">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/imagenes/Remove.png"/>
@@ -549,7 +549,7 @@
                             <Property name="text" type="java.lang.String" value="Eliminar"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnElimProdVtaActionPerformed"/>
                           </Events>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel10">
@@ -776,7 +776,7 @@
                         <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="btnClientesFocusLost"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="btnClientes1">
+                    <Component class="javax.swing.JButton" name="btnInventario">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/imagenes/List.png"/>
@@ -786,10 +786,10 @@
                         <Property name="verticalTextPosition" type="int" value="3"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClientes1ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInventarioActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="btnClientes2">
+                    <Component class="javax.swing.JButton" name="btnCorte">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/imagenes/cortecajaf.jpg"/>
@@ -799,7 +799,7 @@
                         <Property name="verticalTextPosition" type="int" value="3"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClientes2ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCorteActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JComboBox" name="cboTipoVenta">

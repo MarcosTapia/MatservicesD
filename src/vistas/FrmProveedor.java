@@ -786,7 +786,14 @@ public class FrmProveedor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirProvActionPerformed
-        System.exit(0);
+        //si se llamo proveedores desde compras solo se cierra la ventana si no 
+        //se sale de la aplicacion        
+        if (this.getLlamadoCompra()== 1) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            System.exit(0);
+        }
     }//GEN-LAST:event_btnSalirProvActionPerformed
 
     private void btnNuevoProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProvActionPerformed

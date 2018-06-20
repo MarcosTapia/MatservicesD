@@ -1258,9 +1258,10 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                 detallePedido.setIdPedido(Integer.parseInt
                     (tblConsultaDetallePedido.getModel().getValueAt(i,1)
                             .toString()));
-                detallePedido.setIdArticulo(util.buscaIdProd(
-                        Principal.productosHM, tblConsultaDetallePedido
-                                .getModel().getValueAt(i,2).toString()));
+                int idArt = util.buscaIdProd(
+                        Principal.productosHMID, tblConsultaDetallePedido
+                                .getModel().getValueAt(i,2).toString());
+                detallePedido.setIdArticulo(idArt);
                 detallePedido.setPrecio(Double.parseDouble(tblConsultaDetallePedido
                         .getModel().getValueAt(i,3).toString()));
                 detallePedido.setCantidad(Double.parseDouble(tblConsultaDetallePedido
