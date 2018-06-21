@@ -3,10 +3,8 @@ package vistas;
 import beans.UsuarioBean;
 import ComponenteConsulta.JDListaUsuario;
 import beans.DatosEmpresaBean;
-import beans.SucursalBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
@@ -17,45 +15,19 @@ import java.util.Iterator;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import static vistas.Ingreso.usuario;
 
 import java.security.MessageDigest;
 import util.Util;
-import static vistas.Principal.productos;
-
-/* Datos de permisos sobre los que se rige el sistema en permisos 
-   de usuario a modulos
-
-1.- Inventario
-2.- Alertas
-3.- CVentas
-4.- CCompras
-5.- CMovimientos
-6.- CPedidos
-7.- Proveedores
-8.- Usuarios
-9.- Clientes
-10.- Categorias
-11.- Sucursales
-12.- Sistema
-13.- Mensajes
-14.- Ventas
-15.- Compras
-16.- Caja
-*/
 
 public class FrmUsuarios extends javax.swing.JFrame {
     //WSUsuarios
     Util util = new Util();
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
-    //WSUsuarios
     WSUsuariosList hiloUsuariosList;
     WSUsuarios hiloUsuarios;
     //Fin WSUsuarios
-    
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-
     String accion = "";
 
     public FrmUsuarios() {
@@ -72,7 +44,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
         DatosEmpresaBean resultadoWS = hiloEmpresa.
                 ejecutaWebService(rutaWS,"1");
         this.setTitle(resultadoWS.getNombreEmpresa());
-        
         //se ocultan porque quedan incluidas en inventario
         actualizarBusqueda();
         activarBotones(true);
@@ -87,7 +58,8 @@ public class FrmUsuarios extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }    
     
     public static String getMD5(String input) {
@@ -114,7 +86,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
         txtApellidoPaterno.setText("");
         txtTelCasa.setText("");
         txtTelCel.setText("");
-
         //limpia checkboxs
         chkInventario.setSelected(false);
         chkConsultaAlertas.setSelected(false);
@@ -133,7 +104,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
         chkCompras.setSelected(false);
         chkCaja.setSelected(false);
         //fin limpia checkboxs
-
         cboSucursal.setSelectedItem("");
     }
 
@@ -152,7 +122,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
         btnNuevoPer.setEnabled(b);
         btnGuardarPer.setEnabled(!b);
         btnModificarPer.setEnabled(b);
-        //btnCancelarUsuario.setEnabled(!b);
         btnMostrarPer.setEnabled(b);
     }
 
@@ -272,9 +241,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblUsuariosMouseClicked(evt);
             }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                tblUsuariosMouseEntered(evt);
-            }
         });
         jScrollPane1.setViewportView(tblUsuarios);
 
@@ -321,21 +287,11 @@ public class FrmUsuarios extends javax.swing.JFrame {
         jLabel6.setText("Usuario (*):");
 
         txtCodigoUsuario.setEditable(false);
-        txtCodigoUsuario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCodigoUsuarioActionPerformed(evt);
-            }
-        });
 
         txtUser.setEditable(false);
         txtUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtUserActionPerformed(evt);
-            }
-        });
-        txtUser.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtUserKeyTyped(evt);
             }
         });
 
@@ -534,26 +490,40 @@ public class FrmUsuarios extends javax.swing.JFrame {
         jLabel7.setText("Ap. Pat.:");
 
         txtApellidoPaterno.setEditable(false);
+        txtApellidoPaterno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtApellidoPaternoActionPerformed(evt);
+            }
+        });
 
         jLabel8.setText("Ap. Mat.:");
 
         txtApellidoMaterno.setEditable(false);
+        txtApellidoMaterno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtApellidoMaternoActionPerformed(evt);
+            }
+        });
 
         jLabel9.setText("Tel. Casa:");
 
         txtTelCasa.setEditable(false);
+        txtTelCasa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTelCasaActionPerformed(evt);
+            }
+        });
 
         jTextField1.setText("Tel. Cel.:");
 
         txtTelCel.setEditable(false);
-
-        jLabel10.setText("Sucursal (*):");
-
-        cboSucursal.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cboSucursalMouseClicked(evt);
+        txtTelCel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTelCelActionPerformed(evt);
             }
         });
+
+        jLabel10.setText("Sucursal (*):");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -819,6 +789,8 @@ public class FrmUsuarios extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPerActionPerformed
+        this.setVisible(false);
+        this.dispose();
         System.exit(0);
     }//GEN-LAST:event_btnSalirPerActionPerformed
 
@@ -980,10 +952,13 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 p.setClase(permisos);
                 p.setPermisos(permisos);
                 p.setNombre(txtNombre.getText());
-                p.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM, cboSucursal.getSelectedItem().toString()));
+                p.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM
+                        , cboSucursal.getSelectedItem().toString()));
                 hiloUsuarios = new WSUsuarios();
-                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAUSUARIO");
-                UsuarioBean usuarioInsertado = hiloUsuarios.ejecutaWebService(rutaWS,"3",p.getUsuario()
+                String rutaWS = constantes.getProperty("IP") + constantes
+                        .getProperty("GUARDAUSUARIO");
+                UsuarioBean usuarioInsertado = hiloUsuarios
+                        .ejecutaWebService(rutaWS,"3",p.getUsuario()
                         ,p.getPassword()
                         ,p.getPermisos()
                         ,p.getNombre()
@@ -1142,10 +1117,13 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 //Fin Reune permisos de usuario para guardarlos
                 p.setClase(permisos);
                 p.setPermisos(permisos);
-                p.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM, cboSucursal.getSelectedItem().toString()));
+                p.setIdSucursal(util.buscaIdSuc(Principal.sucursalesHM
+                        , cboSucursal.getSelectedItem().toString()));
                 hiloUsuarios = new WSUsuarios();
-                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICAUSUARIO");
-                UsuarioBean usuarioModificar = hiloUsuarios.ejecutaWebService(rutaWS,"4"
+                String rutaWS = constantes.getProperty("IP") + constantes
+                        .getProperty("MODIFICAUSUARIO");
+                UsuarioBean usuarioModificar = hiloUsuarios
+                        .ejecutaWebService(rutaWS,"4"
                         ,"" + p.getIdUsuario()
                         ,p.getUsuario()
                         ,p.getPassword()
@@ -1157,7 +1135,8 @@ public class FrmUsuarios extends javax.swing.JFrame {
                         ,p.getTelefono_celular()
                         ,"" + p.getIdSucursal());
                 if (usuarioModificar != null) {
-                    JOptionPane.showMessageDialog(null, " [ Datos Actualizados ]");
+                    JOptionPane.showMessageDialog(null, " [ Datos "
+                            + "Actualizados ]");
                     limpiarCajaTexto();
                     actualizarBusqueda();
                     activarBotones(true);
@@ -1186,8 +1165,10 @@ public class FrmUsuarios extends javax.swing.JFrame {
         limpiarCajaTexto();
         ArrayList<UsuarioBean> resultWS = null;
         hiloUsuariosList = new WSUsuariosList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETUSUARIOBUSQUEDAID") 
-                + String.valueOf(tblUsuarios.getModel().getValueAt(tblUsuarios.getSelectedRow(), 0)).trim();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETUSUARIOBUSQUEDAID") 
+                + String.valueOf(tblUsuarios.getModel()
+                        .getValueAt(tblUsuarios.getSelectedRow(), 0)).trim();
         resultWS = hiloUsuariosList.ejecutaWebService(rutaWS,"2");
         UsuarioBean p = resultWS.get(0);
         txtCodigoUsuario.setText(""+p.getIdUsuario());
@@ -1315,19 +1296,14 @@ public class FrmUsuarios extends javax.swing.JFrame {
         //fin verifica permiso de modulo caja chica
         //fin verifica permisos de usuario
         
-        cboSucursal.setSelectedItem(util.buscaDescFromIdSuc(Principal.sucursalesHM, "" + p.getIdSucursal()));
+        cboSucursal.setSelectedItem(util.buscaDescFromIdSuc(Principal.sucursalesHM
+                , "" + p.getIdSucursal()));
     }//GEN-LAST:event_tblUsuariosMouseClicked
-
-    private void txtUserKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUserKeyTyped
-    }//GEN-LAST:event_txtUserKeyTyped
 
     private void btnMostrarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarPerActionPerformed
         JDListaUsuario jdListaP = new JDListaUsuario(this, true,Principal.sucursalesHM);
         jdListaP.setVisible(true);
     }//GEN-LAST:event_btnMostrarPerActionPerformed
-
-    private void txtCodigoUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoUsuarioActionPerformed
-    }//GEN-LAST:event_txtCodigoUsuarioActionPerformed
 
     private void btnEliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarUsuarioActionPerformed
         int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
@@ -1335,17 +1311,21 @@ public class FrmUsuarios extends javax.swing.JFrame {
             if (txtCodigoUsuario.getText().compareTo("") != 0) {
                 UsuarioBean p = new UsuarioBean();
                 hiloUsuarios = new WSUsuarios();
-                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("ELIMINAUSUARIO");
-                UsuarioBean usuarioEliminar = hiloUsuarios.ejecutaWebService(rutaWS,"5"
+                String rutaWS = constantes.getProperty("IP") + constantes
+                        .getProperty("ELIMINAUSUARIO");
+                UsuarioBean usuarioEliminar = hiloUsuarios
+                        .ejecutaWebService(rutaWS,"5"
                         ,txtCodigoUsuario.getText().trim());
                 if (usuarioEliminar != null) {
-                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+                    JOptionPane.showMessageDialog(null, " [ Registro "
+                            + "Eliminado ]");
                     limpiarCajaTexto();
                     actualizarBusqueda();
                     activarBotones(true);
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Selecciona el usuario para eliminar");
+                JOptionPane.showMessageDialog(null, "Selecciona el usuario para "
+                        + "eliminar");
             }
         }
     }//GEN-LAST:event_btnEliminarUsuarioActionPerformed
@@ -1355,19 +1335,12 @@ public class FrmUsuarios extends javax.swing.JFrame {
     }//GEN-LAST:event_txtUserActionPerformed
 
     private void txtClaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClaveActionPerformed
-        txtNombre.requestFocus();
+        txtApellidoPaterno.requestFocus();
     }//GEN-LAST:event_txtClaveActionPerformed
 
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
-//        cboClaseUsuario.requestFocus();
+        txtTelCasa.requestFocus();
     }//GEN-LAST:event_txtNombreActionPerformed
-
-    private void cboSucursalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboSucursalMouseClicked
-    }//GEN-LAST:event_cboSucursalMouseClicked
-
-    private void tblUsuariosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUsuariosMouseEntered
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tblUsuariosMouseEntered
 
     private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
         this.setVisible(false);
@@ -1376,6 +1349,22 @@ public class FrmUsuarios extends javax.swing.JFrame {
         barraProgreso.setProceso(1);
         barraProgreso.setVisible(true);
     }//GEN-LAST:event_btnInicioActionPerformed
+
+    private void txtApellidoPaternoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtApellidoPaternoActionPerformed
+        txtApellidoMaterno.requestFocus();
+    }//GEN-LAST:event_txtApellidoPaternoActionPerformed
+
+    private void txtApellidoMaternoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtApellidoMaternoActionPerformed
+        txtNombre.requestFocus();
+    }//GEN-LAST:event_txtApellidoMaternoActionPerformed
+
+    private void txtTelCasaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTelCasaActionPerformed
+        txtTelCel.requestFocus();
+    }//GEN-LAST:event_txtTelCasaActionPerformed
+
+    private void txtTelCelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTelCelActionPerformed
+        cboSucursal.requestFocus();
+    }//GEN-LAST:event_txtTelCelActionPerformed
 
     private void actualizarBusqueda() {
         ArrayList<UsuarioBean> resultWS = null;

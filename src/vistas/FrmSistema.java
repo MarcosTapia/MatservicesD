@@ -1,35 +1,20 @@
 package vistas;
 
-import beans.ClienteBean;
-import ComponenteConsulta.JDListaClientes;
 import ComponenteConsulta.JDListaSucursales;
 import beans.DatosEmpresaBean;
 import beans.EdoMunBean;
-import beans.ProductoBean;
 import beans.SistemaBean;
 import beans.SucursalBean;
-import beans.UsuarioBean;
 import constantes.ConstantesProperties;
-import consumewebservices.WSClientes;
-import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSInventarios;
 import consumewebservices.WSSistema;
 import consumewebservices.WSSucursales;
 import consumewebservices.WSSucursalesList;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
@@ -37,23 +22,16 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
 import static vistas.Principal.datosEmpresaBean;
-import static vistas.Principal.estadosMun;
-import static vistas.Principal.productos;
 
 public class FrmSistema extends javax.swing.JFrame {
-    //WSUsuarios
     Util util = new Util();
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
     WSSistema hiloSistema;
-    //WSUsuarios
     WSSucursalesList hiloSucursalesList;
     WSSucursales hiloSucursales;
-    //Fin WSUsuarios
-    
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     SistemaBean sistemaBean = new SistemaBean();
-
     String accion = "";
     
     public FrmSistema() {
@@ -76,8 +54,6 @@ public class FrmSistema extends javax.swing.JFrame {
         SistemaBean sistemaBean = hiloSistema.
                 ejecutaWebService(rutaWS,"1");
         activarBotonesSist(true);
-        
-        
         //carga estados
         Iterator it = Principal.estadosHM.keySet().iterator();
         while(it.hasNext()){
@@ -100,7 +76,8 @@ public class FrmSistema extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
     
     public void cargaDatosEmpresa(DatosEmpresaBean configuracionBean) {
@@ -660,6 +637,8 @@ public class FrmSistema extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCliActionPerformed
+        this.setVisible(false);
+        this.dispose();
         System.exit(0);
     }//GEN-LAST:event_btnSalirCliActionPerformed
 
@@ -671,7 +650,8 @@ public class FrmSistema extends javax.swing.JFrame {
     private void btnCancelarDatEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarDatEmpActionPerformed
         // Carga datos de la empresa
         hiloEmpresa = new WSDatosEmpresa();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSEMPRESA");
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETDATOSEMPRESA");
         datosEmpresaBean = hiloEmpresa.ejecutaWebService(rutaWS,"1");
         // Fin Carga datos de la empresa
         cargaDatosEmpresa(datosEmpresaBean);
@@ -707,8 +687,10 @@ public class FrmSistema extends javax.swing.JFrame {
                     configuracionBeanGuardar.setCiudadEmpresa("" + mun);
                     configuracionBeanGuardar.setPaisEmpresa("México");
                     //huardar producto
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICADATOSEMPRESA");
-                    DatosEmpresaBean datosEmpresaActualizada = hiloEmpresa.ejecutaWebService(rutaWS,"2"
+                    String rutaWS = constantes.getProperty("IP") + constantes
+                            .getProperty("MODIFICADATOSEMPRESA");
+                    DatosEmpresaBean datosEmpresaActualizada = hiloEmpresa
+                            .ejecutaWebService(rutaWS,"2"
                             ,configuracionBeanGuardar.getNombreEmpresa()
                             ,configuracionBeanGuardar.getRfcEmpresa()
                             ,configuracionBeanGuardar.getEmailEmpresa()
@@ -720,11 +702,14 @@ public class FrmSistema extends javax.swing.JFrame {
                             ,configuracionBeanGuardar.getPaisEmpresa()
                     );
                     if (datosEmpresaActualizada != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Actualizados ]");
+                        JOptionPane.showMessageDialog(null, "[ Datos "
+                                + "Actualizados ]");
                         // Carga datos de la empresa
                         hiloEmpresa = new WSDatosEmpresa();
-                        rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSEMPRESA");
-                        datosEmpresaBean = hiloEmpresa.ejecutaWebService(rutaWS,"1");
+                        rutaWS = constantes.getProperty("IP") + constantes
+                                .getProperty("GETDATOSEMPRESA");
+                        datosEmpresaBean = hiloEmpresa
+                                .ejecutaWebService(rutaWS,"1");
                         // Fin Carga datos de la empresa
                         cargaDatosEmpresa(datosEmpresaBean);
                         activarCajatexto(false);
@@ -754,7 +739,8 @@ public class FrmSistema extends javax.swing.JFrame {
                     {
                     SistemaBean sistemaBean = 
                             new SistemaBean();
-                    sistemaBean.setIvaEmpresa(Double.parseDouble(txtIvaEmpresa.getText()));
+                    sistemaBean.setIvaEmpresa(Double.parseDouble(txtIvaEmpresa
+                            .getText()));
                     sistemaBean.setHistoricoProveedores("1");
                     sistemaBean.setCriterioHistoricoProveedores("3");
                     sistemaBean.setCamposInventario("0111111110");
@@ -765,10 +751,13 @@ public class FrmSistema extends javax.swing.JFrame {
                     sistemaBean.setCamposClientes("0111111111");
                     sistemaBean.setCamposEmpleados("0111111111");
                     sistemaBean.setCamposEmpresa("0111111111");
-                    sistemaBean.setIvaGral(Double.parseDouble(txtIvaGral.getText()));
-                    //huardar producto
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICADATOSSISTEMA");
-                    SistemaBean sistemaActualizado = hiloSistema.ejecutaWebService(rutaWS,"2"
+                    sistemaBean.setIvaGral(Double.parseDouble(txtIvaGral
+                            .getText()));
+                    //Guardar producto
+                    String rutaWS = constantes.getProperty("IP") + constantes
+                            .getProperty("MODIFICADATOSSISTEMA");
+                    SistemaBean sistemaActualizado = hiloSistema
+                            .ejecutaWebService(rutaWS,"2"
                         ,"" + sistemaBean.getIvaEmpresa()
                         ,"" + sistemaBean.getHistoricoProveedores()
                         ,"" + sistemaBean.getCriterioHistoricoProveedores()
@@ -783,15 +772,15 @@ public class FrmSistema extends javax.swing.JFrame {
                         ,"" + sistemaBean.getIvaGral()
                     );
                     if (sistemaActualizado != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Actualizados ]");
-        
+                        JOptionPane.showMessageDialog(null, "[ Datos "
+                                + "Actualizados ]");
                         // Carga datos de la empresa
                         hiloSistema = new WSSistema();
-                        rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSSISTEMA");
+                        rutaWS = constantes.getProperty("IP") 
+                                + constantes.getProperty("GETDATOSSISTEMA");
                         sistemaBean = hiloSistema.ejecutaWebService(rutaWS,"1");
                         // Fin Carga datos de la empresa
                         cargaDatosSistema(sistemaBean);
-                        
                         activarCajatextoSistema(false);
                         activarBotonesSist(true);
                     } else {
@@ -815,7 +804,8 @@ public class FrmSistema extends javax.swing.JFrame {
     private void btnCancelarDatSistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarDatSistActionPerformed
         // Carga datos de la empresa
         hiloEmpresa = new WSDatosEmpresa();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETDATOSEMPRESA");
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETDATOSEMPRESA");
         datosEmpresaBean = hiloEmpresa.ejecutaWebService(rutaWS,"1");
         // Fin Carga datos de la empresa
         cargaDatosEmpresa(datosEmpresaBean);
@@ -849,12 +839,6 @@ public class FrmSistema extends javax.swing.JFrame {
     }//GEN-LAST:event_cboEstadosActionPerformed
 
     private void cboEstadosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboEstadosKeyTyped
-        //        int key=evt.getKeyCode();
-        //        if(key==0)
-        //        {
-            //            String item = cboEstados.getSelectedItem().toString();
-            //            JOptionPane.showMessageDialog(null, item);
-            //        }
     }//GEN-LAST:event_cboEstadosKeyTyped
 
     private void cboMunicipioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMunicipioActionPerformed
@@ -902,16 +886,19 @@ public class FrmSistema extends javax.swing.JFrame {
     }//GEN-LAST:event_btnInicioActionPerformed
 
     private void eliminarSucursal() {
-        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente "
+                + "deseas borrar el registro?");
         if(dialogResult == JOptionPane.YES_OPTION){
             if (lblIdSucursal.getText().compareTo("") != 0) {
                 hiloSucursales = new WSSucursales();
                 String rutaWS = constantes.getProperty("IP") 
                         + constantes.getProperty("ELIMINASUCURSAL");
-                SucursalBean sucursalEliminar = hiloSucursales.ejecutaWebService(rutaWS,"3"
+                SucursalBean sucursalEliminar = hiloSucursales
+                        .ejecutaWebService(rutaWS,"3"
                         ,lblIdSucursal.getText().trim());
                 if (sucursalEliminar != null) {
-                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+                    JOptionPane.showMessageDialog(null, " [ Registro "
+                            + "Eliminado ]");
                     //Carga productos
                     limpiarCajatexto();
                     activarCajatexto(false);

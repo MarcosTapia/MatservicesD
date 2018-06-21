@@ -2,22 +2,14 @@ package vistas;
 
 import beans.ProveedorBean;
 import ComponenteConsulta.JDListaProveedor;
-import beans.ClienteBean;
 import beans.DatosEmpresaBean;
 import beans.EdoMunBean;
-import beans.UsuarioBean;
 import constantes.ConstantesProperties;
-import consumewebservices.WSClientes;
-import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSProveedores;
 import consumewebservices.WSProveedoresList;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -79,8 +71,6 @@ public class FrmProveedor extends javax.swing.JFrame {
           Object key = it.next();
           cboEstados.addItem(Principal.estadosHM.get(key));
         }
-        
-        
         this.setLocationRelativeTo(null);
         cboEstados.setEnabled(false);
         cboMunicipio.setEnabled(false);
@@ -91,7 +81,6 @@ public class FrmProveedor extends javax.swing.JFrame {
         btnCancelarProv.setEnabled(true);
         lblIdProveedor.setText("");
         lblIdProveedor.setVisible(false);
-//        JOptionPane.showMessageDialog(null, this.getLlamadoVenta());
         if (this.getLlamadoCompra() == 1) {
             btnNuevoProv.setVisible(true);
             btnGuardarProv.setEnabled(true);
@@ -103,7 +92,8 @@ public class FrmProveedor extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
 
     public void limpiarCajaTexto() {
@@ -852,8 +842,10 @@ public class FrmProveedor extends javax.swing.JFrame {
                     prov.setComentarios(txtComentarios.getText());
                     //huardar producto
                     hiloProveedores = new WSProveedores();
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDAPROVEEDOR");
-                    ProveedorBean proveedorInsertado = hiloProveedores.ejecutaWebService(rutaWS,"1"
+                    String rutaWS = constantes.getProperty("IP") + constantes
+                            .getProperty("GUARDAPROVEEDOR");
+                    ProveedorBean proveedorInsertado = hiloProveedores
+                            .ejecutaWebService(rutaWS,"1"
                             ,prov.getEmpresa()
                             ,prov.getNombre()
                             ,prov.getApellidos()
@@ -871,7 +863,8 @@ public class FrmProveedor extends javax.swing.JFrame {
                             ,prov.getNoCuenta()
                             );
                     if (proveedorInsertado != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                        JOptionPane.showMessageDialog(null, "[ Datos "
+                                + "Agregados ]");
                         actualizarBusqueda();
                         limpiarCajaTexto();
                         activarCajaTexto(false);
@@ -902,7 +895,8 @@ public class FrmProveedor extends javax.swing.JFrame {
                     && txtEmpresa.getText().compareTo("") != 0
                         ) {
                     ProveedorBean prov = new ProveedorBean();
-                    prov.setIdProveedor(Integer.parseInt(lblIdProveedor.getText()));
+                    prov.setIdProveedor(Integer.parseInt(lblIdProveedor
+                            .getText()));
                     prov.setEmpresa(txtEmpresa.getText());
                     prov.setRfc(txtRFC.getText());
                     prov.setNombre(txtNombreProv.getText());
@@ -922,10 +916,12 @@ public class FrmProveedor extends javax.swing.JFrame {
                     prov.setPais("Mx");
                     prov.setNoCuenta(txtNoCuenta.getText());
                     prov.setComentarios(txtComentarios.getText());
-                    //huardar producto
+                    //guardar producto
                     hiloProveedores = new WSProveedores();
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICAPROVEEDOR");
-                    ProveedorBean proveedorActualizado = hiloProveedores.ejecutaWebService(rutaWS,"2"
+                    String rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("MODIFICAPROVEEDOR");
+                    ProveedorBean proveedorActualizado = hiloProveedores
+                            .ejecutaWebService(rutaWS,"2"
                             ,String.valueOf(prov.getIdProveedor())
                             ,prov.getEmpresa()
                             ,prov.getNombre()
@@ -944,7 +940,8 @@ public class FrmProveedor extends javax.swing.JFrame {
                             ,prov.getNoCuenta()
                             );
                     if (proveedorActualizado != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Actualizados ]");
+                        JOptionPane.showMessageDialog(null, "[ Datos "
+                                + "Actualizados ]");
                         actualizarBusqueda();
                         limpiarCajaTexto();
                         activarCajaTexto(false);
@@ -972,9 +969,6 @@ public class FrmProveedor extends javax.swing.JFrame {
         activarCajaTexto(true);
         btnNuevoProv.setEnabled(false);
         btnGuardarProv.setEnabled(true);
-//        btnModificarProv.setEnabled(false);
-//        btnCancelarProv.setEnabled(true);
-//        btnMostrarProv.setEnabled(false);
     }//GEN-LAST:event_btnModificarProvActionPerformed
 
     private void btnCancelarProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarProvActionPerformed
@@ -989,8 +983,10 @@ public class FrmProveedor extends javax.swing.JFrame {
             jtProveedor.getSelectedRow(),0).toString());
         ArrayList<ProveedorBean> resultWS = null;
         hiloProveedoresList = new WSProveedoresList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETPROVEEDORPORID")
-                + String.valueOf(jtProveedor.getModel().getValueAt(jtProveedor.getSelectedRow(), 0)).trim();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETPROVEEDORPORID")
+                + String.valueOf(jtProveedor.getModel().getValueAt(jtProveedor
+                        .getSelectedRow(), 0)).trim();
         resultWS = hiloProveedoresList.ejecutaWebService(rutaWS,"4");
         ProveedorBean prov = resultWS.get(0);
         txtEmpresa.setText(prov.getEmpresa());
@@ -1039,11 +1035,14 @@ public class FrmProveedor extends javax.swing.JFrame {
         if(dialogResult == JOptionPane.YES_OPTION){
             if (lblIdProveedor.getText().compareTo("") != 0) {
                 hiloProveedores = new WSProveedores();
-                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("ELIMINAPROVEEDOR");
-                ProveedorBean proveedorEliminar = hiloProveedores.ejecutaWebService(rutaWS,"3"
+                String rutaWS = constantes.getProperty("IP") 
+                        + constantes.getProperty("ELIMINAPROVEEDOR");
+                ProveedorBean proveedorEliminar = hiloProveedores
+                        .ejecutaWebService(rutaWS,"3"
                         ,lblIdProveedor.getText().trim());
                 if (proveedorEliminar != null) {
-                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+                    JOptionPane.showMessageDialog(null, " [ Registro "
+                            + "Eliminado ]");
                     //Carga productos
                     actualizarBusqueda();
                     limpiarCajaTexto();
@@ -1082,10 +1081,6 @@ public class FrmProveedor extends javax.swing.JFrame {
     }//GEN-LAST:event_txtRFCActionPerformed
 
     private void txtRFCKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRFCKeyTyped
-        //        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
-            //            Toolkit.getDefaultToolkit().beep();
-            //            evt.consume();
-            //        }
     }//GEN-LAST:event_txtRFCKeyTyped
 
     private void txtNombreProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreProvActionPerformed
@@ -1097,11 +1092,6 @@ public class FrmProveedor extends javax.swing.JFrame {
     }//GEN-LAST:event_txtApellidosActionPerformed
 
     private void txtApellidosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidosKeyTyped
-        // TODO add your handling code here:
-        //        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
-            //            Toolkit.getDefaultToolkit().beep();
-            //            evt.consume();
-            //        }
     }//GEN-LAST:event_txtApellidosKeyTyped
 
     private void txtDireccion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccion1ActionPerformed
@@ -1165,12 +1155,6 @@ public class FrmProveedor extends javax.swing.JFrame {
     }//GEN-LAST:event_cboEstadosActionPerformed
 
     private void cboEstadosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboEstadosKeyTyped
-        //        int key=evt.getKeyCode();
-        //        if(key==0)
-        //        {
-            //            String item = cboEstados.getSelectedItem().toString();
-            //            JOptionPane.showMessageDialog(null, item);
-            //        }
     }//GEN-LAST:event_cboEstadosKeyTyped
 
     private void cboMunicipioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMunicipioActionPerformed

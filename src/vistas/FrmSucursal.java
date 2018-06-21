@@ -1,41 +1,20 @@
 package vistas;
 
-import beans.ClienteBean;
-import ComponenteConsulta.JDListaClientes;
 import ComponenteConsulta.JDListaSucursales;
 import beans.DatosEmpresaBean;
-import beans.EdoMunBean;
-import beans.ProductoBean;
 import beans.SucursalBean;
-import beans.UsuarioBean;
 import constantes.ConstantesProperties;
-import consumewebservices.WSClientes;
-import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSInventarios;
 import consumewebservices.WSSucursales;
 import consumewebservices.WSSucursalesList;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
-import static vistas.Principal.estadosMun;
-import static vistas.Principal.productos;
 
 public class FrmSucursal extends javax.swing.JFrame {
     //WSUsuarios
@@ -75,15 +54,14 @@ public class FrmSucursal extends javax.swing.JFrame {
         
         btnNuevoCli.setEnabled(true);
         btnGuardarCli.setEnabled(false);
-        //btnEliminarCli.setEnabled(true);
-        //btnModificarCli.setEnabled(false);
         btnCancelarCli.setEnabled(true);
         lblIdSucursal.setText("");
         this.setIcon();
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
     
     public void limpiarCajatexto() {
@@ -99,8 +77,6 @@ public class FrmSucursal extends javax.swing.JFrame {
     public void activarBotones(boolean b){
         btnNuevoCli.setEnabled(b);
         btnGuardarCli.setEnabled(!b);
-        //btnEliminarCli.setEnabled(b);
-        //btnModificarCli.setEnabled(!b);
         btnCancelarCli.setEnabled(!b);
     }
 
@@ -450,6 +426,8 @@ public class FrmSucursal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscarSucMouseClicked
 
     private void btnSalirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCliActionPerformed
+        this.setVisible(false);
+        this.dispose();
         System.exit(0);
     }//GEN-LAST:event_btnSalirCliActionPerformed
 
@@ -463,7 +441,6 @@ public class FrmSucursal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscarSucKeyReleased
 
     private void cboParametroSucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboParametroSucActionPerformed
-        // TODO add your handling code here:
         actualizarBusqueda();
     }//GEN-LAST:event_cboParametroSucActionPerformed
 
@@ -491,11 +468,13 @@ public class FrmSucursal extends javax.swing.JFrame {
                     hiloSucursales = new WSSucursales();
                     String rutaWS = constantes.getProperty("IP") 
                             + constantes.getProperty("GUARDASUCURSAL");
-                    SucursalBean sucursalInsertada = hiloSucursales.ejecutaWebService(rutaWS,"1"
+                    SucursalBean sucursalInsertada = hiloSucursales
+                            .ejecutaWebService(rutaWS,"1"
                             ,suc.getDescripcionSucursal()
                             );
                     if (sucursalInsertada != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                        JOptionPane.showMessageDialog(null, "[ Datos "
+                                + "Agregados ]");
                         actualizarBusqueda();
                         limpiarCajatexto();
                         activarCajatexto(false);
@@ -518,13 +497,16 @@ public class FrmSucursal extends javax.swing.JFrame {
                     suc.setDescripcionSucursal(txtSucursal.getText());
                     //modifica sucursal
                     hiloSucursales = new WSSucursales();
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICASUCURSAL");
-                    SucursalBean sucursalActualizada = hiloSucursales.ejecutaWebService(rutaWS,"2"
+                    String rutaWS = constantes.getProperty("IP") + constantes
+                            .getProperty("MODIFICASUCURSAL");
+                    SucursalBean sucursalActualizada = hiloSucursales
+                            .ejecutaWebService(rutaWS,"2"
                             ,String.valueOf(suc.getIdSucursal())
                             ,suc.getDescripcionSucursal()
                             );
                     if (sucursalActualizada != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Actualizados ]");
+                        JOptionPane.showMessageDialog(null, "[ Datos "
+                                + "Actualizados ]");
                         actualizarBusqueda();
                         limpiarCajatexto();
                         activarCajatexto(false);
@@ -552,9 +534,6 @@ public class FrmSucursal extends javax.swing.JFrame {
         activarCajatexto(true);
         btnNuevoCli.setEnabled(false);
         btnGuardarCli.setEnabled(true);
-//        btnModificarCli.setEnabled(false);
-//        btnCancelarCli.setEnabled(true);
-//        btnMostrarCli.setEnabled(false);
     }//GEN-LAST:event_btnModificarCliActionPerformed
 
     private void buscaSucursalFromJTable() {
@@ -587,10 +566,12 @@ public class FrmSucursal extends javax.swing.JFrame {
                 hiloSucursales = new WSSucursales();
                 String rutaWS = constantes.getProperty("IP") 
                         + constantes.getProperty("ELIMINASUCURSAL");
-                SucursalBean sucursalEliminar = hiloSucursales.ejecutaWebService(rutaWS,"3"
+                SucursalBean sucursalEliminar = hiloSucursales
+                        .ejecutaWebService(rutaWS,"3"
                         ,lblIdSucursal.getText().trim());
                 if (sucursalEliminar != null) {
-                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+                    JOptionPane.showMessageDialog(null, " [ Registro "
+                            + "Eliminado ]");
                     //Carga productos
                     actualizarBusqueda();
                     limpiarCajatexto();

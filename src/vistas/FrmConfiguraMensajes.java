@@ -10,34 +10,22 @@ import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-
-import java.security.MessageDigest;
-import java.util.Date;
 import javax.swing.JDialog;
 import util.Util;
-import static vistas.Principal.productos;
-
 
 public class FrmConfiguraMensajes extends javax.swing.JFrame {
-    //WSUsuarios
     Util util = new Util();
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
-    //WSUsuarios
     WSUsuariosList hiloUsuariosList;
     WSUsuarios hiloUsuarios;
     WSMensajes hiloMensajes;
     WSMensajesList hiloMensajesList;
-    //Fin WSUsuarios
-    
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-
     String accion = "";
     ArrayList<MensajeBean> mensajesGlobal = null;
 
@@ -73,7 +61,8 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
     
     public void activarBotones(boolean b) {
@@ -409,7 +398,8 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                 hiloMensajes = new WSMensajes();
                 String rutaWS = constantes.getProperty("IP") + constantes
                         .getProperty("GUARDAMENSAJE");
-                MensajeBean mensajeInsertado = hiloMensajes.ejecutaWebService(rutaWS,"1"
+                MensajeBean mensajeInsertado = hiloMensajes
+                        .ejecutaWebService(rutaWS,"1"
                         ,p.getMensaje()
                         ,p.getFecha().toLocaleString()
                 );
@@ -422,7 +412,8 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                     hiloMensajesList = new WSMensajesList();
                     rutaWS = constantes.getProperty("IP") 
                             + constantes.getProperty("GETMENSAJES");
-                    mensajesGlobal = hiloMensajesList.ejecutaWebService(rutaWS,"1");                    
+                    mensajesGlobal = hiloMensajesList
+                            .ejecutaWebService(rutaWS,"1");                    
                     actualizarBusqueda();
                     txtAreaMensaje.setEditable(false);
                     jCalFechaIni.setEnabled(false);
@@ -473,27 +464,33 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
     }//GEN-LAST:event_tblMensajesMouseClicked
 
     private void eliminarMensaje() {
-        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente "
+                + "deseas borrar el registro?");
         if(dialogResult == JOptionPane.YES_OPTION){
             if (lblIdMensaje.getText().compareTo("") != 0) {
                 hiloMensajes = new WSMensajes();
                 String rutaWS = constantes.getProperty("IP") + constantes
                         .getProperty("ELIMINAMENSAJE");
-                MensajeBean mensajeEliminar = hiloMensajes.ejecutaWebService(rutaWS,"2"
+                MensajeBean mensajeEliminar = hiloMensajes
+                        .ejecutaWebService(rutaWS,"2"
                         ,lblIdMensaje.getText().trim());
                 if (mensajeEliminar != null) {
-                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+                    JOptionPane.showMessageDialog(null, " [ Registro "
+                            + "Eliminado ]");
                     limpiarCajaTexto();
                     // Actualizas tbl Mensajes
                     hiloMensajesList = new WSMensajesList();
                     rutaWS = constantes.getProperty("IP") 
                             + constantes.getProperty("GETMENSAJES");
-                    mensajesGlobal = hiloMensajesList.ejecutaWebService(rutaWS,"1");                    
+                    mensajesGlobal = hiloMensajesList
+                            .ejecutaWebService(rutaWS,"1");                    
                     actualizarBusqueda();
                     activarBotones(true);
                 } else {
-                    JOptionPane optionPane = new JOptionPane("No es posible eliminar el "
-                            + "mensaje existen movimientos que lo relacionan", JOptionPane.ERROR_MESSAGE);    
+                    JOptionPane optionPane = new JOptionPane("No es posible "
+                            + "eliminar el "
+                            + "mensaje existen movimientos que lo relacionan"
+                            , JOptionPane.ERROR_MESSAGE);    
                     JDialog dialog = optionPane.createDialog("Error");
                     dialog.setAlwaysOnTop(true);
                     dialog.setVisible(true);                    
@@ -509,6 +506,8 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarMensajeActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        this.setVisible(false);
+        this.dispose();
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
@@ -578,10 +577,14 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
             }
             if (campoBusq.indexOf(buscar)>=0) {
                 mensaje = new MensajeBean();
-                mensaje.setIdMensaje(Integer.parseInt(tblMensajes.getModel().getValueAt(i,0).toString()));
-                mensaje.setMensaje(String.valueOf(tblMensajes.getModel().getValueAt(i,1)));
-                String fecha = String.valueOf(tblMensajes.getModel().getValueAt(i,1));
-                mensaje.setFecha(util.stringToDate(String.valueOf(tblMensajes.getModel().getValueAt(i,2))));
+                mensaje.setIdMensaje(Integer.parseInt(tblMensajes.getModel()
+                        .getValueAt(i,0).toString()));
+                mensaje.setMensaje(String.valueOf(tblMensajes.getModel()
+                        .getValueAt(i,1)));
+                String fecha = String.valueOf(tblMensajes.getModel()
+                        .getValueAt(i,1));
+                mensaje.setFecha(util.stringToDate(String.valueOf(tblMensajes
+                        .getModel().getValueAt(i,2))));
                 resultWS.add(mensaje);
             }
         }

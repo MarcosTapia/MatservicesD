@@ -4,34 +4,22 @@ import beans.ClienteBean;
 import ComponenteConsulta.JDListaClientes;
 import beans.DatosEmpresaBean;
 import beans.EdoMunBean;
-import beans.ProductoBean;
-import beans.UsuarioBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSClientes;
 import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSInventarios;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
-import static vistas.Principal.estadosMun;
-import static vistas.Principal.productos;
 
 public class FrmCliente extends javax.swing.JFrame {
     //WSUsuarios
@@ -863,8 +851,10 @@ public class FrmCliente extends javax.swing.JFrame {
                     cli.setComentarios(txtComentarios.getText());
                     //huardar producto
                     hiloClientes = new WSClientes();
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDACLIENTE");
-                    ClienteBean clienteInsertado = hiloClientes.ejecutaWebService(rutaWS,"1"
+                    String rutaWS = constantes.getProperty("IP") + constantes
+                            .getProperty("GUARDACLIENTE");
+                    ClienteBean clienteInsertado = hiloClientes
+                            .ejecutaWebService(rutaWS,"1"
                             ,cli.getEmpresa()
                             ,cli.getNombre()
                             ,cli.getApellidos()
@@ -882,7 +872,8 @@ public class FrmCliente extends javax.swing.JFrame {
                             ,cli.getNoCuenta()
                             );
                     if (clienteInsertado != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                        JOptionPane.showMessageDialog(null, "[ Datos "
+                                + "Agregados ]");
                         actualizarBusqueda();
                         limpiarCajatexto();
                         activarCajatexto(false);
@@ -935,8 +926,10 @@ public class FrmCliente extends javax.swing.JFrame {
                     cli.setComentarios(txtComentarios.getText());
                     //huardar producto
                     hiloClientes = new WSClientes();
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICACLIENTE");
-                    ClienteBean clienteActualizado = hiloClientes.ejecutaWebService(rutaWS,"2"
+                    String rutaWS = constantes.getProperty("IP") + constantes
+                            .getProperty("MODIFICACLIENTE");
+                    ClienteBean clienteActualizado = hiloClientes
+                            .ejecutaWebService(rutaWS,"2"
                             ,String.valueOf(cli.getIdCliente())
                             ,cli.getEmpresa()
                             ,cli.getNombre()
@@ -955,7 +948,8 @@ public class FrmCliente extends javax.swing.JFrame {
                             ,cli.getNoCuenta()
                             );
                     if (clienteActualizado != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Actualizados ]");
+                        JOptionPane.showMessageDialog(null, "[ Datos "
+                                + "Actualizados ]");
                         actualizarBusqueda();
                         limpiarCajatexto();
                         activarCajatexto(false);
@@ -983,24 +977,12 @@ public class FrmCliente extends javax.swing.JFrame {
         activarCajatexto(true);
         btnNuevoCli.setEnabled(false);
         btnGuardarCli.setEnabled(true);
-//        btnModificarCli.setEnabled(false);
-//        btnCancelarCli.setEnabled(true);
-//        btnMostrarCli.setEnabled(false);
     }//GEN-LAST:event_btnModificarCliActionPerformed
 
     private void txtApellidosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidosKeyTyped
-        // TODO add your handling code here:
-//        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
-//            Toolkit.getDefaultToolkit().beep();
-//            evt.consume();
-//        }
     }//GEN-LAST:event_txtApellidosKeyTyped
 
     private void txtRFCKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRFCKeyTyped
-//        if (String.valueOf(evt.getKeyChar()).matches("[a-zA-Z]|\\s")) {
-//            Toolkit.getDefaultToolkit().beep();
-//            evt.consume();
-//        }
     }//GEN-LAST:event_txtRFCKeyTyped
 
     private void txtTelefonoCasaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoCasaKeyTyped
@@ -1013,10 +995,12 @@ public class FrmCliente extends javax.swing.JFrame {
     private void buscaClienteFromJTable() {
         lblIdCliente.setText(jtCliente.getModel().getValueAt(
             jtCliente.getSelectedRow(),0).toString());
-        ArrayList<ClienteBean> resultWS = null;
+        ArrayList<ClienteBean> resultWS;
         hiloClientesList = new WSClientesList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCLIENTEPORID")
-                + String.valueOf(jtCliente.getModel().getValueAt(jtCliente.getSelectedRow(), 0)).trim();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETCLIENTEPORID")
+                + String.valueOf(jtCliente.getModel().getValueAt(jtCliente
+                        .getSelectedRow(), 0)).trim();
         resultWS = hiloClientesList.ejecutaWebService(rutaWS,"2");
         ClienteBean cli = resultWS.get(0);
         txtEmpresa.setText(cli.getEmpresa());
@@ -1059,12 +1043,15 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_jtClienteMouseEntered
 
     private void eliminarCliente() {
-        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente "
+                + "deseas borrar el registro?");
         if(dialogResult == JOptionPane.YES_OPTION){
             if (lblIdCliente.getText().compareTo("") != 0) {
                 hiloClientes = new WSClientes();
-                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("ELIMINACLIENTE");
-                ClienteBean clienteEliminar = hiloClientes.ejecutaWebService(rutaWS,"3"
+                String rutaWS = constantes.getProperty("IP") + constantes
+                        .getProperty("ELIMINACLIENTE");
+                ClienteBean clienteEliminar = hiloClientes
+                        .ejecutaWebService(rutaWS,"3"
                         ,lblIdCliente.getText().trim());
                 if (clienteEliminar != null) {
                     JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
@@ -1130,12 +1117,6 @@ public class FrmCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtEmailActionPerformed
 
     private void cboEstadosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboEstadosKeyTyped
-//        int key=evt.getKeyCode();
-//        if(key==0)
-//        {
-//            String item = cboEstados.getSelectedItem().toString();
-//            JOptionPane.showMessageDialog(null, item);
-//        }
     }//GEN-LAST:event_cboEstadosKeyTyped
 
     private void cboEstadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboEstadosActionPerformed

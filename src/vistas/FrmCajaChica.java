@@ -575,7 +575,6 @@ public class FrmCajaChica extends javax.swing.JFrame {
         CajaChicaBean cajaChicaBean = resultWS.get(0);
         txtSaldoAnterior.setText("" + cajaChicaBean.getSaldoAnterior());
         txtSaldoActual.setText("" + cajaChicaBean.getSaldoActual());
-        //JOptionPane.showMessageDialog(null, "Saldo Anterior: " + cajaChicaBean.getSaldoAnterior() + " -- Saldo Aactual: " + cajaChicaBean.getSaldoActual());
     }
     
     private void txtBuscarMovMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBuscarMovMouseClicked
@@ -625,7 +624,8 @@ public class FrmCajaChica extends javax.swing.JFrame {
                 cajaChica.setFecha(util.obtieneFechaServidor());
                 cajaChica.setMonto(Double.parseDouble(txtMonto.getText()));
                 cajaChica.setTipoMov(cboTipoMov.getSelectedItem().toString());
-                cajaChica.setTipoComprobante(cboComprobante.getSelectedItem().toString());
+                cajaChica.setTipoComprobante(cboComprobante.getSelectedItem()
+                        .toString());
                 cajaChica.setReferencia(txtReferencia.getText());
                 cajaChica.setIdUsuario(Ingreso.usuario.getIdUsuario());
                 cajaChica.setIdSucursal(Ingreso.usuario.getIdSucursal());
@@ -640,8 +640,8 @@ public class FrmCajaChica extends javax.swing.JFrame {
                     txtMonto.requestFocus(true);
                     return;
                 }
-
-                cajaChica.setSaldoAnterior(Double.parseDouble(txtSaldoActual.getText()));
+                cajaChica.setSaldoAnterior(Double.parseDouble(txtSaldoActual
+                        .getText()));
                 double saldoActual = 0;
                 //verifica si es gasto
                 if (cboTipoMov.getSelectedItem().toString()
@@ -660,7 +660,8 @@ public class FrmCajaChica extends javax.swing.JFrame {
                 hiloCajaChica = new WSCajaChica();
                 String rutaWS = constantes.getProperty("IP") 
                         + constantes.getProperty("GUARDAMOVCAJACHICA");
-                CajaChicaBean movCajaInsertada = hiloCajaChica.ejecutaWebService(rutaWS,"1"
+                CajaChicaBean movCajaInsertada = hiloCajaChica
+                        .ejecutaWebService(rutaWS,"1"
                     , cajaChica.getFecha().toLocaleString()
                     , "" + cajaChica.getMonto()
                     , cajaChica.getTipoMov()
@@ -714,7 +715,6 @@ public class FrmCajaChica extends javax.swing.JFrame {
         txtReferencia.setText(cajaChica.getReferencia());
         txtSaldoAnterior.setText("" + cajaChica.getSaldoAnterior());
         txtSaldoActual.setText("" + cajaChica.getSaldoActual());
-        
         jtMovimientosCajaChica.requestFocus(true);
     }
     
@@ -743,7 +743,8 @@ public class FrmCajaChica extends javax.swing.JFrame {
         try {
             fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo "
+                    + "menos la fecha de Inicio");
             return;
         }
         try {
@@ -913,31 +914,38 @@ public class FrmCajaChica extends javax.swing.JFrame {
             }
             if (campoBusq.indexOf(buscar)>=0) {
                 movCajaChica = new CajaChicaBean();
-/*                
-idMov
-Fecha
-Monto
-TipoMov
-Comprobante
-Referencia
-Usuario
-Sucursal
-saldoAnterior
-saldoActual                
-*/                
-                movCajaChica.setIdMov(Integer.parseInt(jtMovimientosCajaChica.getModel().getValueAt(i,0).toString()));
-                String fecha = String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,1));
-                movCajaChica.setFecha(util.stringToDate(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,1))));
-                movCajaChica.setMonto(Double.parseDouble(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,2))));
-                movCajaChica.setTipoMov(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,3)));
-                movCajaChica.setTipoComprobante(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,4)));
-                movCajaChica.setReferencia(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,5)));
-                int idUsu = util.buscaIdUsuario(Principal.usuariosHM, String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,6)));
+                movCajaChica.setIdMov(Integer.parseInt(jtMovimientosCajaChica
+                        .getModel().getValueAt(i,0).toString()));
+                String fecha = String.valueOf(jtMovimientosCajaChica.getModel()
+                        .getValueAt(i,1));
+                movCajaChica.setFecha(util.stringToDate(String
+                        .valueOf(jtMovimientosCajaChica.getModel()
+                                .getValueAt(i,1))));
+                movCajaChica.setMonto(Double.parseDouble(String
+                        .valueOf(jtMovimientosCajaChica.getModel()
+                                .getValueAt(i,2))));
+                movCajaChica.setTipoMov(String.valueOf(jtMovimientosCajaChica
+                        .getModel().getValueAt(i,3)));
+                movCajaChica.setTipoComprobante(String
+                        .valueOf(jtMovimientosCajaChica.getModel()
+                                .getValueAt(i,4)));
+                movCajaChica.setReferencia(String
+                        .valueOf(jtMovimientosCajaChica.getModel()
+                                .getValueAt(i,5)));
+                int idUsu = util.buscaIdUsuario(Principal.usuariosHM, 
+                        String.valueOf(jtMovimientosCajaChica.getModel()
+                                .getValueAt(i,6)));
                 movCajaChica.setIdUsuario(idUsu);
-                int idSuc = util.buscaIdSuc(Principal.sucursalesHM, String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,7)));
+                int idSuc = util.buscaIdSuc(Principal.sucursalesHM, String
+                        .valueOf(jtMovimientosCajaChica.getModel()
+                                .getValueAt(i,7)));
                 movCajaChica.setIdSucursal(idSuc);
-                movCajaChica.setSaldoAnterior(Double.parseDouble(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,8))));
-                movCajaChica.setSaldoActual(Double.parseDouble(String.valueOf(jtMovimientosCajaChica.getModel().getValueAt(i,9))));
+                movCajaChica.setSaldoAnterior(Double.parseDouble(String
+                        .valueOf(jtMovimientosCajaChica.getModel()
+                                .getValueAt(i,8))));
+                movCajaChica.setSaldoActual(Double.parseDouble(String
+                        .valueOf(jtMovimientosCajaChica.getModel()
+                                .getValueAt(i,9))));
                 resultWS.add(movCajaChica);
             }
         }
@@ -947,7 +955,6 @@ saldoActual
     public void recargarTable(ArrayList<CajaChicaBean> list) {
         Object[][] datos = new Object[list.size()][10];
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
         int i = 0;
         for (CajaChicaBean p : list) {
             datos[i][0] = p.getIdMov();
@@ -956,7 +963,8 @@ saldoActual
             datos[i][3] = p.getTipoMov();
             datos[i][4] = p.getTipoComprobante();
             datos[i][5] = p.getReferencia();
-            datos[i][6] = util.buscaDescFromIdUsu(Principal.usuariosHM, "" + p.getIdUsuario());
+            datos[i][6] = util.buscaDescFromIdUsu(Principal.usuariosHM, "" 
+                    + p.getIdUsuario());
             String suc = util.buscaDescFromIdSuc(Principal.sucursalesHM
                     , "" + p.getIdSucursal());
             datos[i][7] = suc;
@@ -967,7 +975,8 @@ saldoActual
         jtMovimientosCajaChica.setModel(new javax.swing.table.DefaultTableModel(
                 datos,
                 new String[]{
-                    "idMov","Fecha","Monto","TipoMov","Comprobante","Referencia","Usuario","Sucursal","$ Anterior","$ Actual"                
+                    "idMov","Fecha","Monto","TipoMov","Comprobante","Referencia"
+                        ,"Usuario","Sucursal","$ Anterior","$ Actual"                
                 }) {
             @Override
             public boolean isCellEditable(int row, int column) {

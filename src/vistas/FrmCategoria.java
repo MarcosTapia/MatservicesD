@@ -1,54 +1,30 @@
 package vistas;
 
 import ComponenteConsulta.JDListaCategorias;
-import beans.ClienteBean;
-import ComponenteConsulta.JDListaClientes;
 import beans.CategoriaBean;
 import beans.DatosEmpresaBean;
-import beans.EdoMunBean;
-import beans.ProductoBean;
-import beans.UsuarioBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCategorias;
 import consumewebservices.WSCategoriasList;
-import consumewebservices.WSClientes;
-import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSInventarios;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
-import static vistas.Principal.estadosMun;
-import static vistas.Principal.productos;
 
 public class FrmCategoria extends javax.swing.JFrame {
     //WSUsuarios
     Util util = new Util();
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
-    //WSUsuarios
     WSCategoriasList hiloCategoriasList;
     WSCategorias hiloCategorias;
     //Fin WSUsuarios
-    
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
-
     String accion = "";
     
     public FrmCategoria() {
@@ -83,7 +59,8 @@ public class FrmCategoria extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
+                .getResource("..\\img\\matserviceslogo.png")));
     }
     
     public void limpiarCajatexto() {
@@ -100,9 +77,6 @@ public class FrmCategoria extends javax.swing.JFrame {
     public void activarBotones(boolean b){
         btnNuevoCli.setEnabled(b);
         btnGuardarCli.setEnabled(!b);
-        //btnEliminarCli.setEnabled(b);
-        //btnModificarCli.setEnabled(!b);
-        //btnCancelarCli.setEnabled(!b);
     }
 
     @SuppressWarnings("unchecked")
@@ -458,6 +432,8 @@ public class FrmCategoria extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscarCatMouseClicked
 
     private void btnSalirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCliActionPerformed
+        this.setVisible(false);
+        this.dispose();
         System.exit(0);
     }//GEN-LAST:event_btnSalirCliActionPerformed
 
@@ -497,12 +473,15 @@ public class FrmCategoria extends javax.swing.JFrame {
                     cat.setDescripcionCategoria(txtDescripCat.getText());
                     //huardar producto
                     hiloCategorias = new WSCategorias();
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GUARDACATEGORIA");
-                    CategoriaBean categoriaInsertada = hiloCategorias.ejecutaWebService(rutaWS,"1"
+                    String rutaWS = constantes.getProperty("IP") + constantes
+                            .getProperty("GUARDACATEGORIA");
+                    CategoriaBean categoriaInsertada = hiloCategorias
+                            .ejecutaWebService(rutaWS,"1"
                             ,cat.getDescripcionCategoria()
                             );
                     if (categoriaInsertada != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                        JOptionPane.showMessageDialog(null, "[ Datos "
+                                + "Agregados ]");
                         actualizarBusqueda();
                         limpiarCajatexto();
                         activarCajatexto(false);
@@ -525,13 +504,16 @@ public class FrmCategoria extends javax.swing.JFrame {
                     cat.setDescripcionCategoria(txtDescripCat.getText());
                     //huardar producto
                     hiloCategorias = new WSCategorias();
-                    String rutaWS = constantes.getProperty("IP") + constantes.getProperty("MODIFICACATEGORIA");
-                    CategoriaBean categoriaActualizada = hiloCategorias.ejecutaWebService(rutaWS,"2"
+                    String rutaWS = constantes.getProperty("IP") + constantes
+                            .getProperty("MODIFICACATEGORIA");
+                    CategoriaBean categoriaActualizada = hiloCategorias
+                            .ejecutaWebService(rutaWS,"2"
                             ,String.valueOf(cat.getIdCategoria())
                             ,cat.getDescripcionCategoria()
                             );
                     if (categoriaActualizada != null) {
-                        JOptionPane.showMessageDialog(null, "[ Datos Actualizados ]");
+                        JOptionPane.showMessageDialog(null, "[ Datos "
+                                + "Actualizados ]");
                         actualizarBusqueda();
                         limpiarCajatexto();
                         activarCajatexto(false);
@@ -559,9 +541,6 @@ public class FrmCategoria extends javax.swing.JFrame {
         activarCajatexto(true);
         btnNuevoCli.setEnabled(false);
         btnGuardarCli.setEnabled(true);
-//        btnModificarCli.setEnabled(false);
-//        btnCancelarCli.setEnabled(true);
-//        btnMostrarCli.setEnabled(false);
     }//GEN-LAST:event_btnModificarCliActionPerformed
 
     private void buscaCategoriaFromJTable() {
@@ -569,8 +548,10 @@ public class FrmCategoria extends javax.swing.JFrame {
             jtCategoria.getSelectedRow(),0).toString());
         ArrayList<CategoriaBean> resultWS = null;
         hiloCategoriasList = new WSCategoriasList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCATEGORIAPORID")
-                + String.valueOf(jtCategoria.getModel().getValueAt(jtCategoria.getSelectedRow(), 0)).trim();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETCATEGORIAPORID")
+                + String.valueOf(jtCategoria.getModel().getValueAt(jtCategoria
+                        .getSelectedRow(), 0)).trim();
         resultWS = hiloCategoriasList.ejecutaWebService(rutaWS,"2");
         CategoriaBean cat = resultWS.get(0);
         txtDescripCat.setText(cat.getDescripcionCategoria());
@@ -586,15 +567,19 @@ public class FrmCategoria extends javax.swing.JFrame {
     }//GEN-LAST:event_jtCategoriaMouseEntered
 
     private void eliminarCategoria() {
-        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas "
+                + "borrar el registro?");
         if(dialogResult == JOptionPane.YES_OPTION){
             if (lblIdCategoria.getText().compareTo("") != 0) {
                 hiloCategorias = new WSCategorias();
-                String rutaWS = constantes.getProperty("IP") + constantes.getProperty("ELIMINACATEGORIA");
-                CategoriaBean categoriaEliminar = hiloCategorias.ejecutaWebService(rutaWS,"3"
+                String rutaWS = constantes.getProperty("IP") + constantes
+                        .getProperty("ELIMINACATEGORIA");
+                CategoriaBean categoriaEliminar = hiloCategorias
+                        .ejecutaWebService(rutaWS,"3"
                         ,lblIdCategoria.getText().trim());
                 if (categoriaEliminar != null) {
-                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
+                    JOptionPane.showMessageDialog(null, " [ Registro "
+                            + "Eliminado ]");
                     //Carga productos
                     actualizarBusqueda();
                     limpiarCajatexto();
