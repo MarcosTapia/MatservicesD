@@ -1,46 +1,32 @@
 package vistas;
 
-import beans.UsuarioBean;
-import ComponenteConsulta.JDListaUsuario;
 import Ticket.Ticket;
 import beans.CajaChicaBean;
 import beans.ComprasBean;
 import beans.CorteCajaBean;
 import beans.DatosEmpresaBean;
-import beans.DetalleCompraBean;
-import beans.SucursalBean;
 import beans.VentasBean;
 import static componenteUtil.NumberToLetterConverter.convertNumberToLetter;
 import constantes.ConstantesProperties;
-import consumewebservices.WSCajaChica;
 import consumewebservices.WSCajaChicaList;
 import consumewebservices.WSComprasList;
 import consumewebservices.WSCorteCaja;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
 import consumewebservices.WSVentasList;
-import java.awt.Toolkit;
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import static vistas.Ingreso.usuario;
-
-import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import javax.swing.ImageIcon;
 import util.Util;
-import static vistas.Principal.productos;
-
 
 public class FrmCorte extends javax.swing.JFrame {
     //WSUsuarios
@@ -96,7 +82,15 @@ public class FrmCorte extends javax.swing.JFrame {
         cargaMovsCajaChicaHoy();
         recargarTable(corteCajaHoy);
         obtieneTotal();
+        this.setIcon();
     }
+
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
+    }
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -245,34 +239,41 @@ public class FrmCorte extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(447, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(144, 144, 144))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTotalGastos)
-                            .addComponent(txtTotalIngresos)
-                            .addComponent(txtTotalCompras)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addComponent(jCalFechaIni, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtTotalVentas)
-                            .addComponent(txtTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
+                                .addComponent(jCalFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(113, 113, 113))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel5))))
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addGap(10, 10, 10)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel6)
-                                .addComponent(jLabel7)
-                                .addComponent(jLabel8)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtTotalGastos)
+                                        .addComponent(txtTotalIngresos)
+                                        .addComponent(txtTotalCompras)
+                                        .addComponent(txtTotalVentas)
+                                        .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                            .addGap(10, 10, 10)
+                                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel1)
+                                                .addComponent(jLabel5))))
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel6)
+                                            .addComponent(jLabel7)
+                                            .addComponent(jLabel8))))
+                                .addGap(39, 39, 39)))))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSalirPer, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGuardarPer))
@@ -288,11 +289,6 @@ public class FrmCorte extends javax.swing.JFrame {
                             .addComponent(lblUsuario)
                             .addComponent(jLabel3))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addGap(13, 13, 13)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(366, Short.MAX_VALUE)))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -307,47 +303,45 @@ public class FrmCorte extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addGap(7, 7, 7)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCalFechaIni, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCalFechaFin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnGuardarPer, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnSalirPer, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCalFechaIni, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jCalFechaFin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(btnGuardarPer, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnSalirPer, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtTotalVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel1)
+                        .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTotalVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtTotalCompras, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtTotalIngresos, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtTotalGastos, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(76, Short.MAX_VALUE))
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addGap(98, 98, 98)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 528, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(19, Short.MAX_VALUE)))
+                        .addComponent(txtTotalCompras, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTotalIngresos, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtTotalGastos, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 481, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -356,27 +350,31 @@ public class FrmCorte extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 593, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPerActionPerformed
+        this.setVisible(false);
+        this.dispose();
         System.exit(0);
     }//GEN-LAST:event_btnSalirPerActionPerformed
 
@@ -394,7 +392,8 @@ public class FrmCorte extends javax.swing.JFrame {
         try {
             fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos "
+                    + "la fecha de Inicio");
             return;
         }
         try {
@@ -411,7 +410,8 @@ public class FrmCorte extends javax.swing.JFrame {
         // Actualizas tbl Ventas
         ArrayList<VentasBean> ventasPorFechas = null;
         hiloVentasList = new WSVentasList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETVENTASPORFECHASFINI") + fechaIni +
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETVENTASPORFECHASFINI") + fechaIni +
                 constantes.getProperty("GETVENTASPORFECHASFFIN") + fechaFin;
         ventasPorFechas = hiloVentasList.ejecutaWebService(rutaWS,"2");
         
@@ -456,7 +456,8 @@ public class FrmCorte extends javax.swing.JFrame {
         try {
             fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos "
+                    + "la fecha de Inicio");
             return;
         }
         try {
@@ -472,9 +473,11 @@ public class FrmCorte extends javax.swing.JFrame {
         }
         // Actualizas tbl Ventas
         hiloCorteCaja = new WSCorteCaja();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCORTEPORFECHASFINI") + fechaIni +
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETCORTEPORFECHASFINI") + fechaIni +
                 constantes.getProperty("GETCORTEPORFECHASFFIN") + fechaFin;
-        cortePorFechasRegistradoHoy = hiloCorteCaja.ejecutaWebServiceObtieneCortes(rutaWS,"2");
+        cortePorFechasRegistradoHoy = hiloCorteCaja
+                .ejecutaWebServiceObtieneCortes(rutaWS,"2");
     }
     
     private void obtieneTotal(){
@@ -528,7 +531,8 @@ public class FrmCorte extends javax.swing.JFrame {
         try {
             fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos "
+                    + "la fecha de Inicio");
             return;
         }
         try {
@@ -544,7 +548,8 @@ public class FrmCorte extends javax.swing.JFrame {
         }
         ArrayList<ComprasBean> comprasPorFechas = null;
         hiloComprasList = new WSComprasList();
-        String rutaWS = constantes.getProperty("IP") + constantes.getProperty("GETCOMPRASPORFECHASFINI") + fechaIni +
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("GETCOMPRASPORFECHASFINI") + fechaIni +
                 constantes.getProperty("GETCOMPRASPORFECHASFFIN") + fechaFin;
         comprasPorFechas = hiloComprasList.ejecutaWebService(rutaWS,"2");
         //iguala beans venta y cortecaja
@@ -578,7 +583,8 @@ public class FrmCorte extends javax.swing.JFrame {
         try {
             fechaSqlDateIni = new java.sql.Date(fechaUtilDateIni.getTime());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo menos la fecha de Inicio");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar por lo "
+                    + "menos la fecha de Inicio");
             return;
         }
         try {
@@ -596,7 +602,8 @@ public class FrmCorte extends javax.swing.JFrame {
         hiloCajaChicaList = new WSCajaChicaList();
         String rutaWS = constantes.getProperty("IP") + constantes
                 .getProperty("GETMOVSCAJACHICAPORFECHASFINI") + fechaIni +
-                constantes.getProperty("GETMOVSCAJACHICAPORFECHASFFIN") + fechaFin;
+                constantes.getProperty("GETMOVSCAJACHICAPORFECHASFFIN") 
+                + fechaFin;
         movsCajaChicaPorFechas = hiloCajaChicaList.ejecutaWebService(rutaWS,"4");
         //iguala beans venta y cortecaja
         for (CajaChicaBean movCajaChica : movsCajaChicaPorFechas) {
@@ -618,13 +625,11 @@ public class FrmCorte extends javax.swing.JFrame {
     public void imprimeCorte(){
         try {
             //Primera parte
-//            Date date=new Date();
-//            SimpleDateFormat fecha=new SimpleDateFormat("dd/MM/yyyy");
-//            SimpleDateFormat hora=new SimpleDateFormat("hh:mm:ss aa");
             Ticket ticket = new Ticket();
             ticket.AddCabecera("" + Principal.datosEmpresaBean.getNombreEmpresa());
             ticket.AddCabecera(ticket.DarEspacio());
-            ticket.AddCabecera("Sucursal: " + util.buscaDescFromIdSuc(Principal.sucursalesHM, 
+            ticket.AddCabecera("Sucursal: " + util
+                    .buscaDescFromIdSuc(Principal.sucursalesHM, 
                     "" + Ingreso.usuario.getIdSucursal()));
             ticket.AddCabecera(ticket.DarEspacio());
             ticket.AddCabecera(Principal.datosEmpresaBean.getDireccionEmpresa());
@@ -733,7 +738,8 @@ public class FrmCorte extends javax.swing.JFrame {
             //Arma correo
                 //fecha
             java.util.Date fecha = util.obtieneFechaServidor();
-            String fechaS = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
+            String fechaS = DateFormat.getDateInstance(DateFormat.LONG)
+                    .format(fecha);        
             String hrs = String.valueOf(fecha.getHours());
             String min = String.valueOf(fecha.getMinutes());
             String sec = String.valueOf(fecha.getSeconds());
@@ -767,16 +773,19 @@ public class FrmCorte extends javax.swing.JFrame {
             sucursal = sucursal.replace("Ú", "U");
             
             
-            String encabezadoMensaje = "<html><body><b><p style='font-size:22px;'>Fecha : "
+            String encabezadoMensaje = "<html><body><b><p style='font-size:22px;'>"
+                    + "Fecha : "
                     + fechaS + "</p></b><br>";
-            String cuerpoMensaje = "<b><p style='font-size:22px;'>Empresa : " + this.getTitle() 
+            String cuerpoMensaje = "<b><p style='font-size:22px;'>Empresa : " 
+                    + this.getTitle() 
                     + " Sucursal : " + sucursal
                     + "<br> Usuario : " + Ingreso.usuario.getNombre()
                     + " " + Ingreso.usuario.getApellido_paterno()
                     + " " + Ingreso.usuario.getApellido_materno()
                     + "</p></b><br><br>";
             cuerpoMensaje = cuerpoMensaje 
-                    + "<p style='font-size:20px;'>Ventas: " + txtTotalVentas.getText()
+                    + "<p style='font-size:20px;'>Ventas: " + txtTotalVentas
+                            .getText()
                     + "<br> Compras: " + txtTotalCompras.getText()
                     + "<br> Ingresos Varios: " + txtTotalIngresos.getText()
                     + "<br> Gastos Varios: " + txtTotalGastos.getText()
@@ -806,7 +815,8 @@ public class FrmCorte extends javax.swing.JFrame {
             boolean enviado = util.enviaCorreo(mensaje,remitente,destinatario
                 ,titulo,negocio);
             int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
-                    + "Imprimir el Corte?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
+                    + "Imprimir el Corte?", "Mensaje..!!", 
+                    JOptionPane.YES_NO_OPTION);
             if (resultado == JOptionPane.YES_OPTION) {
                 //imprime ticket
                 imprimeCorte();

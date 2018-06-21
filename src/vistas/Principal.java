@@ -242,7 +242,7 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         panelMenuPrincipal.add(jLabel11);
-        jLabel11.setBounds(550, 10, 230, 210);
+        jLabel11.setBounds(550, 10, 240, 210);
 
         jLabel12.setFont(new java.awt.Font("Baskerville Old Face", 2, 24)); // NOI18N
         jLabel12.setText("CONFIGURACIÓN");
@@ -273,7 +273,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel1.setBounds(30, 10, 240, 210);
 
         panelOpciones.add(panelMenuPrincipal);
-        panelMenuPrincipal.setBounds(960, 140, 810, 290);
+        panelMenuPrincipal.setBounds(960, 140, 820, 290);
 
         lblSalir.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         lblSalir.setForeground(new java.awt.Color(102, 102, 255));

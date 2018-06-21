@@ -7,7 +7,6 @@ import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
-import java.awt.Toolkit;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;

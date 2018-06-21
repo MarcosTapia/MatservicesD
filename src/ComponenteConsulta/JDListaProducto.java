@@ -1,26 +1,14 @@
 package ComponenteConsulta;
 
-import beans.ProductoBean;
-import beans.CategoriaBean;
 import beans.DatosEmpresaBean;
 import beans.ProductoBean;
-import beans.UsuarioBean;
-import beans.VentasBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSInventarios;
 import consumewebservices.WSInventariosList;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
-import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,13 +18,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -50,9 +38,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import util.Util;
 import vistas.FrmProducto;
-import vistas.FrmUsuarios;
 import vistas.Ingreso;
-import vistas.Principal;
 
 public class JDListaProducto extends javax.swing.JDialog {
     Workbook wb;
@@ -104,14 +90,18 @@ public class JDListaProducto extends javax.swing.JDialog {
                 ,"SUCURSAL", "CATEGORÍA", "PROVEEDOR"};
         LProducto.setColumnIdentifiers(titulos);
         for (ProductoBean p : resultWSArray) {
-            String sucursal = util.buscaDescFromIdSuc(sucursalesHMCons, "" + p.getIdSucursal());
-            String categoria = util.buscaDescFromIdCat(categoriasHMCons, "" + p.getIdCategoria());
-            String proveedor = util.buscaDescFromIdProv(proveedoresHMCons, "" + p.getIdProveedor());
+            String sucursal = util.buscaDescFromIdSuc(sucursalesHMCons, "" 
+                    + p.getIdSucursal());
+            String categoria = util.buscaDescFromIdCat(categoriasHMCons, "" 
+                    + p.getIdCategoria());
+            String proveedor = util.buscaDescFromIdProv(proveedoresHMCons, "" 
+                    + p.getIdProveedor());
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
             
             //filtra por sucursal
             if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
-                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes.getProperty("SUPERUSUARIO")))) {
+                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes
+                            .getProperty("SUPERUSUARIO")))) {
                 String Datos[] = {""+p.getIdArticulo()
                         , p.getCodigo()
                         , p.getDescripcion()
@@ -127,9 +117,14 @@ public class JDListaProducto extends javax.swing.JDialog {
                 LProducto.addRow(Datos);
             }
         }
-        
         initComponents();
-        //btnImprimir.setVisible(false);
+        this.setIcon();
+    }
+    
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")
@@ -267,16 +262,17 @@ public class JDListaProducto extends javax.swing.JDialog {
         //recorrer la tabla
         for (fila=0;fila<tblConsultaProductos.getRowCount();fila++) {
             tipo = new ProductoBean();
-            //Date fCad = util.stringToDate(tblConsultaProductos.getValueAt(fila, 8).toString());
-            tipo.setDescripcion(String.valueOf(tblConsultaProductos.getValueAt(fila, 2)));
-            tipo.setPrecioCosto(Double.parseDouble(String.valueOf(tblConsultaProductos.getValueAt(fila, 3))));
-            tipo.setExistencia(Double.parseDouble(String.valueOf(tblConsultaProductos.getValueAt(fila, 5))));
-            //tipo.setIdSucursal(Integer.parseInt(String.valueOf(tblConsultaProductos.getValueAt(fila, 7))));
-            tipo.setUnidadMedida(String.valueOf(tblConsultaProductos.getValueAt(fila, 7)));
-            //lo uso para sucursal para mostrarlo como string
-            tipo.setObservaciones(String.valueOf(tblConsultaProductos.getValueAt(fila, 9)));
+            tipo.setDescripcion(String.valueOf(tblConsultaProductos
+                    .getValueAt(fila, 2)));
+            tipo.setPrecioCosto(Double.parseDouble(String
+                    .valueOf(tblConsultaProductos.getValueAt(fila, 3))));
+            tipo.setExistencia(Double.parseDouble(String
+                    .valueOf(tblConsultaProductos.getValueAt(fila, 5))));
+            tipo.setUnidadMedida(String.valueOf(tblConsultaProductos
+                    .getValueAt(fila, 7)));
+            tipo.setObservaciones(String.valueOf(tblConsultaProductos
+                    .getValueAt(fila, 9)));
             Resultados.add(tipo);
-            //util.buscaDescFromIdSuc(sucursalesHMCons, "" + p.getIdSucursal()
         }
         
         Map map = new HashMap();
@@ -305,15 +301,18 @@ public class JDListaProducto extends javax.swing.JDialog {
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.setVisible(false);
         this.dispose();
-        FrmProducto frmProducto = new FrmProducto(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed
         if(selecArchivo.showDialog(null, "Exportar")==JFileChooser.APPROVE_OPTION){
             archivo=selecArchivo.getSelectedFile();
             if(archivo.getName().endsWith("xls") || archivo.getName().endsWith("xlsx")){
-                JOptionPane.showMessageDialog(null, Exportar(archivo, tblConsultaProductos) + "\n Formato ."+ archivo.getName().substring(archivo.getName().lastIndexOf(".")+1));
+                JOptionPane.showMessageDialog(null, Exportar(archivo
+                        , tblConsultaProductos) + "\n Formato ."
+                        + archivo.getName().substring(archivo.getName()
+                                .lastIndexOf(".")+1));
             }else{
                 JOptionPane.showMessageDialog(null, "Elija un formato valido.");
             }

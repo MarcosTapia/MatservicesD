@@ -107,7 +107,7 @@
                   <Font name="Garamond" size="24" style="1"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="LISTA DE USUARIOS"/>
+                <Property name="text" type="java.lang.String" value="LISTADO DE USUARIOS"/>
                 <Property name="verticalAlignment" type="int" value="3"/>
               </Properties>
             </Component>

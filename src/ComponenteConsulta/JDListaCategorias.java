@@ -1,40 +1,26 @@
 package ComponenteConsulta;
 
 import beans.CategoriaBean;
-import beans.ClienteBean;
 import beans.DatosEmpresaBean;
-import beans.UsuarioBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSCategorias;
 import consumewebservices.WSCategoriasList;
-import consumewebservices.WSClientes;
-import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
-import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import util.Util;
-import vistas.FrmSucursal;
-import vistas.FrmUsuarios;
 
 public class JDListaCategorias extends javax.swing.JDialog {
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     DefaultTableModel LCategoria = new DefaultTableModel();
     
-    //WSUsuarios
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
-    //WSUsuarios
     WSCategoriasList hiloCategoriasList;
     WSCategorias hiloCategorias;
-    //Fin WSUsuarios
     
     /** Creates new form JDListaClientes */
     public JDListaCategorias(java.awt.Frame parent, boolean modal) {
@@ -67,7 +53,15 @@ public class JDListaCategorias extends javax.swing.JDialog {
             LCategoria.addRow(Datos);
         }
         initComponents();
+        this.setIcon();
     }
+
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
+    }
+
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -88,7 +82,7 @@ public class JDListaCategorias extends javax.swing.JDialog {
         jPanel2.setBackground(new java.awt.Color(247, 254, 255));
 
         jLabel1.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
-        jLabel1.setText("LISTA DE CLIENTES");
+        jLabel1.setText("LISTADO DE CATEGORÍAS");
 
         jtListaClientes.setModel(LCategoria);
         jScrollPane1.setViewportView(jtListaClientes);
@@ -113,7 +107,7 @@ public class JDListaCategorias extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(77, 77, 77)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 455, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 383, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(78, 78, 78))
         );
@@ -166,6 +160,7 @@ public class JDListaCategorias extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 

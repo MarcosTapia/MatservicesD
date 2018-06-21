@@ -7,7 +7,6 @@ import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSSucursales;
 import consumewebservices.WSSucursalesList;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Properties;

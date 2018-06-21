@@ -1,31 +1,22 @@
 package ComponenteConsulta;
 
-import beans.UsuarioBean;
 import beans.DatosEmpresaBean;
 import beans.MovimientosBean;
-import beans.ProductoBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSInventarios;
-import consumewebservices.WSInventariosList;
 import consumewebservices.WSMovimientosList;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import util.Util;
-import vistas.FrmProducto;
-import vistas.FrmUsuarios;
-import vistas.Ingreso;
-import vistas.Principal;
 
 public class JDListaMovimientos extends javax.swing.JDialog {
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
@@ -41,12 +32,12 @@ public class JDListaMovimientos extends javax.swing.JDialog {
     WSMovimientosList hiloMovimientosList;
     //Fin WS
     
-    Map<String,String> sucursalesHMCons = new HashMap<String,String>();
-    Map<String,String> proveedoresHMCons = new HashMap<String,String>();
-    Map<String,String> categoriasHMCons = new HashMap<String,String>();
-    Map<String,String> usuariosHMCons = new HashMap<String,String>();
-    Map<String,String> productosHMCons = new HashMap<String,String>();
-    Map<String,String> productosHMIDCons = new HashMap<String,String>();
+    Map<String,String> sucursalesHMCons = new HashMap();
+    Map<String,String> proveedoresHMCons = new HashMap();
+    Map<String,String> categoriasHMCons = new HashMap();
+    Map<String,String> usuariosHMCons = new HashMap();
+    Map<String,String> productosHMCons = new HashMap();
+    Map<String,String> productosHMIDCons = new HashMap();
 
     /** Creates new form JDListaPersonal */
     public JDListaMovimientos(java.awt.Frame parent, boolean modal
@@ -76,37 +67,36 @@ public class JDListaMovimientos extends javax.swing.JDialog {
                 + constantes.getProperty("GETMOVIMIENTOBUSQUEDAID") 
                 + idArticulo.trim();
         resultWSArray = hiloMovimientosList.ejecutaWebService(rutaWS,"2");
-        
-//        if (resultWSArray.size() == 0) {
-//            JOptionPane.showMessageDialog(null, "No hay movimientos para este "
-//                    + "registro");
-//            this.dispose();
-//        }
-        
         Util util = new Util();
         //FrmProducto frmproductos = new FrmProducto();
         String titulos[] = {"ID MOVIMIENTO","PRODUCTO","USUARIO","MOVIMIENTO"
                 ,"CANTIDAD","FECHA", "SUCURSAL"};
         LMovimiento.setColumnIdentifiers(titulos);
-//        jtListaMovimientos.getColumnModel().getColumn(0).setPreferredWidth(0);
-//        jtListaMovimientos.getColumnModel().getColumn(0).setMaxWidth(0);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
-//dateFormat.format(p.getFecha());
         for (MovimientosBean movs : resultWSArray) {
-            String producto = util.buscaDescFromCodProd(productosHMIDCons, "" + movs.getIdArticulo());
-            String usuario = util.buscaDescFromIdUsu(usuariosHMCons, "" + movs.getIdUsuario());
-            String sucursal = util.buscaDescFromIdSuc(sucursalesHMCons, "" + movs.getIdSucursal());
+            String producto = util.buscaDescFromCodProd(productosHMIDCons, "" 
+                    + movs.getIdArticulo());
+            String usuario = util.buscaDescFromIdUsu(usuariosHMCons, "" 
+                    + movs.getIdUsuario());
+            String sucursal = util.buscaDescFromIdSuc(sucursalesHMCons, "" 
+                    + movs.getIdSucursal());
             String Datos[] = {"" + movs.getIdMovimiento()
                 , producto
                 , usuario
                 , movs.getTipoOperacion()
                 , "" + movs.getCantidad()
-//                , util.cambiaFormatoFecha(movs.getFechaOperacion().toLocaleString())
                 , dateFormat.format(movs.getFechaOperacion())
                 , sucursal};
             LMovimiento.addRow(Datos);
         }
         initComponents();
+        this.setIcon();
+    }
+
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")
@@ -151,11 +141,13 @@ public class JDListaMovimientos extends javax.swing.JDialog {
                 .addGap(19, 19, 19)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 848, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 465, Short.MAX_VALUE)
-                        .addComponent(jButton2))
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addGap(67, 67, 67))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,8 +193,8 @@ public class JDListaMovimientos extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.setVisible(false);
         this.dispose();
-        FrmUsuarios frmUsuarios = new FrmUsuarios();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

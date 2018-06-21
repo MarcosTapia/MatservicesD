@@ -6,18 +6,15 @@ import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import util.Util;
 import vistas.FrmUsuarios;
-import vistas.Ingreso;
-import vistas.Principal;
 
 public class JDListaUsuario extends javax.swing.JDialog {
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
@@ -62,16 +59,24 @@ public class JDListaUsuario extends javax.swing.JDialog {
 //        String titulos[] = {"ID", "USUARIO","CLAVE","NOMBRE","CLASE"};
         LPersonal.setColumnIdentifiers(titulos);
         for (UsuarioBean p : resultWSArray) {
-            String sucursal = util.buscaDescFromIdSuc(sucursalesHMCons, "" + p.getIdSucursal());
+            String sucursal = util.buscaDescFromIdSuc(sucursalesHMCons, "" 
+                    + p.getIdSucursal());
             String Datos[] = {""+p.getIdUsuario()
                     , p.getUsuario()
-                    , p.getNombre() + " " + p.getApellido_paterno() + " " + p.getApellido_materno()
+                    , p.getNombre() + " " + p.getApellido_paterno() + " " 
+                    + p.getApellido_materno()
                     , p.getTelefono_casa() + ", " + p.getTelefono_celular()
                     , sucursal};
             LPersonal.addRow(Datos);
         }
-        
+        this.setIcon();
         initComponents();
+    }
+    
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")
@@ -93,7 +98,7 @@ public class JDListaUsuario extends javax.swing.JDialog {
 
         jLabel1.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("LISTA DE USUARIOS");
+        jLabel1.setText("LISTADO DE USUARIOS");
         jLabel1.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
         jtListaPersonal.setModel(LPersonal);
@@ -167,8 +172,8 @@ public class JDListaUsuario extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.setVisible(false);
         this.dispose();
-        FrmUsuarios frmUsuarios = new FrmUsuarios();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

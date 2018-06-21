@@ -1,41 +1,28 @@
 package ComponenteConsulta;
 
-import beans.ClienteBean;
 import beans.DatosEmpresaBean;
 import beans.ProveedorBean;
-import beans.UsuarioBean;
 import constantes.ConstantesProperties;
-import consumewebservices.WSClientes;
-import consumewebservices.WSClientesList;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSProveedores;
 import consumewebservices.WSProveedoresList;
-import consumewebservices.WSUsuarios;
-import consumewebservices.WSUsuariosList;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import util.Util;
-import vistas.FrmSucursal;
 import vistas.FrmProveedor;
-import vistas.FrmUsuarios;
 
 public class JDListaProveedor extends javax.swing.JDialog {
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     DefaultTableModel LProveedores = new DefaultTableModel();
     
-    //WSUsuarios
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
-    //WSUsuarios
     WSProveedoresList hiloProveedoresList;
     WSProveedores hiloProveedores;
-    //Fin WSUsuarios
     
     /** Creates new form JDListaClientes */
     public JDListaProveedor(java.awt.Frame parent, boolean modal
@@ -80,6 +67,13 @@ public class JDListaProveedor extends javax.swing.JDialog {
             LProveedores.addRow(Datos);
         }
         initComponents();
+        this.setIcon();
+    }
+    
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")
@@ -101,7 +95,7 @@ public class JDListaProveedor extends javax.swing.JDialog {
         jPanel2.setBackground(new java.awt.Color(247, 254, 255));
 
         jLabel1.setFont(new java.awt.Font("Garamond", 1, 24)); // NOI18N
-        jLabel1.setText("LISTA DE PROVEEDORES");
+        jLabel1.setText("LISTADO DE PROVEEDORES");
 
         jtListaClientes.setModel(LProveedores);
         jScrollPane1.setViewportView(jtListaClientes);
@@ -126,7 +120,7 @@ public class JDListaProveedor extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(77, 77, 77)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 394, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 418, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(78, 78, 78))
         );
@@ -167,8 +161,8 @@ public class JDListaProveedor extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,8 +173,8 @@ public class JDListaProveedor extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.setVisible(false);
         this.dispose();
-        FrmProveedor frmProveedor = new FrmProveedor(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
