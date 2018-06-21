@@ -22,6 +22,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import util.Util;
 import static vistas.Principal.productos;
+import javax.swing.ImageIcon;
 
 public class FrmProducto extends javax.swing.JFrame {
 
@@ -120,8 +121,9 @@ public class FrmProducto extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
-                .getResource("..\\img\\matserviceslogo.png")));
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     private void cargaSucursales() {

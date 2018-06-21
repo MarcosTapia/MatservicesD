@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Properties;
+import javax.swing.ImageIcon;
 import javax.swing.Timer;
 
 public class BarraProgreso extends javax.swing.JFrame {
@@ -75,8 +76,9 @@ public class BarraProgreso extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
-                .getResource("..\\img\\matserviceslogo.png")));
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
     
     @SuppressWarnings("unchecked")

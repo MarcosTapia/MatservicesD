@@ -2,10 +2,10 @@ package vistas;
 
 import beans.MensajeBean;
 import beans.UsuarioBean;
-import com.sun.awt.AWTUtilities;
 import constantes.ConstantesProperties;
 import consumewebservices.WSMensajesList;
 import consumewebservices.WSUsuarios;
+import java.awt.Color;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +30,7 @@ public class Ingreso extends javax.swing.JFrame {
     public Ingreso() {
         initComponents();
         this.setLocationRelativeTo(null);
-        AWTUtilities.setWindowOpaque(this, false);
+        this.setBackground(new Color(0,0,0,0));
 
 //        //Checa si existe archivo licencia
 //        File f = new File("C:\\Windows\\addins\\w4mdp.ecf");

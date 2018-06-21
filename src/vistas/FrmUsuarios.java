@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import java.security.MessageDigest;
+import javax.swing.ImageIcon;
 import util.Util;
 
 public class FrmUsuarios extends javax.swing.JFrame {
@@ -58,9 +59,10 @@ public class FrmUsuarios extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
-                .getResource("..\\img\\matserviceslogo.png")));
-    }    
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
+    } 
     
     public static String getMD5(String input) {
         try {

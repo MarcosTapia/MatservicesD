@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
@@ -56,8 +57,9 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
     }
     
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
-                .getResource("..\\img\\matserviceslogo.png")));
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     //Para Tabla Ventas

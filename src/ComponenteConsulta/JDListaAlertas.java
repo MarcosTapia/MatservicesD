@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -102,8 +103,14 @@ public class JDListaAlertas extends javax.swing.JDialog {
                 }
             }
         }
-        
+        this.setIcon();
         initComponents();
+    }
+    
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")

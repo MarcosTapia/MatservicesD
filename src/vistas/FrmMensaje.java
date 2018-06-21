@@ -1,9 +1,9 @@
 package vistas;
 
 import beans.UsuarioBean;
-import com.sun.awt.AWTUtilities;
 import constantes.ConstantesProperties;
 import consumewebservices.WSUsuarios;
+import java.awt.Color;
 import java.util.Properties;
 import javax.swing.UIManager;
 
@@ -31,7 +31,7 @@ public class FrmMensaje extends javax.swing.JFrame {
     public FrmMensaje() {
         initComponents();
         this.setLocationRelativeTo(null);
-        AWTUtilities.setWindowOpaque(this, false);
+        this.setBackground(new Color(0,0,0,0));
     }
 
     @SuppressWarnings("unchecked")

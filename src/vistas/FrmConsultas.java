@@ -4,6 +4,7 @@ import ComponenteConsulta.JDListaAlertas;
 import java.awt.Toolkit;
 import java.text.DateFormat;
 import java.util.Date;
+import javax.swing.ImageIcon;
 
 public class FrmConsultas extends javax.swing.JFrame {
     String permisos = "";
@@ -51,8 +52,9 @@ public class FrmConsultas extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
-                .getResource("..\\img\\matserviceslogo.png")));
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")

@@ -2,6 +2,7 @@ package vistas;
 
 import java.awt.Toolkit;
 import java.text.DateFormat;
+import javax.swing.ImageIcon;
 import util.Util;
 
 public class FrmOperaciones extends javax.swing.JFrame {
@@ -38,7 +39,9 @@ public class FrmOperaciones extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")

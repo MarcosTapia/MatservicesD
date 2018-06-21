@@ -1,8 +1,8 @@
 package vistas;
 
-import java.awt.Toolkit;
 import java.text.DateFormat;
 import util.Util;
+import javax.swing.ImageIcon;
 
 public class FrmInventario extends javax.swing.JFrame {
 
@@ -32,7 +32,9 @@ public class FrmInventario extends javax.swing.JFrame {
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")

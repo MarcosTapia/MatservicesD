@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import util.Util;
@@ -61,11 +62,17 @@ public class FrmCajaChica extends javax.swing.JFrame {
                 + " " + Ingreso.usuario.getApellido_materno());
         this.setTitle(configuracionBean.getNombreEmpresa());
         this.setLocationRelativeTo(null);
-        
+        this.setIcon();
         btnNuevoMov.setEnabled(true);
         btnGuardarMov.setEnabled(false);
         btnCancelarMov.setEnabled(true);
         lblIdMov.setText("");
+    }
+    
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
     
     public void limpiarCajatexto() {

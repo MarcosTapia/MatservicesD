@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import util.Util;
+import javax.swing.ImageIcon;
 
 public class Principal extends javax.swing.JFrame {
 
@@ -139,16 +140,18 @@ public class Principal extends javax.swing.JFrame {
         proveedores = util.getMapProveedores();
         util.llenaMapProveedores(proveedores);
         proveedoresHM = util.getProveedoresHM();
-
         this.setIcon();
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre()
                 + " " + Ingreso.usuario.getApellido_paterno()
                 + " " + Ingreso.usuario.getApellido_materno());
+        
+
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass()
-                .getResource("..\\img\\matserviceslogo.png")));
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
 
     public void muestraPanel(int panel) {

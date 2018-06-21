@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import util.Util;
@@ -77,14 +78,6 @@ public class FrmCompras extends javax.swing.JFrame {
         }
         initComponents();
         
-//        // Actualizas tbl producto
-//        ArrayList<ProductoBean> resultWS = null;
-//        hiloInventariosList = new WSInventariosList();
-//        String rutaWS = constantes.getProperty("IP") 
-//                + constantes.getProperty("GETINVENTARIOS");
-//        resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"1");
-//        recargarTableProductos(resultWS);
-//        
         java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
 //        txtFecha.setText("Fecha: " + a);
@@ -104,26 +97,15 @@ public class FrmCompras extends javax.swing.JFrame {
         inventario = util.getInventario();
         productos = util.getInventario();
         util.llenaMapProductos(productos);
-//        //carga proveedores
-//        Iterator it = Principal.proveedoresHM.keySet().iterator();
-//        int indiceSucursales = 1;
-//        while(it.hasNext()){
-//          Object key = it.next();
-//          cboProveedor.addItem(Principal.proveedoresHM.get(key));
-//          if (Principal.proveedoresHM.get(key).toString().
-//                  equalsIgnoreCase("GENERAL")) {
-//              cboProveedor.setSelectedIndex(indiceSucursales);
-//          }
-//          indiceSucursales++;
-//        }        
         jDateChooserFechaCompra.setDate(util.obtieneFechaServidor());
         txtNoCompra.setText("" + obtenerUltimoId());
         txtCodigoPro.setText("Espere...");
     }
 
     public void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit()
-             .getImage(getClass().getResource("..\\img\\matserviceslogo.png")));
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
     }
     
     public void cargaProveedores() {
