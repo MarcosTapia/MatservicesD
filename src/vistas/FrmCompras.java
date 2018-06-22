@@ -98,7 +98,6 @@ public class FrmCompras extends javax.swing.JFrame {
         productos = util.getInventario();
         util.llenaMapProductos(productos);
         jDateChooserFechaCompra.setDate(util.obtieneFechaServidor());
-        txtNoCompra.setText("" + obtenerUltimoId());
         txtCodigoPro.setText("Espere...");
     }
 
@@ -156,7 +155,7 @@ public class FrmCompras extends javax.swing.JFrame {
     //Actualiza totales,subtotales, etc de venta
     public void actualizaTotales(List<DetalleCompraBean> list) {
         double subtotal = 0;
-        double iva = 0;
+        double iva;
         double total;
         int i = 0;
         try {
@@ -1258,6 +1257,7 @@ public class FrmCompras extends javax.swing.JFrame {
             Principal p = new Principal();
             p.cargaProveedores();
             cargaProveedores();
+            txtNoCompra.setText("" + obtenerUltimoId());
             
             ArrayList<ProductoBean> resultWS = null;
             hiloInventariosList = new WSInventariosList();
@@ -1436,6 +1436,7 @@ public class FrmCompras extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarKeyReleased
 
     private void btnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioActionPerformed
+        txtCodigoPro.setText("Espere...");
         cargaDatos = false;
         FrmProducto frmProducto = new FrmProducto(1);
         frmProducto.setVisible(true);
@@ -1460,10 +1461,10 @@ public class FrmCompras extends javax.swing.JFrame {
                 , txtCodigoPro.getText().trim()
                 , Ingreso.usuario.getIdSucursal());
         if (prod == null) {
-            limpiarCajaTexto("","",1);
-            btnInventario.requestFocus();
+            limpiarCajaTexto(txtFacturaPro.getText(),txtNoCompra.getText()
+                    , cboProveedor.getSelectedIndex());
             JOptionPane.showMessageDialog(null, "No se encontro el producto, "
-                    + "debes regidtrarlo primero");
+                    + "debes registrarlo primero");
             txtCodigoPro.requestFocus(true);
             return;
         }
@@ -1532,6 +1533,7 @@ public class FrmCompras extends javax.swing.JFrame {
     }//GEN-LAST:event_txtIvaActionPerformed
 
     private void btnSalirPro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPro1ActionPerformed
+        txtCodigoPro.setText("Espere...");
         cargaDatos = false;
         FrmProveedor frmProveedor = new FrmProveedor(1);
         frmProveedor.setVisible(true);

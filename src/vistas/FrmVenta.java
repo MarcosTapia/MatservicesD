@@ -1364,6 +1364,7 @@ public class FrmVenta extends javax.swing.JFrame {
             recargarTableProductos(inventario);
             cargaDatos = true;
             txtCodigoPro.setText("");
+            txtCodigoPro.requestFocus();
         }
     }//GEN-LAST:event_formWindowActivated
 
@@ -1585,6 +1586,7 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_jtProductoKeyReleased
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
+        txtCodigoPro.setText("Espere...");
         cargaDatos = false;
         FrmCliente frmCliente = new FrmCliente(1);
         frmCliente.setVisible(true);
@@ -1692,6 +1694,7 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodigoProMouseClicked
 
     private void btnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioActionPerformed
+        txtCodigoPro.setText("Espere...");
         cargaDatos = false;
         FrmProducto frmProducto = new FrmProducto(1);
         frmProducto.setVisible(true);

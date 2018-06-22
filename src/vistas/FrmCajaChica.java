@@ -797,7 +797,7 @@ public class FrmCajaChica extends javax.swing.JFrame {
     }//GEN-LAST:event_cboComprobanteActionPerformed
 
     private void txtReferenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtReferenciaActionPerformed
-        // TODO add your handling code here:
+        btnGuardarMov.requestFocus(true);
     }//GEN-LAST:event_txtReferenciaActionPerformed
 
     private void btnSalirCli1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCli1ActionPerformed

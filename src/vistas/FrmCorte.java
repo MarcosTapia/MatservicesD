@@ -828,6 +828,7 @@ public class FrmCorte extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "CORTE DE CAJA PROCESADO");
             this.setVisible(false);
             this.dispose();
+            System.exit(0);
         } else {
             JOptionPane.showMessageDialog(null, "DEBES TENER OPERACIONES PARA "
                     + "REGISTRAR EL CORTE");
