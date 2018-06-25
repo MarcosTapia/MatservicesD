@@ -305,50 +305,36 @@ public class FrmConfiguracion extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnProveedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProveedoresActionPerformed
-        this.setVisible(false);
-        this.dispose();
         FrmProveedor frmProv = new FrmProveedor(0);
         frmProv.setVisible(true);
     }//GEN-LAST:event_btnProveedoresActionPerformed
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
-        this.setVisible(false);
-        this.dispose();
         FrmCliente frmCli = new FrmCliente(0);
         frmCli.setVisible(true);
     }//GEN-LAST:event_btnClientesActionPerformed
 
     private void btnCategoriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoriasActionPerformed
-        this.setVisible(false);
-        this.dispose();        
         FrmCategoria frmCat = new FrmCategoria();
         frmCat.setVisible(true);
     }//GEN-LAST:event_btnCategoriasActionPerformed
 
     private void btnUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuariosActionPerformed
-        this.setVisible(false);
-        this.dispose();
         FrmUsuarios frmU = new FrmUsuarios();
         frmU.setVisible(true);
     }//GEN-LAST:event_btnUsuariosActionPerformed
 
     private void btnSucursalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSucursalesActionPerformed
-        this.setVisible(false);
-        this.dispose();
         FrmSucursal frmSucursal = new FrmSucursal();
         frmSucursal.setVisible(true);
     }//GEN-LAST:event_btnSucursalesActionPerformed
 
     private void btnSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSistemaActionPerformed
-        this.setVisible(false);
-        this.dispose();
         FrmSistema frmSistema = new FrmSistema();
         frmSistema.setVisible(true);
     }//GEN-LAST:event_btnSistemaActionPerformed
 
     private void btnMensajesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMensajesActionPerformed
-        this.setVisible(false);
-        this.dispose();
         FrmConfiguraMensajes frmConfiguraMensajes = new FrmConfiguraMensajes();
         frmConfiguraMensajes.setVisible(true);
     }//GEN-LAST:event_btnMensajesActionPerformed

@@ -72,6 +72,7 @@ public class FrmConsultas extends javax.swing.JFrame {
         btnConsultaCompras = new javax.swing.JButton();
         btnConsultaMovimientos = new javax.swing.JButton();
         btnConsultaPedidos = new javax.swing.JButton();
+        btnRegresar = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
 
@@ -205,6 +206,18 @@ public class FrmConsultas extends javax.swing.JFrame {
         });
         jToolBar2.add(btnConsultaPedidos);
 
+        btnRegresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/regresarmed.jpg"))); // NOI18N
+        btnRegresar.setText("Inventario");
+        btnRegresar.setFocusable(false);
+        btnRegresar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnRegresar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(btnRegresar);
+
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
         jButton5.setText("Inicio");
         jButton5.setFocusable(false);
@@ -295,6 +308,14 @@ public class FrmConsultas extends javax.swing.JFrame {
         frmConsultaPedidos.setVisible(true);   
     }//GEN-LAST:event_btnConsultaPedidosActionPerformed
 
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        FrmInventario frmInventario = new FrmInventario();
+        frmInventario.setExtendedState(frmInventario.MAXIMIZED_BOTH);
+        frmInventario.setVisible(true);
+    }//GEN-LAST:event_btnRegresarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -343,6 +364,7 @@ public class FrmConsultas extends javax.swing.JFrame {
     private javax.swing.JButton btnConsultaMovimientos;
     private javax.swing.JButton btnConsultaPedidos;
     private javax.swing.JButton btnConsultaVentas;
+    private javax.swing.JButton btnRegresar;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel2;

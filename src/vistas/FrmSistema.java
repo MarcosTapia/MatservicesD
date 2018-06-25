@@ -415,7 +415,7 @@ public class FrmSistema extends javax.swing.JFrame {
         jPanel5.setBackground(new java.awt.Color(247, 254, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Valores Globales del Sistema"));
 
-        jLabel3.setText("IVA EMPRESA (Ganancia por Producto) :");
+        jLabel3.setText("% EMPRESA (Ganancia por Producto) :");
 
         txtIvaEmpresa.setEditable(false);
         txtIvaEmpresa.addActionListener(new java.awt.event.ActionListener() {
@@ -488,7 +488,7 @@ public class FrmSistema extends javax.swing.JFrame {
                         .addComponent(btnModificarDatSist, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancelarDatSist, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

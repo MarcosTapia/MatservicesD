@@ -54,6 +54,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
           Object key = it.next();
           cboSucursal.addItem(Principal.sucursalesHM.get(key));
         }        
+        habilitaChecksPermisos(false);
         this.setIcon();
     }
 
@@ -147,7 +148,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
         txtUser = new javax.swing.JTextField();
         txtClave = new javax.swing.JTextField();
         txtNombre = new javax.swing.JTextField();
-        jPanel5 = new javax.swing.JPanel();
+        panelPermisos = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         chkInventario = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
@@ -310,7 +311,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
             }
         });
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "Permisos de Usuario"));
+        panelPermisos.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "Permisos de Usuario"));
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Inventario"));
 
@@ -462,26 +463,26 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        javax.swing.GroupLayout panelPermisosLayout = new javax.swing.GroupLayout(panelPermisos);
+        panelPermisos.setLayout(panelPermisosLayout);
+        panelPermisosLayout.setHorizontalGroup(
+            panelPermisosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPermisosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelPermisosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+        panelPermisosLayout.setVerticalGroup(
+            panelPermisosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPermisosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(panelPermisosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
+                    .addGroup(panelPermisosLayout.createSequentialGroup()
                         .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -564,7 +565,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                             .addComponent(txtTelCasa)
                             .addComponent(txtNombre))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelPermisos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(19, 19, 19))
         );
         jPanel4Layout.setVerticalGroup(
@@ -609,7 +610,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelPermisos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -796,6 +797,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirPerActionPerformed
 
     private void btnNuevoPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoPerActionPerformed
+        habilitaChecksPermisos(true);
         limpiarCajaTexto();
         activarCajaTexto(true);
 //        obtenerUltimoId();
@@ -805,6 +807,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNuevoPerActionPerformed
 
     private void btnModificarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPerActionPerformed
+        habilitaChecksPermisos(true);
         activarCajaTexto(true);
         accion = "Actualizar";
         btnNuevoPer.setEnabled(false);
@@ -818,12 +821,47 @@ public class FrmUsuarios extends javax.swing.JFrame {
         limpiarCajaTexto();
         activarCajaTexto(false);
         activarBotones(true);
+        habilitaChecksPermisos(false);
     }//GEN-LAST:event_btnCancelarUsuarioActionPerformed
 
+    private void habilitaChecksPermisos(boolean habilita) {
+        //Modulo Inventario
+        chkInventario.setEnabled(habilita);
+        //Modulo Consulta Alertas
+        chkConsultaAlertas.setEnabled(habilita);
+        //Modulo Consulta Ventas
+        chkConsultaVentas.setEnabled(habilita);
+        //Modulo Consulta Compras
+        chkConsultaCompras.setEnabled(habilita);
+        //Modulo Consulta Movimientos
+        chkConsultaMovimientos.setEnabled(habilita);
+        //Modulo Consulta Pedidos
+        chkConsultaPedidos.setEnabled(habilita);
+        //Modulo Proveedores
+        chkProveedores.setEnabled(habilita);
+        //Modulo Usuarios
+        chkUsuarios.setEnabled(habilita);
+        //Modulo Clientes
+        chkClientes.setEnabled(habilita);
+        //Modulo Categorias
+        chkCategorias.setEnabled(habilita);
+        //Modulo Sucursales
+        chkSucursales.setEnabled(habilita);
+        //Modulo Sistema
+        chkSistema.setEnabled(habilita);
+        //Modulo Mensajes
+        chkMensajes.setEnabled(habilita);
+        //Modulo Ventas
+        chkVentas.setEnabled(habilita);
+        //Modulo Compras
+        chkCompras.setEnabled(habilita);
+        //Modulo Caja Chica
+        chkCaja.setEnabled(habilita);
+    }
+    
     private void guardar() {
         if (accion.equalsIgnoreCase("Guardar")) {
             if (txtUser.getText().compareTo("") != 0 
-                    && txtClave.getText().compareTo("") != 0 
                     && txtNombre.getText().compareTo("") != 0
                     && cboSucursal.getSelectedIndex() != 0) {
                 UsuarioBean p = new UsuarioBean();
@@ -1152,6 +1190,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
     
     private void btnGuardarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPerActionPerformed
         guardar();
+        habilitaChecksPermisos(false);
     }//GEN-LAST:event_btnGuardarPerActionPerformed
 
     private void cboParametroUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboParametroUsuarioActionPerformed
@@ -1501,7 +1540,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
@@ -1509,6 +1547,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblUsuario;
+    private javax.swing.JPanel panelPermisos;
     private javax.swing.JTable tblUsuarios;
     private javax.swing.JTextField txtApellidoMaterno;
     private javax.swing.JTextField txtApellidoPaterno;
