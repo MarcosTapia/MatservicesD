@@ -1,14 +1,11 @@
 package vistas;
 
-import ComponenteConsulta.JDListaCategorias;
-import beans.DatosEmpresaBean;
 import beans.ProductoBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
 import consumewebservices.WSInventarios;
 import consumewebservices.WSInventariosList;
 import consumewebservices.WSSistema;
-//import com.lowagie.text.pdf.Barcode;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -18,12 +15,10 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import net.sourceforge.barbecue.Barcode;
@@ -57,8 +52,9 @@ public class FrmCodBarras extends javax.swing.JFrame {
         }
         initComponents();
         
-        lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
-        
+        lblUsuario.setText("Usuario : " + Ingreso.usuario.getNombre()
+            + " " + Ingreso.usuario.getApellido_paterno()
+            + " " + Ingreso.usuario.getApellido_materno());       
         
         // Carga datos de la empresa
         hiloSistema = new WSSistema();
@@ -68,7 +64,14 @@ public class FrmCodBarras extends javax.swing.JFrame {
         
         this.setTitle(datosEmpresaBean.getNombreEmpresa());        
         this.setLocationRelativeTo(null);
+        setIcon();
     }
+    
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
+    }    
 
     private static boolean isNumeric(String cadena) {
         try {
@@ -136,7 +139,7 @@ public class FrmCodBarras extends javax.swing.JFrame {
         });
 
         btnSalirCat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        btnSalirCat.setText("CERRAR");
+        btnSalirCat.setText("SALIR");
         btnSalirCat.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSalirCat.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnSalirCat.addActionListener(new java.awt.event.ActionListener() {
@@ -363,8 +366,9 @@ public class FrmCodBarras extends javax.swing.JFrame {
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void btnSalirCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCatActionPerformed
+        this.setVisible(false);
         this.dispose();
-        FrmConfiguracion operaciones = new FrmConfiguracion();
+        System.exit(0);
     }//GEN-LAST:event_btnSalirCatActionPerformed
 
     private void txtcodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcodigoActionPerformed

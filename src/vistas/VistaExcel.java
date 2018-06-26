@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -96,8 +97,14 @@ public class VistaExcel extends javax.swing.JFrame {
         //cambia formato de fecha a tipo datetime xq asi esta en bd remota
         jCalFechaIngresoProd.setDate(new Date());
         jCalFechaIngresoProd.setDateFormatString("yyyy-MM-dd HH:mm:ss");
-        
+        this.setIcon();
     }
+    
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
+    }    
 
     public void AgregarFiltro(){
         selecArchivo.setFileFilter(new FileNameExtensionFilter("Excel (*.xls)"
@@ -689,6 +696,7 @@ public class VistaExcel extends javax.swing.JFrame {
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         this.setVisible(false);
         this.dispose();
+        System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
     /**
