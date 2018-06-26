@@ -1648,6 +1648,8 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_btnActualizaInventActionPerformed
 
     private void btnExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcelActionPerformed
+        this.setVisible(false);
+        this.dispose();
         VistaExcel vistaExcel = new VistaExcel();
         vistaExcel.setVisible(true);
     }//GEN-LAST:event_btnExcelActionPerformed
