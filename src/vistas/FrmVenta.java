@@ -720,6 +720,11 @@ public class FrmVenta extends javax.swing.JFrame {
                 txtImporteActionPerformed(evt);
             }
         });
+        txtImporte.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtImporteFocusLost(evt);
+            }
+        });
         txtImporte.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtImporteKeyTyped(evt);
@@ -1764,6 +1769,24 @@ public class FrmVenta extends javax.swing.JFrame {
             evt.consume();
         }
     }//GEN-LAST:event_txtDescuentoKeyTyped
+
+    private void txtImporteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtImporteFocusLost
+        if (txtImporte.getText().equalsIgnoreCase("")) {
+            txtCodigoPro.requestFocus(true);
+            return;
+        }
+        if (Double.parseDouble(txtImporte.getText()) >= 
+                Double.parseDouble(txtMontoApagar.getText())) {
+            txtVuelto.setText(""+((Double.parseDouble(txtImporte.getText())-
+                    Double.parseDouble(txtMontoApagar.getText()))));   
+            DecimalFormat df = new DecimalFormat("#.##");   
+            txtVuelto.setText(""+df.format(Double.parseDouble(txtVuelto.getText())));  
+            btnGenerarVenta.requestFocus();
+        } else {
+            JOptionPane.showMessageDialog(null, "EL PAGO DEBE SER MAYOR O "
+                    + "IGUAL AL TOTAL A PAGAR ");
+        }
+    }//GEN-LAST:event_txtImporteFocusLost
 
     private ArrayList<ProductoBean> llenaTablaInventario(String buscar, int tipoBusq) {
         ArrayList<ProductoBean> resultWS = new ArrayList<ProductoBean>();

@@ -265,7 +265,7 @@ public class VistaExcel extends javax.swing.JFrame {
         jCalFechaIngresoProd = new com.toedter.calendar.JDateChooser();
         btnSalir = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         btnImportar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnImportar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/xlsx.png"))); // NOI18N

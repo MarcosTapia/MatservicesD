@@ -117,6 +117,10 @@ public class FrmProducto extends javax.swing.JFrame {
             accion = "Guardar";
             btnModificarPro.setVisible(false);
             btnEliminarPro.setVisible(false);
+            btnExcel.setVisible(false);
+            btnMovimientos.setVisible(false);
+            btnInicio.setVisible(false);
+            btnRegresar.setVisible(false);
         }
     }
 
@@ -1648,8 +1652,6 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_btnActualizaInventActionPerformed
 
     private void btnExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcelActionPerformed
-        this.setVisible(false);
-        this.dispose();
         VistaExcel vistaExcel = new VistaExcel();
         vistaExcel.setVisible(true);
     }//GEN-LAST:event_btnExcelActionPerformed
