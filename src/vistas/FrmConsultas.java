@@ -5,13 +5,18 @@ import java.awt.Toolkit;
 import java.text.DateFormat;
 import java.util.Date;
 import javax.swing.ImageIcon;
+import util.Util;
 
 public class FrmConsultas extends javax.swing.JFrame {
+    Util util = new Util();
     String permisos = "";
-    
+    String suc;
+        
     public FrmConsultas() {
         initComponents();
-        java.util.Date fecha = new Date();
+        suc = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" 
+                + Ingreso.usuario.getIdSucursal());
+        java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
         lblFecha.setText("Fecha: " + a);
         lblUsuario.setText("Usuario: " + Ingreso.usuario.getNombre()
@@ -66,6 +71,7 @@ public class FrmConsultas extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         lblFecha = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
+        lblSucursal = new javax.swing.JLabel();
         jToolBar2 = new javax.swing.JToolBar();
         btnAlertas = new javax.swing.JButton();
         btnConsultaVentas = new javax.swing.JButton();
@@ -106,6 +112,11 @@ public class FrmConsultas extends javax.swing.JFrame {
         lblUsuario.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
         lblUsuario.setText("jLabel1");
 
+        lblSucursal.setBackground(new java.awt.Color(247, 254, 255));
+        lblSucursal.setFont(new java.awt.Font("Arial Black", 2, 48)); // NOI18N
+        lblSucursal.setForeground(new java.awt.Color(70, 99, 138));
+        lblSucursal.setText("jLabel1");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -120,11 +131,13 @@ public class FrmConsultas extends javax.swing.JFrame {
                         .addComponent(jLabel2))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(430, 430, 430)
-                        .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(90, 90, 90)
-                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(680, 680, 680))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lblSucursal, javax.swing.GroupLayout.DEFAULT_SIZE, 796, Short.MAX_VALUE)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(784, 784, 784))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,9 +146,11 @@ public class FrmConsultas extends javax.swing.JFrame {
                 .addComponent(lblUsuario)
                 .addGap(11, 11, 11)
                 .addComponent(lblTitulo)
-                .addGap(52, 52, 52)
+                .addGap(29, 29, 29)
+                .addComponent(lblSucursal)
+                .addGap(65, 65, 65)
                 .addComponent(jLabel2)
-                .addGap(150, 150, 150)
+                .addGap(40, 40, 40)
                 .addComponent(lblFecha))
         );
 
@@ -262,6 +277,7 @@ public class FrmConsultas extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
         lblTitulo.setText(Principal.datosEmpresaBean.getNombreEmpresa());
+        lblSucursal.setText("Sucursal: " + suc);
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -283,13 +299,14 @@ public class FrmConsultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConsultaComprasActionPerformed
 
     private void btnAlertasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlertasActionPerformed
-        this.setVisible(false);
-        this.dispose();
         JDListaAlertas jdListaP = new JDListaAlertas(this,true
                 , Principal.sucursalesHM
                 , Principal.categoriasHM
                 , Principal.proveedoresHM);
+        jdListaP.setSucursal(suc);
         jdListaP.setVisible(true);
+        this.setVisible(false);
+        this.dispose();
     }//GEN-LAST:event_btnAlertasActionPerformed
 
     private void btnConsultaMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaMovimientosActionPerformed
@@ -370,6 +387,7 @@ public class FrmConsultas extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JLabel lblFecha;
+    private javax.swing.JLabel lblSucursal;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblUsuario;
     // End of variables declaration//GEN-END:variables

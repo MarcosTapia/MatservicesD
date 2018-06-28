@@ -8,9 +8,12 @@ import util.Util;
 public class FrmOperaciones extends javax.swing.JFrame {
     String permisos = "";
     Util util = new Util();
+    String suc;
     
     public FrmOperaciones() {
         initComponents();
+        suc = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" 
+                + Ingreso.usuario.getIdSucursal());
         java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
         lblFecha.setText("Fecha: " + a);
@@ -60,6 +63,7 @@ public class FrmOperaciones extends javax.swing.JFrame {
         lblUsuario = new javax.swing.JLabel();
         lblTitulo1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        lblSucursal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -162,37 +166,50 @@ public class FrmOperaciones extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(70, 99, 138));
         jLabel2.setText("MÓDULO DE OPERACIONES");
 
+        lblSucursal.setBackground(new java.awt.Color(247, 254, 255));
+        lblSucursal.setFont(new java.awt.Font("Arial Black", 2, 48)); // NOI18N
+        lblSucursal.setForeground(new java.awt.Color(70, 99, 138));
+        lblSucursal.setText("jLabel1");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(193, 193, 193)
-                .addComponent(jLabel2)
-                .addGap(98, 98, 98)
+                .addGap(94, 94, 94)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblTitulo1, javax.swing.GroupLayout.DEFAULT_SIZE, 852, Short.MAX_VALUE)
+                    .addComponent(lblSucursal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
                 .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 1030, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(471, 471, 471)
                 .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(91, 91, 91)
-                .addComponent(lblTitulo1, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(434, 434, 434)
                 .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(193, 193, 193)
+                .addComponent(jLabel2))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblTitulo1)
-                .addGap(44, 44, 44)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(125, 125, 125)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(123, 123, 123)
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(lblTitulo1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblSucursal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
                 .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -218,6 +235,7 @@ public class FrmOperaciones extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
         lblTitulo1.setText(Principal.datosEmpresaBean.getNombreEmpresa());
+        lblSucursal.setText("Sucursal: " + suc);
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -350,6 +368,7 @@ public class FrmOperaciones extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblFecha;
+    private javax.swing.JLabel lblSucursal;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblTitulo1;
     private javax.swing.JLabel lblUsuario;

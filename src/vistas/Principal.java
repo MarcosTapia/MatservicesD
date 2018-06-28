@@ -51,12 +51,12 @@ public class Principal extends javax.swing.JFrame {
 
     Util util = new Util();
 
-    //WS
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
     WSSistema hiloSistema;
-    //Fin WS
 
+    String suc;
+    
     public void cargaProductos() {
         //Carga productos
         productos = util.getInventario();
@@ -84,6 +84,13 @@ public class Principal extends javax.swing.JFrame {
         proveedores = util.getMapProveedores();
         util.llenaMapProveedores(proveedores);
         proveedoresHM = util.getProveedoresHM();
+    }
+    
+    public void cargaSucursales() {
+        //Carga proveedores
+        sucursales = util.getMapSucursales();
+        util.llenaMapSucursales(sucursales);
+        sucursalesHM = util.getSucursalesHM();
     }
 
     public Principal() {
@@ -145,7 +152,8 @@ public class Principal extends javax.swing.JFrame {
                 + " " + Ingreso.usuario.getApellido_paterno()
                 + " " + Ingreso.usuario.getApellido_materno());
         
-
+        suc = util.buscaDescFromIdSuc(sucursalesHM, "" 
+                + Ingreso.usuario.getIdSucursal());
     }
 
     public void setIcon() {
@@ -338,7 +346,8 @@ public class Principal extends javax.swing.JFrame {
         // Fin Carga datos de la empresa
 
         this.setTitle(datosEmpresaBean.getNombreEmpresa());
-        lblTituloNegocio.setText(datosEmpresaBean.getNombreEmpresa());
+        lblTituloNegocio.setText(datosEmpresaBean.getNombreEmpresa()
+                + " Sucursal: " + suc);
         muestraPanel(4);
     }//GEN-LAST:event_formWindowOpened
 
@@ -368,57 +377,6 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel1MouseClicked
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-//        //Carga estados
-//        municipios = util.getMapMunicipios();
-//        util.llenaMapMunicipios(municipios);
-//        municipiosHM = util.getMunicipiosHM();
-//
-//        //Carga estados y municipios(claves)
-//        estadosMun = util.getMapEstadosMun();
-//
-//        //Carga estados
-//        estados = util.getMapEstados();
-//        util.llenaMapEstados(estados);
-//        estadosHM = util.getEstadosHM();
-//
-//        //Carga sucursales
-//        sucursales = util.getMapSucursales();
-//        util.llenaMapSucursales(sucursales);
-//        sucursalesHM = util.getSucursalesHM();
-//
-//        //Carga categorias
-//        categorias = util.getMapCategorias();
-//        util.llenaMapCategorias(categorias);
-//        categoriasHM = util.getCategoriasHM();
-//
-//        //Carga usuarios
-//        usuarios = util.getMapUsuarios();
-//        util.llenaMapUsuarios(usuarios);
-//        usuariosHM = util.getUsuariosHM();
-//
-//        //Carga proveedores
-//        proveedores = util.getMapProveedores();
-//        util.llenaMapProveedores(proveedores);
-//        proveedoresHM = util.getProveedoresHM();
-//
-//        //Carga productos
-//        productos = util.getInventario();
-//        util.llenaMapProductos(productos);
-//        productosHM = util.getProductosHM();
-//        productosHMID = util.getProductosHMID();
-//
-//        //Carga clientes
-//        cargaClientes();
-//        clientes = util.getMapClientes();
-//        util.llenaMapClientes(clientes);
-//        clientesHM = util.getClientesHM();
-//
-//        //Carga proveedores
-//        cargaProveedores();
-//        proveedores = util.getMapProveedores();
-//        util.llenaMapProveedores(proveedores);
-//        proveedoresHM = util.getProveedoresHM();
-//
     }//GEN-LAST:event_formWindowActivated
 
     public static void main(String args[]) {

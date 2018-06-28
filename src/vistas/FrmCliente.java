@@ -92,6 +92,8 @@ public class FrmCliente extends javax.swing.JFrame {
             btnModificarCli.setVisible(false);
             btnEliminarCli.setVisible(false);
         }
+        this.setLocationRelativeTo(null);
+        btnInicio.setVisible(false);
         this.setIcon();
     }
 

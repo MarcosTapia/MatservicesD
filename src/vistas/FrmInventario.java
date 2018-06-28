@@ -5,13 +5,14 @@ import util.Util;
 import javax.swing.ImageIcon;
 
 public class FrmInventario extends javax.swing.JFrame {
-
     String permisos = "";
     Util util = new Util();
+    String suc;
 
     public FrmInventario() {
         initComponents();
-
+        suc = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" 
+                + Ingreso.usuario.getIdSucursal());
         java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);
         lblFecha.setText("Fecha: " + a);
@@ -46,6 +47,7 @@ public class FrmInventario extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         lblFecha = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
+        lblSucursal = new javax.swing.JLabel();
         jToolBar2 = new javax.swing.JToolBar();
         btnProductos = new javax.swing.JButton();
         btnConsultaVentas = new javax.swing.JButton();
@@ -82,24 +84,30 @@ public class FrmInventario extends javax.swing.JFrame {
         lblUsuario.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
         lblUsuario.setText("jLabel1");
 
+        lblSucursal.setBackground(new java.awt.Color(247, 254, 255));
+        lblSucursal.setFont(new java.awt.Font("Arial Black", 2, 48)); // NOI18N
+        lblSucursal.setForeground(new java.awt.Color(70, 99, 138));
+        lblSucursal.setText("jLabel1");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(440, 440, 440)
-                        .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(190, 190, 190)
-                        .addComponent(jLabel2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(430, 430, 430)
-                        .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(90, 90, 90)
-                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(440, 440, 440)
+                            .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(430, 430, 430)
+                            .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(188, 188, 188)
+                            .addComponent(jLabel2)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lblSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, 887, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 892, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(680, 680, 680))
         );
         jPanel1Layout.setVerticalGroup(
@@ -107,11 +115,13 @@ public class FrmInventario extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(lblUsuario)
-                .addGap(11, 11, 11)
+                .addGap(33, 33, 33)
                 .addComponent(lblTitulo)
-                .addGap(52, 52, 52)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblSucursal)
+                .addGap(68, 68, 68)
                 .addComponent(jLabel2)
-                .addGap(150, 150, 150)
+                .addGap(33, 33, 33)
                 .addComponent(lblFecha))
         );
 
@@ -189,7 +199,9 @@ public class FrmInventario extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
+        this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
         lblTitulo.setText(Principal.datosEmpresaBean.getNombreEmpresa());
+        lblSucursal.setText("Sucursal: " + suc);
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -259,6 +271,7 @@ public class FrmInventario extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JLabel lblFecha;
+    private javax.swing.JLabel lblSucursal;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblUsuario;
     // End of variables declaration//GEN-END:variables

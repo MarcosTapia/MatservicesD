@@ -12,9 +12,12 @@ import util.Util;
 public class FrmConfiguracion extends javax.swing.JFrame {
     String permisos = "";
     Util util = new Util();
-
+    String suc;
+        
     public FrmConfiguracion() {
         initComponents();
+        suc = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" 
+                + Ingreso.usuario.getIdSucursal());
         java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
         lblFecha.setText("Fecha: " + a);
@@ -90,6 +93,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         lblFecha = new javax.swing.JLabel();
         lblTitulo1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        lblSucursal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -241,37 +245,51 @@ public class FrmConfiguracion extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(70, 99, 138));
         jLabel2.setText("MÓDULO DE CONFIGURACIÓN");
 
+        lblSucursal.setBackground(new java.awt.Color(247, 254, 255));
+        lblSucursal.setFont(new java.awt.Font("Arial Black", 2, 48)); // NOI18N
+        lblSucursal.setForeground(new java.awt.Color(70, 99, 138));
+        lblSucursal.setText("jLabel1");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(189, 189, 189)
-                .addComponent(jLabel2)
-                .addGap(70, 70, 70)
-                .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 1030, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(440, 440, 440)
-                .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(90, 90, 90)
-                .addComponent(lblTitulo1))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(429, 429, 429)
                 .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(195, 195, 195)
+                .addComponent(jLabel2))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(99, 99, 99)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(lblTitulo1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                            .addGap(341, 341, 341)
+                            .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(lblSucursal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(172, 172, 172)
+                .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 1030, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblTitulo1)
-                .addGap(43, 43, 43)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(126, 126, 126)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(129, 129, 129)
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblTitulo1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblSucursal)
+                        .addGap(60, 60, 60)))
+                .addComponent(jLabel2)
+                .addGap(32, 32, 32)
                 .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -297,6 +315,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.setTitle(Principal.datosEmpresaBean.getNombreEmpresa());
         lblTitulo1.setText(Principal.datosEmpresaBean.getNombreEmpresa());
+        lblSucursal.setText("Sucursal: " + suc);
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -415,6 +434,7 @@ public class FrmConfiguracion extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblFecha;
+    private javax.swing.JLabel lblSucursal;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblTitulo1;
     private javax.swing.JLabel lblUsuario;

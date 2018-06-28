@@ -89,6 +89,8 @@ public class FrmProveedor extends javax.swing.JFrame {
             btnModificarProv.setVisible(false);
             btnEliminarProv.setVisible(false);
         }
+        this.setLocationRelativeTo(null);
+        btnInicio.setVisible(false);
         this.setIcon();
     }
 

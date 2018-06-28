@@ -56,6 +56,8 @@ public class FrmSucursal extends javax.swing.JFrame {
         btnGuardarCli.setEnabled(false);
         btnCancelarCli.setEnabled(true);
         lblIdSucursal.setText("");
+        this.setLocationRelativeTo(null);
+        btnInicio.setVisible(false);
         this.setIcon();
     }
 

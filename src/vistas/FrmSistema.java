@@ -73,6 +73,8 @@ public class FrmSistema extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         btnGuardarCEmp.setEnabled(false);
         lblIdSucursal.setText("");
+        this.setLocationRelativeTo(null);
+        btnInicio.setVisible(false);
         this.setIcon();
     }
 

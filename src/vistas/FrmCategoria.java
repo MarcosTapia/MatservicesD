@@ -56,6 +56,8 @@ public class FrmCategoria extends javax.swing.JFrame {
         //btnModificarCli.setEnabled(false);
         btnCancelarCli.setEnabled(true);
         lblIdCategoria.setText("");
+        this.setLocationRelativeTo(null);
+        btnInicio.setVisible(false);
         this.setIcon();
     }
 

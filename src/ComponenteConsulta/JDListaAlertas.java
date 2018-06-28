@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
@@ -30,18 +31,26 @@ import vistas.BarraProgreso;
 import vistas.FrmConsultas;
 import vistas.FrmProducto;
 import vistas.Ingreso;
+import vistas.Principal;
 
 public class JDListaAlertas extends javax.swing.JDialog {
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     DefaultTableModel LProducto = new DefaultTableModel();
     String empresa = "";
-    //WSUsuarios
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
-    //WSUsuarios
     WSInventariosList hiloInventariosList;
     WSInventarios hiloInventarios;
-    //Fin WSUsuarios
+    
+    private String sucursal;
+
+    public String getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(String sucursal) {
+        this.sucursal = sucursal;
+    }
 
     public JDListaAlertas(java.awt.Frame parent, boolean modal
             , Map<String,String> sucursalesHMCons
@@ -55,6 +64,7 @@ public class JDListaAlertas extends javax.swing.JDialog {
                 | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
+        initComponents();
         
         hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
@@ -104,7 +114,6 @@ public class JDListaAlertas extends javax.swing.JDialog {
             }
         }
         this.setIcon();
-        initComponents();
     }
     
     public void setIcon() {
@@ -126,8 +135,14 @@ public class JDListaAlertas extends javax.swing.JDialog {
         btnInicio = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         btnConsultas = new javax.swing.JButton();
+        lblUsuario = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(70, 99, 138));
 
@@ -176,6 +191,9 @@ public class JDListaAlertas extends javax.swing.JDialog {
             }
         });
 
+        lblUsuario.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        lblUsuario.setText("Usuario:");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -187,7 +205,9 @@ public class JDListaAlertas extends javax.swing.JDialog {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 949, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(lblUsuario))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -201,18 +221,18 @@ public class JDListaAlertas extends javax.swing.JDialog {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnInicio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSalir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnImprimir, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(btnConsultas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(jLabel1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnInicio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnSalir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnImprimir, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnConsultas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(35, 35, 35)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblUsuario)))
+                .addGap(24, 24, 24)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -318,6 +338,12 @@ public class JDListaAlertas extends javax.swing.JDialog {
         frmConsultas.setVisible(true);
     }//GEN-LAST:event_btnConsultasActionPerformed
 
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        lblUsuario.setText(Principal.datosEmpresaBean.getNombreEmpresa()
+                + " Sucursal: " 
+                + this.getSucursal());
+    }//GEN-LAST:event_formWindowActivated
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultas;
     private javax.swing.JButton btnImprimir;
@@ -327,6 +353,7 @@ public class JDListaAlertas extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblUsuario;
     private javax.swing.JTable tblConsultaProductos;
     // End of variables declaration//GEN-END:variables
 }

@@ -18,6 +18,7 @@ import javax.swing.UIManager;
 import java.security.MessageDigest;
 import javax.swing.ImageIcon;
 import util.Util;
+import static vistas.Principal.sucursales;
 
 public class FrmUsuarios extends javax.swing.JFrame {
     //WSUsuarios
@@ -48,6 +49,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
         actualizarBusqueda();
         activarBotones(true);
         //carga sucursales
+        cargaSucursales();
         cboSucursal.addItem("");
         Iterator it = Principal.sucursalesHM.keySet().iterator();
         while(it.hasNext()){
@@ -55,6 +57,9 @@ public class FrmUsuarios extends javax.swing.JFrame {
           cboSucursal.addItem(Principal.sucursalesHM.get(key));
         }        
         habilitaChecksPermisos(false);
+        cboSucursal.setEnabled(false);
+        this.setLocationRelativeTo(null);
+        btnInicio.setVisible(false);
         this.setIcon();
     }
 
@@ -63,6 +68,13 @@ public class FrmUsuarios extends javax.swing.JFrame {
         icon = new ImageIcon("logo.png");
         setIconImage(icon.getImage());
     } 
+    
+    public void cargaSucursales() {
+        //Carga proveedores
+        sucursales = util.getMapSucursales();
+        util.llenaMapSucursales(sucursales);
+        Principal.sucursalesHM = util.getSucursalesHM();
+    }
     
     public static String getMD5(String input) {
         try {
@@ -118,6 +130,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
         txtApellidoPaterno.setEditable(b);
         txtTelCasa.setEditable(b);
         txtTelCel.setEditable(b);
+        cboSucursal.setEnabled(b);
     }
 
     public void activarBotones(boolean b) {
@@ -1176,9 +1189,9 @@ public class FrmUsuarios extends javax.swing.JFrame {
                 if (usuarioModificar != null) {
                     JOptionPane.showMessageDialog(null, " [ Datos "
                             + "Actualizados ]");
-                    limpiarCajaTexto();
                     actualizarBusqueda();
                     activarBotones(true);
+                    limpiarCajaTexto();
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "[[ Debes seleccionar un "
@@ -1190,7 +1203,9 @@ public class FrmUsuarios extends javax.swing.JFrame {
     
     private void btnGuardarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPerActionPerformed
         guardar();
+        activarCajaTexto(false);
         habilitaChecksPermisos(false);
+        cboSucursal.setEnabled(false);
     }//GEN-LAST:event_btnGuardarPerActionPerformed
 
     private void cboParametroUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboParametroUsuarioActionPerformed
@@ -1445,14 +1460,28 @@ public class FrmUsuarios extends javax.swing.JFrame {
     public void recargarTable(ArrayList<UsuarioBean> list) {
         Object[][] datos = new Object[list.size()][2];
         int i = 0;
+        String superUsuario = constantes.getProperty("SUPERUSUARIO");
         for (UsuarioBean p : list) {
-            datos[i][0] = p.getIdUsuario();
-            datos[i][1] = p.getNombre() + " " + p.getApellido_paterno() 
-                    + " " + p.getApellido_materno();
-            i++;
+            //filtra por sucursal
+            if (!p.getUsuario().equalsIgnoreCase(superUsuario)) {
+                datos[i][0] = p.getIdUsuario();
+                datos[i][1] = p.getNombre() + " " + p.getApellido_paterno() 
+                        + " " + p.getApellido_materno();
+                i++;
+            }            
         }
+        Object[][] datosFinal = new Object[i][2];
+        //Para filtrar los registros
+        for (int j=0; j<i; j++) {
+            if (datos[j][0]!=null) {
+                datosFinal[j][0] = datos[j][0];
+                datosFinal[j][1] = datos[j][1];
+            }
+        }
+        //Fin Para filtrar los registros
+        
         tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
-                datos,
+                datosFinal,
                 new String[]{
                     "ID USUARIO", "NOMBRE"
                 }) {
