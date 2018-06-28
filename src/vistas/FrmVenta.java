@@ -1282,7 +1282,7 @@ public class FrmVenta extends javax.swing.JFrame {
                             
                             JOptionPane.showMessageDialog(null, 
                                     "VENTA GUARDADA CORRRECTAMENTE");
-//                            detalleVentaProducto.remove(detVentBeanADisminuir);
+//                            detalleVentaProducto.remove(detallePedido);
                             int resultado = JOptionPane.showConfirmDialog(this, 
                                     "¿Deseas "
                                     + "Imprimir la Venta?", "Mensaje..!!"
@@ -1601,6 +1601,32 @@ public class FrmVenta extends javax.swing.JFrame {
         txtDescuento.setText("");
     }//GEN-LAST:event_txtDescuentoMouseClicked
 
+    /*
+    Metodo para borrar pedido
+    **/
+    public boolean borraPedido(int idPedido){
+        boolean eliminado = false;
+        //borra detalle pedido
+        hiloDetallePedidos = new WSDetallePedidos();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("ELIMINADETALLEPEDIDO");
+        DetallePedidoBean detallePedidoEliminar = 
+                hiloDetallePedidos.ejecutaWebService(rutaWS
+                ,"2"
+                , "" + idPedido);
+        //borra pedido
+        hiloPedidos = new WSPedidos();
+        rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("ELIMINAPEDIDO");
+        PedidoBean pedidoEliminar = hiloPedidos.ejecutaWebService(rutaWS
+                ,"3"
+                , "" + idPedido);
+        if (pedidoEliminar != null) {
+            eliminado = true;
+        }
+        return eliminado;
+    }
+    
     private void btnGenerarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPedidoActionPerformed
         int result = JOptionPane.showConfirmDialog(this, "¿Deseas guardar el "
                 + "Pedido?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
@@ -1610,7 +1636,6 @@ public class FrmVenta extends javax.swing.JFrame {
             if (detalleVentaProducto.size()>0) {
                 //obtiene no. de pedido
                 txtCodigoPro.setText("Espere...");
-                int noPedido = obtenerUltimoIdPedido();
                 ventasBean = new VentasBean();
                 ventasBean.setIdUsuario(Ingreso.usuario.getIdUsuario());
                 int s = util.buscaIdCliente(Principal.clientesHM
@@ -1650,9 +1675,10 @@ public class FrmVenta extends javax.swing.JFrame {
                             , "" + ventasBean.getFacturada()
                             , "" + ventasBean.getIdFactura()
                             );
+                    int noPedido = obtenerUltimoIdPedido() - 1;
                     if (pedidoGuardado != null) {
                         //guarda detalle venta
-                        for (DetalleVentaBean detVentBeanADisminuir :
+                        for (DetalleVentaBean detallePedido :
                                 detalleVentaProducto) {
                             hiloDetallePedidos = new WSDetallePedidos();
                             rutaWS = constantes.getProperty("IP") 
@@ -1662,21 +1688,32 @@ public class FrmVenta extends javax.swing.JFrame {
                                 detallePedidoGuardado = 
                                         hiloDetallePedidos.ejecutaWebService(rutaWS,"1"
                                         , "" + noPedido
-                                        , "" + detVentBeanADisminuir.getIdArticulo()
-                                        , "" + detVentBeanADisminuir.getPrecio()
-                                        , "" + detVentBeanADisminuir.getCantidad()
-                                        , "" + detVentBeanADisminuir.getDescuento()
-                                        , detVentBeanADisminuir.getUnidadMedida()
+                                        , "" + detallePedido.getIdArticulo()
+                                        , "" + detallePedido.getPrecio()
+                                        , "" + detallePedido.getCantidad()
+                                        , "" + detallePedido.getDescuento()
+                                        , detallePedido.getUnidadMedida()
                                         , "" + Ingreso.usuario.getIdSucursal()
                                         );
+                                if (detallePedidoGuardado == null) {
+                                    if (borraPedido(noPedido)) {
+                                        JOptionPane.showMessageDialog(null, "No se "
+                                                + "pudo guardar el pedido, "
+                                                + "inténtalo mas tarde");
+                                        borrar();
+                                        ventasBean = null;
+                                        return;
+                                    }
+                                }
                             }
                         }
                         //fin guarda detalle pedido
                         JOptionPane.showMessageDialog(null, 
                                 "PEDIDO GUARDADO CORRRECTAMENTE");
-//                            detalleVentaProducto.remove(detVentBeanADisminuir);
+//                            detalleVentaProducto.remove(detallePedido);
                         int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
-                                + "Imprimir el Pedido?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
+                                + "Imprimir el Pedido?", "Mensaje..!!", 
+                                JOptionPane.YES_NO_OPTION);
                         if (resultado == JOptionPane.YES_OPTION) {
                             //imprime ticket
                             imprimeVenta("Pedido");

@@ -9,6 +9,7 @@ import beans.ProductoBean;
 import beans.VentasBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
+import consumewebservices.WSDetallePedidos;
 import consumewebservices.WSDetallePedidosList;
 import consumewebservices.WSDetalleVentas;
 import consumewebservices.WSInventarios;
@@ -40,6 +41,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
     WSPedidos hiloPedidos;
     WSPedidosList hiloPedidosList;
     WSDetallePedidosList hiloDetallePedidosList;
+    WSDetallePedidos hiloDetallePedidos;
     WSVentas hiloVentas;
     WSDetalleVentas hiloDetalleVentas;
     WSInventarios hiloInventarios;
@@ -454,13 +456,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                             "VENTA GUARDADA CORRRECTAMENTE");
                     
                     // Borra pedido
-                    PedidoBean p = new PedidoBean();
-                    hiloPedidos = new WSPedidos();
-                    rutaWS = constantes.getProperty("IP") + constantes
-                            .getProperty("ELIMINAPEDIDO");
-                    PedidoBean pedidoEliminar = hiloPedidos.ejecutaWebService(
-                            rutaWS,"3"
-                            , "" + idPedido);
+                    borraPedido(idPedido);
                     int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas"
                             + " "
                             + "Imprimir la Venta?", "Mensaje..!!", JOptionPane
@@ -479,6 +475,32 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
             //fin ciclo guarda ventasBean
         }
     }    
+    
+    /*
+    Metodo para borrar pedido
+    **/
+    public void borraPedido(int idPedido){
+        hiloDetallePedidos = new WSDetallePedidos();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("ELIMINADETALLEPEDIDO");
+        DetallePedidoBean detallePedidoEliminar = 
+                hiloDetallePedidos.ejecutaWebService(rutaWS
+                ,"2"
+                , "" + idPedido);
+        if (detallePedidoEliminar != null) {
+            hiloPedidos = new WSPedidos();
+            rutaWS = constantes.getProperty("IP") + constantes
+                    .getProperty("ELIMINAPEDIDO");
+            PedidoBean pedidoEliminar = hiloPedidos.ejecutaWebService(rutaWS
+                    ,"3"
+                    , "" + idPedido);
+            if (pedidoEliminar != null) {
+                JOptionPane.showMessageDialog(null, " [ Pedido Eliminado ]");
+                borrar();
+                cargaDatos();
+            }
+        }
+    }
     
     //Para Tabla Pedidos
     public void recargarTablePedidos(ArrayList<PedidoBean> list) {
@@ -1085,23 +1107,14 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                 + "deseas borrar el registro?");
         if(dialogResult == JOptionPane.YES_OPTION){
             if (tblConsultaPedidos.getSelectedRow() >= 0) {
-                PedidoBean p = new PedidoBean();
-                hiloPedidos = new WSPedidos();
+                //PedidoBean p = new PedidoBean();
+                //hiloPedidos = new WSPedidos();
                 int idPedido = Integer.parseInt(
                         tblConsultaPedidos
                                 .getValueAt(tblConsultaPedidos.getSelectedRow()
                                         , 0).toString()
                         );
-                String rutaWS = constantes.getProperty("IP") + constantes
-                        .getProperty("ELIMINAPEDIDO");
-                PedidoBean pedidoEliminar = hiloPedidos.ejecutaWebService(rutaWS
-                        ,"3"
-                        , "" + idPedido);
-                if (pedidoEliminar != null) {
-                    JOptionPane.showMessageDialog(null, " [ Registro Eliminado ]");
-                    borrar();
-                    cargaDatos();
-                }
+                borraPedido(idPedido);
             } else {
                 JOptionPane.showMessageDialog(null, "Selecciona el pedido para "
                         + "eliminar");
@@ -1172,10 +1185,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
         if (txtBuscarPedido.getText().equalsIgnoreCase("")) {
             resultWS = PedidosGlobal;
             recargarTableDetallePedidos(detallePedidosGlobal);
-        } else {
-//                    resultWS = llenaTablaPedidos(
-//                            txtBuscarVenta.getText().trim(),3);
-        }
+        } 
         recargarTablePedidos(resultWS);
     }
     

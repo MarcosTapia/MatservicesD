@@ -104,17 +104,17 @@ public class WSPedidos {
                 //Accedemos al vector de resultados
                 int resultJSON = respuestaJSON.getInt("estado");
                 if (resultJSON == 1) {
-                    JSONArray ventasJSON = respuestaJSON.getJSONArray("pedidos");   // estado es el nombre del campo en el JSON
-                    for(int i=0;i<ventasJSON.length();i++){
+                    JSONArray pedidosJSON = respuestaJSON.getJSONArray("pedidos");   // estado es el nombre del campo en el JSON
+                    for(int i=0;i<pedidosJSON.length();i++){
                         pedido = new PedidoBean();
-                        pedido.setIdCliente(ventasJSON.getJSONObject(i).getInt("idCliente"));
-                        pedido.setIdSucursal(ventasJSON.getJSONObject(i).getInt("idSucursal"));
-                        pedido.setIdUsuario(ventasJSON.getJSONObject(i).getInt("idUsuario"));
-                        pedido.setIdPedido(ventasJSON.getJSONObject(i).getInt("idPedido"));
-                        pedido.setObservaciones(ventasJSON.getJSONObject(i).getString("observaciones"));
+                        pedido.setIdCliente(pedidosJSON.getJSONObject(i).getInt("idCliente"));
+                        pedido.setIdSucursal(pedidosJSON.getJSONObject(i).getInt("idSucursal"));
+                        pedido.setIdUsuario(pedidosJSON.getJSONObject(i).getInt("idUsuario"));
+                        pedido.setIdPedido(pedidosJSON.getJSONObject(i).getInt("idPedido"));
+                        pedido.setObservaciones(pedidosJSON.getJSONObject(i).getString("observaciones"));
 
                         //convierte fecha String a Date
-                        String fechaS = ventasJSON.getJSONObject(i).getString("fecha");
+                        String fechaS = pedidosJSON.getJSONObject(i).getString("fecha");
                         Util util = new Util();
                         pedido.setFecha(util.stringToDateTime(fechaS));
                         break;
