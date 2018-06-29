@@ -23,6 +23,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import util.Util;
 import static vistas.Principal.productos;
 import javax.swing.ImageIcon;
+import javax.swing.border.TitledBorder;
 
 public class FrmProducto extends javax.swing.JFrame {
 
@@ -122,12 +123,29 @@ public class FrmProducto extends javax.swing.JFrame {
             btnInicio.setVisible(false);
             btnRegresar.setVisible(false);
         }
+        if (Ingreso.usuario.getUsuario()
+                            .equalsIgnoreCase(constantes
+                                    .getProperty("SUPERUSUARIO"))) {
+            inhabilitaAccion();
+        }
+        
+        String suc = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" 
+                + Ingreso.usuario.getIdSucursal());
+        TitledBorder border = new TitledBorder(" Sucursal : " + suc);
+        jPanel4.setBorder(border);
     }
 
     public void setIcon() {
         ImageIcon icon;
         icon = new ImageIcon("logo.png");
         setIconImage(icon.getImage());
+    }
+    
+    private void inhabilitaAccion() {
+        btnNuevoPro.setEnabled(false);
+        btnGuardarPro.setEnabled(false);
+        btnEliminarPro.setEnabled(false);
+        btnModificarPro.setEnabled(false);        
     }
 
     private void cargaSucursales() {
@@ -138,9 +156,10 @@ public class FrmProducto extends javax.swing.JFrame {
         Iterator it = Principal.sucursalesHM.keySet().iterator();
         while (it.hasNext()) {
             Object key = it.next();
-            if ((Integer.parseInt(key.toString()) == idSucursal)
-                    || (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes
-                            .getProperty("SUPERUSUARIO")))) {
+//            if ((Integer.parseInt(key.toString()) == idSucursal)
+//                    || (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes
+//                            .getProperty("SUPERUSUARIO")))) {
+            if (Integer.parseInt(key.toString()) == idSucursal){
                 cboSucursal.addItem(Principal.sucursalesHM.get(key));
                 indiceSucursales++;
                 cboSucursal.setSelectedIndex(indiceSucursales - 1);
@@ -269,7 +288,7 @@ public class FrmProducto extends javax.swing.JFrame {
         btnEliminarPro = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
         btnExcel = new javax.swing.JButton();
-        btnSalirPro1 = new javax.swing.JButton();
+        btnCodBarras = new javax.swing.JButton();
         btnMovimientos = new javax.swing.JButton();
         btnInicio = new javax.swing.JButton();
         btnRegresar = new javax.swing.JButton();
@@ -902,13 +921,13 @@ public class FrmProducto extends javax.swing.JFrame {
             }
         });
 
-        btnSalirPro1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cod_barras.png"))); // NOI18N
-        btnSalirPro1.setText("CREAR");
-        btnSalirPro1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnSalirPro1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnSalirPro1.addActionListener(new java.awt.event.ActionListener() {
+        btnCodBarras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cod_barras.png"))); // NOI18N
+        btnCodBarras.setText("CREAR");
+        btnCodBarras.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCodBarras.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCodBarras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalirPro1ActionPerformed(evt);
+                btnCodBarrasActionPerformed(evt);
             }
         });
 
@@ -965,7 +984,7 @@ public class FrmProducto extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel11)
-                                .addGap(107, 107, 107)
+                                .addGap(30, 30, 30)
                                 .addComponent(lblUsuario))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -978,22 +997,22 @@ public class FrmProducto extends javax.swing.JFrame {
                                         .addComponent(btnRegresar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(btnExcel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(btnSalirPro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(btnSalirPro1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(btnCodBarras, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(20, 20, 20))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblUsuario)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(lblUsuario))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(btnExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSalirPro1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCodBarras, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(4, 4, 4)
@@ -1656,10 +1675,10 @@ public class FrmProducto extends javax.swing.JFrame {
         vistaExcel.setVisible(true);
     }//GEN-LAST:event_btnExcelActionPerformed
 
-    private void btnSalirPro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPro1ActionPerformed
+    private void btnCodBarrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCodBarrasActionPerformed
         FrmCodBarras frmCodBarras = new FrmCodBarras();
         frmCodBarras.setVisible(true);
-    }//GEN-LAST:event_btnSalirPro1ActionPerformed
+    }//GEN-LAST:event_btnCodBarrasActionPerformed
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
     }//GEN-LAST:event_formFocusGained
@@ -1884,6 +1903,7 @@ public class FrmProducto extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizaInvent;
     private javax.swing.JButton btnCancelarPro;
+    private javax.swing.JButton btnCodBarras;
     private javax.swing.JButton btnEliminarPro;
     private javax.swing.JButton btnExcel;
     private javax.swing.JButton btnGuardarPro;
@@ -1894,7 +1914,6 @@ public class FrmProducto extends javax.swing.JFrame {
     private javax.swing.JButton btnNuevoPro;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JButton btnSalirPro;
-    private javax.swing.JButton btnSalirPro1;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox cboCategoriaPro;
     private javax.swing.JComboBox cboParametroPro;
@@ -1946,6 +1965,4 @@ public class FrmProducto extends javax.swing.JFrame {
     private javax.swing.JTextField txtUbicacion;
     private javax.swing.JTextField txtUtilidad;
     // End of variables declaration//GEN-END:variables
-//    private ReporteProductoParametro repProductoP;
-
 }

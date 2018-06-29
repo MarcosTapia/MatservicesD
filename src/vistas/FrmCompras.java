@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Properties;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import util.Util;
 import static vistas.Principal.productos;
@@ -77,6 +78,16 @@ public class FrmCompras extends javax.swing.JFrame {
             e.printStackTrace();
         }
         initComponents();
+        
+//        String suc = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" 
+//                + Ingreso.usuario.getIdSucursal());
+//        lblUsuario.setText("Usuario : " + Ingreso.usuario.getNombre()
+//            + " " + Ingreso.usuario.getApellido_paterno()
+//            + " " + Ingreso.usuario.getApellido_materno());
+        TitledBorder border = new TitledBorder("Usuario : " + Ingreso.usuario.getNombre()
+            + " " + Ingreso.usuario.getApellido_paterno()
+            + " " + Ingreso.usuario.getApellido_materno());
+        jPanel4.setBorder(border);                
         
         java.util.Date fecha = util.obtieneFechaServidor();
         String a = DateFormat.getDateInstance(DateFormat.LONG).format(fecha);        
@@ -537,7 +548,7 @@ public class FrmCompras extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setText("IVA :");
+        jLabel5.setText("%Ganancia :");
 
         txtIva.setBackground(new java.awt.Color(255, 153, 102));
         txtIva.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -664,10 +675,10 @@ public class FrmCompras extends javax.swing.JFrame {
                             .addGap(18, 18, 18)
                             .addComponent(jLabel14)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtObservacionesPro, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(26, 26, 26)
-                            .addComponent(jLabel4)
+                            .addComponent(txtObservacionesPro, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(cboProveedor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(jLabel15)
@@ -1626,34 +1637,35 @@ public class FrmCompras extends javax.swing.JFrame {
         return resultWS;
     }
 
-    public void recargarTable(ArrayList<ComprasBean> list) {
-        try {
-            if (list.size() == 0) {
-                DefaultTableModel modelo = (DefaultTableModel) TblCompras.getModel();
-                while(modelo.getRowCount()>0)
-                    modelo.removeRow(0);
-            }       
-        Object[][] datos = new Object[list.size()][2];
-        int i = 0;
-        for (ComprasBean p : list) {
-            datos[i][0] = p.getIdCompra();
-            datos[i][1] = p.getFactura();
-            i++;
-        }
-        jtProductoCompras.setModel(new javax.swing.table.DefaultTableModel(
-                datos,
-                new String[]{
-                    "No.Compra", "Factura"
-                }) {
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        });
-        } catch(NullPointerException e) {
-        }   
-    }
+//    public void recargarTable(ArrayList<ComprasBean> list) {
+//        JOptionPane.showMessageDialog(null, "lalalala");
+//        try {
+//            if (list.size() == 0) {
+//                DefaultTableModel modelo = (DefaultTableModel) TblCompras.getModel();
+//                while(modelo.getRowCount()>0)
+//                    modelo.removeRow(0);
+//            }       
+//        Object[][] datos = new Object[list.size()][2];
+//        int i = 0;
+//        for (ComprasBean p : list) {
+//            datos[i][0] = p.getIdCompra();
+//            datos[i][1] = p.getFactura();
+//            i++;
+//        }
+//        jtProductoCompras.setModel(new javax.swing.table.DefaultTableModel(
+//                datos,
+//                new String[]{
+//                    "No.Compra", "Factura"
+//                }) {
+//
+//            @Override
+//            public boolean isCellEditable(int row, int column) {
+//                return false;
+//            }
+//        });
+//        } catch(NullPointerException e) {
+//        }   
+//    }
     
     //Para Tabla Productos
     public void recargarTableProductos(ArrayList<ProductoBean> list) {
@@ -1661,9 +1673,10 @@ public class FrmCompras extends javax.swing.JFrame {
         int i = 0;
         for (ProductoBean p : list) {
             //filtra por sucursal
-            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
-                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes
-                            .getProperty("SUPERUSUARIO")))) {
+//            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
+//                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes
+//                            .getProperty("SUPERUSUARIO")))) {
+            if (Ingreso.usuario.getIdSucursal() == p.getIdSucursal()){
                 datos[i][0] = p.getIdArticulo();
                 datos[i][1] = p.getCodigo();
                 datos[i][2] = p.getDescripcion();

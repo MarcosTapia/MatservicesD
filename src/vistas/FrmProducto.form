@@ -214,8 +214,8 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="107" max="-2" attributes="0"/>
-                                      <Component id="lblUsuario" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="lblUsuario" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jPanel4" min="-2" pref="406" max="-2" attributes="1"/>
@@ -229,7 +229,7 @@
                                               <Component id="btnExcel" alignment="1" max="32767" attributes="0"/>
                                               <Component id="btnSalirPro" alignment="0" max="32767" attributes="0"/>
                                           </Group>
-                                          <Component id="btnSalirPro1" alignment="0" min="-2" pref="95" max="-2" attributes="0"/>
+                                          <Component id="btnCodBarras" alignment="0" min="-2" pref="95" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -243,16 +243,16 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblUsuario" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel11" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblUsuario" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                               <Component id="btnExcel" min="-2" pref="53" max="-2" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnSalirPro1" min="-2" pref="53" max="-2" attributes="1"/>
+                              <Component id="btnCodBarras" min="-2" pref="53" max="-2" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnMovimientos" min="-2" pref="53" max="-2" attributes="1"/>
                               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
@@ -961,7 +961,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExcelActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="btnSalirPro1">
+            <Component class="javax.swing.JButton" name="btnCodBarras">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/imagenes/cod_barras.png"/>
@@ -971,7 +971,7 @@
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalirPro1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCodBarrasActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnMovimientos">

@@ -1383,7 +1383,7 @@ public class FrmVenta extends javax.swing.JFrame {
                 , Ingreso.usuario.getIdSucursal());
         if (prod == null) {
             JOptionPane.showMessageDialog(null, "No se encontro el producto, "
-                    + "debes regidtrarlo primero");
+                    + "debes registrarlo primero");
             txtCodigoPro.setText("");
             txtCodigoPro.requestFocus(true);
             return;
@@ -1401,6 +1401,16 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_jtProductoMouseClicked
 
     private void buscaDetalleProducto() {
+//        ArrayList<ProductoBean> resultWS;
+//        hiloInventariosList = new WSInventariosList();
+//        String rutaWS = constantes.getProperty("IP") + constantes
+//                .getProperty("OBTIENEPRODUCTOPORID") 
+//                + String.valueOf(jtProducto.getModel().getValueAt(
+//                            jtProducto.getSelectedRow(),0));
+//        resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"5");
+//        prodParcial = resultWS.get(0);
+//        ProductoBean prod = resultWS.get(0);
+
         ProductoBean prod = buscarProdPorCodSuc(inventario
                 , String.valueOf(jtProducto.getModel().getValueAt(
                             jtProducto.getSelectedRow(),1))
@@ -1897,9 +1907,10 @@ public class FrmVenta extends javax.swing.JFrame {
         int i = 0;
         for (ProductoBean p : list) {
             //filtra por sucursal
-            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
-                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes
-                            .getProperty("SUPERUSUARIO")))) {
+//            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) ||
+//                    (Ingreso.usuario.getUsuario().equalsIgnoreCase(constantes
+//                            .getProperty("SUPERUSUARIO")))) {
+            if (Ingreso.usuario.getIdSucursal() == p.getIdSucursal()) {
                 datos[i][0] = p.getIdArticulo();
                 datos[i][1] = p.getCodigo();
                 datos[i][2] = p.getDescripcion();
