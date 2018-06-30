@@ -508,22 +508,43 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         for (PedidoBean p : list) {
-            datos[i][0] = p.getIdPedido();
-            datos[i][1] = dateFormat.format(p.getFecha());
-//            datos[i][1] = p.getFecha();
-            datos[i][2] = util.buscaDescFromIdCli(Principal.clientesHM
-                    , "" + p.getIdCliente());
-            datos[i][3] = util.buscaDescFromIdSuc(Principal.sucursalesHM 
-                    , "" + p.getIdSucursal());
-            datos[i][4] = util.buscaDescFromIdUsu(Principal.usuariosHM 
-                    , "" + p.getIdUsuario());
-            datos[i][5] = p.getSubtotal();
-            datos[i][6] = p.getIva();
-            datos[i][7] = p.getTotal();
-            i++;
+            //filtra por sucursal
+            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal())
+                    || (Ingreso.usuario.getUsuario()
+                            .equalsIgnoreCase(constantes
+                                    .getProperty("SUPERUSUARIO")))) {
+                datos[i][0] = p.getIdPedido();
+                datos[i][1] = dateFormat.format(p.getFecha());
+    //            datos[i][1] = p.getFecha();
+                datos[i][2] = util.buscaDescFromIdCli(Principal.clientesHM
+                        , "" + p.getIdCliente());
+                datos[i][3] = util.buscaDescFromIdSuc(Principal.sucursalesHM 
+                        , "" + p.getIdSucursal());
+                datos[i][4] = util.buscaDescFromIdUsu(Principal.usuariosHM 
+                        , "" + p.getIdUsuario());
+                datos[i][5] = p.getSubtotal();
+                datos[i][6] = p.getIva();
+                datos[i][7] = p.getTotal();
+                i++;
+            }
         }
+        Object[][] datosFinal = new Object[i][8];
+        //Para filtrar los registros
+        for (int j = 0; j < i; j++) {
+            if (datos[j][0] != null) {
+                datosFinal[j][0] = datos[j][0];
+                datosFinal[j][1] = datos[j][1];
+                datosFinal[j][2] = datos[j][2];
+                datosFinal[j][3] = datos[j][3];
+                datosFinal[j][4] = datos[j][4];
+                datosFinal[j][5] = datos[j][5];
+                datosFinal[j][6] = datos[j][6];
+                datosFinal[j][7] = datos[j][7];
+            }
+        }
+        //Fin Para filtrar los registros
         tblConsultaPedidos.setModel(new javax.swing.table.DefaultTableModel(
-                datos,
+                datosFinal,
                 new String[]{
                     "No. PEDIDO", "FECHA PEDIDO","CLIENTE","SUCURSAL","USUARIO"
                         ,"SUBTOTAL","IVA","TOTAL"
@@ -541,21 +562,41 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
         Object[][] datos = new Object[list.size()][8];
         int i = 0;
         for (DetallePedidoBean p : list) {
-            datos[i][0] = p.getIdDetallePedido();
-            datos[i][1] = p.getIdPedido();
-            datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID, 
-                    "" + p.getIdArticulo());
-            datos[i][3] = p.getPrecio();
-            datos[i][4] = p.getCantidad();
-            datos[i][5] = p.getDescuento();
-            datos[i][6] = p.getUnidadMedida();
-            datos[i][7] = util.buscaDescFromIdSuc(Principal.sucursalesHM
-                    , "" + p.getIdSucursal());
-            i++;
+            //filtra por sucursal
+            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal())
+                    || (Ingreso.usuario.getUsuario()
+                            .equalsIgnoreCase(constantes
+                                    .getProperty("SUPERUSUARIO")))) {
+                datos[i][0] = p.getIdDetallePedido();
+                datos[i][1] = p.getIdPedido();
+                datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID, 
+                        "" + p.getIdArticulo());
+                datos[i][3] = p.getPrecio();
+                datos[i][4] = p.getCantidad();
+                datos[i][5] = p.getDescuento();
+                datos[i][6] = p.getUnidadMedida();
+                datos[i][7] = util.buscaDescFromIdSuc(Principal.sucursalesHM
+                        , "" + p.getIdSucursal());
+                i++;
+            }
+        }
+        Object[][] datosFinal = new Object[i][8];
+        //Para filtrar los registros
+        for (int j = 0; j < i; j++) {
+            if (datos[j][0] != null) {
+                datosFinal[j][0] = datos[j][0];
+                datosFinal[j][1] = datos[j][1];
+                datosFinal[j][2] = datos[j][2];
+                datosFinal[j][3] = datos[j][3];
+                datosFinal[j][4] = datos[j][4];
+                datosFinal[j][5] = datos[j][5];
+                datosFinal[j][6] = datos[j][6];
+                datosFinal[j][7] = datos[j][7];
+            }
         }
         //Fin Para filtrar los registros
         tblConsultaDetallePedido.setModel(new javax.swing.table.DefaultTableModel(
-                datos,
+                datosFinal,
                 new String[]{ 
                     "ID","No. PED.", "PRODUCTO","PRECIO VTA","CANT."
                         ,"DESC APLICADO"

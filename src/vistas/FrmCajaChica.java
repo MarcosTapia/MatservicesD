@@ -51,15 +51,25 @@ public class FrmCajaChica extends javax.swing.JFrame {
                 getProperty("GETCAJACHICAS");
         movsGlobal = hiloCajaChicaList.ejecutaWebService(rutaWS,"1");
         recargarTable(movsGlobal);
+
+        //si no hay movimientos inserto el primero de esa sucursal
+        //y mando llamar nuevamente la carga para empezar el trabajo
+        if (jtMovimientosCajaChica.getRowCount() == 0) {
+            creaNuevaCuenta();
+        }
         
         //actualizarBusqueda();
         buscaUltimoRegistro();
         activarBotones(true);
 
+        String suc = util.buscaDescFromIdSuc(Principal.sucursalesHM, "" 
+                + Ingreso.usuario.getIdSucursal());
+        
         lblUsuario.setText("Usuario : " 
                 + Ingreso.usuario.getNombre()
                 + " " + Ingreso.usuario.getApellido_paterno()
-                + " " + Ingreso.usuario.getApellido_materno());
+                + " " + Ingreso.usuario.getApellido_materno()
+                + " Sucursal: " + suc);
         this.setTitle(configuracionBean.getNombreEmpresa());
         this.setLocationRelativeTo(null);
         this.setIcon();
@@ -73,6 +83,52 @@ public class FrmCajaChica extends javax.swing.JFrame {
         ImageIcon icon;
         icon = new ImageIcon("logo.png");
         setIconImage(icon.getImage());
+    }
+    
+    private void creaNuevaCuenta() {
+        CajaChicaBean cajaChica = new CajaChicaBean();
+        cajaChica.setFecha(util.obtieneFechaServidor());
+        cajaChica.setMonto(0.0);
+        cajaChica.setTipoMov("Inicio de Cuenta");
+        cajaChica.setTipoComprobante("Inicio de Cuenta");
+        cajaChica.setReferencia("0");
+        cajaChica.setIdUsuario(Ingreso.usuario.getIdUsuario());
+        cajaChica.setIdSucursal(Ingreso.usuario.getIdSucursal());
+        cajaChica.setSaldoAnterior(0.0);
+        cajaChica.setSaldoActual(0.0);
+        //guardar sucursal
+        hiloCajaChica = new WSCajaChica();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GUARDAMOVCAJACHICA");
+        CajaChicaBean movCajaInsertada = hiloCajaChica
+                .ejecutaWebService(rutaWS,"1"
+            , cajaChica.getFecha().toLocaleString()
+            , "" + cajaChica.getMonto()
+            , cajaChica.getTipoMov()
+            , cajaChica.getTipoComprobante()
+            , cajaChica.getReferencia()
+            , "" + cajaChica.getIdUsuario()
+            , "" + cajaChica.getIdSucursal()
+            , "" + cajaChica.getSaldoAnterior()
+            , "" + cajaChica.getSaldoActual()
+                );
+        if (movCajaInsertada != null) {
+            actualizarBusqueda();
+            limpiarCajatexto();
+            activarCajatexto(false);
+            activarBotones(true);
+
+            rutaWS = "";
+            hiloCajaChicaList = new WSCajaChicaList();
+            rutaWS = constantes.getProperty("IP") + constantes.
+                    getProperty("GETCAJACHICAS");
+            movsGlobal = hiloCajaChicaList.ejecutaWebService(rutaWS,"1");
+            recargarTable(movsGlobal);
+            buscaUltimoRegistro();
+        } else {
+            JOptionPane.showMessageDialog(null, 
+                    "Error al guardar el registro");
+        }    
     }
     
     public void limpiarCajatexto() {
@@ -964,23 +1020,46 @@ public class FrmCajaChica extends javax.swing.JFrame {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         int i = 0;
         for (CajaChicaBean p : list) {
-            datos[i][0] = p.getIdMov();
-            datos[i][1] = dateFormat.format(p.getFecha());
-            datos[i][2] = p.getMonto();
-            datos[i][3] = p.getTipoMov();
-            datos[i][4] = p.getTipoComprobante();
-            datos[i][5] = p.getReferencia();
-            datos[i][6] = util.buscaDescFromIdUsu(Principal.usuariosHM, "" 
-                    + p.getIdUsuario());
-            String suc = util.buscaDescFromIdSuc(Principal.sucursalesHM
-                    , "" + p.getIdSucursal());
-            datos[i][7] = suc;
-            datos[i][8] = p.getSaldoAnterior();
-            datos[i][9] = p.getSaldoActual();
-            i++;
+            //filtra por sucursal
+            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal())
+                    || (Ingreso.usuario.getUsuario()
+                            .equalsIgnoreCase(constantes
+                                    .getProperty("SUPERUSUARIO")))) {
+                datos[i][0] = p.getIdMov();
+                datos[i][1] = dateFormat.format(p.getFecha());
+                datos[i][2] = p.getMonto();
+                datos[i][3] = p.getTipoMov();
+                datos[i][4] = p.getTipoComprobante();
+                datos[i][5] = p.getReferencia();
+                datos[i][6] = util.buscaDescFromIdUsu(Principal.usuariosHM, "" 
+                        + p.getIdUsuario());
+                String suc = util.buscaDescFromIdSuc(Principal.sucursalesHM
+                        , "" + p.getIdSucursal());
+                datos[i][7] = suc;
+                datos[i][8] = p.getSaldoAnterior();
+                datos[i][9] = p.getSaldoActual();
+                i++;
+            }
         }
+        Object[][] datosFinal = new Object[i][10];
+        //Para filtrar los registros
+        for (int j = 0; j < i; j++) {
+            if (datos[j][0] != null) {
+                datosFinal[j][0] = datos[j][0];
+                datosFinal[j][1] = datos[j][1];
+                datosFinal[j][2] = datos[j][2];
+                datosFinal[j][3] = datos[j][3];
+                datosFinal[j][4] = datos[j][4];
+                datosFinal[j][5] = datos[j][5];
+                datosFinal[j][6] = datos[j][6];
+                datosFinal[j][7] = datos[j][7];
+                datosFinal[j][8] = datos[j][8];
+                datosFinal[j][9] = datos[j][9];
+            }
+        }
+        //Fin Para filtrar los registros
         jtMovimientosCajaChica.setModel(new javax.swing.table.DefaultTableModel(
-                datos,
+                datosFinal,
                 new String[]{
                     "idMov","Fecha","Monto","TipoMov","Comprobante","Referencia"
                         ,"Usuario","Sucursal","$ Anterior","$ Actual"                

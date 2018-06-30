@@ -133,7 +133,6 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             }
         }
         //Fin Para filtrar los registros
-        
         tblConsultaVentas.setModel(new javax.swing.table.DefaultTableModel(
                 datosFinal,
                 new String[]{

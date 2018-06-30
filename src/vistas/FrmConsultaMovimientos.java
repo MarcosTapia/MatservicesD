@@ -68,21 +68,41 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         for (MovimientosBean p : list) {
-            datos[i][0] = p.getIdMovimiento();
-            datos[i][1] = dateFormat.format(p.getFechaOperacion());
-//            datos[i][1] = p.getFecha();
-            datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID
-                    , "" + p.getIdArticulo());
-            datos[i][3] = p.getCantidad();
-            datos[i][4] = util.buscaDescFromIdSuc(Principal.sucursalesHM 
-                    , "" + p.getIdSucursal());
-            datos[i][5] = util.buscaDescFromIdUsu(Principal.usuariosHM 
-                    , "" + p.getIdUsuario());
-            datos[i][6] = p.getTipoOperacion();
-            i++;
+            //filtra por sucursal
+            if ((Ingreso.usuario.getIdSucursal() == p.getIdSucursal())
+                    || (Ingreso.usuario.getUsuario()
+                            .equalsIgnoreCase(constantes
+                                    .getProperty("SUPERUSUARIO")))) {
+                datos[i][0] = p.getIdMovimiento();
+                datos[i][1] = dateFormat.format(p.getFechaOperacion());
+    //            datos[i][1] = p.getFecha();
+                datos[i][2] = util.buscaDescFromIdProd(Principal.productosHMID
+                        , "" + p.getIdArticulo());
+                datos[i][3] = p.getCantidad();
+                datos[i][4] = util.buscaDescFromIdSuc(Principal.sucursalesHM 
+                        , "" + p.getIdSucursal());
+                datos[i][5] = util.buscaDescFromIdUsu(Principal.usuariosHM 
+                        , "" + p.getIdUsuario());
+                datos[i][6] = p.getTipoOperacion();
+                i++;
+            }
         }
+        Object[][] datosFinal = new Object[i][7];
+        //Para filtrar los registros
+        for (int j = 0; j < i; j++) {
+            if (datos[j][0] != null) {
+                datosFinal[j][0] = datos[j][0];
+                datosFinal[j][1] = datos[j][1];
+                datosFinal[j][2] = datos[j][2];
+                datosFinal[j][3] = datos[j][3];
+                datosFinal[j][4] = datos[j][4];
+                datosFinal[j][5] = datos[j][5];
+                datosFinal[j][6] = datos[j][6];
+            }
+        }
+        //Fin Para filtrar los registros
         tblConsultaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
-                datos,
+                datosFinal,
                 new String[]{
                     "No. MOVIMIENTO", "FECHA MOV.", "PRODUCTO", "CANTIDAD"
                         , "SUCURSAL", "USUARIO", "OPERACIÓN"
