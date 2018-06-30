@@ -134,11 +134,11 @@ public class FrmMensaje extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        this.setVisible(false);
         this.dispose();
-        vistas.Principal principal = new vistas.Principal();
-        principal.setExtendedState(principal.MAXIMIZED_BOTH);
-        principal.setDefaultCloseOperation(principal.EXIT_ON_CLOSE);
-        principal.setVisible(true);
+        BarraProgreso barraProgreso = new BarraProgreso();
+        barraProgreso.setProceso(1);
+        barraProgreso.setVisible(true);
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened

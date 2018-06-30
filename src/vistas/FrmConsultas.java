@@ -221,7 +221,7 @@ public class FrmConsultas extends javax.swing.JFrame {
         jToolBar2.add(btnConsultaPedidos);
 
         btnRegresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/regresarmed.jpg"))); // NOI18N
-        btnRegresar.setText("Inventario");
+        btnRegresar.setText("Regresar");
         btnRegresar.setFocusable(false);
         btnRegresar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnRegresar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
