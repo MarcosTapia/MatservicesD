@@ -1144,6 +1144,104 @@ public class FrmVenta extends javax.swing.JFrame {
         txtCantidadPro.setText(""+temp);
     }//GEN-LAST:event_btnDisminuirActionPerformed
 
+    public boolean borraVenta(int idVenta){
+        boolean eliminado = false;
+        //borra detalle pedido
+        hiloDetalleVentas = new WSDetalleVentas();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("ELIMINADETALLEVENTA");
+        DetalleVentaBean detalleVentaEliminar = 
+                hiloDetalleVentas.ejecutaWebService(rutaWS
+                ,"2"
+                , "" + idVenta);
+        //borra venta
+        hiloVentas = new WSVentas();
+        rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("ELIMINAVENTA");
+        VentasBean ventaEliminar = hiloVentas.ejecutaWebService(rutaWS
+                ,"4"
+                , "" + idVenta);
+        if (ventaEliminar != null) {
+            eliminado = true;
+        }
+        return eliminado;
+    }
+    
+    private void ajusteInventario(double cantidadVendida, int idArticuloVendido
+            , int operacion){ //operacion =1 venta, operacion =2 regreso
+        //Dismimuye inventario
+            //obtiene articulo para saber su cantidad 
+            //original
+        ArrayList<ProductoBean> resultWS = null;
+        hiloInventariosList = new WSInventariosList();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes
+            .getProperty("OBTIENEPRODUCTOPORID") 
+                + String.valueOf(idArticuloVendido);
+        resultWS = hiloInventariosList
+                .ejecutaWebService(rutaWS,"5");
+        ProductoBean p = resultWS.get(0);
+            //fin obtiene articulo para saber su 
+            //cantidad original
+
+            //disminuye iinventario en cifras no en bd
+        double cantidadOriginal = p.getExistencia();
+        double cantidadFinal;
+        if (operacion == 1) {
+            cantidadFinal = cantidadOriginal 
+                    - cantidadVendida;
+        } else {
+            cantidadFinal = cantidadOriginal 
+                    + cantidadVendida;
+        }
+            //fin disminuye iinventario en cifras no en bd
+
+            //realiza ajuste inventario 
+        hiloInventarios = new WSInventarios();
+        rutaWS = constantes.getProperty("IP") 
+                + constantes
+          .getProperty("AJUSTAINVENTARIOVENTA");
+        ProductoBean ajuste = hiloInventarios
+                .ejecutaWebService(rutaWS,"5"
+                ,String.valueOf(idArticuloVendido)
+                ,"" + cantidadFinal);
+        if (ajuste != null) {
+                //Guarda movimiento
+            String fecha = util.dateToDateTimeAsString(util
+                    .obtieneFechaServidor());
+            MovimientosBean mov = new MovimientosBean();
+            hiloMovimientos = new WSMovimientos();
+            rutaWS = constantes.getProperty("IP") 
+                    + constantes
+                     .getProperty("GUARDAMOVIMIENTO");
+            MovimientosBean movimientoInsertado 
+                    = hiloMovimientos
+                   .ejecutaWebService(rutaWS,"1"
+                ,"" + p.getIdArticulo()
+                ,"" + Ingreso.usuario.getIdUsuario()
+                ,"VENTA NORMAL"
+                ,"" + cantidadVendida
+                ,fecha
+                ,"" + Ingreso.usuario.getIdSucursal());
+                //Fin Guarda movimiento
+        }
+    }
+    
+    private void roolBackAjusteInventario(int contDetallesGuardados) {
+        int i = 0; //cuenta los detalles que se van regresando
+        for (DetalleVentaBean detVentBeanADisminuir :
+                detalleVentaProducto) {
+            if (i < contDetallesGuardados) {
+                int idArticuloVendido = detVentBeanADisminuir
+                        .getIdArticulo();
+                double cantidadVendida = detVentBeanADisminuir
+                        .getCantidad();
+                ajusteInventario(cantidadVendida, idArticuloVendido, 2);
+                i++;
+            }
+        } 
+    }
+    
     private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
         txtCodigoPro.setText("Espere...");
         int result = JOptionPane.showConfirmDialog(this, "¿Deseas Ejecutar la "
@@ -1195,83 +1293,68 @@ public class FrmVenta extends javax.swing.JFrame {
                                 );
                         if (ventaGuardada != null) {
                             //guarda detalle venta
+                            boolean totalDetalleVenta = true;
+                            int contDetallesGuardados = 0;
+                            
+                            //solo para prueba
+//                            detalleVentaProducto.clear();
+//                            DetalleVentaBean detVentBeanADisminuirP = new
+//                                DetalleVentaBean();
+//                            detVentBeanADisminuirP.setPrecio(1.0);
+//                            detVentBeanADisminuirP.setCantidad(1.0);
+//                            detVentBeanADisminuirP.setDescuento(0.0);
+//                            detVentBeanADisminuirP.setUnidadMedida("PIEZA");
+//                            detVentBeanADisminuirP.setIdArticulo(18);//012
+//                            detalleVentaProducto.add(detVentBeanADisminuirP);
+//                            DetalleVentaBean detVentBeanADisminuirP2 = new
+//                                DetalleVentaBean();
+//                            detVentBeanADisminuirP2.setPrecio(1.0);
+//                            detVentBeanADisminuirP2.setCantidad(1.0);
+//                            detVentBeanADisminuirP2.setDescuento(0.0);
+//                            detVentBeanADisminuirP2.setUnidadMedida("PIEZA");
+//                            detVentBeanADisminuirP2.setIdArticulo(-10);//012
+//                            detalleVentaProducto.add(detVentBeanADisminuirP2);
+                            //fin solo para prueba
                             for (DetalleVentaBean detVentBeanADisminuir :
                                     detalleVentaProducto) {
                                 hiloDetalleVentas = new WSDetalleVentas();
                                 rutaWS = constantes.getProperty("IP") 
                                     + constantes.getProperty("GUARDADETALLEVENTA");
-//                                boolean detalleGuardado = false;
-//                                while (!detalleGuardado) {
                                     // para ajuste inventario                                }
-                                    int idArticuloVendido = detVentBeanADisminuir
-                                            .getIdArticulo();
-                                    double cantidadVendida = detVentBeanADisminuir
-                                            .getCantidad();
-                                    // fin para ajuste inventario                                }
-                                    DetalleVentaBean detalleVentaGuardada = 
-                                            hiloDetalleVentas.
-                                                    ejecutaWebService(rutaWS
-                                                    ,"1"
-                                            , "" + Integer.parseInt(txtNroVenta
-                                                    .getText().trim())
-                                            , "" + detVentBeanADisminuir.getIdArticulo()
-                                            , "" + detVentBeanADisminuir.getPrecio()
-                                            , "" + detVentBeanADisminuir.getCantidad()
-                                            , "" + detVentBeanADisminuir.getDescuento()
-                                            , detVentBeanADisminuir.getUnidadMedida()
-                                            , "" + Ingreso.usuario.getIdSucursal()
-                                                    );
-                                    if (detalleVentaGuardada != null) {
-                                        //Dismimuye inventario
-                                            //obtiene articulo para saber su cantidad 
-                                            //original
-                                        ArrayList<ProductoBean> resultWS = null;
-                                        hiloInventariosList = new WSInventariosList();
-                                        rutaWS = constantes.getProperty("IP") 
-                                                + constantes
-                                            .getProperty("OBTIENEPRODUCTOPORID") 
-                                                + String.valueOf(idArticuloVendido);
-                                        resultWS = hiloInventariosList
-                                                .ejecutaWebService(rutaWS,"5");
-                                        ProductoBean p = resultWS.get(0);
-                                            //fin obtiene articulo para saber su 
-                                            //cantidad original
-                                        
-                                            //disminuye iinventario en cifras no en bd
-                                        double cantidadOriginal = p.getExistencia();
-                                        double cantidadFinal = cantidadOriginal 
-                                                - cantidadVendida;
-                                            //fin disminuye iinventario en cifras no en bd
-                                        
-                                            //realiza ajuste inventario 
-                                        hiloInventarios = new WSInventarios();
-                                        rutaWS = constantes.getProperty("IP") 
-                                                + constantes
-                                          .getProperty("AJUSTAINVENTARIOVENTA");
-                                        ProductoBean ajuste = hiloInventarios
-                                                .ejecutaWebService(rutaWS,"5"
-                                                ,String.valueOf(idArticuloVendido)
-                                                ,"" + cantidadFinal);
-                                        if (ajuste != null) {
-                                                //Guarda movimiento
-                                            String fecha = util.dateToDateTimeAsString(util
-                                                    .obtieneFechaServidor());
-                                            MovimientosBean mov = new MovimientosBean();
-                                            hiloMovimientos = new WSMovimientos();
-                                            rutaWS = constantes.getProperty("IP") 
-                                                    + constantes
-                                                     .getProperty("GUARDAMOVIMIENTO");
-                                            MovimientosBean movimientoInsertado 
-                                                    = hiloMovimientos
-                                                   .ejecutaWebService(rutaWS,"1"
-                                                ,"" + p.getIdArticulo()
-                                                ,"" + Ingreso.usuario.getIdUsuario()
-                                                ,"VENTA NORMAL"
-                                                ,"" + cantidadVendida
-                                                ,fecha
-                                                ,"" + Ingreso.usuario.getIdSucursal());
-                                                //Fin Guarda movimiento
+                                int idArticuloVendido = detVentBeanADisminuir
+                                        .getIdArticulo();
+                                double cantidadVendida = detVentBeanADisminuir
+                                        .getCantidad();
+                                // fin para ajuste inventario                                }
+                                DetalleVentaBean detalleVentaGuardada = 
+                                        hiloDetalleVentas.
+                                                ejecutaWebService(rutaWS
+                                                ,"1"
+                                        , "" + Integer.parseInt(txtNroVenta
+                                                .getText().trim())
+                                        , "" + detVentBeanADisminuir.getIdArticulo()
+                                        , "" + detVentBeanADisminuir.getPrecio()
+                                        , "" + detVentBeanADisminuir.getCantidad()
+                                        , "" + detVentBeanADisminuir.getDescuento()
+                                        , detVentBeanADisminuir.getUnidadMedida()
+                                        , "" + Ingreso.usuario.getIdSucursal()
+                                                );
+                                if (detalleVentaGuardada != null) {
+                                    ajusteInventario(cantidadVendida, 
+                                        idArticuloVendido,1);
+                                    contDetallesGuardados++;
+                                } else { //si no se guardo un solo detalle borro 
+                                    //la venta  los detalles guardados
+                                    borraVenta(ventasBean.getIdVenta() - 1);
+                                    if (contDetallesGuardados > 0) {
+                                        roolBackAjusteInventario
+                                            (contDetallesGuardados);
                                     }
+                                    borrar();
+                                    ventasBean = null;
+                                    JOptionPane.showMessageDialog(null, "Error "
+                                            + "al guardar la venta");
+                                    return;
                                 }
                             }
                             //fin guarda detalle venta

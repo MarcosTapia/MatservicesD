@@ -426,7 +426,7 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
                     jCalFechaIni.setEnabled(false);
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");
+                JOptionPane.showMessageDialog(null, "Llene Todos Los Campos..!!");        
             }
         }
     }

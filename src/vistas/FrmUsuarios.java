@@ -20,6 +20,25 @@ import javax.swing.ImageIcon;
 import util.Util;
 import static vistas.Principal.sucursales;
 
+/*
+Inventario.-0
+Alertas.-1
+ConsultaVentas.-2
+ConsultaCompras.-3
+ConsultaMovimientos.-4
+ConsultaPedidos.-5
+Proveedores.-6
+Usuarios.-7
+Clientes.-8
+Categorias.-9
+Sucursales.-10
+Sistema.-11
+Mensajes.-12
+Ventas.-13
+Compras.-14
+Caja.-15
+*/
+
 public class FrmUsuarios extends javax.swing.JFrame {
     //WSUsuarios
     Util util = new Util();
@@ -1024,6 +1043,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                     actualizarBusqueda();
                     activarBotones(true);
                     limpiarCajaTexto();
+                    cboSucursal.setEnabled(false);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Llene Todos Los "
@@ -1192,6 +1212,7 @@ public class FrmUsuarios extends javax.swing.JFrame {
                     actualizarBusqueda();
                     activarBotones(true);
                     limpiarCajaTexto();
+                    cboSucursal.setEnabled(false);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "[[ Debes seleccionar un "
@@ -1203,9 +1224,6 @@ public class FrmUsuarios extends javax.swing.JFrame {
     
     private void btnGuardarPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPerActionPerformed
         guardar();
-        activarCajaTexto(false);
-        habilitaChecksPermisos(false);
-        cboSucursal.setEnabled(false);
     }//GEN-LAST:event_btnGuardarPerActionPerformed
 
     private void cboParametroUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboParametroUsuarioActionPerformed

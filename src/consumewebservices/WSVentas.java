@@ -1,6 +1,5 @@
 package consumewebservices;
 
-import beans.UsuarioBean;
 import beans.VentasBean;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -15,14 +14,10 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import util.Util;
-import static vistas.Ingreso.usuario;
 
 public class WSVentas {
     Util util = new Util();
@@ -81,6 +76,9 @@ public class WSVentas {
                 facturada = params[13];
                 idFactura = params[14];
                 ventaObj = modificaVentaWS(); break;
+            case "4" : 
+                idVenta = params[2];
+                ventaObj = eliminaVentaWS(); break;
         }
         return ventaObj;
     }
@@ -274,57 +272,57 @@ public class WSVentas {
         return modifica;
     }
 
-//    public UsuarioBean eliminaUsuarioWS(String... params) {
-//        UsuarioBean elimina = null;
-//        try {
-//            HttpURLConnection urlConn;
-//            DataOutputStream printout;
-//            DataInputStream input;
-//            url = new URL(cadena);
-//            urlConn = (HttpURLConnection) url.openConnection();
-//            urlConn.setDoInput(true);
-//            urlConn.setDoOutput(true);
-//            urlConn.setUseCaches(false);
-//            urlConn.setRequestProperty("Content-Type", "application/json");
-//            urlConn.setRequestProperty("Accept", "application/json");
-//            urlConn.connect();
-//            //Creo el Objeto JSON
-//            JSONObject jsonParam = new JSONObject();
-//            jsonParam.put("idUsuario", idUsuario);
-//            // Envio los parámetros post.
-//           OutputStream os = urlConn.getOutputStream();
-//            BufferedWriter writer = new BufferedWriter(
-//                    new OutputStreamWriter(os, "UTF-8"));
-//            writer.write(jsonParam.toString());
-//            writer.flush();
-//            writer.close();
-//            int respuesta = urlConn.getResponseCode();
-//            StringBuilder result = new StringBuilder();
-//            if (respuesta == HttpURLConnection.HTTP_OK) {
-//                String line;
-//                BufferedReader br=new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-//                while ((line=br.readLine()) != null) {
-//                    result.append(line);
-//                    //response+=line;
-//                }
-//                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
-//                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
-//                //Accedemos al vector de resultados
-//                int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
-//                if (resultJSON == 1) {      // hay un alumno que mostrar
-//                    elimina = new UsuarioBean();
-//                } else if (resultJSON == 2) {
-//                    devuelve = "No hay alumnos";
-//                }
-//            }
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        return elimina;
-//    }
+    public VentasBean eliminaVentaWS(String... params) {
+        VentasBean elimina = null;
+        try {
+            HttpURLConnection urlConn;
+            DataOutputStream printout;
+            DataInputStream input;
+            url = new URL(cadena);
+            urlConn = (HttpURLConnection) url.openConnection();
+            urlConn.setDoInput(true);
+            urlConn.setDoOutput(true);
+            urlConn.setUseCaches(false);
+            urlConn.setRequestProperty("Content-Type", "application/json");
+            urlConn.setRequestProperty("Accept", "application/json");
+            urlConn.connect();
+            //Creo el Objeto JSON
+            JSONObject jsonParam = new JSONObject();
+            jsonParam.put("idVenta", idVenta);
+            // Envio los parámetros post.
+            OutputStream os = urlConn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(jsonParam.toString());
+            writer.flush();
+            writer.close();
+            int respuesta = urlConn.getResponseCode();
+            StringBuilder result = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br=new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+                while ((line=br.readLine()) != null) {
+                    result.append(line);
+                    //response+=line;
+                }
+                //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                //Accedemos al vector de resultados
+                int resultJSON = respuestaJSON.getInt("estado");   // estado es el nombre del campo en el JSON
+                if (resultJSON == 1) {      // hay una venta que mostrar
+                    elimina = new VentasBean();
+                } else if (resultJSON == 2) {
+                    devuelve = "No hay alumnos";
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return elimina;
+    }
     
 }
