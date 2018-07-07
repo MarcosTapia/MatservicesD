@@ -1242,7 +1242,7 @@ public class FrmVenta extends javax.swing.JFrame {
         } 
     }
     
-    private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
+    private void generaVentaAnterior() {
         txtCodigoPro.setText("Espere...");
         int result = JOptionPane.showConfirmDialog(this, "¿Deseas Ejecutar la "
                 + "Venta?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
@@ -1253,6 +1253,7 @@ public class FrmVenta extends javax.swing.JFrame {
                 //VERIFICA QUE HAYA PAGO Y CAMBIO EN LA VENTA
                 if (!txtImporte.getText().equalsIgnoreCase("") && 
                         !txtVuelto.getText().equalsIgnoreCase("")) {
+                    //Arma objeto Venta
                     ventasBean = new VentasBean();
                     ventasBean.setIdUsuario(Ingreso.usuario.getIdUsuario());
                     int s = util.buscaIdCliente(Principal.clientesHM
@@ -1270,117 +1271,243 @@ public class FrmVenta extends javax.swing.JFrame {
                     ventasBean.setCancelada(0);
                     ventasBean.setFacturada(0);
                     ventasBean.setIdFactura(1);
+                    //Fin Arma objeto Venta
 
-                    //ciclo que garantiza que operacion fue hecha con exito
-                    while (ventasBean != null) {
-                        //guarda venta
-                        hiloVentas = new WSVentas();
-                        String rutaWS = constantes.getProperty("IP") 
-                                + constantes.getProperty("GUARDAVENTA");
-                        VentasBean ventaGuardada = hiloVentas
-                                .ejecutaWebService(rutaWS,"2"
-                                , "" + ventasBean.getIdCliente()
-                                , "" + ventasBean.getObservaciones()
-                                , "" + ventasBean.getIdUsuario()
-                                , "" + ventasBean.getIdSucursal()
-                                , "" + ventasBean.getSubtotal()
-                                , "" + ventasBean.getIva()
-                                , "" + ventasBean.getTotal()
-                                , "VENTA " + ventasBean.getTipovta()
-                                , "" + ventasBean.getCancelada()
-                                , "" + ventasBean.getFacturada()
-                                , "" + ventasBean.getIdFactura()
-                                );
-                        if (ventaGuardada != null) {
-                            //guarda detalle venta
-                            boolean totalDetalleVenta = true;
-                            int contDetallesGuardados = 0;
+                    //guarda venta
+                    hiloVentas = new WSVentas();
+                    String rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GUARDAVENTA");
+                    VentasBean ventaGuardada = hiloVentas
+                            .ejecutaWebService(rutaWS,"2"
+                            , "" + ventasBean.getIdCliente()
+                            , "" + ventasBean.getObservaciones()
+                            , "" + ventasBean.getIdUsuario()
+                            , "" + ventasBean.getIdSucursal()
+                            , "" + ventasBean.getSubtotal()
+                            , "" + ventasBean.getIva()
+                            , "" + ventasBean.getTotal()
+                            , "VENTA " + ventasBean.getTipovta()
+                            , "" + ventasBean.getCancelada()
+                            , "" + ventasBean.getFacturada()
+                            , "" + ventasBean.getIdFactura()
+                            );
+                    if (ventaGuardada != null) {
+                        //guarda detalle venta
+                        int contDetallesGuardados = 0;
+                        //solo para prueba
+//                            DetalleVentaBean detVentBeanADisminuirP3 = new
+//                                DetalleVentaBean();
+//                            detVentBeanADisminuirP3.setPrecio(1);
+//                            detVentBeanADisminuirP3.setCantidad(1);
+//                            detVentBeanADisminuirP3.setDescuento(0);
+//                            detVentBeanADisminuirP3.setUnidadMedida("PIEZA");
+//                            detVentBeanADisminuirP3.setIdArticulo(-10);//012
+//                            detalleVentaProducto.add(detVentBeanADisminuirP3);
+                        //fin solo para prueba
+                        
+                        //ciclo para recorrer detalle venta
+                        for (DetalleVentaBean detVentBeanADisminuir :
+                                detalleVentaProducto) {
+                            hiloDetalleVentas = new WSDetalleVentas();
+                            rutaWS = constantes.getProperty("IP") 
+                                + constantes.getProperty("GUARDADETALLEVENTA");
+                                // para ajuste inventario                                }
+                            int idArticuloVendido = detVentBeanADisminuir
+                                    .getIdArticulo();
+                            double cantidadVendida = detVentBeanADisminuir
+                                    .getCantidad();
+                            // fin para ajuste inventario                                }
+                            DetalleVentaBean detalleVentaGuardada = 
+                                    hiloDetalleVentas.
+                                            ejecutaWebService(rutaWS
+                                            ,"1"
+                                    , "" + Integer.parseInt(txtNroVenta
+                                            .getText().trim())
+                                    , "" + detVentBeanADisminuir.getIdArticulo()
+                                    , "" + detVentBeanADisminuir.getPrecio()
+                                    , "" + detVentBeanADisminuir.getCantidad()
+                                    , "" + detVentBeanADisminuir.getDescuento()
+                                    , detVentBeanADisminuir.getUnidadMedida()
+                                    , "" + Ingreso.usuario.getIdSucursal()
+                                            );
                             
-                            //solo para prueba
-//                            detalleVentaProducto.clear();
-//                            DetalleVentaBean detVentBeanADisminuirP = new
-//                                DetalleVentaBean();
-//                            detVentBeanADisminuirP.setPrecio(1.0);
-//                            detVentBeanADisminuirP.setCantidad(1.0);
-//                            detVentBeanADisminuirP.setDescuento(0.0);
-//                            detVentBeanADisminuirP.setUnidadMedida("PIEZA");
-//                            detVentBeanADisminuirP.setIdArticulo(18);//012
-//                            detalleVentaProducto.add(detVentBeanADisminuirP);
-//                            DetalleVentaBean detVentBeanADisminuirP2 = new
-//                                DetalleVentaBean();
-//                            detVentBeanADisminuirP2.setPrecio(1.0);
-//                            detVentBeanADisminuirP2.setCantidad(1.0);
-//                            detVentBeanADisminuirP2.setDescuento(0.0);
-//                            detVentBeanADisminuirP2.setUnidadMedida("PIEZA");
-//                            detVentBeanADisminuirP2.setIdArticulo(-10);//012
-//                            detalleVentaProducto.add(detVentBeanADisminuirP2);
-                            //fin solo para prueba
-                            for (DetalleVentaBean detVentBeanADisminuir :
-                                    detalleVentaProducto) {
-                                hiloDetalleVentas = new WSDetalleVentas();
-                                rutaWS = constantes.getProperty("IP") 
-                                    + constantes.getProperty("GUARDADETALLEVENTA");
-                                    // para ajuste inventario                                }
-                                int idArticuloVendido = detVentBeanADisminuir
-                                        .getIdArticulo();
-                                double cantidadVendida = detVentBeanADisminuir
-                                        .getCantidad();
-                                // fin para ajuste inventario                                }
-                                DetalleVentaBean detalleVentaGuardada = 
-                                        hiloDetalleVentas.
-                                                ejecutaWebService(rutaWS
-                                                ,"1"
-                                        , "" + Integer.parseInt(txtNroVenta
-                                                .getText().trim())
-                                        , "" + detVentBeanADisminuir.getIdArticulo()
-                                        , "" + detVentBeanADisminuir.getPrecio()
-                                        , "" + detVentBeanADisminuir.getCantidad()
-                                        , "" + detVentBeanADisminuir.getDescuento()
-                                        , detVentBeanADisminuir.getUnidadMedida()
-                                        , "" + Ingreso.usuario.getIdSucursal()
-                                                );
-                                if (detalleVentaGuardada != null) {
-                                    ajusteInventario(cantidadVendida, 
-                                        idArticuloVendido,1);
-                                    contDetallesGuardados++;
-                                } else { //si no se guardo un solo detalle borro 
-                                    //la venta  los detalles guardados
-                                    borraVenta(ventasBean.getIdVenta() - 1);
-                                    if (contDetallesGuardados > 0) {
-                                        roolBackAjusteInventario
-                                            (contDetallesGuardados);
-                                    }
-                                    borrar();
-                                    ventasBean = null;
-                                    JOptionPane.showMessageDialog(null, "Error "
-                                            + "al guardar la venta");
-                                    return;
+                            // para ajuste en el mismo store con los datos 
+                            // anteriores lo proceso
+                            
+                            
+                            if (detalleVentaGuardada != null) {
+                                ajusteInventario(cantidadVendida, 
+                                    idArticuloVendido,1);
+                                contDetallesGuardados++;
+                            } else { //si no se guardo un solo detalle borro 
+                                //la venta  los detalles guardados
+                                borraVenta(ventasBean.getIdVenta() - 1);
+                                if (contDetallesGuardados > 0) {
+                                    roolBackAjusteInventario
+                                        (contDetallesGuardados);
                                 }
+                                borrar();
+                                ventasBean = null;
+                                JOptionPane.showMessageDialog(null, "Error "
+                                        + "al guardar la venta");
+                                return;
                             }
-                            //fin guarda detalle venta
-                            
-                            //carga productos actualizados
-                            inventario = util.getInventario();
-                            //fin carga productos actualizados
-                            
-                            JOptionPane.showMessageDialog(null, 
-                                    "VENTA GUARDADA CORRRECTAMENTE");
+                        }
+                        //fin ciclo para recorrer detalle venta
+
+                        //carga productos actualizados
+                        inventario = util.getInventario();
+                        //fin carga productos actualizados
+
+                        JOptionPane.showMessageDialog(null, 
+                                "VENTA GUARDADA CORRRECTAMENTE");
 //                            detalleVentaProducto.remove(detallePedido);
-                            int resultado = JOptionPane.showConfirmDialog(this, 
-                                    "¿Deseas "
-                                    + "Imprimir la Venta?", "Mensaje..!!"
-                                    , JOptionPane.YES_NO_OPTION);
-                            if (resultado == JOptionPane.YES_OPTION) {
-                                //imprime ticket
-                                imprimeVenta("Venta");
-                                //fin imprime ticket
-                            }
-                            borrar();
-                            ventasBean = null;
-                            //fin guarda detalle venta
-                        }                        
-                        //fin guarda venta
+                        int resultado = JOptionPane.showConfirmDialog(this, 
+                                "¿Deseas "
+                                + "Imprimir la Venta?", "Mensaje..!!"
+                                , JOptionPane.YES_NO_OPTION);
+                        if (resultado == JOptionPane.YES_OPTION) {
+                            //imprime ticket
+                            imprimeVenta("Venta");
+                            //fin imprime ticket
+                        }
+                        borrar();
+                        ventasBean = null;
+                        //fin guarda detalle venta
+                    } else {
+                        JOptionPane.showMessageDialog(null, 
+                                "ERROR AL GUARDAR VENTA");
+                        return;
                     }
+                    //fin guarda venta
+                } else {
+                    JOptionPane.showMessageDialog(null, "DEBES COMPLETAR LA VENTA "
+                            + "PAGANGO EL IMPORTE CORRESPONDIENTE");
+                    txtImporte.requestFocus(true);
+                }
+        } else {
+                JOptionPane.showMessageDialog(null, "NO HAY PRODUCTOS PARA VENDER");
+                return;
+            }
+        }
+        txtCodigoPro.setText("");
+    }
+    
+    private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
+        //generaVentaAnterior();
+        
+        txtCodigoPro.setText("Espere...");
+        int result = JOptionPane.showConfirmDialog(this, "¿Deseas Ejecutar la "
+                + "Venta?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
+        // VERIFICA si realmente se quierte guardar la venta
+        if (result == JOptionPane.YES_OPTION) {
+            //VERIFICA SI HAY PRODUCTO A VENDER            
+            if (detalleVentaProducto.size()>0) {
+                //VERIFICA QUE HAYA PAGO Y CAMBIO EN LA VENTA
+                if (!txtImporte.getText().equalsIgnoreCase("") && 
+                        !txtVuelto.getText().equalsIgnoreCase("")) {
+                    //Arma objeto Venta
+                    ventasBean = new VentasBean();
+                    ventasBean.setIdUsuario(Ingreso.usuario.getIdUsuario());
+                    int s = util.buscaIdCliente(Principal.clientesHM
+                            , cboClientes.getSelectedItem().toString());
+                    ventasBean.setIdCliente(s);
+                    //checar despues
+                    ventasBean.setObservaciones("");
+                    //fin checar despues
+                    ventasBean.setIdSucursal(Ingreso.usuario.getIdSucursal());
+                    
+                    ventasBean.setSubtotal(Double.parseDouble(txtSubTotal.getText()));
+                    ventasBean.setIva(Double.parseDouble(txtIva.getText()));
+                    ventasBean.setTotal(Double.parseDouble(txtMontoApagar.getText()));
+                    ventasBean.setTipovta(cboTipoVenta.getSelectedItem().toString());
+                    ventasBean.setCancelada(0);
+                    ventasBean.setFacturada(0);
+                    ventasBean.setIdFactura(1);
+                    //Fin Arma objeto Venta
+
+                    //numero de venta
+                    //arma string de venta separado por pipes
+                    String ventaString = "";
+                    /*
+                    fecha,idCliente,observaciones
+                    ,idUsuario,idSucursal,subtotal
+                    ,iva,total,tipovta,cancelada,facturada,idFactura                    
+                    */
+                    //la fecha la dejo para el llamado del webservice
+                    ventaString = "|" + ventasBean.getIdCliente()
+                            + "|" + ventasBean.getObservaciones()
+                            + "|" + ventasBean.getIdUsuario()
+                            + "|" + ventasBean.getIdSucursal()
+                            + "|" + ventasBean.getSubtotal()
+                            + "|" + ventasBean.getIva()
+                            + "|" + ventasBean.getTotal()
+                            + "|" + "VENTA " + ventasBean.getTipovta()
+                            + "|" +  ventasBean.getCancelada()
+                            + "|" +  ventasBean.getFacturada()
+                            + "|" +  ventasBean.getIdFactura() 
+                            + "|";
+                            
+                    //guarda detalle
+                    String detalleVentaString = "";
+                    for (DetalleVentaBean detVentBeanADisminuir :
+                            detalleVentaProducto) {
+                        /*    
+                        idDetalleVenta,idVenta,idArticulo,precio
+                        ,cantidad,descuento,idSucursal,unidadMedida                            
+                        */    
+                        detalleVentaString = detalleVentaString 
+                                + Integer.parseInt(txtNroVenta
+                                        .getText().trim())
+                                + "|" + detVentBeanADisminuir.getIdArticulo()
+                                + "|" + detVentBeanADisminuir.getPrecio()
+                                + "|" + detVentBeanADisminuir.getCantidad()
+                                + "|" + detVentBeanADisminuir.getDescuento()
+                                + "|" + Ingreso.usuario.getIdSucursal()
+                                + "|" + detVentBeanADisminuir.getUnidadMedida()
+                                + "|" + "@@@";
+                        //para ajuste inventario y guardado de moviemiento 
+                        //con los datos anteriores
+                    }
+                    
+                    
+                    //guarda venta
+                    hiloVentas = new WSVentas();
+                    String rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GUARDAVENTASTORE");
+                    VentasBean ventaGuardada = hiloVentas
+                            .ejecutaWebService(rutaWS,"5"
+                            , ventaString
+                            , detalleVentaString
+                            );
+                    
+                    if (Integer.parseInt(txtNroVenta
+                                        .getText().trim()) != obtenerUltimoId()) {
+                        //carga productos actualizados
+                        inventario = util.getInventario();
+                        //fin carga productos actualizados
+
+                        JOptionPane.showMessageDialog(null, 
+                                "VENTA GUARDADA CORRRECTAMENTE");
+    //                            detalleVentaProducto.remove(detallePedido);
+                        int resultado = JOptionPane.showConfirmDialog(this, 
+                                "¿Deseas "
+                                + "Imprimir la Venta?", "Mensaje..!!"
+                                , JOptionPane.YES_NO_OPTION);
+                        if (resultado == JOptionPane.YES_OPTION) {
+                            //imprime ticket
+                            imprimeVenta("Venta");
+                            //fin imprime ticket
+                        }
+                        borrar();
+                        ventasBean = null;
+                        //fin guarda detalle venta
+                    } else {
+                        JOptionPane.showMessageDialog(null, 
+                                "ERROR AL GUARDAR LA VENTA, INTÉNTELO MÁS TARDE");
+                        return;
+                    }
+                    //fin guarda venta
                 } else {
                     JOptionPane.showMessageDialog(null, "DEBES COMPLETAR LA VENTA "
                             + "PAGANGO EL IMPORTE CORRESPONDIENTE");
@@ -1543,6 +1670,31 @@ public class FrmVenta extends javax.swing.JFrame {
     }
     
     private void btnAgregaProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregaProductoActionPerformed
+        //verifica que el descuento no va en bco y si va lo pone en 0
+        if (txtDescuento.getText().equalsIgnoreCase("")) {
+            txtDescuento.setText("0");
+        }
+
+        //verifica que la cantidad no va en bco y si va lo pone en 1
+        if (txtCantidadPro.getText().equalsIgnoreCase("")) {
+            txtCantidadPro.setText("1");
+        }
+        
+        //verifica que el precio no va en bco y si va le pone el original
+        if (txtPrecio.getText().equalsIgnoreCase("")) {
+            txtPrecio.setText("" + prodParcial.getPrecioUnitario());
+        }
+        
+        //verifica valores adecuados de precio, descuento y cantidad
+        if (!((Double.parseDouble(txtPrecio.getText()) > 0)
+                && (Double.parseDouble(txtDescuento.getText()) >= 0)
+                && (Double.parseDouble(txtCantidadPro.getText()) > 0)
+                )){
+            JOptionPane.showMessageDialog(null, "Valores inválidos de precio,"
+                    + " descuento ó cantidad, ajusta tus valores");
+            return;
+        }         
+
         //Verifica que haya producto seleccionado
         if ((prodParcial != null) && (!txtCodigoPro.getText().equalsIgnoreCase(""))) {
             // Verifico que sea el mismo producto que se consulto contra el cuadro de texto codigo
@@ -1667,7 +1819,14 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_txtImporteActionPerformed
 
     private void txtCantidadProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadProActionPerformed
-        btnAgregaProducto.requestFocus();
+        if (Double.parseDouble(txtCantidadPro.getText()) > 0){
+            btnAgregaProducto.requestFocus();
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al cambiar la cantidad, "
+                    + "debe ser un número mayor que 0");
+            txtCantidadPro.setText("1");
+            txtCantidadPro.requestFocus();
+        }        
     }//GEN-LAST:event_txtCantidadProActionPerformed
 
     private void txtImporteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtImporteKeyTyped
@@ -1729,6 +1888,8 @@ public class FrmVenta extends javax.swing.JFrame {
             if (detalleVentaProducto.size()>0) {
                 //obtiene no. de pedido
                 txtCodigoPro.setText("Espere...");
+                
+                //Arma objeto pedido disfrazado como venta para reutilizar codigo
                 ventasBean = new VentasBean();
                 ventasBean.setIdUsuario(Ingreso.usuario.getIdUsuario());
                 int s = util.buscaIdCliente(Principal.clientesHM
@@ -1736,9 +1897,7 @@ public class FrmVenta extends javax.swing.JFrame {
                 ventasBean.setIdCliente(s);
                 //checar despues
                 ventasBean.setObservaciones("");
-                //fin checar despues
                 ventasBean.setIdSucursal(Ingreso.usuario.getIdSucursal());
-
                 ventasBean.setSubtotal(Double.parseDouble(txtSubTotal.getText()));
                 ventasBean.setIva(Double.parseDouble(txtIva.getText()));
                 ventasBean.setTotal(Double.parseDouble(txtMontoApagar.getText()));
@@ -1746,77 +1905,74 @@ public class FrmVenta extends javax.swing.JFrame {
                 ventasBean.setCancelada(0);
                 ventasBean.setFacturada(0);
                 ventasBean.setIdFactura(1);
+                //Fin Arma objeto pedido disfrazado como venta para reutilizar codigo
                     
-                //ciclo que garantiza que operacion fue hecha con exito
-                while (ventasBean != null) {
-                    //guarda pedido
-                    hiloPedidos = new WSPedidos();
-                    String rutaWS = constantes.getProperty("IP") 
-                            + constantes.getProperty("GUARDAPEDIDO");
-                    PedidoBean pedidoGuardado = hiloPedidos
-                            .ejecutaWebService(rutaWS,"2"
-                            , "" + ventasBean.getIdCliente()
-                            , "" + ventasBean.getObservaciones()
-                            , "" + ventasBean.getIdUsuario()
-                            , "" + ventasBean.getIdSucursal()
-                            , "" + "0"
-                            , "" + ventasBean.getSubtotal()
-                            , "" + ventasBean.getIva()
-                            , "" + ventasBean.getTotal()
-                            , "VENTA " + ventasBean.getTipovta()
-                            , "" + ventasBean.getCancelada()
-                            , "" + ventasBean.getFacturada()
-                            , "" + ventasBean.getIdFactura()
-                            );
-                    int noPedido = obtenerUltimoIdPedido() - 1;
-                    if (pedidoGuardado != null) {
-                        //guarda detalle venta
-                        for (DetalleVentaBean detallePedido :
-                                detalleVentaProducto) {
-                            hiloDetallePedidos = new WSDetallePedidos();
-                            rutaWS = constantes.getProperty("IP") 
-                                + constantes.getProperty("GUARDADETALLEPEDIDO");
-                            DetallePedidoBean detallePedidoGuardado = null;
-                            while (detallePedidoGuardado == null) {
-                                detallePedidoGuardado = 
-                                        hiloDetallePedidos.ejecutaWebService(rutaWS,"1"
-                                        , "" + noPedido
-                                        , "" + detallePedido.getIdArticulo()
-                                        , "" + detallePedido.getPrecio()
-                                        , "" + detallePedido.getCantidad()
-                                        , "" + detallePedido.getDescuento()
-                                        , detallePedido.getUnidadMedida()
-                                        , "" + Ingreso.usuario.getIdSucursal()
-                                        );
-                                if (detallePedidoGuardado == null) {
-                                    if (borraPedido(noPedido)) {
-                                        JOptionPane.showMessageDialog(null, "No se "
-                                                + "pudo guardar el pedido, "
-                                                + "inténtalo mas tarde");
-                                        borrar();
-                                        ventasBean = null;
-                                        return;
-                                    }
+                //guarda pedido
+                hiloPedidos = new WSPedidos();
+                String rutaWS = constantes.getProperty("IP") 
+                        + constantes.getProperty("GUARDAPEDIDO");
+                PedidoBean pedidoGuardado = hiloPedidos
+                        .ejecutaWebService(rutaWS,"2"
+                        , "" + ventasBean.getIdCliente()
+                        , "" + ventasBean.getObservaciones()
+                        , "" + ventasBean.getIdUsuario()
+                        , "" + ventasBean.getIdSucursal()
+                        , "" + "0"
+                        , "" + ventasBean.getSubtotal()
+                        , "" + ventasBean.getIva()
+                        , "" + ventasBean.getTotal()
+                        , "VENTA " + ventasBean.getTipovta()
+                        , "" + ventasBean.getCancelada()
+                        , "" + ventasBean.getFacturada()
+                        , "" + ventasBean.getIdFactura()
+                        );
+                int noPedido = obtenerUltimoIdPedido() - 1;
+                if (pedidoGuardado != null) {
+                    //ciclo guarda detalle pedido
+                    for (DetalleVentaBean detallePedido :
+                            detalleVentaProducto) {
+                        hiloDetallePedidos = new WSDetallePedidos();
+                        rutaWS = constantes.getProperty("IP") 
+                            + constantes.getProperty("GUARDADETALLEPEDIDO");
+                        DetallePedidoBean detallePedidoGuardado = null;
+                        while (detallePedidoGuardado == null) {
+                            detallePedidoGuardado = 
+                                    hiloDetallePedidos.ejecutaWebService(rutaWS,"1"
+                                    , "" + noPedido
+                                    , "" + detallePedido.getIdArticulo()
+                                    , "" + detallePedido.getPrecio()
+                                    , "" + detallePedido.getCantidad()
+                                    , "" + detallePedido.getDescuento()
+                                    , detallePedido.getUnidadMedida()
+                                    , "" + Ingreso.usuario.getIdSucursal()
+                                    );
+                            if (detallePedidoGuardado == null) {
+                                if (borraPedido(noPedido)) {
+                                    JOptionPane.showMessageDialog(null, "No se "
+                                            + "pudo guardar el pedido, "
+                                            + "inténtalo mas tarde");
+                                    borrar();
+                                    ventasBean = null;
+                                    return;
                                 }
                             }
                         }
-                        //fin guarda detalle pedido
-                        JOptionPane.showMessageDialog(null, 
-                                "PEDIDO GUARDADO CORRRECTAMENTE");
+                    }
+                    //fin ciclo guarda detalle pedido
+                    JOptionPane.showMessageDialog(null, 
+                            "PEDIDO GUARDADO CORRRECTAMENTE");
 //                            detalleVentaProducto.remove(detallePedido);
-                        int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
-                                + "Imprimir el Pedido?", "Mensaje..!!", 
-                                JOptionPane.YES_NO_OPTION);
-                        if (resultado == JOptionPane.YES_OPTION) {
-                            //imprime ticket
-                            imprimeVenta("Pedido");
-                            //fin imprime ticket
-                        }
-                        borrar();
-                        ventasBean = null;
-                    } //fin guarda pedido
-                }                        
-                //fin guarda venta
+                    int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas "
+                            + "Imprimir el Pedido?", "Mensaje..!!", 
+                            JOptionPane.YES_NO_OPTION);
+                    if (resultado == JOptionPane.YES_OPTION) {
+                        //imprime ticket
+                        imprimeVenta("Pedido");
+                        //fin imprime ticket
+                    }
+                    borrar();
+                    ventasBean = null;
+                } //fin guarda pedido
             } else {
                 JOptionPane.showMessageDialog(null, "NO HAY PRODUCTOS PARA VENDER");
                 return;
@@ -1859,7 +2015,14 @@ public class FrmVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_formFocusGained
 
     private void txtDescuentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDescuentoActionPerformed
-        txtCantidadPro.requestFocus(true);
+        if (Double.parseDouble(txtDescuento.getText()) >= 0){
+            txtCantidadPro.requestFocus(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al cambiar el descuento, "
+                    + "debe ser un número mayor o igual a 0");
+            txtDescuento.setText("0");
+            txtDescuento.requestFocus();
+        }        
     }//GEN-LAST:event_txtDescuentoActionPerformed
 
     private void btnSalir1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalir1ActionPerformed
@@ -1872,8 +2035,9 @@ public class FrmVenta extends javax.swing.JFrame {
 
     private void txtPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioActionPerformed
         //verifica si hubo cambio de precio
-        if (Double.parseDouble(txtPrecio.getText()) != 
-                prodParcial.getPrecioUnitario()) {
+        if ((Double.parseDouble(txtPrecio.getText()) != 
+                prodParcial.getPrecioUnitario()) 
+                && (Double.parseDouble(txtPrecio.getText()) > 0)){
             int dialogResult = JOptionPane.showConfirmDialog(null, 
                     "¿Realmente deseas cambiar el precio?");
             if(dialogResult == JOptionPane.YES_OPTION){
@@ -1881,6 +2045,12 @@ public class FrmVenta extends javax.swing.JFrame {
             } else {
                 txtPrecio.setText("" + prodParcial.getPrecioUnitario());
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al cambiar el precio "
+                    + ", debe ser mayor que 0");
+            txtPrecio.setText("");
+            txtPrecio.setText("" + prodParcial.getPrecioUnitario());
+            txtDescuento.requestFocus(true);
         }
     }//GEN-LAST:event_txtPrecioActionPerformed
 

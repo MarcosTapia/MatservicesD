@@ -389,6 +389,7 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
                 "Codigo", "RFC", "Nombre"
             }
         ));
+        tblConsultaCompras.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblConsultaCompras.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblConsultaComprasMouseClicked(evt);

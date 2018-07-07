@@ -419,6 +419,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 "Codigo", "RFC", "Nombre"
             }
         ));
+        tblConsultaVentas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblConsultaVentas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblConsultaVentasMouseClicked(evt);
@@ -680,6 +681,161 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
         procesarFactura();
     }//GEN-LAST:event_btnFacturarActionPerformed
 
+    private void rollBackAjusteInventario(ArrayList<DetalleVentaBean> resultWS, 
+            int operacion, int registrosRegresar) { 
+        //operacion =1 regresoventa, operacion =2 error
+        //regresa producto a inventario
+        //Dismimuye inventario
+            //obtiene articulo para saber su cantidad original
+        int i = 0;
+        for (DetalleVentaBean detalle : resultWS) {
+            if (i < registrosRegresar) {
+                double cantidadVendida = detalle.getCantidad();
+                ArrayList<ProductoBean> resultWSProd = null;
+                hiloInventariosList = new WSInventariosList();
+                String rutaWS = constantes.getProperty("IP") 
+                        + constantes.getProperty("OBTIENEPRODUCTOPORID") 
+                        + String.valueOf(detalle.getIdArticulo());
+                resultWSProd = hiloInventariosList.ejecutaWebService
+                        (rutaWS,"5");
+                ProductoBean p = resultWSProd.get(0);
+                    //fin obtiene articulo para saber su cantidad original
+
+                    //disminuye iinventario en cifras no en bd
+                double cantidadOriginal = p.getExistencia();
+                double cantidadFinal;
+                if (operacion == 1) {
+                    cantidadFinal = cantidadOriginal 
+                            + cantidadVendida;
+                } else {
+                    cantidadFinal = cantidadOriginal 
+                            - cantidadVendida;
+                }
+                    //fin disminuye iinventario en cifras no en bd
+
+                    //realiza ajuste inventario 
+                hiloInventarios = new WSInventarios();
+                rutaWS = constantes.getProperty("IP") 
+                        + constantes
+                             .getProperty("AJUSTAINVENTARIOVENTA");
+                ProductoBean ajuste = hiloInventarios
+                        .ejecutaWebService(rutaWS,"5"
+                        ,String.valueOf(detalle.getIdArticulo())
+                        ,"" + cantidadFinal);
+            //fin regresa producto a inventario
+            }
+            i++;
+        }
+    }
+
+    private CajaChicaBean regresaMovCaja(VentasBean venta, int operacion) {
+        //operacion venta = 1; error = 2
+        //registra el dinero regresado como movimiento 
+        //de caja chica
+        CajaChicaBean cajaChica = new CajaChicaBean();
+        cajaChica.setFecha(util.obtieneFechaServidor());
+        cajaChica.setMonto(venta.getTotal());
+        cajaChica.setTipoMov("Gasto");
+        cajaChica.setTipoComprobante("Ticket");
+        cajaChica.setReferencia("" + venta
+                .getIdVenta());
+        cajaChica.setIdUsuario(Ingreso.usuario
+                .getIdUsuario());
+        cajaChica.setIdSucursal(Ingreso.usuario
+                .getIdSucursal());
+        //busca ultimo registro
+        ArrayList<CajaChicaBean> resultWSCajaChica 
+                = null;
+        hiloCajaChicaList = new WSCajaChicaList();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.
+                getProperty("GETULTIMOCAJACHICA");
+        resultWSCajaChica = hiloCajaChicaList
+                .ejecutaWebService(rutaWS,"2");
+        CajaChicaBean cajaChicaBean = 
+                resultWSCajaChica.get(0);
+        String saldoAnterior = "" 
+                + cajaChicaBean.getSaldoAnterior();
+        String saldoActualA = "" 
+                + cajaChicaBean.getSaldoActual();
+        cajaChica.setSaldoAnterior(Double
+                .parseDouble(saldoActualA));
+        double saldoActual = 0;
+        saldoActual = Double.parseDouble(saldoActualA)
+                - venta.getTotal();
+        cajaChica.setSaldoActual(saldoActual);
+        hiloCajaChica = new WSCajaChica();
+        rutaWS = constantes.getProperty("IP") 
+                + constantes
+                 .getProperty("GUARDAMOVCAJACHICA");
+        CajaChicaBean movCajaInsertada = 
+                hiloCajaChica.ejecutaWebService
+                (rutaWS,"1"
+            , cajaChica.getFecha().toLocaleString()
+            , "" + cajaChica.getMonto()
+            , cajaChica.getTipoMov()
+            , cajaChica.getTipoComprobante()
+            , cajaChica.getReferencia()
+            , "" + cajaChica.getIdUsuario()
+            , "" + cajaChica.getIdSucursal()
+            , "" + cajaChica.getSaldoAnterior()
+            , "" + cajaChica.getSaldoActual()
+                );
+        return movCajaInsertada;
+    }    
+    
+    private VentasBean registraVenta(VentasBean venta, String operacion) {
+        //operacion=1 cancela venta normal, operacion=0 error
+        //actualiza venta
+        VentasBean ventaActualizada = null;
+        hiloVentas = new WSVentas();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("MODIFICAVENTA");
+        ventaActualizada = hiloVentas.ejecutaWebService
+                    (rutaWS,"3"
+                    ,"" + venta.getIdVenta()
+                    ,"" + venta.getFecha()
+                    ,"" + venta.getIdCliente()
+                    ,venta.getObservaciones()
+                    ,"" + venta.getIdUsuario()
+                    ,"" + venta.getIdSucursal()
+                    ,"" + venta.getSubtotal()
+                    ,"" + venta.getIva()
+                    ,"" + venta.getTotal()
+                    ,"" + venta.getTipovta()
+                    ,operacion
+                    ,"" + venta.getFacturada()
+                    ,"" + venta.getIdFactura()
+                );
+        return ventaActualizada;
+    }   
+    
+    private MovimientosBean registraBorraMovimiento(ProductoBean p
+            , int operacion, double cantidadVendida) {
+        //operacion=1 normal, operacion=2 error
+            //Guarda movimiento
+        String fecha = util.dateToDateTimeAsString(util
+                .obtieneFechaServidor());
+        MovimientosBean mov = new MovimientosBean();
+        hiloMovimientos = new WSMovimientos();
+        String rutaWS = constantes.getProperty("IP") 
+           + constantes.getProperty("GUARDAMOVIMIENTO");
+        MovimientosBean movimientoInsertado = null;
+        if (operacion == 1) {
+            movimientoInsertado = hiloMovimientos.ejecutaWebService(rutaWS,"1"
+                ,"" + p.getIdArticulo()
+                ,"" + Ingreso.usuario.getIdUsuario()
+                ,"Venta Cancelada"
+                ,"" + cantidadVendida
+                ,fecha
+                ,"" + Ingreso.usuario.getIdSucursal());
+            //Fin Guarda movimiento
+        } else {
+            //lama a la eliminacion del movimiento
+        }
+        return movimientoInsertado;
+    }
+    
     private void btnCancelarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarVentaActionPerformed
         int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente "
                 + "deseas cancelar la venta?");
@@ -718,32 +874,13 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                             + "venta");
                     return;
                 } else {
-                    //actualiza venta
-                    hiloVentas = new WSVentas();
-                    String rutaWS = constantes.getProperty("IP") + constantes
-                            .getProperty("MODIFICAVENTA");
-                    //p.getFechaIngreso().toLocaleString()
-                    VentasBean ventaActualizada = hiloVentas.ejecutaWebService
-                                (rutaWS,"3"
-                                ,"" + venta.getIdVenta()
-                                ,"" + venta.getFecha()
-                                ,"" + venta.getIdCliente()
-                                ,venta.getObservaciones()
-                                ,"" + venta.getIdUsuario()
-                                ,"" + venta.getIdSucursal()
-                                ,"" + venta.getSubtotal()
-                                ,"" + venta.getIva()
-                                ,"" + venta.getTotal()
-                                ,"" + venta.getTipovta()
-                                ,"1"
-                                ,"" + venta.getFacturada()
-                                ,"" + venta.getIdFactura()
-                            );
+                    VentasBean ventaActualizada = registraVenta(venta,"1");
                     //si ya se actualizo la venta
                     if (ventaActualizada != null) {
                         //Consulta detalle venta
                         String idVenta = "" + venta.getIdVenta();
                         resultWS = llenaTablaDetalleVentas(idVenta.trim(),0);
+                        int contDetalle = 0;
                         //recorre el detalle de la venta
                         for (DetalleVentaBean detalle : resultWS) {
                             //regresa producto a inventario
@@ -752,7 +889,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                             double cantidadVendida = detalle.getCantidad();
                             ArrayList<ProductoBean> resultWSProd = null;
                             hiloInventariosList = new WSInventariosList();
-                            rutaWS = constantes.getProperty("IP") 
+                            String rutaWS = constantes.getProperty("IP") 
                                     + constantes.getProperty("OBTIENEPRODUCTOPORID") 
                                     + String.valueOf(detalle.getIdArticulo());
                             resultWSProd = hiloInventariosList.ejecutaWebService
@@ -775,85 +912,51 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                                     .ejecutaWebService(rutaWS,"5"
                                     ,String.valueOf(detalle.getIdArticulo())
                                     ,"" + cantidadFinal);
+//                                    ,"eroror");
                         //fin regresa producto a inventario
-
                             //registra movimiento
                             if (ajuste != null) {
-                                    //Guarda movimiento
-                                String fecha = util.dateToDateTimeAsString(util
-                                        .obtieneFechaServidor());
-                                MovimientosBean mov = new MovimientosBean();
-                                hiloMovimientos = new WSMovimientos();
-                                rutaWS = constantes.getProperty("IP") 
-                                   + constantes.getProperty("GUARDAMOVIMIENTO");
+//                                    //Guarda movimiento
+//                                String fecha = util.dateToDateTimeAsString(util
+//                                        .obtieneFechaServidor());
+//                                MovimientosBean mov = new MovimientosBean();
+//                                hiloMovimientos = new WSMovimientos();
+//                                rutaWS = constantes.getProperty("IP") 
+//                                   + constantes.getProperty("GUARDAMOVIMIENTO");
+//                                MovimientosBean movimientoInsertado = 
+//                                        hiloMovimientos.ejecutaWebService
+//                                        (rutaWS,"1"
+//                                    ,"" + p.getIdArticulo()
+//                                    ,"" + Ingreso.usuario.getIdUsuario()
+//                                    ,"Venta Cancelada"
+//                                    ,"" + cantidadVendida
+//                                    ,fecha
+//                                    ,"" + Ingreso.usuario.getIdSucursal());
+//                                    //Fin Guarda movimiento
                                 MovimientosBean movimientoInsertado = 
-                                        hiloMovimientos.ejecutaWebService
-                                        (rutaWS,"1"
-                                    ,"" + p.getIdArticulo()
-                                    ,"" + Ingreso.usuario.getIdUsuario()
-                                    ,"Venta Cancelada"
-                                    ,"" + cantidadVendida
-                                    ,fecha
-                                    ,"" + Ingreso.usuario.getIdSucursal());
-                                    //Fin Guarda movimiento
+                                        registraBorraMovimiento(p ,
+                                                1, cantidadVendida);
                                 if (movimientoInsertado!=null) {
-                                    //registra el dinero regresado como movimiento 
-                                    //de caja chica
-                                    CajaChicaBean cajaChica = new CajaChicaBean();
-                                    cajaChica.setFecha(util.obtieneFechaServidor());
-                                    cajaChica.setMonto(venta.getTotal());
-                                    cajaChica.setTipoMov("Gasto");
-                                    cajaChica.setTipoComprobante("Ticket");
-                                    cajaChica.setReferencia("" + venta
-                                            .getIdVenta());
-                                    cajaChica.setIdUsuario(Ingreso.usuario
-                                            .getIdUsuario());
-                                    cajaChica.setIdSucursal(Ingreso.usuario
-                                            .getIdSucursal());
-                                    //busca ultimo registro
-                                    ArrayList<CajaChicaBean> resultWSCajaChica 
-                                            = null;
-                                    hiloCajaChicaList = new WSCajaChicaList();
-                                    rutaWS = constantes.getProperty("IP") 
-                                            + constantes.
-                                            getProperty("GETULTIMOCAJACHICA");
-                                    resultWSCajaChica = hiloCajaChicaList
-                                            .ejecutaWebService(rutaWS,"2");
-                                    CajaChicaBean cajaChicaBean = 
-                                            resultWSCajaChica.get(0);
-                                    String saldoAnterior = "" 
-                                            + cajaChicaBean.getSaldoAnterior();
-                                    String saldoActualA = "" 
-                                            + cajaChicaBean.getSaldoActual();
-                                    cajaChica.setSaldoAnterior(Double
-                                            .parseDouble(saldoActualA));
-                                    double saldoActual = 0;
-                                    saldoActual = Double.parseDouble(saldoActualA)
-                                            - venta.getTotal();
-                                    cajaChica.setSaldoActual(saldoActual);
-                                    hiloCajaChica = new WSCajaChica();
-                                    rutaWS = constantes.getProperty("IP") 
-                                            + constantes
-                                             .getProperty("GUARDAMOVCAJACHICA");
+                                    contDetalle++;
                                     CajaChicaBean movCajaInsertada = 
-                                            hiloCajaChica.ejecutaWebService
-                                            (rutaWS,"1"
-                                        , cajaChica.getFecha().toLocaleString()
-                                        , "" + cajaChica.getMonto()
-                                        , cajaChica.getTipoMov()
-                                        , cajaChica.getTipoComprobante()
-                                        , cajaChica.getReferencia()
-                                        , "" + cajaChica.getIdUsuario()
-                                        , "" + cajaChica.getIdSucursal()
-                                        , "" + cajaChica.getSaldoAnterior()
-                                        , "" + cajaChica.getSaldoActual()
-                                            );
+                                            regresaMovCaja(venta, 1);
                                     if (movCajaInsertada != null) {
-                                        JOptionPane.showMessageDialog(null, 
-                                                "Regreso de venta exitoso");
+                                        if (contDetalle == resultWS.size()) {
+                                            JOptionPane.showMessageDialog(null, 
+                                                    "Regreso de venta exitoso");
+                                        }
                                     }                                     
                                     //fin registra el dinero regresado como movimiento de caja chica
                                 }
+                            } else {
+                                //rollbacks venta y ajuste por error
+                                ventaActualizada = registraVenta(venta,"0");
+                                //rollbackajusteinventario
+                                rollBackAjusteInventario(resultWS, 2, contDetalle);                                
+                                JOptionPane.showMessageDialog(null, 
+                                        "Error al cancelar la venta, inténtalo "
+                                                + "mas tarde");
+                                return;
                             }
                             //fin registra movimiento
                         }
