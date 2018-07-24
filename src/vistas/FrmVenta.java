@@ -269,6 +269,17 @@ public class FrmVenta extends javax.swing.JFrame {
         return id;
     }
     
+    public int obtenerUltimoIdMovimientos() {
+        int id;
+        MovimientosBean resultWS;
+        hiloMovimientos = new WSMovimientos();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETULTIMOIDMOVIMIENTOS");
+        resultWS = hiloMovimientos.ejecutaWebService(rutaWS,"2");
+        id = resultWS.getIdMovimiento() + 1;
+        return id;
+    }
+    
     public int obtenerUltimoIdPedido() {
         int id = 0;
         PedidoBean resultWS = null;
@@ -1024,6 +1035,7 @@ public class FrmVenta extends javax.swing.JFrame {
                 "Codigo", "Descripción"
             }
         ));
+        jtProducto.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jtProducto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jtProductoMouseClicked(evt);
@@ -1167,8 +1179,9 @@ public class FrmVenta extends javax.swing.JFrame {
         return eliminado;
     }
     
-    private void ajusteInventario(double cantidadVendida, int idArticuloVendido
+    private boolean ajusteInventario(double cantidadVendida, int idArticuloVendido
             , int operacion){ //operacion =1 venta, operacion =2 regreso
+        boolean hecho = false;
         //Dismimuye inventario
             //obtiene articulo para saber su cantidad 
             //original
@@ -1206,28 +1219,44 @@ public class FrmVenta extends javax.swing.JFrame {
                 ,String.valueOf(idArticuloVendido)
                 ,"" + cantidadFinal);
         if (ajuste != null) {
-                //Guarda movimiento
-            String fecha = util.dateToDateTimeAsString(util
-                    .obtieneFechaServidor());
-            MovimientosBean mov = new MovimientosBean();
-            hiloMovimientos = new WSMovimientos();
-            rutaWS = constantes.getProperty("IP") 
-                    + constantes
-                     .getProperty("GUARDAMOVIMIENTO");
-            MovimientosBean movimientoInsertado 
-                    = hiloMovimientos
-                   .ejecutaWebService(rutaWS,"1"
-                ,"" + p.getIdArticulo()
-                ,"" + Ingreso.usuario.getIdUsuario()
-                ,"VENTA NORMAL"
-                ,"" + cantidadVendida
-                ,fecha
-                ,"" + Ingreso.usuario.getIdSucursal());
-                //Fin Guarda movimiento
+            if (operacion!=2) {
+                if (guardaMovimientoVenta(p,cantidadVendida)) {
+                    hecho = true;
+                } else {
+                    hecho = false;
+                }
+            }
+        }
+        return hecho;
+    }
+    
+    private boolean guardaMovimientoVenta(ProductoBean p, double cantidadVendida) {
+            //Guarda movimiento
+        String fecha = util.dateToDateTimeAsString(util
+                .obtieneFechaServidor());
+        MovimientosBean mov = new MovimientosBean();
+        hiloMovimientos = new WSMovimientos();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes
+                 .getProperty("GUARDAMOVIMIENTO");
+        MovimientosBean movimientoInsertado 
+                = hiloMovimientos
+               .ejecutaWebService(rutaWS,"1"
+            ,"" + p.getIdArticulo()
+            ,"" + Ingreso.usuario.getIdUsuario()
+            ,"VENTA NORMAL"
+            ,"" + cantidadVendida
+            ,fecha
+            ,"" + Ingreso.usuario.getIdSucursal());
+            //Fin Guarda movimiento
+        if (movimientoInsertado!=null) {
+            return true;
+        } else {
+            return false;
         }
     }
     
-    private void roolBackAjusteInventario(int contDetallesGuardados) {
+    private void roolBackAjusteInventario(int contDetallesGuardados, int idMov){
         int i = 0; //cuenta los detalles que se van regresando
         for (DetalleVentaBean detVentBeanADisminuir :
                 detalleVentaProducto) {
@@ -1236,13 +1265,156 @@ public class FrmVenta extends javax.swing.JFrame {
                         .getIdArticulo();
                 double cantidadVendida = detVentBeanADisminuir
                         .getCantidad();
+                //AJUSTA INVENTARIO
                 ajusteInventario(cantidadVendida, idArticuloVendido, 2);
+                //BORRA MOVIMIENTOS GUARDADOS HASTA QUE SE SUCITO EL ERROR
+                borraMovimiento(idMov);
+                idMov++;
+                //FIN BORRA MOVIMIENTOS GUARDADOS HASTA QUE SE SUCITO EL ERROR
                 i++;
             }
         } 
+        borraMovimiento(idMov);
     }
     
-    private void generaVentaAnterior() {
+    private void borraMovimiento(int idMov) {
+        hiloMovimientos = new WSMovimientos();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("ELIMINAMOVIMIENTO");
+        MovimientosBean movimientoEliminar = hiloMovimientos.ejecutaWebService(rutaWS
+                ,"3"
+                , "" + idMov);
+    }
+    
+    private VentasBean guardaVenta() {
+        //Arma objeto Venta
+        ventasBean = new VentasBean();
+        ventasBean.setIdUsuario(Ingreso.usuario.getIdUsuario());
+        int s = util.buscaIdCliente(Principal.clientesHM
+                , cboClientes.getSelectedItem().toString());
+        ventasBean.setIdCliente(s);
+        //checar despues
+        ventasBean.setObservaciones("");
+        //fin checar despues
+        ventasBean.setIdSucursal(Ingreso.usuario.getIdSucursal());
+
+        ventasBean.setSubtotal(Double.parseDouble(txtSubTotal.getText()));
+        ventasBean.setIva(Double.parseDouble(txtIva.getText()));
+        ventasBean.setTotal(Double.parseDouble(txtMontoApagar.getText()));
+        ventasBean.setTipovta(cboTipoVenta.getSelectedItem().toString());
+        ventasBean.setCancelada(0);
+        ventasBean.setFacturada(0);
+        ventasBean.setIdFactura(1);
+        //Fin Arma objeto Venta
+
+        //guarda venta
+        hiloVentas = new WSVentas();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GUARDAVENTA");
+        VentasBean ventaGuardada = hiloVentas
+                .ejecutaWebService(rutaWS,"2"
+                , "" + ventasBean.getIdCliente()
+                , "" + ventasBean.getObservaciones()
+                , "" + ventasBean.getIdUsuario()
+                , "" + ventasBean.getIdSucursal()
+                , "" + ventasBean.getSubtotal()
+                , "" + ventasBean.getIva()
+                , "" + ventasBean.getTotal()
+                , "VENTA " + ventasBean.getTipovta()
+                , "" + ventasBean.getCancelada()
+                , "" + ventasBean.getFacturada()
+                , "" + ventasBean.getIdFactura()
+                );
+        return ventaGuardada;
+    }
+
+    private boolean guardaDetalleVenta() {
+        int idMov = 0;
+        boolean ventaOK = true;
+        /*solo para prueba
+        DetalleVentaBean detVentBeanADisminuirP3 = new
+            DetalleVentaBean();
+        detVentBeanADisminuirP3.setPrecio(1);
+        detVentBeanADisminuirP3.setCantidad(1);
+        detVentBeanADisminuirP3.setDescuento(0);
+        detVentBeanADisminuirP3.setUnidadMedida("PIEZA");
+        detVentBeanADisminuirP3.setIdArticulo(-10);//012
+        detalleVentaProducto.add(detVentBeanADisminuirP3);
+        //fin solo para prueba*/
+
+        int contDetallesGuardados = 0;
+        //ciclo para recorrer detalle venta
+        for (DetalleVentaBean detVentBeanADisminuir : detalleVentaProducto) {
+            hiloDetalleVentas = new WSDetalleVentas();
+            String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GUARDADETALLEVENTA");
+                // para ajuste inventario                                }
+            int idArticuloVendido = detVentBeanADisminuir
+                    .getIdArticulo();
+            double cantidadVendida = detVentBeanADisminuir
+                    .getCantidad();
+            // fin para ajuste inventario                                }
+            DetalleVentaBean detalleVentaGuardada = 
+                    hiloDetalleVentas.
+                            ejecutaWebService(rutaWS
+                            ,"1"
+                    , "" + Integer.parseInt(txtNroVenta
+                            .getText().trim())
+                    , "" + detVentBeanADisminuir.getIdArticulo()
+                    , "" + detVentBeanADisminuir.getPrecio()
+                    , "" + detVentBeanADisminuir.getCantidad()
+                    , "" + detVentBeanADisminuir.getDescuento()
+                    , detVentBeanADisminuir.getUnidadMedida()
+                    , "" + Ingreso.usuario.getIdSucursal()
+                            );
+
+            // para ajuste en el mismo store con los datos 
+            // anteriores lo proceso
+            if (detalleVentaGuardada != null) {
+                if (ajusteInventario(cantidadVendida, 
+                    idArticuloVendido,1)) {
+                    if (idMov == 0) {
+                        idMov = obtenerUltimoIdMovimientos() - 1;
+                    }
+                    contDetallesGuardados++;
+                } else {
+                    if (idMov>0) {
+                        if (contDetallesGuardados > 0) {
+                            roolBackAjusteInventario
+                                (contDetallesGuardados, idMov);
+                        }
+                    }
+                    //si hay error en guardado de mov. o ajuste de inventario
+                    borraVenta(Integer.parseInt(txtNroVenta
+                            .getText().trim()));//ventasBean.getIdVenta() - 1);
+                    borrar();
+                    ventasBean = null;
+                    JOptionPane.showMessageDialog(null, "Error "
+                            + "al guardar la venta");
+                    ventaOK = false;
+                    break;
+                }
+            } else { //si no se guardo un solo detalle borro 
+                //la venta  los detalles guardados
+                if (contDetallesGuardados > 0) {
+                    roolBackAjusteInventario
+                        (contDetallesGuardados, idMov);
+                }
+                //si hay error en guardado de mov. o ajuste de inventario
+                borraVenta(Integer.parseInt(txtNroVenta
+                        .getText().trim()));//ventasBean.getIdVenta() - 1);
+                borrar();
+                ventasBean = null;
+                JOptionPane.showMessageDialog(null, "Error "
+                        + "al guardar la venta");
+                ventaOK = false;
+                break;
+            }
+        }
+        return ventaOK;
+    }
+    
+    private void generaVentaGeneral() {
         txtCodigoPro.setText("Espere...");
         int result = JOptionPane.showConfirmDialog(this, "¿Deseas Ejecutar la "
                 + "Venta?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
@@ -1253,124 +1425,28 @@ public class FrmVenta extends javax.swing.JFrame {
                 //VERIFICA QUE HAYA PAGO Y CAMBIO EN LA VENTA
                 if (!txtImporte.getText().equalsIgnoreCase("") && 
                         !txtVuelto.getText().equalsIgnoreCase("")) {
-                    //Arma objeto Venta
-                    ventasBean = new VentasBean();
-                    ventasBean.setIdUsuario(Ingreso.usuario.getIdUsuario());
-                    int s = util.buscaIdCliente(Principal.clientesHM
-                            , cboClientes.getSelectedItem().toString());
-                    ventasBean.setIdCliente(s);
-                    //checar despues
-                    ventasBean.setObservaciones("");
-                    //fin checar despues
-                    ventasBean.setIdSucursal(Ingreso.usuario.getIdSucursal());
-                    
-                    ventasBean.setSubtotal(Double.parseDouble(txtSubTotal.getText()));
-                    ventasBean.setIva(Double.parseDouble(txtIva.getText()));
-                    ventasBean.setTotal(Double.parseDouble(txtMontoApagar.getText()));
-                    ventasBean.setTipovta(cboTipoVenta.getSelectedItem().toString());
-                    ventasBean.setCancelada(0);
-                    ventasBean.setFacturada(0);
-                    ventasBean.setIdFactura(1);
-                    //Fin Arma objeto Venta
-
-                    //guarda venta
-                    hiloVentas = new WSVentas();
-                    String rutaWS = constantes.getProperty("IP") 
-                            + constantes.getProperty("GUARDAVENTA");
-                    VentasBean ventaGuardada = hiloVentas
-                            .ejecutaWebService(rutaWS,"2"
-                            , "" + ventasBean.getIdCliente()
-                            , "" + ventasBean.getObservaciones()
-                            , "" + ventasBean.getIdUsuario()
-                            , "" + ventasBean.getIdSucursal()
-                            , "" + ventasBean.getSubtotal()
-                            , "" + ventasBean.getIva()
-                            , "" + ventasBean.getTotal()
-                            , "VENTA " + ventasBean.getTipovta()
-                            , "" + ventasBean.getCancelada()
-                            , "" + ventasBean.getFacturada()
-                            , "" + ventasBean.getIdFactura()
-                            );
+                    VentasBean ventaGuardada = guardaVenta();
                     if (ventaGuardada != null) {
                         //guarda detalle venta
-                        int contDetallesGuardados = 0;
-                        //solo para prueba
-//                            DetalleVentaBean detVentBeanADisminuirP3 = new
-//                                DetalleVentaBean();
-//                            detVentBeanADisminuirP3.setPrecio(1);
-//                            detVentBeanADisminuirP3.setCantidad(1);
-//                            detVentBeanADisminuirP3.setDescuento(0);
-//                            detVentBeanADisminuirP3.setUnidadMedida("PIEZA");
-//                            detVentBeanADisminuirP3.setIdArticulo(-10);//012
-//                            detalleVentaProducto.add(detVentBeanADisminuirP3);
-                        //fin solo para prueba
-                        
-                        //ciclo para recorrer detalle venta
-                        for (DetalleVentaBean detVentBeanADisminuir :
-                                detalleVentaProducto) {
-                            hiloDetalleVentas = new WSDetalleVentas();
-                            rutaWS = constantes.getProperty("IP") 
-                                + constantes.getProperty("GUARDADETALLEVENTA");
-                                // para ajuste inventario                                }
-                            int idArticuloVendido = detVentBeanADisminuir
-                                    .getIdArticulo();
-                            double cantidadVendida = detVentBeanADisminuir
-                                    .getCantidad();
-                            // fin para ajuste inventario                                }
-                            DetalleVentaBean detalleVentaGuardada = 
-                                    hiloDetalleVentas.
-                                            ejecutaWebService(rutaWS
-                                            ,"1"
-                                    , "" + Integer.parseInt(txtNroVenta
-                                            .getText().trim())
-                                    , "" + detVentBeanADisminuir.getIdArticulo()
-                                    , "" + detVentBeanADisminuir.getPrecio()
-                                    , "" + detVentBeanADisminuir.getCantidad()
-                                    , "" + detVentBeanADisminuir.getDescuento()
-                                    , detVentBeanADisminuir.getUnidadMedida()
-                                    , "" + Ingreso.usuario.getIdSucursal()
-                                            );
-                            
-                            // para ajuste en el mismo store con los datos 
-                            // anteriores lo proceso
-                            
-                            
-                            if (detalleVentaGuardada != null) {
-                                ajusteInventario(cantidadVendida, 
-                                    idArticuloVendido,1);
-                                contDetallesGuardados++;
-                            } else { //si no se guardo un solo detalle borro 
-                                //la venta  los detalles guardados
-                                borraVenta(ventasBean.getIdVenta() - 1);
-                                if (contDetallesGuardados > 0) {
-                                    roolBackAjusteInventario
-                                        (contDetallesGuardados);
-                                }
-                                borrar();
-                                ventasBean = null;
-                                JOptionPane.showMessageDialog(null, "Error "
-                                        + "al guardar la venta");
-                                return;
+//                        int contDetallesGuardados = 0;
+                        boolean ventaOK = guardaDetalleVenta();
+                        if (ventaOK) {
+                            JOptionPane.showMessageDialog(null, 
+                                    "VENTA GUARDADA CORRRECTAMENTE");
+    //                            detalleVentaProducto.remove(detallePedido);
+                            int resultado = JOptionPane.showConfirmDialog(this, 
+                                    "¿Deseas "
+                                    + "Imprimir la Venta?", "Mensaje..!!"
+                                    , JOptionPane.YES_NO_OPTION);
+                            if (resultado == JOptionPane.YES_OPTION) {
+                                //imprime ticket
+                                imprimeVenta("Venta");
+                                //fin imprime ticket
                             }
                         }
-                        //fin ciclo para recorrer detalle venta
-
                         //carga productos actualizados
                         inventario = util.getInventario();
                         //fin carga productos actualizados
-
-                        JOptionPane.showMessageDialog(null, 
-                                "VENTA GUARDADA CORRRECTAMENTE");
-//                            detalleVentaProducto.remove(detallePedido);
-                        int resultado = JOptionPane.showConfirmDialog(this, 
-                                "¿Deseas "
-                                + "Imprimir la Venta?", "Mensaje..!!"
-                                , JOptionPane.YES_NO_OPTION);
-                        if (resultado == JOptionPane.YES_OPTION) {
-                            //imprime ticket
-                            imprimeVenta("Venta");
-                            //fin imprime ticket
-                        }
                         borrar();
                         ventasBean = null;
                         //fin guarda detalle venta
@@ -1394,130 +1470,7 @@ public class FrmVenta extends javax.swing.JFrame {
     }
     
     private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
-        //generaVentaAnterior();
-        
-        txtCodigoPro.setText("Espere...");
-        int result = JOptionPane.showConfirmDialog(this, "¿Deseas Ejecutar la "
-                + "Venta?", "Mensaje..!!", JOptionPane.YES_NO_OPTION);
-        // VERIFICA si realmente se quierte guardar la venta
-        if (result == JOptionPane.YES_OPTION) {
-            //VERIFICA SI HAY PRODUCTO A VENDER            
-            if (detalleVentaProducto.size()>0) {
-                //VERIFICA QUE HAYA PAGO Y CAMBIO EN LA VENTA
-                if (!txtImporte.getText().equalsIgnoreCase("") && 
-                        !txtVuelto.getText().equalsIgnoreCase("")) {
-                    //Arma objeto Venta
-                    ventasBean = new VentasBean();
-                    ventasBean.setIdUsuario(Ingreso.usuario.getIdUsuario());
-                    int s = util.buscaIdCliente(Principal.clientesHM
-                            , cboClientes.getSelectedItem().toString());
-                    ventasBean.setIdCliente(s);
-                    //checar despues
-                    ventasBean.setObservaciones("");
-                    //fin checar despues
-                    ventasBean.setIdSucursal(Ingreso.usuario.getIdSucursal());
-                    
-                    ventasBean.setSubtotal(Double.parseDouble(txtSubTotal.getText()));
-                    ventasBean.setIva(Double.parseDouble(txtIva.getText()));
-                    ventasBean.setTotal(Double.parseDouble(txtMontoApagar.getText()));
-                    ventasBean.setTipovta(cboTipoVenta.getSelectedItem().toString());
-                    ventasBean.setCancelada(0);
-                    ventasBean.setFacturada(0);
-                    ventasBean.setIdFactura(1);
-                    //Fin Arma objeto Venta
-
-                    //numero de venta
-                    //arma string de venta separado por pipes
-                    String ventaString = "";
-                    /*
-                    fecha,idCliente,observaciones
-                    ,idUsuario,idSucursal,subtotal
-                    ,iva,total,tipovta,cancelada,facturada,idFactura                    
-                    */
-                    //la fecha la dejo para el llamado del webservice
-                    ventaString = "|" + ventasBean.getIdCliente()
-                            + "|" + ventasBean.getObservaciones()
-                            + "|" + ventasBean.getIdUsuario()
-                            + "|" + ventasBean.getIdSucursal()
-                            + "|" + ventasBean.getSubtotal()
-                            + "|" + ventasBean.getIva()
-                            + "|" + ventasBean.getTotal()
-                            + "|" + "VENTA " + ventasBean.getTipovta()
-                            + "|" +  ventasBean.getCancelada()
-                            + "|" +  ventasBean.getFacturada()
-                            + "|" +  ventasBean.getIdFactura() 
-                            + "|";
-                            
-                    //guarda detalle
-                    String detalleVentaString = "";
-                    for (DetalleVentaBean detVentBeanADisminuir :
-                            detalleVentaProducto) {
-                        /*    
-                        idDetalleVenta,idVenta,idArticulo,precio
-                        ,cantidad,descuento,idSucursal,unidadMedida                            
-                        */    
-                        detalleVentaString = detalleVentaString 
-                                + Integer.parseInt(txtNroVenta
-                                        .getText().trim())
-                                + "|" + detVentBeanADisminuir.getIdArticulo()
-                                + "|" + detVentBeanADisminuir.getPrecio()
-                                + "|" + detVentBeanADisminuir.getCantidad()
-                                + "|" + detVentBeanADisminuir.getDescuento()
-                                + "|" + Ingreso.usuario.getIdSucursal()
-                                + "|" + detVentBeanADisminuir.getUnidadMedida()
-                                + "|" + "@@@";
-                        //para ajuste inventario y guardado de moviemiento 
-                        //con los datos anteriores
-                    }
-                    
-                    
-                    //guarda venta
-                    hiloVentas = new WSVentas();
-                    String rutaWS = constantes.getProperty("IP") 
-                            + constantes.getProperty("GUARDAVENTASTORE");
-                    VentasBean ventaGuardada = hiloVentas
-                            .ejecutaWebService(rutaWS,"5"
-                            , ventaString
-                            , detalleVentaString
-                            );
-                    
-                    if (Integer.parseInt(txtNroVenta
-                                        .getText().trim()) != obtenerUltimoId()) {
-                        //carga productos actualizados
-                        inventario = util.getInventario();
-                        //fin carga productos actualizados
-
-                        JOptionPane.showMessageDialog(null, 
-                                "VENTA GUARDADA CORRRECTAMENTE");
-    //                            detalleVentaProducto.remove(detallePedido);
-                        int resultado = JOptionPane.showConfirmDialog(this, 
-                                "¿Deseas "
-                                + "Imprimir la Venta?", "Mensaje..!!"
-                                , JOptionPane.YES_NO_OPTION);
-                        if (resultado == JOptionPane.YES_OPTION) {
-                            //imprime ticket
-                            imprimeVenta("Venta");
-                            //fin imprime ticket
-                        }
-                        borrar();
-                        ventasBean = null;
-                        //fin guarda detalle venta
-                    } else {
-                        JOptionPane.showMessageDialog(null, 
-                                "ERROR AL GUARDAR LA VENTA, INTÉNTELO MÁS TARDE");
-                        return;
-                    }
-                    //fin guarda venta
-                } else {
-                    JOptionPane.showMessageDialog(null, "DEBES COMPLETAR LA VENTA "
-                            + "PAGANGO EL IMPORTE CORRESPONDIENTE");
-                    txtImporte.requestFocus(true);
-                }
-        } else {
-                JOptionPane.showMessageDialog(null, "NO HAY PRODUCTOS PARA VENDER");
-                return;
-            }
-        }
+        generaVentaGeneral();
         txtCodigoPro.setText("");
     }//GEN-LAST:event_btnGenerarVentaActionPerformed
 

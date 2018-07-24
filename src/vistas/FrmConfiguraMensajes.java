@@ -40,7 +40,10 @@ public class FrmConfiguraMensajes extends javax.swing.JFrame {
         jCalFechaFin.setVisible(false);
         jCalFechaIni.setDate(util.obtieneFechaServidor());
         jCalFechaIni.setEnabled(false);
-        lblUsuario.setText("Usuario : "+Ingreso.usuario.getNombre());
+        lblUsuario.setText("Usuario : " + Ingreso.usuario.getNombre()
+                + " " + Ingreso.usuario.getApellido_paterno()
+                + " " + Ingreso.usuario.getApellido_materno()
+        );
         hiloEmpresa = new WSDatosEmpresa();
         String rutaWS = constantes.getProperty("IP") + constantes.getProperty(""
                 + "GETDATOSEMPRESA");
