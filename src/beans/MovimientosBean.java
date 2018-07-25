@@ -9,8 +9,25 @@ public class MovimientosBean {
     private String tipoOperacion;
     private double cantidad;
     private Date fechaOperacion;
-    private int idProveedor;
     private int idSucursal;    
+    private double existenciaAnterior;
+    private double existenciaActual;
+
+    public double getExistenciaAnterior() {
+        return existenciaAnterior;
+    }
+
+    public void setExistenciaAnterior(double existenciaAnterior) {
+        this.existenciaAnterior = existenciaAnterior;
+    }
+
+    public double getExistenciaActual() {
+        return existenciaActual;
+    }
+
+    public void setExistenciaActual(double existenciaActual) {
+        this.existenciaActual = existenciaActual;
+    }
 
     public int getIdMovimiento() {
         return idMovimiento;
@@ -58,14 +75,6 @@ public class MovimientosBean {
 
     public void setFechaOperacion(Date fechaOperacion) {
         this.fechaOperacion = fechaOperacion;
-    }
-
-    public int getIdProveedor() {
-        return idProveedor;
-    }
-
-    public void setIdProveedor(int idProveedor) {
-        this.idProveedor = idProveedor;
     }
 
     public int getIdSucursal() {

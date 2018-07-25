@@ -67,7 +67,7 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
 
     //Para Tabla Ventas
     public void recargarTableMovimientos(ArrayList<MovimientosBean> list) {
-        Object[][] datos = new Object[list.size()][7];
+        Object[][] datos = new Object[list.size()][9];
         int i = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         for (MovimientosBean p : list) {
@@ -87,10 +87,12 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
                 datos[i][5] = util.buscaDescFromIdUsu(Principal.usuariosHM 
                         , "" + p.getIdUsuario());
                 datos[i][6] = p.getTipoOperacion();
+                datos[i][7] = p.getExistenciaAnterior();
+                datos[i][8] = p.getExistenciaActual();
                 i++;
             }
         }
-        Object[][] datosFinal = new Object[i][7];
+        Object[][] datosFinal = new Object[i][9];
         //Para filtrar los registros
         for (int j = 0; j < i; j++) {
             if (datos[j][0] != null) {
@@ -101,14 +103,17 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
                 datosFinal[j][4] = datos[j][4];
                 datosFinal[j][5] = datos[j][5];
                 datosFinal[j][6] = datos[j][6];
+                datosFinal[j][7] = datos[j][7];
+                datosFinal[j][8] = datos[j][8];
             }
         }
         //Fin Para filtrar los registros
         tblConsultaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
                 datosFinal,
                 new String[]{
-                    "No. MOVIMIENTO", "FECHA MOV.", "PRODUCTO", "CANTIDAD"
-                        , "SUCURSAL", "USUARIO", "OPERACIÓN"
+                    "No. MOVIMIENTO", "FECHA MOV.", "PRODUCTO", "CANTIDAD MOVIDA"
+                        , "SUCURSAL", "USUARIO", "OPERACIÓN", "EXIST. ANT."
+                        , "EXIST. ACTUAL"
                 }) {
 
             @Override
@@ -616,6 +621,10 @@ public class FrmConsultaMovimientos extends javax.swing.JFrame {
                                 .getModel().getValueAt(i,5).toString()));
                 movimiento.setTipoOperacion(tblConsultaMovimientos.getModel()
                         .getValueAt(i,6).toString());
+                movimiento.setExistenciaAnterior(Double.parseDouble(tblConsultaMovimientos.getModel()
+                        .getValueAt(i,7).toString()));
+                movimiento.setExistenciaActual(Double.parseDouble(tblConsultaMovimientos.getModel()
+                        .getValueAt(i,8).toString()));
                 resultWS.add(movimiento);
             }
         }

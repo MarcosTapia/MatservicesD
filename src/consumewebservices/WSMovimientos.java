@@ -41,8 +41,10 @@ public class WSMovimientos {
     String tipoOperacion;
     String cantidad;
     String fechaIngreso;
-    String idSucursal;
     String idMovimiento;
+    String idSucursal;
+    String existenciaAnterior;
+    String existenciaActual;
     //parametros con valores de usuario
     URL url = null; // Url de donde queremos obtener información
     String devuelve ="";
@@ -54,37 +56,14 @@ public class WSMovimientos {
         MovimientosBean movimientoObj = null;
         switch (params[1]) { 
             case "1" : 
-                //idMovimiento
-                //idArticulo
-                //idUsuario
-                //tipoOperacion
-                //cantidad
-                //fechaOperacion
-                //idSucursal              
-
-                //$body['idArticulo'],
-                //$body['idUsuario'],
-                //$body['tipoOperacion'],
-                //$body['cantidad'],
-                //$body['fechaOperacion']
-                //$body['idSucursal']
-
-                /* Notas de Tipo de Movimiento
-                Venta
-                Venta Pedido
-                Incremento Inventario Manual
-                Decremento Inventario Manual        
-                Compra Normal
-                otro
-                cambio Presio publico
-                Notas de Tipo de Movimiento */
-
                 idArticulo = params[2];
                 idUsuario = params[3];
                 tipoOperacion = params[4];
                 cantidad = params[5];
                 fechaIngreso = params[6];
                 idSucursal = params[7];
+                existenciaAnterior = params[8];
+                existenciaActual = params[9];
                 movimientoObj = insertaMovimientoWS(); 
                 break;
             case "2" : 
@@ -92,7 +71,8 @@ public class WSMovimientos {
                 break;
             case "3" : 
                 idMovimiento = params[2];
-                movimientoObj = eliminaMovimientoWS(); 
+                idUsuario = params[3];
+                movimientoObj = eliminaMovimientoPorUsuarioWS(); 
                 break;
 //            case "4" : 
 //                productoObj = buscaProdPorCodigoWS(cadena); 
@@ -123,6 +103,8 @@ public class WSMovimientos {
             jsonParam.put("cantidad", cantidad);
             jsonParam.put("fechaOperacion", fechaIngreso);
             jsonParam.put("idSucursal", idSucursal);
+            jsonParam.put("existenciaAnterior", existenciaAnterior);
+            jsonParam.put("existenciaActual", existenciaActual);
             
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
@@ -213,7 +195,7 @@ public class WSMovimientos {
         return movimiento;
     }
     
-    public MovimientosBean eliminaMovimientoWS(String... params) {
+    public MovimientosBean eliminaMovimientoPorUsuarioWS(String... params) {
         MovimientosBean elimina = null;
         try {
             HttpURLConnection urlConn;
@@ -230,6 +212,7 @@ public class WSMovimientos {
             //Creo el Objeto JSON
             JSONObject jsonParam = new JSONObject();
             jsonParam.put("idMovimiento", idMovimiento);
+            jsonParam.put("idUsuario", idUsuario);
             // Envio los parámetros post.
             OutputStream os = urlConn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(

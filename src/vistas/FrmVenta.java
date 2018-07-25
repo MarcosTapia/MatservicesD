@@ -13,6 +13,7 @@ import consumewebservices.WSDetalleVentas;
 import consumewebservices.WSInventarios;
 import consumewebservices.WSInventariosList;
 import consumewebservices.WSMovimientos;
+import consumewebservices.WSMovimientosList;
 import consumewebservices.WSPedidos;
 import consumewebservices.WSVentas;
 import java.awt.Toolkit;
@@ -53,6 +54,7 @@ public class FrmVenta extends javax.swing.JFrame {
     WSPedidos hiloPedidos;
     WSDetallePedidos hiloDetallePedidos;
     WSMovimientos hiloMovimientos;
+    WSMovimientosList hiloMovimientosList;
     //Fin WS
     
     String codProdAnterior = "";
@@ -1231,6 +1233,11 @@ public class FrmVenta extends javax.swing.JFrame {
     }
     
     private boolean guardaMovimientoVenta(ProductoBean p, double cantidadVendida) {
+        double existenciaAnterior;
+        double existenciaActual;
+        existenciaAnterior = p.getExistencia();
+        existenciaActual = p.getExistencia() - cantidadVendida;
+
             //Guarda movimiento
         String fecha = util.dateToDateTimeAsString(util
                 .obtieneFechaServidor());
@@ -1247,7 +1254,10 @@ public class FrmVenta extends javax.swing.JFrame {
             ,"VENTA NORMAL"
             ,"" + cantidadVendida
             ,fecha
-            ,"" + Ingreso.usuario.getIdSucursal());
+            ,"" + Ingreso.usuario.getIdSucursal()
+            ,"" + existenciaAnterior
+            ,"" + existenciaActual
+        );
             //Fin Guarda movimiento
         if (movimientoInsertado!=null) {
             return true;
@@ -1268,22 +1278,36 @@ public class FrmVenta extends javax.swing.JFrame {
                 //AJUSTA INVENTARIO
                 ajusteInventario(cantidadVendida, idArticuloVendido, 2);
                 //BORRA MOVIMIENTOS GUARDADOS HASTA QUE SE SUCITO EL ERROR
-                borraMovimiento(idMov);
+                borraMovimientoPorUsuario(idMov);
                 idMov++;
                 //FIN BORRA MOVIMIENTOS GUARDADOS HASTA QUE SE SUCITO EL ERROR
                 i++;
             }
         } 
-        borraMovimiento(idMov);
+        borraMovimientoPorUsuario(idMov);
     }
     
-    private void borraMovimiento(int idMov) {
+    private void borraMovimientoPorUsuario(int idMov) {
         hiloMovimientos = new WSMovimientos();
         String rutaWS = constantes.getProperty("IP") + constantes
-                .getProperty("ELIMINAMOVIMIENTO");
+                .getProperty("ELIMINAMOVIMIENTOPORUSUARIO");
         MovimientosBean movimientoEliminar = hiloMovimientos.ejecutaWebService(rutaWS
                 ,"3"
-                , "" + idMov);
+                ,"" + idMov
+                ,"" + Ingreso.usuario.getIdUsuario()
+        );
+    }
+    
+    //De momento no se usa
+    private MovimientosBean condultaUltimoMovimientoArticulo(String idArticulo) {
+        ArrayList<MovimientosBean> resultWSArray = null;
+        hiloMovimientosList = new WSMovimientosList();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETULTIMOIDMOVIMIENTOARTICULO") 
+                + "?idArticulo=" + idArticulo.trim();
+        resultWSArray = hiloMovimientosList.ejecutaWebService(rutaWS,"4");
+        MovimientosBean movimiento = resultWSArray.get(0);
+        return movimiento;
     }
     
     private VentasBean guardaVenta() {

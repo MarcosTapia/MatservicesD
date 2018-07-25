@@ -70,7 +70,7 @@ public class JDListaMovimientos extends javax.swing.JDialog {
         Util util = new Util();
         //FrmProducto frmproductos = new FrmProducto();
         String titulos[] = {"ID MOVIMIENTO","PRODUCTO","USUARIO","MOVIMIENTO"
-                ,"CANTIDAD","FECHA", "SUCURSAL"};
+                ,"CANTIDAD","FECHA", "SUCURSAL", "EXIST. ANT.", "EXIST. ACTUAL"};
         LMovimiento.setColumnIdentifiers(titulos);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMMM-yyyy");
         for (MovimientosBean movs : resultWSArray) {
@@ -86,7 +86,9 @@ public class JDListaMovimientos extends javax.swing.JDialog {
                 , movs.getTipoOperacion()
                 , "" + movs.getCantidad()
                 , dateFormat.format(movs.getFechaOperacion())
-                , sucursal};
+                , sucursal
+                , "" + movs.getExistenciaAnterior()
+                , "" + movs.getExistenciaActual()};
             LMovimiento.addRow(Datos);
         }
         initComponents();
@@ -195,7 +197,7 @@ public class JDListaMovimientos extends javax.swing.JDialog {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         this.setVisible(false);
         this.dispose();
-        System.exit(0);
+        //System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

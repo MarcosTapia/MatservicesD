@@ -36,6 +36,7 @@ public class FrmProducto extends javax.swing.JFrame {
     WSMovimientos hiloMovimientos;
     //Fin WS
     double stock = 0;
+    double stockCantidadAnteriorParaMovimiento = 0;
     double precioGlobal = 0;
 
     String codProdAnterior = "";
@@ -192,6 +193,7 @@ public class FrmProducto extends javax.swing.JFrame {
         codProdAnterior = "";
         cboSucursal.requestFocus(true);
         stock = 0;
+        stockCantidadAnteriorParaMovimiento = 0;
         precioGlobal = 0;
     }
 
@@ -1077,6 +1079,7 @@ public class FrmProducto extends javax.swing.JFrame {
 
     private void borrar() {
         stock = 0;
+        stockCantidadAnteriorParaMovimiento = 0;
         precioGlobal = 0;
         panTipoOperacion.setVisible(false);
         limpiarCajaTexto();
@@ -1130,6 +1133,7 @@ public class FrmProducto extends javax.swing.JFrame {
         existOriginal.setText("Existencia Actual: "
                 + Double.parseDouble(txtCantidadPro.getText()));
         stock = Double.parseDouble(txtCantidadPro.getText());
+        stockCantidadAnteriorParaMovimiento = p.getExistencia();
         precioGlobal = Double.parseDouble(txtPrecioPublico.getText());
         cboUMedida.setSelectedItem(p.getUnidadMedida());
         jCalFechaCaducidadProd.setDate(null);
@@ -1427,16 +1431,26 @@ public class FrmProducto extends javax.swing.JFrame {
                     }
                     radioNinguno.setSelected(true);
 
+                    double existenciaAnterior;
+                    double existenciaActual;
+                    existenciaAnterior = stockCantidadAnteriorParaMovimiento;
+                    existenciaActual = p.getExistencia();
+                    
                     MovimientosBean mov = new MovimientosBean();
                     hiloMovimientos = new WSMovimientos();
                     rutaWS = constantes.getProperty("IP") + constantes
                             .getProperty("GUARDAMOVIMIENTO");
                     MovimientosBean movimientoInsertado = hiloMovimientos
-                            .ejecutaWebService(rutaWS, "1", ""
-                                    + p.getIdArticulo(), ""
-                                    + Ingreso.usuario.getIdUsuario(),
-                                    tipoOperacion, "" + p.getExistencia(), fecha, ""
-                                    + p.getIdSucursal());
+                            .ejecutaWebService(rutaWS, "1"
+                            , "" + p.getIdArticulo()
+                            , "" + Ingreso.usuario.getIdUsuario()
+                            , tipoOperacion
+                            , "" + p.getExistencia()
+                            , fecha
+                            , "" + p.getIdSucursal()
+                            , "" + existenciaAnterior
+                            , "" + existenciaActual
+                      );
                     //
 
                     JOptionPane.showMessageDialog(null, "[ Registro Actualizado ]");
@@ -1688,7 +1702,10 @@ public class FrmProducto extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Debes seleccionar un registro");
             return;
         }
-        JDListaMovimientos jdListaMovs = new JDListaMovimientos(this, true, Principal.sucursalesHM, Principal.productosHM, Principal.productosHMID, Principal.usuariosHM, Principal.proveedoresHM, txtIdArticulo.getText());
+        JDListaMovimientos jdListaMovs = new JDListaMovimientos(this, true, 
+                Principal.sucursalesHM, Principal.productosHM, 
+                Principal.productosHMID, Principal.usuariosHM, 
+                Principal.proveedoresHM, txtIdArticulo.getText());
         jdListaMovs.setVisible(true);
     }//GEN-LAST:event_btnMovimientosActionPerformed
 
