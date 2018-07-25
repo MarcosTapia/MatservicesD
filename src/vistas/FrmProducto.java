@@ -1747,9 +1747,13 @@ public class FrmProducto extends javax.swing.JFrame {
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         this.setVisible(false);
         this.dispose();
-        FrmInventario frmInventario = new FrmInventario();
-        frmInventario.setExtendedState(frmInventario.MAXIMIZED_BOTH);
-        frmInventario.setVisible(true);
+        //antes
+//        FrmInventario frmInventario = new FrmInventario();
+//        frmInventario.setExtendedState(frmInventario.MAXIMIZED_BOTH);
+//        frmInventario.setVisible(true);
+        FrmConsultas frmConsultas = new FrmConsultas();
+        frmConsultas.setExtendedState(frmConsultas.MAXIMIZED_BOTH);
+        frmConsultas.setVisible(true);
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void actualizarBusquedaProveedor() {

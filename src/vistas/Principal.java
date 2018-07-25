@@ -167,9 +167,13 @@ public class Principal extends javax.swing.JFrame {
             case 1:
                 this.setVisible(false);
                 this.dispose();
-                FrmInventario inventario = new FrmInventario();
-                inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
-                inventario.setVisible(true);
+                //ANTES
+//                FrmInventario inventario = new FrmInventario();
+//                inventario.setExtendedState(inventario.MAXIMIZED_BOTH);
+//                inventario.setVisible(true);
+                FrmConsultas frmConsultas = new FrmConsultas();
+                frmConsultas.setExtendedState(frmConsultas.MAXIMIZED_BOTH);
+                frmConsultas.setVisible(true);
                 break;
             case 2:
                 this.setVisible(false);
@@ -263,9 +267,9 @@ public class Principal extends javax.swing.JFrame {
         jLabel10.setBounds(320, 230, 180, 30);
 
         jLabel8.setFont(new java.awt.Font("Baskerville Old Face", 2, 24)); // NOI18N
-        jLabel8.setText("INVENTARIO");
+        jLabel8.setText("ADMINISTRACIÓN ");
         panelMenuPrincipal.add(jLabel8);
-        jLabel8.setBounds(40, 230, 180, 30);
+        jLabel8.setBounds(40, 230, 230, 30);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/inventory.jpg"))); // NOI18N
         jLabel1.setText("jLabel1");

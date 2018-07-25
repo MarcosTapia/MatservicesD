@@ -73,12 +73,12 @@ public class FrmConsultas extends javax.swing.JFrame {
         lblUsuario = new javax.swing.JLabel();
         lblSucursal = new javax.swing.JLabel();
         jToolBar2 = new javax.swing.JToolBar();
+        btnProductos = new javax.swing.JButton();
         btnAlertas = new javax.swing.JButton();
         btnConsultaVentas = new javax.swing.JButton();
         btnConsultaCompras = new javax.swing.JButton();
         btnConsultaMovimientos = new javax.swing.JButton();
         btnConsultaPedidos = new javax.swing.JButton();
-        btnRegresar = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
 
@@ -159,6 +159,19 @@ public class FrmConsultas extends javax.swing.JFrame {
 
         jToolBar2.setRollover(true);
 
+        btnProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pedidos2.jpg"))); // NOI18N
+        btnProductos.setText("Inventario");
+        btnProductos.setToolTipText("");
+        btnProductos.setFocusable(false);
+        btnProductos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnProductos.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnProductos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProductosActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(btnProductos);
+
         btnAlertas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/clientes.png"))); // NOI18N
         btnAlertas.setText("Surtir");
         btnAlertas.setFocusable(false);
@@ -219,18 +232,6 @@ public class FrmConsultas extends javax.swing.JFrame {
             }
         });
         jToolBar2.add(btnConsultaPedidos);
-
-        btnRegresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/regresarmed.jpg"))); // NOI18N
-        btnRegresar.setText("Regresar");
-        btnRegresar.setFocusable(false);
-        btnRegresar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnRegresar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegresarActionPerformed(evt);
-            }
-        });
-        jToolBar2.add(btnRegresar);
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
         jButton5.setText("Inicio");
@@ -324,13 +325,13 @@ public class FrmConsultas extends javax.swing.JFrame {
         frmConsultaPedidos.setVisible(true);   
     }//GEN-LAST:event_btnConsultaPedidosActionPerformed
 
-    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+    private void btnProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductosActionPerformed
         this.setVisible(false);
         this.dispose();
-        FrmInventario frmInventario = new FrmInventario();
-        frmInventario.setExtendedState(frmInventario.MAXIMIZED_BOTH);
-        frmInventario.setVisible(true);
-    }//GEN-LAST:event_btnRegresarActionPerformed
+        FrmProducto frmP = new FrmProducto(0);
+        frmP.setExtendedState(frmP.MAXIMIZED_BOTH);
+        frmP.setVisible(true);
+    }//GEN-LAST:event_btnProductosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -380,7 +381,7 @@ public class FrmConsultas extends javax.swing.JFrame {
     private javax.swing.JButton btnConsultaMovimientos;
     private javax.swing.JButton btnConsultaPedidos;
     private javax.swing.JButton btnConsultaVentas;
-    private javax.swing.JButton btnRegresar;
+    private javax.swing.JButton btnProductos;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel2;

@@ -449,8 +449,8 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             }
         });
 
-        btnConsultas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
-        btnConsultas.setText("CONSULTAS");
+        btnConsultas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/regresar.jpg"))); // NOI18N
+        btnConsultas.setText("REGRESAR");
         btnConsultas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnConsultas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -813,6 +813,11 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
             , int operacion, double cantidadVendida) {
         //operacion=1 normal, operacion=2 error
             //Guarda movimiento
+        double existenciaAnterior;
+        double existenciaActual;
+        existenciaAnterior = p.getExistencia();
+        existenciaActual = p.getExistencia() + cantidadVendida;
+
         String fecha = util.dateToDateTimeAsString(util
                 .obtieneFechaServidor());
         MovimientosBean mov = new MovimientosBean();
@@ -827,7 +832,10 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                 ,"Venta Cancelada"
                 ,"" + cantidadVendida
                 ,fecha
-                ,"" + Ingreso.usuario.getIdSucursal());
+                ,"" + Ingreso.usuario.getIdSucursal()
+                ,"" + existenciaAnterior
+                ,"" + existenciaActual
+            );
             //Fin Guarda movimiento
         } else {
             //lama a la eliminacion del movimiento
@@ -873,6 +881,7 @@ public class FrmConsultaVentas extends javax.swing.JFrame {
                             + "venta");
                     return;
                 } else {
+                    //solo cambia status de venta cancelada a 1
                     VentasBean ventaActualizada = registraVenta(venta,"1");
                     //si ya se actualizo la venta
                     if (ventaActualizada != null) {

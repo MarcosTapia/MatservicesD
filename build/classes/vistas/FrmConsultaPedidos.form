@@ -287,7 +287,7 @@
                                           <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                               <Component id="btnConsultas" max="32767" attributes="0"/>
-                                              <Component id="btnSalir" pref="37" max="32767" attributes="0"/>
+                                              <Component id="btnSalir" max="32767" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
@@ -407,9 +407,9 @@
                 <Component class="javax.swing.JButton" name="btnConsultas">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/List.png"/>
+                      <Image iconType="3" name="/imagenes/regresar.jpg"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="CONSULTAS"/>
+                    <Property name="text" type="java.lang.String" value="REGRESAR"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConsultasActionPerformed"/>

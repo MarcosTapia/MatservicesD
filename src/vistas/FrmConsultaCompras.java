@@ -425,8 +425,8 @@ public class FrmConsultaCompras extends javax.swing.JFrame {
             }
         });
 
-        btnConsultas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/List.png"))); // NOI18N
-        btnConsultas.setText("CONSULTAS");
+        btnConsultas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/regresar.jpg"))); // NOI18N
+        btnConsultas.setText("REGRESAR");
         btnConsultas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnConsultas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
