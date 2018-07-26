@@ -53,6 +53,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
     ArrayList<PedidoBean> PedidosGlobal = null;
     ArrayList<DetallePedidoBean> detallePedidosGlobal = null;
     ArrayList<ProductoBean> inventario = null;
+    VentasBean ventasBean = null;
 
     public FrmConsultaPedidos() {
         try {
@@ -282,6 +283,26 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
         }     
     }    
     
+    private boolean procesaPedido(List<DetalleVentaBean> detalleVentaProducto) {
+        String rutaWS;
+        ArrayList<ProductoBean> resultWS;
+        boolean procesaPedidoBand = false;
+        for (DetalleVentaBean detVentBeanADisminuir : detalleVentaProducto) {
+            hiloInventariosList = new WSInventariosList();
+            rutaWS = constantes.getProperty("IP") + constantes.getProperty("OBTIENEPRODUCTOPORID") + String.valueOf(detVentBeanADisminuir.getIdArticulo());
+            resultWS = hiloInventariosList.ejecutaWebService(rutaWS,"5");
+            ProductoBean prod = resultWS.get(0);
+            if ((prod != null) 
+                && (prod.getExistencia() >= detVentBeanADisminuir.getCantidad())) {
+                procesaPedidoBand = true;
+            } else {
+                procesaPedidoBand = false;
+                break;
+            }
+        }
+        return procesaPedidoBand;
+    }
+    
     public void procesarPedido() {
         int idPedido = 0;
         List<DetalleVentaBean> detalleVentaProducto = new ArrayList<>();
@@ -311,7 +332,7 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                 //fin obtiene pedido para guardarlo como ventasBean
 
                 //convierto pedido a ventasBean para guardarlo como ventasBean
-            VentasBean ventasBean = new VentasBean();
+            ventasBean = new VentasBean();
             ventasBean.setFecha(pedido.getFecha());
             ventasBean.setIdCliente(pedido.getIdCliente());
             ventasBean.setIdSucursal(pedido.getIdSucursal());
@@ -351,116 +372,41 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
             recargarTableDetallePedidos(detallePedido);
                     //fin regresa tabla originalmente
                 //fin convierto detallepedido a detalleventa para guardarlo como detalleventa
-            //ciclo que garantiza que operacion fue hecha con exito
-            while (ventasBean != null) {
-                //guarda ventasBean
-                hiloVentas = new WSVentas();
-                rutaWS = constantes.getProperty("IP") 
-                        + constantes.getProperty("GUARDAVENTA");
-                VentasBean ventaGuardada = hiloVentas
-                        .ejecutaWebService(rutaWS,"2"
-                        , "" + ventasBean.getIdCliente()
-                        , "" + ventasBean.getObservaciones()
-                        , "" + ventasBean.getIdUsuario()
-                        , "" + ventasBean.getIdSucursal()
-                        , "" + ventasBean.getSubtotal()
-                        , "" + ventasBean.getIva()
-                        , "" + ventasBean.getTotal()
-                        , "" + ventasBean.getTipovta()
-                        , "" + ventasBean.getCancelada()
-                        , "" + ventasBean.getFacturada()
-                        , "" + ventasBean.getIdFactura()
-                        );
-                if (ventaGuardada != null) {
-                    //guarda detalle ventasBean
-                    for (DetalleVentaBean detVentBeanADisminuir :
-                            detalleVentaProducto) {
-                        hiloDetalleVentas = new WSDetalleVentas();
-                        rutaWS = constantes.getProperty("IP") 
-                            + constantes.getProperty("GUARDADETALLEVENTA");
-//                                boolean detalleGuardado = false;
-//                                while (!detalleGuardado) {
-                            // para ajuste inventario                                }
-                            int idArticuloVendido = detVentBeanADisminuir
-                                    .getIdArticulo();
-                            double cantidadVendida = detVentBeanADisminuir
-                                    .getCantidad();
-                            // fin para ajuste inventario                                }
-                            DetalleVentaBean detalleVentaGuardada = 
-                                    hiloDetalleVentas.
-                                            ejecutaWebService(rutaWS
-                                            ,"1"
-                                    , "" + idVenta
-                                    , "" + detVentBeanADisminuir.getIdArticulo()
-                                    , "" + detVentBeanADisminuir.getPrecio()
-                                    , "" + detVentBeanADisminuir.getCantidad()
-                                    , "" + detVentBeanADisminuir.getDescuento()
-                                    , detVentBeanADisminuir.getUnidadMedida()
-                                    , "" + Ingreso.usuario.getIdSucursal());
-                            if (detalleVentaGuardada != null) {
-                                //Dismimuye inventario
-                                    //obtiene articulo para saber su cantidad original
-                                ArrayList<ProductoBean> resultWSP = null;
-                                hiloInventariosList = new WSInventariosList();
-                                rutaWS = constantes.getProperty("IP") 
-                                        + constantes
-                                            .getProperty("OBTIENEPRODUCTOPORID") 
-                                        + String.valueOf(idArticuloVendido);
-                                resultWSP = hiloInventariosList
-                                        .ejecutaWebService(rutaWS,"5");
-                                ProductoBean p = resultWSP.get(0);
-                                    //fin obtiene articulo para saber su cantidad original
-
-                                    //disminuye iinventario en cifras no en bd
-                                double cantidadOriginal = p.getExistencia();
-                                double cantidadFinal = cantidadOriginal 
-                                        - cantidadVendida;
-                                    //fin disminuye iinventario en cifras no en bd
-
-                                    //realiza ajuste inventario 
-                                hiloInventarios = new WSInventarios();
-                                rutaWS = constantes.getProperty("IP") 
-                                        + constantes
-                                        .getProperty("AJUSTAINVENTARIOVENTA");
-                                ProductoBean ajuste = hiloInventarios
-                                        .ejecutaWebService(rutaWS,"5"
-                                        ,String.valueOf(idArticuloVendido)
-                                        ,"" + cantidadFinal);
-                                if (ajuste != null) {
-                                        //Guarda movimiento
-                                    String fecha = util
-                                         .dateToDateTimeAsString(util
-                                                 .obtieneFechaServidor());
-                                    MovimientosBean mov = new MovimientosBean();
-                                    hiloMovimientos = new WSMovimientos();
-                                    rutaWS = constantes.getProperty("IP") 
-                                            + constantes.getProperty(
-                                                    "GUARDAMOVIMIENTO");
-                                    MovimientosBean movimientoInsertado = 
-                                            hiloMovimientos.ejecutaWebService(rutaWS
-                                                    ,"1"
-                                        ,"" + p.getIdArticulo()
-                                        ,"" + Ingreso.usuario.getIdUsuario()
-                                        ,"Venta desde Pedido"
-                                        ,"" + cantidadVendida
-                                        ,fecha
-                                        ,"" + Ingreso.usuario.getIdSucursal());
-                                        //Fin Guarda movimiento
-                                 } // fin realiza pregunta si se ajusto inentario
-                            } // pregunta si se guardo un una fila del detalle venta
-                    }
-                    //fin guarda detalle ventasBean
-
-                    //carga productos actualizados
-//                    productos = util.getInventario();
-//                    util.llenaMapProductos(productos);
-                    //fin carga productos actualizados
-
+            
+            //verifica que se pueda procesar el pedido
+            if (!procesaPedido(detalleVentaProducto)) {
+                JOptionPane.showMessageDialog(null, "No es posible procesar el "
+                        + "pedido verifique que exista suficiente en inventario");
+                return;
+            }
+            
+            //guarda ventasBean
+            hiloVentas = new WSVentas();
+            rutaWS = constantes.getProperty("IP") 
+                    + constantes.getProperty("GUARDAVENTA");
+            VentasBean ventaGuardada = hiloVentas
+                    .ejecutaWebService(rutaWS,"2"
+                    , "" + ventasBean.getIdCliente()
+                    , "" + ventasBean.getObservaciones()
+                    , "" + ventasBean.getIdUsuario()
+                    , "" + ventasBean.getIdSucursal()
+                    , "" + ventasBean.getSubtotal()
+                    , "" + ventasBean.getIva()
+                    , "" + ventasBean.getTotal()
+                    , "" + ventasBean.getTipovta()
+                    , "" + ventasBean.getCancelada()
+                    , "" + ventasBean.getFacturada()
+                    , "" + ventasBean.getIdFactura()
+                    );
+            if (ventaGuardada != null) {
+                if (guardaDetalleVenta(detalleVentaProducto,idVenta)) {
                     JOptionPane.showMessageDialog(null, 
                             "VENTA GUARDADA CORRRECTAMENTE");
-                    
                     // Borra pedido
-                    borraPedido(idPedido);
+                    if (!borraPedido(idPedido)) {
+                        JOptionPane.showMessageDialog(null, "Error al borrar "
+                                + "el pedido borre el pedido manuealmente");
+                    }
                     int resultado = JOptionPane.showConfirmDialog(this, "¿Deseas"
                             + " "
                             + "Imprimir la Venta?", "Mensaje..!!", JOptionPane
@@ -473,17 +419,262 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                     }
                     ventasBean = null;
                     borrar();
+                //carga productos actualizados
+    //                    productos = util.getInventario();
+    //                    util.llenaMapProductos(productos);
+                //fin carga productos actualizados
                     cargaDatos();
-                } // condicion que verifica que se guardo la venta
-            }                        
-            //fin ciclo guarda ventasBean
+                    detalleVentaProducto.clear();
+                }
+            } else {// condicion que verifica que se guardo la venta
+                JOptionPane.showMessageDialog(null, 
+                        "no ES POSIBLE GUARDAR LA VENTA INTÉNTALO MÁS TARDE");
+                return;
+            }
         }
     }    
+    
+    private boolean guardaDetalleVenta(List<DetalleVentaBean> detalleVentaProducto
+            , int noVta) {
+        int idMov = 0;
+        boolean ventaOK = true;
+        /*solo para prueba
+        DetalleVentaBean detVentBeanADisminuirP3 = new
+            DetalleVentaBean();
+        detVentBeanADisminuirP3.setPrecio(1);
+        detVentBeanADisminuirP3.setCantidad(1);
+        detVentBeanADisminuirP3.setDescuento(0);
+        detVentBeanADisminuirP3.setUnidadMedida("PIEZA");
+        detVentBeanADisminuirP3.setIdArticulo(-10);//012
+        detalleVentaProducto.add(detVentBeanADisminuirP3);
+        //fin solo para prueba*/
+
+        int contDetallesGuardados = 0;
+        //ciclo para recorrer detalle venta
+        for (DetalleVentaBean detVentBeanADisminuir : detalleVentaProducto) {
+            hiloDetalleVentas = new WSDetalleVentas();
+            String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GUARDADETALLEVENTA");
+                // para ajuste inventario                                }
+            int idArticuloVendido = detVentBeanADisminuir
+                    .getIdArticulo();
+            double cantidadVendida = detVentBeanADisminuir
+                    .getCantidad();
+            // fin para ajuste inventario                                }
+            DetalleVentaBean detalleVentaGuardada = 
+                    hiloDetalleVentas.
+                            ejecutaWebService(rutaWS
+                            ,"1"
+                    , "" + noVta
+                    , "" + detVentBeanADisminuir.getIdArticulo()
+                    , "" + detVentBeanADisminuir.getPrecio()
+                    , "" + detVentBeanADisminuir.getCantidad()
+                    , "" + detVentBeanADisminuir.getDescuento()
+                    , detVentBeanADisminuir.getUnidadMedida()
+                    , "" + Ingreso.usuario.getIdSucursal()
+                            );
+
+            // para ajuste en el mismo store con los datos 
+            // anteriores lo proceso
+            if (detalleVentaGuardada != null) {
+                if (ajusteInventario(cantidadVendida, 
+                    idArticuloVendido,1)) {
+                    if (idMov == 0) {
+                        idMov = obtenerUltimoIdMovimientos() - 1;
+                    }
+                    contDetallesGuardados++;
+                } else {
+                    if (idMov>0) {
+                        if (contDetallesGuardados > 0) {
+                            roolBackAjusteInventario
+                                (contDetallesGuardados, idMov, detalleVentaProducto);
+                        }
+                    }
+                    //si hay error en guardado de mov. o ajuste de inventario
+                    borraVenta(noVta);//ventasBean.getIdVenta() - 1);
+                    borrar();
+                    ventasBean = null;
+                    JOptionPane.showMessageDialog(null, "Error "
+                            + "al guardar la venta");
+                    ventaOK = false;
+                    break;
+                }
+            } else { //si no se guardo un solo detalle borro 
+                //la venta  los detalles guardados
+                if (contDetallesGuardados > 0) {
+                    roolBackAjusteInventario
+                        (contDetallesGuardados, idMov, detalleVentaProducto);
+                }
+                //si hay error en guardado de mov. o ajuste de inventario
+                borraVenta(noVta);//ventasBean.getIdVenta() - 1);
+                borrar();
+                ventasBean = null;
+                JOptionPane.showMessageDialog(null, "Error "
+                        + "al guardar la venta");
+                ventaOK = false;
+                break;
+            }
+        }
+        return ventaOK;
+    }
+    
+    public int obtenerUltimoIdMovimientos() {
+        int id;
+        MovimientosBean resultWS;
+        hiloMovimientos = new WSMovimientos();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETULTIMOIDMOVIMIENTOS");
+        resultWS = hiloMovimientos.ejecutaWebService(rutaWS,"2");
+        id = resultWS.getIdMovimiento() + 1;
+        return id;
+    }
+    
+    public boolean borraVenta(int idVenta){
+        boolean eliminado = false;
+        //borra detalle pedido
+        hiloDetalleVentas = new WSDetalleVentas();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("ELIMINADETALLEVENTA");
+        DetalleVentaBean detalleVentaEliminar = 
+                hiloDetalleVentas.ejecutaWebService(rutaWS
+                ,"2"
+                , "" + idVenta);
+        //borra venta
+        hiloVentas = new WSVentas();
+        rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("ELIMINAVENTA");
+        VentasBean ventaEliminar = hiloVentas.ejecutaWebService(rutaWS
+                ,"4"
+                , "" + idVenta);
+        if (ventaEliminar != null) {
+            eliminado = true;
+        }
+        return eliminado;
+    }
+    
+    private void roolBackAjusteInventario(int contDetallesGuardados, int idMov
+            , List<DetalleVentaBean> detalleVentaProducto){
+        int i = 0; //cuenta los detalles que se van regresando
+        for (DetalleVentaBean detVentBeanADisminuir :
+                detalleVentaProducto) {
+            if (i < contDetallesGuardados) {
+                int idArticuloVendido = detVentBeanADisminuir
+                        .getIdArticulo();
+                double cantidadVendida = detVentBeanADisminuir
+                        .getCantidad();
+                //AJUSTA INVENTARIO
+                ajusteInventario(cantidadVendida, idArticuloVendido, 2);
+                //BORRA MOVIMIENTOS GUARDADOS HASTA QUE SE SUCITO EL ERROR
+                borraMovimientoPorUsuario(idMov);
+                idMov++;
+                //FIN BORRA MOVIMIENTOS GUARDADOS HASTA QUE SE SUCITO EL ERROR
+                i++;
+            }
+        } 
+        borraMovimientoPorUsuario(idMov);
+    }
+    
+    private void borraMovimientoPorUsuario(int idMov) {
+        hiloMovimientos = new WSMovimientos();
+        String rutaWS = constantes.getProperty("IP") + constantes
+                .getProperty("ELIMINAMOVIMIENTOPORUSUARIO");
+        MovimientosBean movimientoEliminar = hiloMovimientos.ejecutaWebService(rutaWS
+                ,"3"
+                ,"" + idMov
+                ,"" + Ingreso.usuario.getIdUsuario()
+        );
+    }
+    
+    private boolean ajusteInventario(double cantidadVendida, int idArticuloVendido
+            , int operacion){ //operacion =1 venta, operacion =2 regreso
+        boolean hecho = false;
+        //Dismimuye inventario
+            //obtiene articulo para saber su cantidad 
+            //original
+        ArrayList<ProductoBean> resultWS = null;
+        hiloInventariosList = new WSInventariosList();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes
+            .getProperty("OBTIENEPRODUCTOPORID") 
+                + String.valueOf(idArticuloVendido);
+        resultWS = hiloInventariosList
+                .ejecutaWebService(rutaWS,"5");
+        ProductoBean p = resultWS.get(0);
+            //fin obtiene articulo para saber su 
+            //cantidad original
+
+            //disminuye iinventario en cifras no en bd
+        double cantidadOriginal = p.getExistencia();
+        double cantidadFinal;
+        if (operacion == 1) {
+            cantidadFinal = cantidadOriginal 
+                    - cantidadVendida;
+        } else {
+            cantidadFinal = cantidadOriginal 
+                    + cantidadVendida;
+        }
+            //fin disminuye iinventario en cifras no en bd
+
+            //realiza ajuste inventario 
+        hiloInventarios = new WSInventarios();
+        rutaWS = constantes.getProperty("IP") 
+                + constantes
+          .getProperty("AJUSTAINVENTARIOVENTA");
+        ProductoBean ajuste = hiloInventarios
+                .ejecutaWebService(rutaWS,"5"
+                ,String.valueOf(idArticuloVendido)
+                ,"" + cantidadFinal);
+        if (ajuste != null) {
+            if (operacion!=2) {
+                if (guardaMovimientoVenta(p,cantidadVendida)) {
+                    hecho = true;
+                } else {
+                    hecho = false;
+                }
+            }
+        }
+        return hecho;
+    }
+
+    private boolean guardaMovimientoVenta(ProductoBean p, double cantidadVendida) {
+        double existenciaAnterior;
+        double existenciaActual;
+        existenciaAnterior = p.getExistencia();
+        existenciaActual = p.getExistencia() - cantidadVendida;
+
+            //Guarda movimiento
+        String fecha = util.dateToDateTimeAsString(util
+                .obtieneFechaServidor());
+        MovimientosBean mov = new MovimientosBean();
+        hiloMovimientos = new WSMovimientos();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes
+                 .getProperty("GUARDAMOVIMIENTO");
+        MovimientosBean movimientoInsertado 
+                = hiloMovimientos
+               .ejecutaWebService(rutaWS,"1"
+            ,"" + p.getIdArticulo()
+            ,"" + Ingreso.usuario.getIdUsuario()
+            ,"VENTA DESDE PEDIDO"
+            ,"" + cantidadVendida
+            ,fecha
+            ,"" + Ingreso.usuario.getIdSucursal()
+            ,"" + existenciaAnterior
+            ,"" + existenciaActual
+        );
+            //Fin Guarda movimiento
+        if (movimientoInsertado!=null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     /*
     Metodo para borrar pedido
     **/
-    public void borraPedido(int idPedido){
+    public boolean borraPedido(int idPedido){
+        boolean pedidoBorrado = false;
         hiloDetallePedidos = new WSDetallePedidos();
         String rutaWS = constantes.getProperty("IP") + constantes
                 .getProperty("ELIMINADETALLEPEDIDO");
@@ -499,11 +690,15 @@ public class FrmConsultaPedidos extends javax.swing.JFrame {
                     ,"3"
                     , "" + idPedido);
             if (pedidoEliminar != null) {
+                pedidoBorrado = true;
                 JOptionPane.showMessageDialog(null, " [ Pedido Eliminado ]");
                 borrar();
                 cargaDatos();
             }
+        } else {
+            pedidoBorrado = false;
         }
+        return pedidoBorrado;
     }
     
     //Para Tabla Pedidos

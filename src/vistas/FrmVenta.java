@@ -1474,7 +1474,7 @@ public class FrmVenta extends javax.swing.JFrame {
                         borrar();
                         ventasBean = null;
                         //fin guarda detalle venta
-                    } else {
+                    } else { //***ERROR GUARDADO VENTA
                         JOptionPane.showMessageDialog(null, 
                                 "ERROR AL GUARDAR VENTA");
                         return;
@@ -1911,29 +1911,29 @@ public class FrmVenta extends javax.swing.JFrame {
                         hiloDetallePedidos = new WSDetallePedidos();
                         rutaWS = constantes.getProperty("IP") 
                             + constantes.getProperty("GUARDADETALLEPEDIDO");
-                        DetallePedidoBean detallePedidoGuardado = null;
-                        while (detallePedidoGuardado == null) {
-                            detallePedidoGuardado = 
-                                    hiloDetallePedidos.ejecutaWebService(rutaWS,"1"
-                                    , "" + noPedido
-                                    , "" + detallePedido.getIdArticulo()
-                                    , "" + detallePedido.getPrecio()
-                                    , "" + detallePedido.getCantidad()
-                                    , "" + detallePedido.getDescuento()
-                                    , detallePedido.getUnidadMedida()
-                                    , "" + Ingreso.usuario.getIdSucursal()
-                                    );
-                            if (detallePedidoGuardado == null) {
-                                if (borraPedido(noPedido)) {
-                                    JOptionPane.showMessageDialog(null, "No se "
-                                            + "pudo guardar el pedido, "
-                                            + "inténtalo mas tarde");
-                                    borrar();
-                                    ventasBean = null;
-                                    return;
-                                }
+                        //DetallePedidoBean detallePedidoGuardado = null;
+                        //while (detallePedidoGuardado == null) {
+                        DetallePedidoBean detallePedidoGuardado = 
+                                hiloDetallePedidos.ejecutaWebService(rutaWS,"1"
+                                , "" + noPedido
+                                , "" + detallePedido.getIdArticulo()
+                                , "" + detallePedido.getPrecio()
+                                , "" + detallePedido.getCantidad()
+                                , "" + detallePedido.getDescuento()
+                                , detallePedido.getUnidadMedida()
+                                , "" + Ingreso.usuario.getIdSucursal()
+                                );
+                        if (detallePedidoGuardado == null) {
+                            if (borraPedido(noPedido)) {
+                                JOptionPane.showMessageDialog(null, "No se "
+                                        + "pudo guardar el pedido, "
+                                        + "inténtalo mas tarde");
+                                borrar();
+                                ventasBean = null;
+                                return;
                             }
                         }
+                        //}
                     }
                     //fin ciclo guarda detalle pedido
                     JOptionPane.showMessageDialog(null, 
