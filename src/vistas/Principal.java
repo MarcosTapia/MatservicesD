@@ -215,6 +215,7 @@ public class Principal extends javax.swing.JFrame {
         lblTituloNegocio = new javax.swing.JLabel();
         lblCerrarSesion = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -328,6 +329,11 @@ public class Principal extends javax.swing.JFrame {
         panelOpciones.add(lblUsuario);
         lblUsuario.setBounds(540, 20, 360, 29);
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel2.setText("© 2018 Matservices. Todos los derechos reservados.");
+        panelOpciones.add(jLabel2);
+        jLabel2.setBounds(770, 650, 330, 14);
+
         getContentPane().add(panelOpciones);
         panelOpciones.setBounds(-150, 0, 1830, 750);
 
@@ -420,6 +426,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel lblCerrarSesion;

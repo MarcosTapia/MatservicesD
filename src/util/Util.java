@@ -6,6 +6,7 @@ import beans.ComprasBean;
 import beans.EdoMunBean;
 import beans.EstadoBean;
 import beans.MensajeBean;
+import beans.MovimientosBean;
 import beans.MunicipioBean;
 import beans.ProductoBean;
 import beans.ProveedorBean;
@@ -18,6 +19,7 @@ import consumewebservices.WSClientesList;
 import consumewebservices.WSEstadosList;
 import consumewebservices.WSInventariosList;
 import consumewebservices.WSMensajesList;
+import consumewebservices.WSMovimientos;
 import consumewebservices.WSProveedoresList;
 import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
@@ -51,6 +53,7 @@ public class Util {
     Properties constantes = new ConstantesProperties().getProperties();
     WSVentasList hiloVentasList;
     //WSComprasList hiloComprasList;
+    WSMovimientos hiloMovimientos;
     WSEstadosList hiloEstadosList;
     WSSucursalesList hiloSucursalesList;
     WSCategoriasList hiloCategoriasList;
@@ -824,6 +827,19 @@ public class Util {
         return enviado;
     }
     //********* FIN ENVIA CORREO
+    
+    //OPERACIONES COMUNES
+    public int obtenerUltimoIdMovimientos() {
+        int id;
+        MovimientosBean resultWS;
+        hiloMovimientos = new WSMovimientos();
+        String rutaWS = constantes.getProperty("IP") 
+                + constantes.getProperty("GETULTIMOIDMOVIMIENTOS");
+        resultWS = hiloMovimientos.ejecutaWebService(rutaWS,"2");
+        id = resultWS.getIdMovimiento() + 1;
+        return id;
+    }
+    //FIN OPERACIONES COMUNES
     
     public Map<String, String> getSucursalesHM() {
         return sucursalesHM;

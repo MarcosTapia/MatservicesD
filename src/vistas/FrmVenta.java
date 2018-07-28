@@ -261,24 +261,13 @@ public class FrmVenta extends javax.swing.JFrame {
     }    
     
     public int obtenerUltimoId() {
-        int id = 0;
+        int id;
         VentasBean resultWS = null;
         hiloVentas = new WSVentas();
         String rutaWS = constantes.getProperty("IP") 
                 + constantes.getProperty("GETULTIMOIDVENTAS");
         resultWS = hiloVentas.ejecutaWebService(rutaWS,"1");
         id = resultWS.getIdVenta() + 1;
-        return id;
-    }
-    
-    public int obtenerUltimoIdMovimientos() {
-        int id;
-        MovimientosBean resultWS;
-        hiloMovimientos = new WSMovimientos();
-        String rutaWS = constantes.getProperty("IP") 
-                + constantes.getProperty("GETULTIMOIDMOVIMIENTOS");
-        resultWS = hiloMovimientos.ejecutaWebService(rutaWS,"2");
-        id = resultWS.getIdMovimiento() + 1;
         return id;
     }
     
@@ -1124,7 +1113,7 @@ public class FrmVenta extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
-     private static boolean isNumeric(String cadena) {
+    private static boolean isNumeric(String cadena) {
         try {
             Integer.parseInt(cadena);
             return true;
@@ -1132,7 +1121,6 @@ public class FrmVenta extends javax.swing.JFrame {
             return false;
         }
     }
-    
     
     public ProductoBean buscarProdPorCodSuc(ArrayList<ProductoBean> inventario
             , String codigo, int suc) {
@@ -1398,7 +1386,7 @@ public class FrmVenta extends javax.swing.JFrame {
                 if (ajusteInventario(cantidadVendida, 
                     idArticuloVendido,1)) {
                     if (idMov == 0) {
-                        idMov = obtenerUltimoIdMovimientos() - 1;
+                        idMov = util.obtenerUltimoIdMovimientos() - 1;
                     }
                     contDetallesGuardados++;
                 } else {
