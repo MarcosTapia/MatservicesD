@@ -839,6 +839,10 @@ public class Util {
         id = resultWS.getIdMovimiento() + 1;
         return id;
     }
+    
+    
+    
+    
     //FIN OPERACIONES COMUNES
     
     public Map<String, String> getSucursalesHM() {

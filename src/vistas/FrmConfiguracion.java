@@ -343,36 +343,43 @@ public class FrmConfiguracion extends javax.swing.JFrame {
 
     private void btnProveedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProveedoresActionPerformed
         FrmProveedor frmProv = new FrmProveedor(0);
+        frmProv.setLocationRelativeTo(null);
         frmProv.setVisible(true);
     }//GEN-LAST:event_btnProveedoresActionPerformed
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
         FrmCliente frmCli = new FrmCliente(0);
+        frmCli.setLocationRelativeTo(null);
         frmCli.setVisible(true);
     }//GEN-LAST:event_btnClientesActionPerformed
 
     private void btnCategoriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoriasActionPerformed
         FrmCategoria frmCat = new FrmCategoria();
+        frmCat.setLocationRelativeTo(null);
         frmCat.setVisible(true);
     }//GEN-LAST:event_btnCategoriasActionPerformed
 
     private void btnUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuariosActionPerformed
         FrmUsuarios frmU = new FrmUsuarios();
+        frmU.setLocationRelativeTo(null);
         frmU.setVisible(true);
     }//GEN-LAST:event_btnUsuariosActionPerformed
 
     private void btnSucursalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSucursalesActionPerformed
         FrmSucursal frmSucursal = new FrmSucursal();
+        frmSucursal.setLocationRelativeTo(null);
         frmSucursal.setVisible(true);
     }//GEN-LAST:event_btnSucursalesActionPerformed
 
     private void btnSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSistemaActionPerformed
         FrmSistema frmSistema = new FrmSistema();
+        frmSistema.setLocationRelativeTo(null);
         frmSistema.setVisible(true);
     }//GEN-LAST:event_btnSistemaActionPerformed
 
     private void btnMensajesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMensajesActionPerformed
         FrmConfiguraMensajes frmConfiguraMensajes = new FrmConfiguraMensajes();
+        frmConfiguraMensajes.setLocationRelativeTo(null);
         frmConfiguraMensajes.setVisible(true);
     }//GEN-LAST:event_btnMensajesActionPerformed
 

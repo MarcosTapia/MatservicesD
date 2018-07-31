@@ -57,7 +57,6 @@ public class FrmSucursal extends javax.swing.JFrame {
         btnCancelarCli.setEnabled(true);
         lblIdSucursal.setText("");
         this.setLocationRelativeTo(null);
-        btnInicio.setVisible(false);
         this.setIcon();
     }
 
@@ -108,7 +107,6 @@ public class FrmSucursal extends javax.swing.JFrame {
         btnSalirCli = new javax.swing.JButton();
         btnEliminarCli = new javax.swing.JButton();
         lblUsuario = new javax.swing.JLabel();
-        btnInicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -305,8 +303,8 @@ public class FrmSucursal extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        btnSalirCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
-        btnSalirCli.setText("SALIR");
+        btnSalirCli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/regresar.jpg"))); // NOI18N
+        btnSalirCli.setText("REGRESAR");
         btnSalirCli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSalirCli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnSalirCli.addActionListener(new java.awt.event.ActionListener() {
@@ -328,16 +326,6 @@ public class FrmSucursal extends javax.swing.JFrame {
         lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblUsuario.setText("Usuario:");
 
-        btnInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/inicio.png"))); // NOI18N
-        btnInicio.setText("INICIO");
-        btnInicio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnInicio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnInicio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInicioActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -358,9 +346,7 @@ public class FrmSucursal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnMostrarCli)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnInicio)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSalirCli))
+                        .addComponent(btnSalirCli, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(162, 162, 162)
@@ -379,14 +365,13 @@ public class FrmSucursal extends javax.swing.JFrame {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnSalirCli, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSalirCli, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
                     .addComponent(btnMostrarCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnCancelarCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnModificarCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnEliminarCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGuardarCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnNuevoCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnInicio, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE))
+                    .addComponent(btnNuevoCli, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -431,7 +416,6 @@ public class FrmSucursal extends javax.swing.JFrame {
     private void btnSalirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirCliActionPerformed
         this.setVisible(false);
         this.dispose();
-        System.exit(0);
     }//GEN-LAST:event_btnSalirCliActionPerformed
 
     private void btnMostrarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarCliActionPerformed
@@ -607,14 +591,6 @@ public class FrmSucursal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jtSucursalKeyReleased
 
-    private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
-        this.setVisible(false);
-        this.dispose();
-        BarraProgreso barraProgreso = new BarraProgreso();
-        barraProgreso.setProceso(1);
-        barraProgreso.setVisible(true);
-    }//GEN-LAST:event_btnInicioActionPerformed
-
     private void actualizarBusqueda() {
         ArrayList<SucursalBean> resultWS = null;
         String rutaWS = "";
@@ -676,7 +652,6 @@ public class FrmSucursal extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelarCli;
     private javax.swing.JButton btnEliminarCli;
     private javax.swing.JButton btnGuardarCli;
-    private javax.swing.JButton btnInicio;
     private javax.swing.JButton btnModificarCli;
     private javax.swing.JButton btnMostrarCli;
     private javax.swing.JButton btnNuevoCli;

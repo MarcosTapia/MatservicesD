@@ -209,12 +209,10 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="99" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="lblTitulo1" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="341" max="-2" attributes="0"/>
-                              <Component id="lblUsuario" min="-2" pref="590" max="-2" attributes="0"/>
-                          </Group>
+                      <Component id="lblTitulo1" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="341" max="-2" attributes="0"/>
+                          <Component id="lblUsuario" min="-2" pref="590" max="-2" attributes="0"/>
                       </Group>
                       <Component id="lblSucursal" max="32767" attributes="0"/>
                   </Group>

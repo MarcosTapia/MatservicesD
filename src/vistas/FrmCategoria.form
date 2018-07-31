@@ -209,9 +209,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnMostrarCli" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnInicio" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnSalirCli" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnSalirCli" min="-2" pref="110" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -230,14 +228,13 @@
                       <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="40" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="btnSalirCli" max="32767" attributes="0"/>
+                          <Component id="btnSalirCli" pref="55" max="32767" attributes="0"/>
                           <Component id="btnMostrarCli" alignment="1" max="32767" attributes="0"/>
                           <Component id="btnCancelarCli" alignment="1" max="32767" attributes="1"/>
                           <Component id="btnModificarCli" alignment="1" max="32767" attributes="1"/>
                           <Component id="btnEliminarCli" alignment="1" max="32767" attributes="1"/>
                           <Component id="btnGuardarCli" alignment="1" max="32767" attributes="1"/>
                           <Component id="btnNuevoCli" alignment="1" max="32767" attributes="1"/>
-                          <Component id="btnInicio" alignment="0" pref="55" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -382,9 +379,9 @@
             <Component class="javax.swing.JButton" name="btnSalirCli">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/imagenes/Exit.png"/>
+                  <Image iconType="3" name="/imagenes/regresar.jpg"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="SALIR"/>
+                <Property name="text" type="java.lang.String" value="REGRESAR"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -412,19 +409,6 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Usuario:"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="btnInicio">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/imagenes/inicio.png"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="INICIO"/>
-                <Property name="horizontalTextPosition" type="int" value="0"/>
-                <Property name="verticalTextPosition" type="int" value="3"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInicioActionPerformed"/>
-              </Events>
             </Component>
           </SubComponents>
         </Container>

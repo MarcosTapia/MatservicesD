@@ -48,6 +48,9 @@ public class Principal extends javax.swing.JFrame {
     static ArrayList<ProveedorBean> proveedores = new ArrayList();
     static ArrayList<ProductoBean> productos = new ArrayList();
     static ArrayList<ClienteBean> clientes = new ArrayList();
+    
+    //Bandera que decide si se cargan datos o no
+    static boolean cargaDatosBand = true;
 
     Util util = new Util();
 
@@ -96,57 +99,62 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
         this.setExtendedState(Principal.MAXIMIZED_BOTH);
+        
+        if (cargaDatosBand) {
+            //Carga estados
+            municipios = util.getMapMunicipios();
+            util.llenaMapMunicipios(municipios);
+            municipiosHM = util.getMunicipiosHM();
 
-        //Carga estados
-        municipios = util.getMapMunicipios();
-        util.llenaMapMunicipios(municipios);
-        municipiosHM = util.getMunicipiosHM();
+            //Carga estados y municipios(claves)
+            estadosMun = util.getMapEstadosMun();
 
-        //Carga estados y municipios(claves)
-        estadosMun = util.getMapEstadosMun();
+            //Carga estados
+            estados = util.getMapEstados();
+            util.llenaMapEstados(estados);
+            estadosHM = util.getEstadosHM();
 
-        //Carga estados
-        estados = util.getMapEstados();
-        util.llenaMapEstados(estados);
-        estadosHM = util.getEstadosHM();
+            //Carga sucursales
+            sucursales = util.getMapSucursales();
+            util.llenaMapSucursales(sucursales);
+            sucursalesHM = util.getSucursalesHM();
 
-        //Carga sucursales
-        sucursales = util.getMapSucursales();
-        util.llenaMapSucursales(sucursales);
-        sucursalesHM = util.getSucursalesHM();
+            //Carga categorias
+            categorias = util.getMapCategorias();
+            util.llenaMapCategorias(categorias);
+            categoriasHM = util.getCategoriasHM();
 
-        //Carga categorias
-        categorias = util.getMapCategorias();
-        util.llenaMapCategorias(categorias);
-        categoriasHM = util.getCategoriasHM();
+            //Carga usuarios
+            usuarios = util.getMapUsuarios();
+            util.llenaMapUsuarios(usuarios);
+            usuariosHM = util.getUsuariosHM();
 
-        //Carga usuarios
-        usuarios = util.getMapUsuarios();
-        util.llenaMapUsuarios(usuarios);
-        usuariosHM = util.getUsuariosHM();
+            //Carga proveedores
+            proveedores = util.getMapProveedores();
+            util.llenaMapProveedores(proveedores);
+            proveedoresHM = util.getProveedoresHM();
 
-        //Carga proveedores
-        proveedores = util.getMapProveedores();
-        util.llenaMapProveedores(proveedores);
-        proveedoresHM = util.getProveedoresHM();
+            //Carga productos
+            productos = util.getInventario();
+            util.llenaMapProductos(productos);
+            productosHM = util.getProductosHM();
+            productosHMID = util.getProductosHMID();
 
-        //Carga productos
-        productos = util.getInventario();
-        util.llenaMapProductos(productos);
-        productosHM = util.getProductosHM();
-        productosHMID = util.getProductosHMID();
+            //Carga clientes
+            cargaClientes();
+            clientes = util.getMapClientes();
+            util.llenaMapClientes(clientes);
+            clientesHM = util.getClientesHM();
 
-        //Carga clientes
-        cargaClientes();
-        clientes = util.getMapClientes();
-        util.llenaMapClientes(clientes);
-        clientesHM = util.getClientesHM();
+            //Carga proveedores
+            cargaProveedores();
+            proveedores = util.getMapProveedores();
+            util.llenaMapProveedores(proveedores);
+            proveedoresHM = util.getProveedoresHM();
 
-        //Carga proveedores
-        cargaProveedores();
-        proveedores = util.getMapProveedores();
-        util.llenaMapProveedores(proveedores);
-        proveedoresHM = util.getProveedoresHM();
+            cargaDatosBand = false;
+        }
+        this.setExtendedState(Principal.MAXIMIZED_BOTH);
         this.setIcon();
         lblUsuario.setText("Bienvenido: " + Ingreso.usuario.getNombre()
                 + " " + Ingreso.usuario.getApellido_paterno()
@@ -303,7 +311,7 @@ public class Principal extends javax.swing.JFrame {
         panelOpciones.add(lblSalir);
         lblSalir.setBounds(700, 490, 270, 150);
 
-        lblTituloNegocio.setFont(new java.awt.Font("Verdana", 1, 40)); // NOI18N
+        lblTituloNegocio.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         lblTituloNegocio.setForeground(new java.awt.Color(0, 102, 255));
         lblTituloNegocio.setText("Título del Negocio");
         panelOpciones.add(lblTituloNegocio);
