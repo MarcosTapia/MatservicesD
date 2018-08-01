@@ -16,6 +16,7 @@ import consumewebservices.WSMovimientos;
 import consumewebservices.WSMovimientosList;
 import consumewebservices.WSPedidos;
 import consumewebservices.WSVentas;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
@@ -1125,16 +1126,31 @@ public class FrmVenta extends javax.swing.JFrame {
         String codigo;
         try {
             cod = jtProducto.getValueAt(
-                    jtProducto.getSelectedRow(), 0).toString();
+                    jtProducto.getSelectedRow(), 1).toString();
             codigo = String.valueOf(cod);
+            FrmDisponibilidad disponible = new FrmDisponibilidad(codigo, inventario);
+            disponible.setLocationRelativeTo(null);
+            disponible.setVisible(true);
         } catch(Exception e) {
             codigo = JOptionPane.showInputDialog("Ingresa"
                     + " el código del producto");
+            try {
+                if (codigo != null) {
+                    if (codigo.equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, "Debes ingresar un valor");
+                        return;
+                    } else {
+                        FrmDisponibilidad disponible = new FrmDisponibilidad(codigo, inventario);
+                        disponible.setLocationRelativeTo(null);
+                        disponible.setVisible(true);
+                    }
+                } else {
+                    return;
+                }
+            } catch (HeadlessException ex) {
+                return;
+            }
         }
-        
-        FrmDisponibilidad disponible = new FrmDisponibilidad(codigo, inventario);
-        disponible.setLocationRelativeTo(null);
-        disponible.setVisible(true);
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private static boolean isNumeric(String cadena) {

@@ -1,29 +1,20 @@
 package vistas;
 
 import beans.UsuarioBean;
-import ComponenteConsulta.JDListaUsuario;
 import beans.DatosEmpresaBean;
-import beans.DetallePedidoBean;
-import beans.PedidoBean;
 import beans.ProductoBean;
-import beans.SucursalBean;
 import constantes.ConstantesProperties;
 import consumewebservices.WSDatosEmpresa;
-import consumewebservices.WSSucursalesList;
 import consumewebservices.WSUsuarios;
 import consumewebservices.WSUsuariosList;
-import java.awt.Toolkit;
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import static vistas.Ingreso.usuario;
 
 import java.security.MessageDigest;
 import java.util.List;
+import javax.swing.ImageIcon;
 import util.Util;
 import static vistas.Principal.productos;
 
@@ -66,7 +57,7 @@ public class FrmDisponibilidad extends javax.swing.JFrame {
         DatosEmpresaBean resultadoWS = hiloEmpresa.
                 ejecutaWebService(rutaWS,"1");
         this.setTitle(resultadoWS.getNombreEmpresa());
-        //actualizarBusqueda();
+        setIcon();
         recargarTableProductos(inventario);
         cboParametroPro.setSelectedIndex(1);
         txtBuscarPro.setText(codigo);
@@ -228,6 +219,12 @@ public class FrmDisponibilidad extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void setIcon() {
+        ImageIcon icon;
+        icon = new ImageIcon("logo.png");
+        setIconImage(icon.getImage());
+    }
+    
     private void buscaProducto() {
         ProductoBean prod = buscarProdPorCodSuc(inventario
                 , codigo.trim()
