@@ -24,8 +24,14 @@ import util.Util;
 import static vistas.Principal.productos;
 import javax.swing.ImageIcon;
 import javax.swing.border.TitledBorder;
+import mensajes.Correcto;
+import mensajes.ErrorMsg;
+import mensajes.Warning;
 
 public class FrmProducto extends javax.swing.JFrame {
+    Correcto iconCorrecto = new Correcto();
+    ErrorMsg iconError = new ErrorMsg();
+    Warning iconWarning = new Warning();
 
     //WS
     Util util = new Util();
@@ -1146,7 +1152,11 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_jtProductoMouseClicked
 
     private void eliminarProducto() {
-        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Realmente deseas borrar el registro?");
+        int dialogResult = JOptionPane.showConfirmDialog(null, 
+                "¿Realmente deseas borrar el registro?"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.WARNING_MESSAGE,1,iconWarning
+                );
         if (dialogResult == JOptionPane.YES_OPTION) {
             if (txtIdArticulo.getText().compareTo("") != 0) {
                 hiloInventarios = new WSInventarios();
@@ -1157,7 +1167,10 @@ public class FrmProducto extends javax.swing.JFrame {
                                 txtIdArticulo.getText().trim());
                 if (productoEliminar != null) {
                     JOptionPane.showMessageDialog(null,
-                            " [ Registro Eliminado ]");
+                            " [ Registro Eliminado ]"
+                        ,Principal.datosEmpresaBean.getNombreEmpresa()
+                        ,JOptionPane.INFORMATION_MESSAGE,iconCorrecto
+                    );
                     //Carga productos
                     productos = util.getInventario();
                     util.llenaMapProductos(productos);
@@ -1168,14 +1181,17 @@ public class FrmProducto extends javax.swing.JFrame {
                     JOptionPane optionPane = new JOptionPane("No es posible "
                             + "eliminar el "
                             + "producto existen movimientos que lo "
-                            + "relacionan", JOptionPane.ERROR_MESSAGE);
+                            + "relacionan", JOptionPane.ERROR_MESSAGE,1,iconError);
                     JDialog dialog = optionPane.createDialog("Error");
                     dialog.setAlwaysOnTop(true);
                     dialog.setVisible(true);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "No hay producto para "
-                        + "eliminar");
+                        + "eliminar"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+                );
             }
         }
     }
@@ -1245,9 +1261,15 @@ public class FrmProducto extends javax.swing.JFrame {
             existOriginal.setText("Existencia Actual: "
                     + Double.parseDouble(txtCantidadPro.getText()));
             JOptionPane.showMessageDialog(null, "Presiona el botón Guardar "
-                    + "cuando tus cambios estén listos");
+                    + "cuando tus cambios estén listos"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.WARNING_MESSAGE,iconWarning
+            );
         } else {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar un producto");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar un producto"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+            );
             return;
         }
     }//GEN-LAST:event_btnModificarProActionPerformed
@@ -1272,7 +1294,10 @@ public class FrmProducto extends javax.swing.JFrame {
                         util.buscaIdSuc(Principal.sucursalesHM,
                                 cboSucursal.getSelectedItem().toString()))) {
                     JOptionPane.showMessageDialog(null, "Producto duplicado en "
-                            + "sucursal");
+                            + "sucursal"
+                        ,Principal.datosEmpresaBean.getNombreEmpresa()
+                        ,JOptionPane.ERROR_MESSAGE,iconError
+                    );
                     return;
                 }
                 //fin verifica si el producto se encuentra registrado ensucursal
@@ -1316,7 +1341,10 @@ public class FrmProducto extends javax.swing.JFrame {
                                 p.getFechaCaducidad().toLocaleString()
                         );
                 if (productoInsertado != null) {
-                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]");
+                    JOptionPane.showMessageDialog(null, "[ Datos Agregados ]"
+                        ,Principal.datosEmpresaBean.getNombreEmpresa()
+                        ,JOptionPane.INFORMATION_MESSAGE,iconCorrecto
+                    );
                     //Carga productos
                     productos = util.getInventario();
                     util.llenaMapProductos(productos);
@@ -1328,7 +1356,10 @@ public class FrmProducto extends javax.swing.JFrame {
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Llene Todos Los "
-                        + "Campos..!!");
+                        + "Campos..!!"
+                    ,Principal.datosEmpresaBean.getNombreEmpresa()
+                    ,JOptionPane.ERROR_MESSAGE,iconError
+                );
             }
         }
         if (accion.equalsIgnoreCase("Actualizar")) {
@@ -1348,7 +1379,10 @@ public class FrmProducto extends javax.swing.JFrame {
                 //Verifica que ya se haya actualizado el stock
                 if (btnActualizaInvent.isEnabled()) {
                     JOptionPane.showMessageDialog(null, "Actualiza tu "
-                            + "inventario antes de Guardar");
+                            + "inventario antes de Guardar"
+                        ,Principal.datosEmpresaBean.getNombreEmpresa()
+                        ,JOptionPane.INFORMATION_MESSAGE,iconCorrecto
+                    );
                     return;
                 }
                 //Fin Verifica que ya se haya actualizado el stock
@@ -1453,7 +1487,10 @@ public class FrmProducto extends javax.swing.JFrame {
                       );
                     //
 
-                    JOptionPane.showMessageDialog(null, "[ Registro Actualizado ]");
+                    JOptionPane.showMessageDialog(null, "[ Registro Actualizado ]"
+                        ,Principal.datosEmpresaBean.getNombreEmpresa()
+                        ,JOptionPane.INFORMATION_MESSAGE,iconCorrecto
+                    );
                     //Carga productos
                     productos = util.getInventario();
                     util.llenaMapProductos(productos);
@@ -1465,7 +1502,10 @@ public class FrmProducto extends javax.swing.JFrame {
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Llene Todos Los "
-                        + "Campos..!!");
+                        + "Campos..!!"
+                    ,Principal.datosEmpresaBean.getNombreEmpresa()
+                    ,JOptionPane.ERROR_MESSAGE,iconError
+                );
             }
         }
     }//GEN-LAST:event_btnGuardarProActionPerformed
@@ -1533,13 +1573,6 @@ public class FrmProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDescripcionProActionPerformed
 
     private void cboCategoriaProKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboCategoriaProKeyTyped
-        //        int key=evt.getKeyCode();
-        ////        if(key==KeyEvent.VK_ENTER)
-        //        if(key==0)
-        //        {
-        ////            Toolkit.getDefaultToolkit().beep();
-        //            muestraUtilidad();
-        //        }
         txtIva.requestFocus();
     }//GEN-LAST:event_cboCategoriaProKeyTyped
 
@@ -1574,7 +1607,10 @@ public class FrmProducto extends javax.swing.JFrame {
         if (cboSucursal.getSelectedItem().toString().
                 equalsIgnoreCase("Seleccionar...")) {
             JOptionPane.showMessageDialog(null, "Debes seleccionar una "
-                    + "sucursal");
+                    + "sucursal"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.WARNING_MESSAGE,iconWarning
+            );
             cboSucursal.requestFocus(true);
             return;
         }
@@ -1585,7 +1621,11 @@ public class FrmProducto extends javax.swing.JFrame {
                 txtCodigoPro.getText().trim(),
                 util.buscaIdSuc(Principal.sucursalesHM,
                         cboSucursal.getSelectedItem().toString()))) {
-            JOptionPane.showMessageDialog(null, "Producto duplicado en sucursal");
+            JOptionPane.showMessageDialog(null, "Producto duplicado en "
+                    + "sucursal"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.WARNING_MESSAGE,iconWarning
+            );
             txtCodigoPro.requestFocus(true);
             return;
         } else {
@@ -1649,33 +1689,48 @@ public class FrmProducto extends javax.swing.JFrame {
         if (radioAumentar.isSelected()) {
             dialogResult = JOptionPane.showConfirmDialog(null,
                     "¿Realmente deseas aumentar "
-                    + txtCantidadPro.getText() + " al stock?");
+                    + txtCantidadPro.getText() + " al stock?"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.WARNING_MESSAGE,1,iconWarning
+            );
             if (dialogResult == JOptionPane.YES_OPTION) {
                 stock = stock + Double.parseDouble(txtCantidadPro.getText());
                 existOriginal.setText("Existencia Actual: " + stock);
                 txtCantidadPro.setText("" + stock);
                 btnActualizaInvent.setEnabled(false);
                 JOptionPane.showMessageDialog(null, "Presiona el botón Guardar"
-                        + " para registrar los cambios");
+                        + " para registrar los cambios"
+                    ,Principal.datosEmpresaBean.getNombreEmpresa()
+                    ,JOptionPane.INFORMATION_MESSAGE,iconCorrecto
+                );
             }
         } else {
             if (radioDisminuir.isSelected()) {
                 dialogResult = JOptionPane.showConfirmDialog(null,
                         "¿Realmente deseas disminuir "
-                        + txtCantidadPro.getText() + " al stock?");
+                        + txtCantidadPro.getText() + " al stock?"
+                    ,Principal.datosEmpresaBean.getNombreEmpresa()
+                    ,1,1,iconCorrecto
+                );
                 if (dialogResult == JOptionPane.YES_OPTION) {
                     stock = stock - Double.parseDouble(txtCantidadPro.getText());
                     existOriginal.setText("Existencia Actual: " + stock);
                     txtCantidadPro.setText("" + stock);
                     btnActualizaInvent.setEnabled(false);
                     JOptionPane.showMessageDialog(null, "Presiona el botón Guardar"
-                            + " para registrar los cambios");
+                            + " para registrar los cambios"
+                        ,Principal.datosEmpresaBean.getNombreEmpresa()
+                        ,JOptionPane.INFORMATION_MESSAGE,iconCorrecto
+                    );
                 }
             }
             if (radioNinguno.isSelected()) {
                 btnActualizaInvent.setEnabled(false);
                 JOptionPane.showMessageDialog(null, "Presiona el botón Guardar"
-                        + " para registrar los cambios");
+                        + " para registrar los cambios"
+                    ,Principal.datosEmpresaBean.getNombreEmpresa()
+                    ,JOptionPane.INFORMATION_MESSAGE,iconCorrecto
+                );
             }
         }
         btnGuardarPro.setEnabled(true);
@@ -1699,7 +1754,10 @@ public class FrmProducto extends javax.swing.JFrame {
 
     private void btnMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovimientosActionPerformed
         if (txtIdArticulo.getText().equalsIgnoreCase("")) {
-            JOptionPane.showMessageDialog(null, "Debes seleccionar un registro");
+            JOptionPane.showMessageDialog(null, "Debes seleccionar un registro"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.INFORMATION_MESSAGE,iconCorrecto
+            );
             return;
         }
         JDListaMovimientos jdListaMovs = new JDListaMovimientos(this, true, 
@@ -1877,7 +1935,8 @@ public class FrmProducto extends javax.swing.JFrame {
         jtProducto.setModel(new javax.swing.table.DefaultTableModel(
                 datosFinal,
                 new String[]{
-                    "ID", "CODIGO", "DESCRIPCIÓN", "$ COSTO", "$ PÚBLICO", "EXIST.", "SUCURSAL"
+                    "ID", "CODIGO", "DESCRIPCIÓN", "$ COSTO", "$ PÚBLICO"
+                        , "EXIST.", "SUCURSAL"
                 }) {
 
                     @Override
@@ -1889,38 +1948,6 @@ public class FrmProducto extends javax.swing.JFrame {
         jtProducto.getColumnModel().getColumn(0).setMaxWidth(0);
     }
 
-//    public static void main(String args[]) {
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage());
-//        } catch (InstantiationException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage());
-//        } catch (IllegalAccessException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage());
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage());
-//        }
-//        //</editor-fold>
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//
-//            public void run() {
-//                new FrmProducto().setVisible(true);
-//            }
-//        });
-//    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizaInvent;
     private javax.swing.JButton btnCancelarPro;

@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
+import mensajes.ErrorMsg;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -34,6 +35,8 @@ import vistas.Ingreso;
 import vistas.Principal;
 
 public class JDListaAlertas extends javax.swing.JDialog {
+    ErrorMsg iconError = new ErrorMsg();
+    
     DatosEmpresaBean configuracionBean = new DatosEmpresaBean();
     DefaultTableModel LProducto = new DefaultTableModel();
     String empresa = "";
@@ -298,6 +301,14 @@ public class JDListaAlertas extends javax.swing.JDialog {
             tipo.setObservaciones(String.valueOf(tblConsultaProductos
                     .getValueAt(fila, 7)));
             Resultados.add(tipo);
+        }
+        
+        if (Resultados.size() == 0) {
+            JOptionPane.showMessageDialog(null, "No existe información que mostrar"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+            );
+            return;
         }
         
         Map map = new HashMap();

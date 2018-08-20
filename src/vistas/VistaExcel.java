@@ -26,6 +26,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import mensajes.Correcto;
+import mensajes.ErrorMsg;
+import mensajes.Warning;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -42,6 +45,10 @@ import static vistas.Principal.datosSistemaBean;
 import static vistas.Principal.productos;
 
 public class VistaExcel extends javax.swing.JFrame {
+    Correcto iconCorrecto = new Correcto();
+    ErrorMsg iconError = new ErrorMsg();
+    Warning iconWarning = new Warning();
+    
     Workbook wb;
     JFileChooser selecArchivo = new JFileChooser();
     File archivo;
@@ -200,7 +207,10 @@ public class VistaExcel extends javax.swing.JFrame {
             }
             respuesta="Importación exitosa";
         } catch (IOException | InvalidFormatException | EncryptedDocumentException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+            );
         }
         if (!sigueImportacion) {
             respuesta="No se pudo realizar la importación. "
@@ -239,7 +249,10 @@ public class VistaExcel extends javax.swing.JFrame {
             }
             respuesta="Exportación exitosa.";
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+            );
         }
         return respuesta;
     }
@@ -492,7 +505,8 @@ public class VistaExcel extends javax.swing.JFrame {
         }
         contAccion++;
         if(contAccion==1)AgregarFiltro();
-        if(selecArchivo.showDialog(null, "Seleccionar archivo")==JFileChooser.APPROVE_OPTION){
+        if(selecArchivo.showDialog(null, "Seleccionar archivo") == 
+                JFileChooser.APPROVE_OPTION){
             archivo=selecArchivo.getSelectedFile();
             if(archivo.getName().endsWith("xls") || archivo.getName().endsWith("xlsx")){
                 try {
@@ -521,12 +535,17 @@ public class VistaExcel extends javax.swing.JFrame {
                             JOptionPane.showMessageDialog(null,
                                     msg + "\n Formato ."+ archivo.getName()
                                             .substring(archivo.getName()
-                                                    .lastIndexOf(".")+1),
-                                    "IMPORTAR EXCEL", JOptionPane.INFORMATION_MESSAGE);
+                                                    .lastIndexOf(".")+1)
+                                    ,Principal.datosEmpresaBean.getNombreEmpresa()
+                                    ,JOptionPane.INFORMATION_MESSAGE,iconCorrecto
+                            );
                         } else {
                             JOptionPane.showMessageDialog(null, "Los datos de "
                                     + "la tabla no se"
-                            + " importaron");
+                            + " importaron"
+                            ,Principal.datosEmpresaBean.getNombreEmpresa()
+                            ,JOptionPane.ERROR_MESSAGE,iconError
+                            );
                         }
                     }
                 } catch (InvalidFormatException ex) {
@@ -534,7 +553,10 @@ public class VistaExcel extends javax.swing.JFrame {
                             , null, ex);
                 }
             }else{
-                JOptionPane.showMessageDialog(null, "Elija un formato valido.");
+                JOptionPane.showMessageDialog(null, "Elija un formato valido."
+                    ,Principal.datosEmpresaBean.getNombreEmpresa()
+                    ,JOptionPane.WARNING_MESSAGE,iconWarning
+                );
             }
         }
         btnImportar.setEnabled(false);
@@ -594,8 +616,6 @@ public class VistaExcel extends javax.swing.JFrame {
             if (util.buscaProdDuplicadoEnSucursal(Principal.productos, 
                     p.getCodigo().trim(), 
                     p.getIdSucursal())) {
-//                JOptionPane.showMessageDialog(null, "Producto duplicado en sucursal");
-//                return;
                 importados = false;
             } else {
                 //guardar producto

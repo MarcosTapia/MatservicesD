@@ -118,7 +118,9 @@ public class Util {
     public void errorSeleccion() {
         String msg = "Selecciona todos los elementos";
         JOptionPane optionPane = new JOptionPane(msg, JOptionPane.ERROR_MESSAGE);    
-        JDialog dialog = optionPane.createDialog("Error");
+        JDialog dialog = optionPane.createDialog(Principal.datosEmpresaBean
+                .getNombreEmpresa()
+            );
         dialog.setAlwaysOnTop(true);
         dialog.setVisible(true);                    
     }

@@ -16,11 +16,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import mensajes.Correcto;
+import mensajes.ErrorMsg;
+import mensajes.Warning;
 import net.sourceforge.barbecue.Barcode;
 import net.sourceforge.barbecue.BarcodeFactory;
 import net.sourceforge.barbecue.BarcodeImageHandler;
@@ -30,6 +31,10 @@ import static vistas.Principal.datosEmpresaBean;
 import static vistas.Principal.datosSistemaBean;
 
 public class FrmCodBarras extends javax.swing.JFrame {
+    Correcto iconCorrecto = new Correcto();
+    ErrorMsg iconError = new ErrorMsg();
+    Warning iconWarning = new Warning();
+    
     //WS
     Properties constantes = new ConstantesProperties().getProperties();
     WSDatosEmpresa hiloEmpresa;
@@ -277,14 +282,25 @@ public class FrmCodBarras extends javax.swing.JFrame {
         //Checa si existe archivo licencia
         File f = new File("C:\\etiquetas\\" + txtcodigo.getText() + ".png");
         if (f.exists()) { 
-            JOptionPane.showMessageDialog(null, "Ya está creado este código");
+            JOptionPane.showMessageDialog(null, "Ya está creado este código"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+            );
+            txtcodigo.requestFocus();
             return;
         }        
 
         net.sourceforge.barbecue.Barcode barcode = null;
         try {
             barcode = BarcodeFactory.createCode39(txtcodigo.getText(), true);
-        } catch (Exception e) { }
+        } catch (Exception e) { 
+            JOptionPane.showMessageDialog(null, "Debe existir un código"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+            );
+            txtcodigo.requestFocus();
+            return;
+        }
         barcode.setDrawingText(false);
         barcode.setBarWidth(2);
         barcode.setBarHeight(60);
@@ -293,16 +309,21 @@ public class FrmCodBarras extends javax.swing.JFrame {
             try {
                 BarcodeImageHandler.writePNG(barcode, fos);
             } catch (OutputException ex) {
-                Logger.getLogger(FrmCodBarras.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, ex.getMessage()
+                    ,Principal.datosEmpresaBean.getNombreEmpresa()
+                    ,JOptionPane.ERROR_MESSAGE,iconError
+                );
             }
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(FrmCodBarras.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, ex.getMessage()
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+            );
         }
     }//GEN-LAST:event_btnMostrarCatActionPerformed
 
     private void verificaCodigoDuplicado() {
         if (txtcodigo.getText().equalsIgnoreCase("")) {
-            JOptionPane.showMessageDialog(null, "Debes asignar un código");
             return;
         }
         //verifica que el codigo no exista
@@ -326,7 +347,14 @@ public class FrmCodBarras extends javax.swing.JFrame {
         Barcode barcode = null;
         try {
             barcode = BarcodeFactory.createCode39(txtcodigo.getText(), true);
-        } catch (Exception e) { }
+        } catch (Exception e) { 
+            JOptionPane.showMessageDialog(null, "Debes asignar un código"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+            );
+            txtcodigo.requestFocus();
+            return;
+        }
         barcode.setDrawingText(false);
         barcode.setBarWidth(2);
         barcode.setBarHeight(60);
@@ -340,17 +368,33 @@ public class FrmCodBarras extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVerCodigoBarrasActionPerformed
 
     private void btnCopiarPortapapelesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCopiarPortapapelesActionPerformed
-        Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-        ImageIcon image = (ImageIcon) lblcode.getIcon();
-        ImageSelection dh = new ImageSelection(image.getImage());
-        cb.setContents(dh, null);
+        if (lblcode.getIcon() != null) {
+            Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+            ImageIcon image = (ImageIcon) lblcode.getIcon();
+            ImageSelection dh = new ImageSelection(image.getImage());
+            cb.setContents(dh, null);
+        } else {
+            JOptionPane.showMessageDialog(null, "Debes asignar un código"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+            );
+            txtcodigo.requestFocus();
+            return;
+        }
     }//GEN-LAST:event_btnCopiarPortapapelesActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         net.sourceforge.barbecue.Barcode barcode = null;
         try {
             barcode = BarcodeFactory.createCode39(txtcodigo.getText(), true);
-        } catch (Exception e) { }
+        } catch (Exception e) { 
+            JOptionPane.showMessageDialog(null, "Debe existir un código"
+                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                ,JOptionPane.ERROR_MESSAGE,iconError
+            );
+            txtcodigo.requestFocus();
+            return;
+        }
         barcode.setDrawingText(false);
         barcode.setBarWidth(2);
         barcode.setBarHeight(60);
@@ -360,8 +404,11 @@ public class FrmCodBarras extends javax.swing.JFrame {
                          try {
                               job.print();
                          } catch (PrinterException ex) {
-                             Logger.getLogger(FrmCodBarras.class.getName()).log(Level.SEVERE, null, ex);
-                             }
+                            JOptionPane.showMessageDialog(null, ex.getMessage()
+                                ,Principal.datosEmpresaBean.getNombreEmpresa()
+                                ,JOptionPane.ERROR_MESSAGE,iconError
+                            );
+                         }
                    }
     }//GEN-LAST:event_btnImprimirActionPerformed
 
